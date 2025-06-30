@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_theme.dart';
+import 'package:bicount/core/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,10 +12,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Bicount',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const Scaffold(body: Center(child: Text("BiCount"))),
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      home: Scaffold(body: Center(child: Text("data"))),
     );
   }
 }
