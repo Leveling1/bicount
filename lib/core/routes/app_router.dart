@@ -29,7 +29,7 @@ class AppRouter {
       final currentPath = state.uri.toString();
       final loggingIn = currentPath == '/login' || currentPath == '/signUp';
       if (!isAuthenticated && !loggingIn) {
-        return '/signUp';
+        return '/';//'/signUp';
       }
       if (isAuthenticated && loggingIn) {
         return '/';
