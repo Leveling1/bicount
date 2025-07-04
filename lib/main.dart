@@ -1,6 +1,11 @@
+import 'package:bicount/core/routes/app_router.dart';
 import 'package:bicount/core/themes/app_theme.dart';
-import 'package:bicount/core/widgets/custom_text_field.dart';
+import 'package:bicount/features/authentification/data/repositories/authentification_repository_impl.dart';
+import 'package:bicount/features/authentification/presentation/bloc/authentification_bloc.dart';
+import 'package:bicount/features/home/data/repositories/home_repository_impl.dart';
+import 'package:bicount/features/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,11 +15,29 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Bicount',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: Scaffold(body: Center(child: Text("data"))),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthentificationRepositoryImpl>(
+          create: (_) => AuthentificationRepositoryImpl(),
+        ),
+        RepositoryProvider<HomeRepositoryImpl>(
+          create: (_) => HomeRepositoryImpl(),
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthentificationBloc>(
+            create: (context) => AuthentificationBloc(),
+          ),
+          BlocProvider<HomeBloc>(create: (context) => HomeBloc()),
+        ],
+        child: MaterialApp.router(
+          title: 'Bicount',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          routerConfig: AppRouter().router,
+        ),
+      ),
     );
   }
 }
