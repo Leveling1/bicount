@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/secrets.dart';
 import 'package:bicount/core/routes/app_router.dart';
 import 'package:bicount/core/themes/app_theme.dart';
 import 'package:bicount/features/authentification/data/repositories/authentification_repository_impl.dart';
@@ -6,8 +7,15 @@ import 'package:bicount/features/home/data/repositories/home_repository_impl.dar
 import 'package:bicount/features/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: Secrets.supabaseProjectUrl,
+    anonKey: Secrets.supabaseAnonKey,
+  );
   runApp(const MyApp());
 }
 
