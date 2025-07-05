@@ -4,17 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class CustomButton extends StatelessWidget {
-  CustomButton({super.key, required this.text, required this.onPressed});
-  VoidCallback onPressed;
-  WidgetStatesController statesController = WidgetStatesController();
+  CustomButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    required this.loading,
+  });
+  final VoidCallback onPressed;
+  final WidgetStatesController statesController = WidgetStatesController();
   final String text;
+  final bool loading;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: loading ? null : onPressed,
 
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith<Color>((
@@ -34,7 +40,9 @@ class CustomButton extends StatelessWidget {
             ),
           ),
         ),
-        child: Text(text, style: TextStyle(color: Colors.white)),
+        child: loading
+            ? CircularProgressIndicator.adaptive()
+            : Text(text, style: TextStyle(color: Colors.white)),
       ),
     );
   }

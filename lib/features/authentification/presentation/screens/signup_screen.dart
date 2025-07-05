@@ -1,4 +1,5 @@
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/notification_helper.dart';
 import 'package:bicount/features/authentification/presentation/widgets/fields_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +13,14 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
     return Scaffold(
-      body: BlocBuilder<AuthentificationBloc, AuthentificationState>(
+      body: BlocConsumer<AuthentificationBloc, AuthentificationState>(
+        listener: (context, state) {
+          if(state is SignUpFailure){
+            NotificationHelper.showFailureNotification(context, state.error);
+          }else if(state is SignUpSuccess){
+            GoRouter.of(context).go('/');
+          }
+        },
         builder: (context, state) {
           return SafeArea(
             child: Padding(
@@ -37,7 +45,9 @@ class SignUpScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  FieldsSignUp(),
+                  FieldsSignUp(
+                    loading:state is SignUpLoading ,
+                  ),
                   Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

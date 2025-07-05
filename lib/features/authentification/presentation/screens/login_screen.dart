@@ -1,6 +1,6 @@
 import 'package:bicount/core/constants/path.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/core/widgets/custom_text_field.dart';
+import 'package:bicount/core/widgets/notification_helper.dart';
 import 'package:bicount/features/authentification/presentation/widgets/fields_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,14 +15,21 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
+        child: BlocConsumer<AuthentificationBloc, AuthentificationState>(
+          listener: (context, state) {
+            if (state is SignInFailure) {
+              NotificationHelper.showFailureNotification(context, state.error);
+            } else if (state is SignInSuccess) {
+              GoRouter.of(context).go('/');
+            }
+          },
           builder: (context, state) {
             return Padding(
               padding: AppDimens.paddingAllMedium,
               child: Column(
                 children: [
                   Image.asset(AssetPaths.image_login, height: 250),
-                  FieldsLogin(),
+                  FieldsLogin(loading: state is SignInLoading),
                   Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
