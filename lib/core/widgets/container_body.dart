@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 
 class ContainerBody extends StatelessWidget {
@@ -8,15 +7,18 @@ class ContainerBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.cardColorDark,
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(AppDimens.dorderRadiusUltraLarge),
-          bottomRight: Radius.circular(AppDimens.dorderRadiusUltraLarge),
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: AppDimens.marginMedium),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(AppDimens.borderRadiusUltraLarge),
+            bottomRight: Radius.circular(AppDimens.borderRadiusUltraLarge),
+          ),
         ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

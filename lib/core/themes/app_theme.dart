@@ -1,5 +1,6 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_colors.dart';
 
 class AppTheme {
@@ -7,30 +8,53 @@ class AppTheme {
     brightness: Brightness.light,
     primaryColor: AppColors.primaryColorLight,
     scaffoldBackgroundColor: AppColors.backgroundColorLight,
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: Colors.grey,
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        textStyle: WidgetStatePropertyAll(TextStyle(color: Colors.black)),
+      ),
+    ),
     cardColor: AppColors.cardColorLight,
-    textTheme: const TextTheme(
+    textTheme: TextTheme(
       titleSmall: TextStyle(
+        color: AppColors.secondaryTextColorLight,
+        fontSize: AppDimens.textSizeMedium.sp,
+      ),
+      titleMedium: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeMedium,
+        fontSize: AppDimens.textSizeLarge.sp,
       ),
       titleLarge: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeLarge,
+        fontSize: AppDimens.textSizeXXLarge.sp,
       ),
 
-      bodyLarge: TextStyle(color: AppColors.textColorLight),
-      bodyMedium: TextStyle(color: AppColors.secondaryTextColorLight),
+      bodySmall: TextStyle(
+        color: AppColors.secondaryTextColorLight,
+        fontSize: AppDimens.textSizeSmall.sp,
+      ),
+      bodyMedium: TextStyle(
+        color: AppColors.textColorLight,
+        fontSize: AppDimens.textSizeMedium.sp,
+      ),
+      bodyLarge: TextStyle(
+        color: AppColors.textColorLight,
+        fontSize: AppDimens.textSizeLarge.sp,
+      ),
+
       headlineSmall: TextStyle(
         color: AppColors.secondaryTextColorLight,
-        fontSize: AppDimens.textSizeSmall,
+        fontSize: AppDimens.textSizeSmall.sp,
       ),
       headlineMedium: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeExtraLarge,
+        fontSize: AppDimens.textSizeExtraLarge.sp,
       ),
       headlineLarge: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeLarge,
+        fontSize: AppDimens.textSizeLarge.sp,
       ),
     ),
     colorScheme: ColorScheme.light(
@@ -46,6 +70,9 @@ class AppTheme {
     brightness: Brightness.dark,
     primaryColor: AppColors.primaryColorDark,
     scaffoldBackgroundColor: AppColors.backgroundColorDark,
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: AppColors.backgroundColorDark,
+    ),
     cardColor: AppColors.cardColorDark,
     textTheme: const TextTheme(
       bodyLarge: TextStyle(color: AppColors.textColorDark),

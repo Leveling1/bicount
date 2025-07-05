@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
@@ -23,7 +24,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
         //highlightColor: Colors.transparent,
       ),
       child: Container(
-        decoration: BoxDecoration(color: AppColors.backgroundColorDark),
+        height: AppDimens.bottomBarHeight.h,
+        decoration: BoxDecoration(
+          color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+        ),
         padding: const EdgeInsets.symmetric(vertical: AppDimens.paddingSmall),
         child: ClipRRect(
           child: BottomNavigationBar(

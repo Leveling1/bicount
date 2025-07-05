@@ -1,5 +1,5 @@
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/core/widgets/notification_helper.dart';
+import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/features/authentification/presentation/widgets/fields_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

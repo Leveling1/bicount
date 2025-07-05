@@ -8,7 +8,7 @@ class AppDimens {
   static const double borderRadiusMedium = 12.0;
   static const double borderRadiusLarge = 20.0;
   static const double borderRadiusExtraLarge = 28.0;
-  static const double dorderRadiusUltraLarge = 50.0;
+  static const double borderRadiusUltraLarge = 50.0;
   static const double borderRadiusFull = 100.0;
 
   // Padding
@@ -50,6 +50,7 @@ class AppDimens {
   static const double letterSpacingTight = 0.6;
 
   // Heights
+  static const double bottomBarHeight = 88.0;
   static const double appBarHeight = 70.0;
   static const double appBarTabletHeight = 200.0;
   static const double toolBarHeight = 100.0;
@@ -88,6 +89,7 @@ class AppDimens {
   // *** PADDING *** //
 
   // All
+  static const paddingAllSmall = EdgeInsets.all(8);
   static const paddingAllMedium = EdgeInsets.all(16);
   static const paddingAllExtraLarge = EdgeInsets.all(32);
 
