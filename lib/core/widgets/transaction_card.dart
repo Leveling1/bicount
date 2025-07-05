@@ -1,38 +1,46 @@
+import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TransactionCard extends StatelessWidget {
   final String name;
   final String date;
   final String amount;
+  final String type;
+  final String image;
 
   const TransactionCard({
     super.key,
     required this.name,
     required this.date,
     required this.amount,
+    required this.type,
+    required this.image,
   });
 
   @override
   Widget build(BuildContext context) {
+    String sign = type == Constants.expenseType ? '-' : '+';
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).cardColor,
-            width: 0.5, 
-          ),
-        ),
+        color: Colors.transparent,
+        /*border: Border(
+          bottom: BorderSide(color: Theme.of(context).cardColor, width: 0.5),
+        ),*/
       ),
       child: Row(
         children: [
           // Avatar
-          const CircleAvatar(
+          CircleAvatar(
             backgroundColor: Colors.grey,
             radius: 20,
-            child: Icon(Icons.person, color: Colors.white),
+            child: SizedBox(
+              width: 30.w,
+              height: 30.h,
+              child: Image.asset(image),
+            ),
           ),
           const SizedBox(width: 12),
 
@@ -41,14 +49,7 @@ class TransactionCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
+                Text(name, style: Theme.of(context).textTheme.bodyMedium),
                 const SizedBox(height: 4),
                 Text(
                   date,
@@ -60,9 +61,11 @@ class TransactionCard extends StatelessWidget {
 
           // Amount
           Text(
-            '+ $amount',
-            style: const TextStyle(
-              color: AppColors.primaryColorDark,
+            '$sign $amount',
+            style: TextStyle(
+              color: sign == "+"
+                  ? AppColors.primaryColorDark
+                  : AppColors.negativeColorDark,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),

@@ -1,9 +1,8 @@
-import 'package:bicount/core/themes/app_colors.dart';
-import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import '../bloc/transaction_bloc.dart';
 
 class TransactionScreen extends StatefulWidget {
@@ -14,63 +13,237 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
-  final List<Map<String, String>> transactions = [
-    {"name": "Esther Howard", "date": "Sun 22 at 12:48", "amount": "320"},
-    {"name": "Cameron Williamson", "date": "Mon 23 at 09:15", "amount": "150"},
-    {"name": "Savannah Nguyen", "date": "Tue 24 at 18:02", "amount": "470"},
-    {"name": "Ralph Edwards", "date": "Wed 25 at 14:20", "amount": "210"},
-    {"name": "Jenny Wilson", "date": "Thu 26 at 11:42", "amount": "380"},
-    {"name": "Dianne Russell", "date": "Fri 27 at 16:30", "amount": "550"},
-    {"name": "Floyd Miles", "date": "Sat 28 at 20:18", "amount": "120"},
-    {"name": "Bessie Cooper", "date": "Sun 29 at 13:55", "amount": "290"},
-    {"name": "Wade Warren", "date": "Mon 30 at 10:10", "amount": "430"},
-    {"name": "Kristin Watson", "date": "Tue 1 at 08:25", "amount": "215"},
-    {"name": "Guy Hawkins", "date": "Wed 2 at 19:45", "amount": "175"},
-    {"name": "Ronald Richards", "date": "Thu 3 at 15:00", "amount": "340"},
-    {"name": "Courtney Henry", "date": "Fri 4 at 12:12", "amount": "275"},
-    {"name": "Kathryn Murphy", "date": "Sat 5 at 17:33", "amount": "360"},
-    {"name": "Brooklyn Simmons", "date": "Sun 6 at 14:20", "amount": "390"},
-    {"name": "Eleanor Pena", "date": "Mon 7 at 11:08", "amount": "460"},
-    {"name": "Cody Fisher", "date": "Tue 8 at 09:55", "amount": "305"},
-    {"name": "Arlene McCoy", "date": "Wed 9 at 18:44", "amount": "255"},
-    {"name": "Jerome Bell", "date": "Thu 10 at 13:21", "amount": "495"},
-    {"name": "Annette Black", "date": "Fri 11 at 10:37", "amount": "185"},
+  int _selectedIndex = 0;
+  void _onItemTapped(int index) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    });
+  }
+
+  final List<Map<String, dynamic>> transactions = [
+    {
+      "name": "Esther Howard",
+      "datetime": DateTime(2024, 6, 22, 12, 48),
+      "amount": 320,
+      "type": "income",
+      "image": "assets/memoji/memoji_1.png",
+    },
+    {
+      "name": "Cameron Williamson",
+      "datetime": DateTime(2024, 6, 22, 9, 15),
+      "amount": 150,
+      "type": "expense",
+      "image": "assets/memoji/memoji_2.png",
+    },
+    {
+      "name": "Savannah Nguyen",
+      "datetime": DateTime(2024, 6, 24, 18, 2),
+      "amount": 470,
+      "type": "income",
+      "image": "assets/memoji/memoji_3.png",
+    },
+    {
+      "name": "Ralph Edwards",
+      "datetime": DateTime(2024, 6, 22, 14, 20),
+      "amount": 210,
+      "type": "expense",
+      "image": "assets/memoji/memoji_4.png",
+    },
+    {
+      "name": "Jenny Wilson",
+      "datetime": DateTime(2024, 6, 26, 11, 42),
+      "amount": 380,
+      "type": "income",
+      "image": "assets/memoji/memoji_5.png",
+    },
+    {
+      "name": "Dianne Russell",
+      "datetime": DateTime(2024, 6, 27, 16, 30),
+      "amount": 550,
+      "type": "expense",
+      "image": "assets/memoji/memoji_6.png",
+    },
+    {
+      "name": "Floyd Miles",
+      "datetime": DateTime(2024, 6, 28, 20, 18),
+      "amount": 120,
+      "type": "income",
+      "image": "assets/memoji/memoji_7.png",
+    },
+    {
+      "name": "Bessie Cooper",
+      "datetime": DateTime(2024, 6, 29, 13, 55),
+      "amount": 290,
+      "type": "expense",
+      "image": "assets/memoji/memoji_1.png",
+    },
+    {
+      "name": "Wade Warren",
+      "datetime": DateTime(2024, 6, 30, 10, 10),
+      "amount": 430,
+      "type": "income",
+      "image": "assets/memoji/memoji_2.png",
+    },
+    {
+      "name": "Kristin Watson",
+      "datetime": DateTime(2024, 7, 1, 8, 25),
+      "amount": 215,
+      "type": "expense",
+      "image": "assets/memoji/memoji_3.png",
+    },
+    {
+      "name": "Guy Hawkins",
+      "datetime": DateTime(2024, 7, 2, 19, 45),
+      "amount": 175,
+      "type": "income",
+      "image": "assets/memoji/memoji_4.png",
+    },
+    {
+      "name": "Ronald Richards",
+      "datetime": DateTime(2024, 7, 3, 15, 0),
+      "amount": 340,
+      "type": "expense",
+      "image": "assets/memoji/memoji_5.png",
+    },
+    {
+      "name": "Courtney Henry",
+      "datetime": DateTime(2024, 7, 4, 12, 12),
+      "amount": 275,
+      "type": "income",
+      "image": "assets/memoji/memoji_6.png",
+    },
+    {
+      "name": "Kathryn Murphy",
+      "datetime": DateTime(2024, 7, 5, 17, 33),
+      "amount": 360,
+      "type": "expense",
+      "image": "assets/memoji/memoji_7.png",
+    },
+    {
+      "name": "Brooklyn Simmons",
+      "datetime": DateTime(2024, 7, 6, 14, 20),
+      "amount": 390,
+      "type": "income",
+      "image": "assets/memoji/memoji_1.png",
+    },
+    {
+      "name": "Eleanor Pena",
+      "datetime": DateTime(2024, 7, 7, 11, 8),
+      "amount": 460,
+      "type": "expense",
+      "image": "assets/memoji/memoji_2.png",
+    },
+    {
+      "name": "Cody Fisher",
+      "datetime": DateTime(2024, 7, 8, 9, 55),
+      "amount": 305,
+      "type": "income",
+      "image": "assets/memoji/memoji_3.png",
+    },
+    {
+      "name": "Arlene McCoy",
+      "datetime": DateTime(2024, 7, 9, 18, 44),
+      "amount": 255,
+      "type": "expense",
+      "image": "assets/memoji/memoji_4.png",
+    },
+    {
+      "name": "Jerome Bell",
+      "datetime": DateTime(2024, 7, 10, 13, 21),
+      "amount": 495,
+      "type": "income",
+      "image": "assets/memoji/memoji_5.png",
+    },
+    {
+      "name": "Annette Black",
+      "datetime": DateTime(2024, 7, 11, 10, 37),
+      "amount": 185,
+      "type": "expense",
+      "image": "assets/memoji/memoji_6.png",
+    },
   ];
+
+  Map<String, List<Map<String, dynamic>>> groupTransactionsByDate(
+    List<Map<String, dynamic>> transactions,
+  ) {
+    Map<String, List<Map<String, dynamic>>> grouped = {};
+
+    for (var tx in transactions) {
+      final DateTime date = tx['datetime'];
+      final now = DateTime.now();
+
+      String key;
+      if (isSameDate(date, now)) {
+        key = 'Today';
+      } else if (isSameDate(date, now.subtract(Duration(days: 1)))) {
+        key = 'Yesterday';
+      } else {
+        key = "${date.day}/${date.month}/${date.year}";
+      }
+
+      if (!grouped.containsKey(key)) {
+        grouped[key] = [];
+      }
+      grouped[key]!.add(tx);
+    }
+
+    return grouped;
+  }
+
+  bool isSameDate(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.cardColorDark,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: AppColors.cardColorDark,
-        elevation: 0,
-        title: Text(
-          'Transaction',
-          style: TextStyle(
-        color: AppColors.backgroundColorLight,
-        fontSize: AppDimens.textSizeExtraLarge,
-        fontWeight: FontWeight.bold
-          ),
-        ),
-        scrolledUnderElevation: 0, // Empêche le changement de couleur au scroll
-        surfaceTintColor: Colors.transparent, // Garde la couleur de fond inchangée
-      ),
-      body: BlocBuilder<TransactionBloc, TransactionState>(
-        builder: (context, state) {
-          return ListView.builder(
-            itemCount: transactions.length,
-            itemBuilder: (context, index) {
-              final transaction = transactions[index];
-              return TransactionCard(
-                name: transaction["name"]!,
-                date: transaction["date"]!,
-                amount: transaction["amount"]!,
-              );
-            },
-          );
-        },
-      ),
+    final grouped = groupTransactionsByDate(transactions);
+    return BlocBuilder<TransactionBloc, TransactionState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            TransactionFilterChips(
+              selectedIndex: _selectedIndex,
+              onTap: _onItemTapped,
+            ),
+            Expanded(
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(
+                  context,
+                ).copyWith(scrollbars: false),
+                child: ListView(
+                  children: grouped.entries.map((entry) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.key,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        ...entry.value.map(
+                          (tx) => TransactionCard(
+                            name: tx["name"],
+                            date: DateFormat.Hm().format(tx["datetime"]),
+                            amount: tx["amount"].toString(),
+                            type: tx["type"],
+                            image: tx["image"],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

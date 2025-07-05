@@ -1,3 +1,4 @@
 class Constants{
-	//TODO: add constants here
+	static const String expenseType = 'expense';
+  static const String incomesType = 'income';
 }
