@@ -8,6 +8,7 @@ class AppDimens {
   static const double borderRadiusMedium = 12.0;
   static const double borderRadiusLarge = 20.0;
   static const double borderRadiusExtraLarge = 28.0;
+  static const double dorderRadiusUltraLarge = 50.0;
   static const double borderRadiusFull = 100.0;
 
   // Padding
@@ -91,11 +92,17 @@ class AppDimens {
   static const paddingAllExtraLarge = EdgeInsets.all(32);
 
   // Symmetric
-  static const paddingVerticalLargeHorizontalExtraLarge = EdgeInsets.symmetric(vertical: 20, horizontal: 32);
+  static const paddingVerticalLargeHorizontalExtraLarge = EdgeInsets.symmetric(
+    vertical: 20,
+    horizontal: 32,
+  );
   static const paddingHorizontalMedium = EdgeInsets.symmetric(horizontal: 16);
 
   // Only
-  static const paddingTopExtraSmallBottomSmall = EdgeInsets.only(top: 4, bottom: 10);
+  static const paddingTopExtraSmallBottomSmall = EdgeInsets.only(
+    top: 4,
+    bottom: 10,
+  );
   static const paddingTopXXLarge = EdgeInsets.only(top: 30);
   static const paddingTopLarge = EdgeInsets.only(top: 20);
   static const paddingTopMedium = EdgeInsets.only(top: 16);
@@ -106,5 +113,7 @@ class AppDimens {
   static final borderRadiusAllMedium = BorderRadius.circular(12);
 
   // Vertical
-  static final borderRadiusTopExtraLarge = BorderRadius.vertical(top: Radius.circular(25));
+  static final borderRadiusTopExtraLarge = BorderRadius.vertical(
+    top: Radius.circular(25),
+  );
 }
