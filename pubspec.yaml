@@ -16,6 +16,7 @@ dependencies:
   supabase_flutter: ^2.9.1
   toastification: ^3.0.3
   shared_preferences: ^2.5.3
+  flutter_svg: ^2.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -25,3 +26,4 @@ flutter:
   assets:
     - assets/logo/
     - assets/images/
+    - assets/icons/
