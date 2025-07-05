@@ -9,7 +9,7 @@ class AppTheme {
     primaryColor: AppColors.primaryColorLight,
     scaffoldBackgroundColor: AppColors.backgroundColorLight,
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: Colors.grey,
+      backgroundColor: AppColors.surfaceColorLight,
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
