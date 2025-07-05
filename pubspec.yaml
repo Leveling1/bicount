@@ -21,6 +21,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_screenutil: ^5.9.3
+  flutter_svg: ^2.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -31,3 +32,4 @@ flutter:
     - assets/logo/
     - assets/images/
     - assets/memoji/
+    - assets/icons/

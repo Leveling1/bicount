@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
@@ -15,13 +16,16 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<IconData> icons = const [Icons.home, Icons.data_array];
-    List<String> titles = const ['Home', 'Company'];
+    List<String> icons = const [
+      'assets/icons/home.svg',
+      'assets/icons/company.svg',
+      'assets/icons/transaction.svg',
+    ];
+    List<String> titles = const ['Home', 'Company', 'Transaction'];
 
     return Theme(
       data: Theme.of(context).copyWith(
         splashColor: Colors.transparent,
-        //highlightColor: Colors.transparent,
       ),
       child: Container(
         height: AppDimens.bottomBarHeight.h,
@@ -39,8 +43,20 @@ class CustomBottomNavigationBar extends StatelessWidget {
             currentIndex: selectedIndex,
             onTap: onTap,
             items: List.generate(icons.length, (index) {
+              double size = selectedIndex == index ? 30 : 24;
               return BottomNavigationBarItem(
-                icon: Icon(icons[index], size: 24),
+                icon: SvgPicture.asset(
+                  icons[index],
+                  semanticsLabel: titles[index],
+                  width: size,
+                  height: size,
+                  colorFilter: ColorFilter.mode(
+                    selectedIndex == index
+                        ? AppColors.primaryColorDark
+                        : AppColors.inactiveColorDark,
+                    BlendMode.srcIn,
+                  ),
+                ),
                 label: titles[index],
               );
             }),
