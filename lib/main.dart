@@ -4,8 +4,12 @@ import 'package:bicount/core/themes/app_theme.dart';
 import 'package:bicount/features/authentification/data/data_sources/remote_datasource/supabase_authentification.dart';
 import 'package:bicount/features/authentification/data/repositories/authentification_repository_impl.dart';
 import 'package:bicount/features/authentification/presentation/bloc/authentification_bloc.dart';
+import 'package:bicount/features/company/data/repositories/company_repository_impl.dart';
+import 'package:bicount/features/company/presentation/bloc/company_bloc.dart';
 import 'package:bicount/features/home/data/repositories/home_repository_impl.dart';
 import 'package:bicount/features/home/presentation/bloc/home_bloc.dart';
+import 'package:bicount/features/transaction/data/repositories/transaction_repository_impl.dart';
+import 'package:bicount/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -36,6 +40,12 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<HomeRepositoryImpl>(
           create: (_) => HomeRepositoryImpl(),
         ),
+        RepositoryProvider<CompanyRepositoryImpl>(
+          create: (_) => CompanyRepositoryImpl(),
+        ),
+        RepositoryProvider<TransactionRepositoryImpl>(
+          create: (_) => TransactionRepositoryImpl(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -46,6 +56,8 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider<HomeBloc>(create: (context) => HomeBloc()),
+          BlocProvider<CompanyBloc>(create: (context) => CompanyBloc()),
+          BlocProvider<TransactionBloc>(create: (context) => TransactionBloc()),
         ],
         child: ToastificationWrapper(
           child: MaterialApp.router(

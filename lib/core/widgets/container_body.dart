@@ -9,6 +9,8 @@ class ContainerBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(bottom: AppDimens.marginExtraSmall),
+      padding: EdgeInsets.only(left: AppDimens.paddingLarge, right: AppDimens.paddingLarge, bottom: AppDimens.paddingSmall),
       decoration: BoxDecoration(
         color: AppColors.cardColorDark,
         borderRadius: const BorderRadius.only(
