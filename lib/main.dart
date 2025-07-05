@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       providers: [
         RepositoryProvider<AuthentificationRepositoryImpl>(
           create: (_) => AuthentificationRepositoryImpl(
-            SupabseAuthentification(Supabase.instance.client),
+            SupabaseAuthentification(Supabase.instance.client),
           ),
         ),
         RepositoryProvider<HomeRepositoryImpl>(

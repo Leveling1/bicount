@@ -3,11 +3,11 @@ import 'package:bicount/features/authentification/domain/entities/user.dart'
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bicount/features/authentification/data/models/user_model.dart';
 import 'package:bicount/features/authentification/data/data_sources/remote_datasource/authentification_remote_datasource.dart';
-class SupabseAuthentification
-    implements AuthenticationRemoteDataSource {
+
+class SupabaseAuthentification implements AuthenticationRemoteDataSource {
   final SupabaseClient supabaseClient;
 
-  SupabseAuthentification(this.supabaseClient);
+  SupabaseAuthentification(this.supabaseClient);
 
   @override
   Future<entity.User> signInWithEmailAndPassword(
@@ -19,11 +19,9 @@ class SupabseAuthentification
       password: password,
     );
     if (response.user != null) {
-      return UserModel.fromSupabase(
-        response.user!,
-      ); 
+      return UserModel.fromSupabase(response.user!);
     } else {
-      throw Exception('Sign in failed'); 
+      throw Exception('Sign in failed');
     }
   }
 
