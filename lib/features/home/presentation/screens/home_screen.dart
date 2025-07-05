@@ -1,14 +1,10 @@
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/core/utils/memoji_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
-import 'package:bicount/core/utils/time_format_utils.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/home_bloc.dart';
-import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,13 +15,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.sizeOf(context).height;
@@ -150,10 +139,6 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: _selectedIndex,
-        onTap: _onItemTapped,
       ),
     );
   }
