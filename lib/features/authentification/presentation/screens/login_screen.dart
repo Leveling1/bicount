@@ -12,6 +12,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.sizeOf(context).height;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -26,28 +27,33 @@ class LoginScreen extends StatelessWidget {
           builder: (context, state) {
             return Padding(
               padding: AppDimens.paddingAllMedium,
-              child: Column(
-                children: [
-                  Image.asset(AssetPaths.image_login, height: 250),
-                  FieldsLogin(loading: state is SignInLoading),
-                  Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+              child: SingleChildScrollView(
+                child: SizedBox(
+                  height: height - 2 * AppDimens.paddingAllMedium.vertical,
+                  child: Column(
                     children: [
-                      Text("Don't have an account?"),
-                      TextButton(
-                        onPressed: () {
-                          GoRouter.of(context).go('/signUp');
-                        },
-                        child: Text(
-                          "Sign up",
-                          style: Theme.of(context).textTheme.bodyMedium!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
+                      Image.asset(AssetPaths.image_login, height: 250),
+                      FieldsLogin(loading: state is SignInLoading),
+                      Spacer(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Don't have an account?"),
+                          TextButton(
+                            onPressed: () {
+                              GoRouter.of(context).go('/signUp');
+                            },
+                            child: Text(
+                              "Sign up",
+                              style: Theme.of(context).textTheme.bodyMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             );
           },
