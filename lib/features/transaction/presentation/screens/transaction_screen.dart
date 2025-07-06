@@ -1,4 +1,5 @@
 import 'package:bicount/core/widgets/transaction_card.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_model.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +26,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   final List<Map<String, dynamic>> transactions = [
     {
       "name": "Esther Howard",
-      "datetime": DateTime(2024, 6, 22, 12, 48),
+      "datetime": DateTime.now(),
       "amount": 320,
       "type": "income",
       "image": "assets/memoji/memoji_1.png",
@@ -137,7 +138,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     },
     {
       "name": "Cody Fisher",
-      "datetime": DateTime(2024, 7, 8, 9, 55),
+      "datetime": DateTime.now(),
       "amount": 305,
       "type": "income",
       "image": "assets/memoji/memoji_3.png",
@@ -165,6 +166,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
     },
   ];
 
+  String formatDate(DateTime date) {
+    return DateFormat("dd MMMM yyyy", 'en_EN').format(date);
+  }
+
   Map<String, List<Map<String, dynamic>>> groupTransactionsByDate(
     List<Map<String, dynamic>> transactions,
   ) {
@@ -180,7 +185,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       } else if (isSameDate(date, now.subtract(Duration(days: 1)))) {
         key = 'Yesterday';
       } else {
-        key = "${date.day}/${date.month}/${date.year}";
+        key = formatDate(date);
       }
 
       if (!grouped.containsKey(key)) {
@@ -196,9 +201,19 @@ class _TransactionScreenState extends State<TransactionScreen> {
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
+  final List<String> filters = ['All', 'Income', 'expense', 'Transfer'];
+
   @override
   Widget build(BuildContext context) {
-    final grouped = groupTransactionsByDate(transactions);
+    List<Map<String, dynamic>> filteredTransactions = _selectedIndex == 0
+        ? transactions
+        : transactions
+              .where(
+                (tx) => tx['type'] == filters[_selectedIndex].toLowerCase(),
+              )
+              .toList();
+
+    final grouped = groupTransactionsByDate(filteredTransactions);
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
         return Column(
@@ -206,6 +221,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
             TransactionFilterChips(
               selectedIndex: _selectedIndex,
               onTap: _onItemTapped,
+              filters: filters,
             ),
             Expanded(
               child: ScrollConfiguration(
@@ -225,15 +241,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        ...entry.value.map(
-                          (tx) => TransactionCard(
-                            name: tx["name"],
-                            date: DateFormat.Hm().format(tx["datetime"]),
-                            amount: tx["amount"].toString(),
-                            type: tx["type"],
-                            image: tx["image"],
-                          ),
-                        ),
+                        ...entry.value.map((tx) {
+                          TransactionModel transaction =
+                              TransactionModel.fromJson(tx);
+                          return TransactionCard(transaction: transaction);
+                        }),
                         const SizedBox(height: 16),
                       ],
                     );

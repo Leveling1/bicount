@@ -12,7 +12,7 @@ class ContainerBody extends StatelessWidget {
         margin: EdgeInsets.only(bottom: AppDimens.marginExtraSmall),
       padding: EdgeInsets.only(left: AppDimens.paddingLarge, right: AppDimens.paddingLarge, bottom: AppDimens.paddingSmall),
       decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: Theme.of(context).cardColor,
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(AppDimens.borderRadiusUltraLarge),
             bottomRight: Radius.circular(AppDimens.borderRadiusUltraLarge),

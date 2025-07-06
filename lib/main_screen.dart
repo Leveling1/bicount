@@ -2,6 +2,7 @@ import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
+import 'package:bicount/core/widgets/custom_search_button.dart';
 import 'package:bicount/features/company/presentation/screens/company_screen.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
@@ -56,15 +57,14 @@ class _MainScreenState extends State<MainScreen> {
       ).bottomNavigationBarTheme.backgroundColor,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Theme.of(context).cardColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
         title: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           transitionBuilder: (Widget child, Animation<double> animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
+            return FadeTransition(opacity: animation, child: child);
           },
           child: Text(
             _buildTitle()[_selectedIndex],
@@ -72,8 +72,7 @@ class _MainScreenState extends State<MainScreen> {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
+        actions: [CustomSearchButton(onPressed: () {})],
       ),
       body: ContainerBody(
         child: PageView(
