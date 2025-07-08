@@ -2,7 +2,6 @@ import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
-import 'package:bicount/core/widgets/custom_search_button.dart';
 import 'package:bicount/features/company/presentation/screens/company_screen.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
@@ -72,7 +71,6 @@ class _MainScreenState extends State<MainScreen> {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        actions: [CustomSearchButton(onPressed: () {})],
       ),
       body: ContainerBody(
         child: PageView(

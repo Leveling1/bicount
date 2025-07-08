@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/custom_search_field.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_model.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
@@ -15,6 +16,7 @@ class TransactionScreen extends StatefulWidget {
 
 class _TransactionScreenState extends State<TransactionScreen> {
   int _selectedIndex = 0;
+  TextEditingController _searchController = TextEditingController();
   void _onItemTapped(int index) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
@@ -218,6 +220,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
       builder: (context, state) {
         return Column(
           children: [
+            CustomSearchField(
+              controller: _searchController,
+            ),
             TransactionFilterChips(
               selectedIndex: _selectedIndex,
               onTap: _onItemTapped,
