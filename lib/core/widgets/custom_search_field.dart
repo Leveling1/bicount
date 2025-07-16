@@ -1,33 +1,64 @@
-import 'package:bicount/core/widgets/custom_text_field.dart';
+import 'package:bicount/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomSearchField extends StatefulWidget {
-  final TextEditingController controller;
+  final ValueChanged<String>? onChanged;
 
-  const CustomSearchField({super.key, required this.controller});
+  const CustomSearchField({super.key, this.onChanged});
 
   @override
-  State<CustomSearchField> createState() => _CustomSearchFieldState();
+  _CustomSearchFieldState createState() => _CustomSearchFieldState();
 }
 
 class _CustomSearchFieldState extends State<CustomSearchField> {
+  final TextEditingController _controller = TextEditingController();
+
+  void _clearText() {
+    _controller.clear();
+    widget.onChanged?.call('');
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      setState(() {});
+      widget.onChanged?.call(_controller.text);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.centerRight,
-      children: [
-        CustomTextField(
-          title: '', // tu peux masquer le titre si tu veux
-          label: 'Search',
-          textController: widget.controller,
-          type: CustomTextFieldType.name,
+    return SizedBox(
+      height: 50,
+      child: TextFormField(
+        controller: _controller,
+        textAlign: TextAlign.start,
+        keyboardType: TextInputType.text,
+        textInputAction: TextInputAction.next,
+        decoration: InputDecoration(
+          hintText: "Search",
+          hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
+            color: AppColors.inactiveColorDark,
+          ),
+          prefixIcon: const Icon(Icons.search),
+          suffixIcon: _controller.text.isNotEmpty
+              ? IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: _clearText,
+          ) : null,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.inactiveColorDark),
+          ),
         ),
-        const Padding(
-          padding: EdgeInsets.only(right: 12),
-          child: Icon(Icons.search, color: Colors.grey),
-        ),
-      ],
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

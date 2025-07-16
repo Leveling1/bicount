@@ -8,6 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../features/transaction/domain/entities/transaction_model.dart';
+import '../../features/transaction/presentation/screens/detail_transaction_screen.dart';
+
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class AppRouter {
@@ -25,6 +28,13 @@ class AppRouter {
         path: '/signUp',
         builder: (context, state) {
           return SignUpScreen();
+        },
+      ),
+      GoRoute(
+        path: '/transactionDetail',
+        builder: (context, state) {
+          final transaction = state.extra as TransactionModel;
+          return DetailTransactionScreen(transaction: transaction);
         },
       ),
     ],
