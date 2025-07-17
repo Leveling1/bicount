@@ -25,7 +25,7 @@ class TransactionCard extends StatelessWidget {
           children: [
             // Avatar
             CircleAvatar(
-              backgroundColor: Colors.grey,
+              backgroundColor: Theme.of(context).cardColor,
               radius: 20,
               child: SizedBox(
                 width: 30.w,

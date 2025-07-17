@@ -35,7 +35,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
             height: 24,
             child: SvgPicture.asset(
               'assets/icons/back_icon.svg',
-              colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(AppColors.backgroundColorDark, BlendMode.srcIn),
             ),
           ),
         ),

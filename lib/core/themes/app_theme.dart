@@ -71,7 +71,7 @@ class AppTheme {
     primaryColor: AppColors.primaryColorDark,
     scaffoldBackgroundColor: AppColors.backgroundColorDark,
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: AppColors.backgroundColorDark,
+      backgroundColor: Colors.black,//AppColors.backgroundColorDark,
     ),
     cardColor: AppColors.cardColorDark,
     textTheme: const TextTheme(

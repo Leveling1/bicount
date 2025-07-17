@@ -32,9 +32,24 @@ class AppRouter {
       ),
       GoRoute(
         path: '/transactionDetail',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final transaction = state.extra as TransactionModel;
-          return DetailTransactionScreen(transaction: transaction);
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: DetailTransactionScreen(transaction: transaction),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              // Slide from right → left
+              final tween = Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).chain(CurveTween(curve: Curves.easeInOut));
+
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+          );
         },
       ),
     ],

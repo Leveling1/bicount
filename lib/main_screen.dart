@@ -56,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
       ).bottomNavigationBarTheme.backgroundColor,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Theme.of(context).cardColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,

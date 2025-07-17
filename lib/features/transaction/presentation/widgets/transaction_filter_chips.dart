@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/themes/app_colors.dart';
+
 class TransactionFilterChips extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onTap;
@@ -33,9 +35,8 @@ class TransactionFilterChips extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isSelected
                       ? Theme.of(context).primaryColor
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.grey.shade300),
+                      : Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 child: Text(
                   filters[index],
