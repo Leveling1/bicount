@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
             builder: (context, child) => MaterialApp.router(
               title: 'Bicount',
               debugShowCheckedModeBanner: false,
-              theme: AppTheme.lightTheme,
+              theme: AppTheme.darkTheme,
               routerConfig: AppRouter().router,
               localizationsDelegates: [
                 GlobalMaterialLocalizations.delegate,
