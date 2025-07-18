@@ -1,5 +1,14 @@
-import 'package:dartz/dartz.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_model.dart';
+
+import '../../../../core/services/supabaseService.dart';
 
 abstract class TransactionRepository {
-  // Add your repository interface here
+  final TransactionModel transaction;
+  CRUD crud = CRUD(table: 'transactions');
+
+  TransactionRepository(this.transaction, this.crud);
+
+  void addTransaction() {
+    crud.create(transaction);
+  }
 }

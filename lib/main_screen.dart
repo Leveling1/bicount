@@ -44,11 +44,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   List<Widget> _buildScreens() {
-    return [HomeScreen(), CompanyScreen(), TransactionScreen()];
+    return [HomeScreen(), CompanyScreen(), TransactionScreen(), Container()];
   }
 
   List<String> _buildTitle() {
-    return ['', 'Company', 'Transaction'];
+    return ['', 'Company', 'Transaction', 'Settings'];
   }
 
   @override

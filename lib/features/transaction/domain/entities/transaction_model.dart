@@ -1,25 +1,25 @@
 class TransactionModel {
-  final String id;
+  final String? id;
   final String name;
   final String type;
   final DateTime date;
   final DateTime createdAt;
   final double amount;
-  final String image;
-  final String frequency;
+  final String? image;
+  final String? frequency;
   final String sender;
   final String beneficiary;
   final String note;
 
   const TransactionModel({
-    required this.id,
+    this.id,
     required this.name,
     required this.type,
     required this.date,
     required this.createdAt,
     required this.amount,
-    required this.image,
-    required this.frequency,
+    this.image,
+    this.frequency,
     required this.sender,
     required this.beneficiary,
     required this.note,

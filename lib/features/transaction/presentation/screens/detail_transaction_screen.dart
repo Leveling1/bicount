@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
+
 import '../../../../core/constants/constants.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
@@ -12,10 +11,12 @@ import '../widgets/details_card.dart';
 
 class DetailTransactionScreen extends StatefulWidget {
   final TransactionModel transaction;
+
   const DetailTransactionScreen({super.key, required this.transaction});
 
   @override
-  State<DetailTransactionScreen> createState() => _DetailTransactionScreenState();
+  State<DetailTransactionScreen> createState() =>
+      _DetailTransactionScreenState();
 }
 
 class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
@@ -30,7 +31,6 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     String formattedDate = formatedDate(data.date);
     String formattedTime = formatedTime(data.date);
     String formattedCreatedDateTime = formatedDateTime(data.createdAt);
@@ -50,7 +50,10 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
             height: 24,
             child: SvgPicture.asset(
               'assets/icons/back_icon.svg',
-              colorFilter: ColorFilter.mode(Theme.of(context).iconTheme.color!, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).iconTheme.color!,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),
@@ -61,12 +64,15 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
               Icons.edit,
               color: Theme.of(context).iconTheme.color,
               size: size,
-            )
-          )
+            ),
+          ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.only(left: AppDimens.paddingLarge, right: AppDimens.paddingLarge),
+        padding: EdgeInsets.only(
+          left: AppDimens.paddingLarge,
+          right: AppDimens.paddingLarge,
+        ),
         child: SingleChildScrollView(
           child: Center(
             child: Column(
@@ -79,7 +85,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                   child: SizedBox(
                     width: 50.w,
                     height: 50.h,
-                    child: Image.asset(data.image),
+                    child: Image.asset(data.image!),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -100,93 +106,71 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                 DetailsCard(
                   child: Column(
                     children: [
+                      RowDetail(title: 'Date', content: formattedDate),
+                      const SizedBox(height: 8),
+                      RowDetail(title: 'Time', content: formattedTime),
+                    ],
+                  ),
+                ),
+                DetailsCard(
+                  child: Column(
+                    children: [
                       RowDetail(
-                        title: 'Date',
-                        content: formattedDate,
+                        title: 'Amount',
+                        content: '$sign ${data.amount}',
                       ),
+                    ],
+                  ),
+                ),
+                DetailsCard(
+                  child: Column(
+                    children: [
+                      RowDetail(title: 'Sender', content: data.sender),
                       const SizedBox(height: 8),
                       RowDetail(
-                        title: 'Time',
-                        content: formattedTime,
-                      )
+                        title: 'Beneficiary',
+                        content: data.beneficiary,
+                      ),
                     ],
-                  )
+                  ),
                 ),
                 DetailsCard(
-                    child: Column(
-                      children: [
-                        RowDetail(
-                          title: 'Amount',
-                          content: '$sign ${data.amount}',
-                        )
-                      ],
-                    )
+                  child: Column(
+                    children: [
+                      RowDetail(title: 'Frequency', content: data.frequency!),
+                      const SizedBox(height: 8),
+                      RowDetail(
+                        title: 'Created at',
+                        content: formattedCreatedDateTime,
+                      ),
+                      const SizedBox(height: 8),
+                      RowDetail(title: 'Note', content: data.beneficiary),
+                    ],
+                  ),
                 ),
-                DetailsCard(
-                    child: Column(
-                      children: [
-                        RowDetail(
-                          title: 'Sender',
-                          content: data.sender,
-                        ),
-                        const SizedBox(height: 8),
-                        RowDetail(
-                          title: 'Beneficiary',
-                          content: data.beneficiary,
-                        )
-                      ],
-                    )
-                ),
-                DetailsCard(
-                    child: Column(
-                      children: [
-                        RowDetail(
-                          title: 'Frequency',
-                          content: data.frequency,
-                        ),
-                        const SizedBox(height: 8),
-                        RowDetail(
-                          title: 'Created at',
-                          content: formattedCreatedDateTime,
-                        ),
-                        const SizedBox(height: 8),
-                        RowDetail(
-                          title: 'Note',
-                          content: data.beneficiary,
-                        )
-                      ],
-                    )
-                )
-              ]
+              ],
             ),
-          )
+          ),
         ),
       ),
     );
   }
 }
 
-
 class RowDetail extends StatelessWidget {
   final String title;
   final String content;
+
   const RowDetail({super.key, required this.title, required this.content});
 
   @override
   Widget build(BuildContext context) {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          Text(
-            content,
-            style: Theme.of(context).textTheme.bodyMedium,
-          )
-        ]
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: Theme.of(context).textTheme.bodyMedium),
+        Text(content, style: Theme.of(context).textTheme.bodyMedium),
+      ],
     );
   }
 }
-
