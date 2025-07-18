@@ -33,7 +33,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
   Widget build(BuildContext context) {
     String formattedDate = formatedDate(data.date);
     String formattedTime = formatedTime(data.date);
-    String formattedCreatedDateTime = formatedDateTime(data.createdAt);
+    String formattedCreatedDateTime = formatedDateTime(data.createdAt!);
     String sign = data.type == Constants.expenseType ? '-' : '+';
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -94,7 +94,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
                 Text(
-                  data.type,
+                  data.type.name,
                   style: TextStyle(
                     color: sign == "+"
                         ? AppColors.primaryColorDark
@@ -137,7 +137,10 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                 DetailsCard(
                   child: Column(
                     children: [
-                      RowDetail(title: 'Frequency', content: data.frequency!),
+                      RowDetail(
+                        title: 'Frequency',
+                        content: data.frequency!.name,
+                      ),
                       const SizedBox(height: 8),
                       RowDetail(
                         title: 'Created at',

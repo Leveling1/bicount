@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -19,16 +19,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
     List<String> icons = const [
       'assets/icons/home.svg',
       'assets/icons/company.svg',
-      //'assets/icons/add.svg',
       'assets/icons/transaction.svg',
-      'assets/icons/user.svg',
+      'assets/icons/custom_user_iconcustom_user_icon.svg',
     ];
-    List<String> titles = const ['Home', 'Company', /*'add',*/ 'Transaction', 'Profile'];
+    List<String> titles = const ['Home', 'Company', 'Transaction', 'Profile'];
 
     return Theme(
-      data: Theme.of(context).copyWith(
-        splashColor: Colors.transparent,
-      ),
+      data: Theme.of(context).copyWith(splashColor: Colors.transparent),
       child: Container(
         height: AppDimens.bottomBarHeight.h,
         decoration: BoxDecoration(

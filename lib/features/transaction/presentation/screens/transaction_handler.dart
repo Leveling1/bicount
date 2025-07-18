@@ -2,6 +2,7 @@ import 'package:bicount/features/transaction/domain/entities/transaction_model.d
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/widgets/custom_amount_field.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_form_text_field.dart';
 import '../bloc/transaction_bloc.dart';
@@ -19,6 +20,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
       _type = TextEditingController(),
       _date = TextEditingController(),
       _amount = TextEditingController(),
+      _currency = TextEditingController(),
       _sender = TextEditingController(),
       _beneficiary = TextEditingController(),
       _note = TextEditingController();
@@ -26,7 +28,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
 
   late SegmentedControlController _segmentedType;
 
-  var _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -45,21 +47,20 @@ class _TransactionHandlerState extends State<TransactionHandler> {
 
   void _onSegmentChanged() {
     _type.text = _segmentedType.selectedValue;
-    // Ici vous pouvez ajouter votre logique métier
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TransactionBloc, TransactionState>(
+    return BlocConsumer<TransactionBloc, TransactionState>(
       listener: (context, state) {
-        if (state is TransactionSuccess) {
+        if (state is TransactionCreated) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
-        } else if (state is TransactionFailure) {
+          ).showSnackBar(SnackBar(content: Text(state.toString())));
+        } else if (state is TransactionError) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+          ).showSnackBar(SnackBar(content: Text(state.failure.message)));
         }
       },
       builder: (context, state) {
@@ -72,7 +73,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
               const SizedBox(height: 16),
-              SegmentedControlWidget(controller: _type),
+              SegmentedControlWidget(controller: _segmentedType),
               const SizedBox(height: 16),
               CustomFormTextField(
                 //widget.textController,
@@ -86,11 +87,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
                 onChanged: (value) => _date.text = value,
               ),
               const SizedBox(height: 16),
-              CustomFormTextField(
-                hintText: 'Enter amount',
-                inputType: TextInputType.number,
-                onChanged: (value) => _amount.text = value,
-              ),
+              CustomAmountField(amount: _amount, currency: _currency),
               const SizedBox(height: 16),
               CustomFormTextField(
                 hintText: 'Enter sender name',
@@ -125,10 +122,10 @@ class _TransactionHandlerState extends State<TransactionHandler> {
     if (_formKey.currentState?.validate() ?? false) {
       final transaction = TransactionModel(
         name: _name.text,
-        type: _type.text,
-        date: date,
-        createdAt: DateTime.now(),
+        type: TransactionType.values.firstWhere((e) => e.name == _type.text),
+        date: DateTime.now(),
         amount: double.parse(_amount.text),
+        currency: Currency.values.firstWhere((e) => e.name == 'EUR'),
         sender: _sender.text,
         beneficiary: _beneficiary.text,
         note: _note.text,

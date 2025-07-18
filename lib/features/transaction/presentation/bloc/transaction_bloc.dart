@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/errors/failure.dart';
 import '../../domain/entities/transaction_model.dart';
 import '../../domain/repositories/transaction_repository.dart';
 
@@ -13,10 +14,20 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<CreateTransactionEvent>((event, emit) async {
       emit(TransactionLoading());
       try {
-        repository.addTransaction();
-        emit(TransactionSuccess());
+        await repository.createTransaction(event.transaction);
+        emit(TransactionCreated());
+        add(GetAllTransactionsRequested());
       } catch (e) {
-        emit(TransactionFailure(e is Failure ? e : UnknownFailure()));
+        emit(TransactionError(e is Failure ? e : UnknownFailure()));
+      }
+    });
+    on<GetAllTransactionsRequested>((event, emit) async {
+      emit(TransactionLoading());
+      try {
+        final transactions = await repository.getAllTransactions();
+        emit(TransactionLoaded(transactions));
+      } catch (e) {
+        emit(TransactionError(e is Failure ? e : UnknownFailure()));
       }
     });
   }

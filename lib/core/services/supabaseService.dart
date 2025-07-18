@@ -35,9 +35,10 @@ class CRUD {
   /// ```dart
   /// await userCRUD.create({'name': 'John', 'email': 'john@example.com'});
   /// ```
-  Future<void> create(data) async {
+  Future<void> create(dynamic data) async {
     try {
-      final response = await database.insert(data);
+      final jsonData = data.toJson();
+      final response = await database.insert(jsonData);
       if (response != null) {
         print('Data created successfully: $response');
       } else {
