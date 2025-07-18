@@ -44,7 +44,10 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
           hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
                 color: AppColors.inactiveColorDark,
               ),
-          prefixIcon: const Icon(Icons.search),
+          prefixIcon: Icon(
+            Icons.search,
+            color: Theme.of(context).iconTheme.color,
+          ),
           suffixIcon: _controller.text.isNotEmpty
               ? IconButton(
                   icon: const Icon(Icons.clear),

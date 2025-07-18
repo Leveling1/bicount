@@ -10,6 +10,7 @@ class DetailsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       margin: EdgeInsets.only(top: AppDimens.marginMedium),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,

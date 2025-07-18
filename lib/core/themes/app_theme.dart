@@ -8,9 +8,13 @@ class AppTheme {
     brightness: Brightness.light,
     primaryColor: AppColors.primaryColorLight,
     scaffoldBackgroundColor: AppColors.backgroundColorLight,
+    iconTheme: const IconThemeData(
+      color: AppColors.inactiveColorLight,
+    ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AppColors.surfaceColorLight,
     ),
+
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         textStyle: WidgetStatePropertyAll(TextStyle(color: Colors.black)),
@@ -50,11 +54,11 @@ class AppTheme {
       ),
       headlineMedium: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeExtraLarge.sp,
+        fontSize: AppDimens.textSizeLarge.sp,
       ),
       headlineLarge: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeLarge.sp,
+        fontSize: AppDimens.textSizeExtraLarge.sp,
       ),
     ),
     colorScheme: ColorScheme.light(
@@ -70,6 +74,9 @@ class AppTheme {
     brightness: Brightness.dark,
     primaryColor: AppColors.primaryColorDark,
     scaffoldBackgroundColor: AppColors.backgroundColorDark,
+    iconTheme: const IconThemeData(
+      color: AppColors.inactiveColorDark,
+    ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.black,//AppColors.backgroundColorDark,
     ),

@@ -256,10 +256,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       children: [
                         Text(
                           entry.key,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(height: 8),
                         ...entry.value.map((tx) {

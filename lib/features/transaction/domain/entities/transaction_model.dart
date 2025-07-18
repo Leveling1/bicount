@@ -7,7 +7,9 @@ class TransactionModel {
   final double amount;
   final String image;
   final String frequency;
-  final String assignees;
+  final String sender;
+  final String beneficiary;
+  final String note;
 
   const TransactionModel({
     required this.id,
@@ -18,7 +20,9 @@ class TransactionModel {
     required this.amount,
     required this.image,
     required this.frequency,
-    required this.assignees,
+    required this.sender,
+    required this.beneficiary,
+    required this.note,
   });
 
   factory TransactionModel.fromJson(Map<String, dynamic> data) {
@@ -35,7 +39,9 @@ class TransactionModel {
       amount: data["amount"] ?? '',
       image: data["image"] ?? '',
       frequency: data["frequency"] ?? '',
-      assignees: data["assignees"] ?? '',
+      sender: data["sender"] ?? '',
+      beneficiary: data["beneficiary"] ?? '',
+      note: data["note"] ?? '',
     );
   }
 }
