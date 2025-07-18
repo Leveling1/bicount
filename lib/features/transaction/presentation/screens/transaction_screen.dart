@@ -5,6 +5,7 @@ import 'package:bicount/features/transaction/presentation/widgets/transaction_fi
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/themes/app_dimens.dart';
 import '../bloc/transaction_bloc.dart';
 
 class TransactionScreen extends StatefulWidget {
@@ -230,48 +231,55 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final grouped = groupTransactionsByDate(filteredTransactions);
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
-        return Column(
-          children: [
-            CustomSearchField(
-              onChanged: (value) {
-                setState(() {
-                  _searchController.text = value;
-                });
-              },
-            ),
-            TransactionFilterChips(
-              selectedIndex: _selectedIndex,
-              onTap: _onItemTapped,
-              filters: filters,
-            ),
-            Expanded(
-              child: ScrollConfiguration(
-                behavior: ScrollConfiguration.of(
-                  context,
-                ).copyWith(scrollbars: false),
-                child: ListView(
-                  children: grouped.entries.map((entry) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          entry.key,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 8),
-                        ...entry.value.map((tx) {
-                          TransactionModel transaction =
-                              TransactionModel.fromJson(tx);
-                          return TransactionCard(transaction: transaction);
-                        }),
-                        const SizedBox(height: 16),
-                      ],
-                    );
-                  }).toList(),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingLarge/2),
+          child: Column(
+            children: [
+              CustomSearchField(
+                onChanged: (value) {
+                  setState(() {
+                    _searchController.text = value;
+                  });
+                },
+              ),
+              TransactionFilterChips(
+                selectedIndex: _selectedIndex,
+                onTap: _onItemTapped,
+                filters: filters,
+              ),
+              filteredTransactions.isNotEmpty ? Expanded(
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(
+                    context,
+                  ).copyWith(scrollbars: false),
+                  child: ListView(
+                    children: grouped.entries.map((entry) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            entry.key,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          ...entry.value.map((tx) {
+                            TransactionModel transaction =
+                                TransactionModel.fromJson(tx);
+                            return TransactionCard(transaction: transaction);
+                          }),
+                          const SizedBox(height: 16),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ) : Expanded(
+                child: const Center(
+                  child: Text('No transactions found'),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
