@@ -8,6 +8,9 @@ import 'package:bicount/features/transaction/presentation/screens/transaction_sc
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'core/widgets/custom_bottom_sheet.dart';
+import 'features/transaction/presentation/screens/transaction_handler.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -87,6 +90,34 @@ class _MainScreenState extends State<MainScreen> {
         selectedIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
+      floatingActionButton: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return ScaleTransition(
+            scale: animation,
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        child: _selectedIndex != 0 && _selectedIndex != 3
+            ? FloatingActionButton(
+                key: const ValueKey('fab'),
+                onPressed: () {
+                  showCustomBottomSheet(
+                    context: context,
+                    child: const TransactionHandler(),
+                  );
+                },
+                child: Icon(
+                  Icons.add,
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
+              )
+            : const SizedBox.shrink(key: ValueKey('sizedBox')),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

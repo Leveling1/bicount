@@ -19,9 +19,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
     List<String> icons = const [
       'assets/icons/home.svg',
       'assets/icons/company.svg',
+      //'assets/icons/add.svg',
       'assets/icons/transaction.svg',
+      'assets/icons/user.svg',
     ];
-    List<String> titles = const ['Home', 'Company', 'Transaction'];
+    List<String> titles = const ['Home', 'Company', /*'add',*/ 'Transaction', 'Profile'];
 
     return Theme(
       data: Theme.of(context).copyWith(
@@ -43,7 +45,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             currentIndex: selectedIndex,
             onTap: onTap,
             items: List.generate(icons.length, (index) {
-              double size = selectedIndex == index ? 30 : 24;
+              double size = selectedIndex == index ? 24 : 20;
               return BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   icons[index],

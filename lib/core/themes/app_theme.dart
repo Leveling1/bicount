@@ -33,6 +33,7 @@ class AppTheme {
       titleLarge: TextStyle(
         color: AppColors.textColorLight,
         fontSize: AppDimens.textSizeXXLarge.sp,
+        fontWeight: FontWeight.bold,
       ),
 
       bodySmall: TextStyle(
@@ -58,7 +59,8 @@ class AppTheme {
       ),
       headlineLarge: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeExtraLarge.sp,
+        fontSize: AppDimens.textSizeXXLarge.sp,
+        fontWeight: FontWeight.bold,
       ),
     ),
     colorScheme: ColorScheme.light(
