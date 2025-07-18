@@ -8,8 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../features/company/domain/entities/company_model.dart';
+import '../../features/company/presentation/screens/detail_company_screen.dart';
 import '../../features/transaction/domain/entities/transaction_model.dart';
 import '../../features/transaction/presentation/screens/detail_transaction_screen.dart';
+import '../utils/custom_transition.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -34,21 +37,23 @@ class AppRouter {
         path: '/transactionDetail',
         pageBuilder: (context, state) {
           final transaction = state.extra as TransactionModel;
-          return CustomTransitionPage(
-            key: state.pageKey,
-            child: DetailTransactionScreen(transaction: transaction),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              // Slide from right → left
-              final tween = Tween<Offset>(
-                begin: const Offset(1, 0),
-                end: Offset.zero,
-              ).chain(CurveTween(curve: Curves.easeInOut));
+          return buildCustomTransitionPage(
+              childContain: DetailTransactionScreen(transaction: transaction),
+              state: state,
+              model: TransactionModel
+          );
+        },
+      ),
 
-              return SlideTransition(
-                position: animation.drive(tween),
-                child: child,
-              );
-            },
+      GoRoute(
+        path: '/companyDetail',
+        pageBuilder: (context, state) {
+          final company = state.extra as CompanyModel;
+          return buildCustomTransitionPage(
+            childContain: DetailCompanyScreen(
+              company: company),
+              state: state,
+              model: CompanyModel
           );
         },
       ),

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
+import '../../../../core/utils/date_format_utils.dart';
 import '../../domain/entities/transaction_model.dart';
 import '../widgets/details_card.dart';
 
@@ -30,9 +31,9 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
   @override
   Widget build(BuildContext context) {
 
-    String formattedDate = DateFormat('EEEE, dd MMMM yyyy').format(data.date);
-    String formattedTime = DateFormat('HH:mm').format(data.date);
-    String formattedCreatedDateTime = DateFormat('EEEE, dd MMMM yyyy - HH:mm').format(data.createdAt);
+    String formattedDate = formatedDate(data.date);
+    String formattedTime = formatedTime(data.date);
+    String formattedCreatedDateTime = formatedDateTime(data.createdAt);
     String sign = data.type == Constants.expenseType ? '-' : '+';
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

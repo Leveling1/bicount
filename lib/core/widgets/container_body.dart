@@ -9,8 +9,8 @@ class ContainerBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        margin: EdgeInsets.only(bottom: AppDimens.marginExtraSmall),
-      padding: EdgeInsets.only(left: AppDimens.paddingLarge/2, right: AppDimens.paddingLarge/2, bottom: AppDimens.paddingSmall),
+      margin: EdgeInsets.only(bottom: AppDimens.marginExtraSmall),
+      padding: EdgeInsets.only(left: AppDimens.paddingLarge, right: AppDimens.paddingLarge, bottom: AppDimens.paddingSmall),
       decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: const BorderRadius.only(
