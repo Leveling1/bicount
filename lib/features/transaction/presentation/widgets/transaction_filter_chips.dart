@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/themes/app_colors.dart';
+
 class TransactionFilterChips extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onTap;
+  final List<String> filters;
+
   const TransactionFilterChips({
     super.key,
     required this.selectedIndex,
     required this.onTap,
+    required this.filters,
   });
 
   @override
   Widget build(BuildContext context) {
-    final List<String> filters = [
-      'All',
-      'Income',
-      'Sent',
-      'Request',
-      'Transfer',
-    ];
-
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -36,9 +33,10 @@ class TransactionFilterChips extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFFD9F877) : Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.grey.shade300),
+                  color: isSelected
+                      ? Theme.of(context).primaryColor
+                      : Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 child: Text(
                   filters[index],

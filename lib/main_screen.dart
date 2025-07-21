@@ -58,13 +58,12 @@ class _MainScreenState extends State<MainScreen> {
         centerTitle: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
         title: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           transitionBuilder: (Widget child, Animation<double> animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
+            return FadeTransition(opacity: animation, child: child);
           },
           child: Text(
             _buildTitle()[_selectedIndex],
@@ -72,8 +71,6 @@ class _MainScreenState extends State<MainScreen> {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
       ),
       body: ContainerBody(
         child: PageView(
