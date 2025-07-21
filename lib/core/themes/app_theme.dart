@@ -13,7 +13,38 @@ class AppTheme {
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-        textStyle: WidgetStatePropertyAll(TextStyle(color: Colors.black)),
+        textStyle: WidgetStatePropertyAll(
+          TextStyle(color: AppColors.surfaceColorLight),
+        ),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>((
+          Set<WidgetState> states,
+        ) {
+          if (states.contains(WidgetState.pressed)) {
+            return Colors.grey[300]!; // light grey when pressed
+          } else if (states.contains(WidgetState.hovered)) {
+            return const Color.fromARGB(255, 208, 208, 208);
+          }
+          return AppColors.surfaceColorLight;
+        }),
+        elevation: WidgetStateProperty.resolveWith<double>((states) => 0.0),
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+          ),
+        ),
+        foregroundColor: WidgetStateProperty.all<Color>(
+          AppColors.textColorDark,
+        ),
+        textStyle: WidgetStateProperty.all<TextStyle>(
+          TextStyle(
+            color: AppColors.textColorDark,
+            fontSize: AppDimens.textSizeMedium.sp,
+          ),
+        ),
       ),
     ),
     cardColor: AppColors.cardColorLight,
@@ -74,28 +105,81 @@ class AppTheme {
       backgroundColor: AppColors.backgroundColorDark,
     ),
     cardColor: AppColors.cardColorDark,
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: AppColors.textColorDark),
-      bodyMedium: TextStyle(color: AppColors.secondaryTextColorDark),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        textStyle: WidgetStatePropertyAll(
+          TextStyle(color: AppColors.surfaceColorDark),
+        ),
+      ),
+    ),
+
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>((
+          Set<WidgetState> states,
+        ) {
+          if (states.contains(WidgetState.pressed)) {
+            return Colors.grey[800]!; // darker grey when pressed
+          } else if (states.contains(WidgetState.hovered)) {
+            return Colors.grey[700]!; // dark grey when hovered
+          }
+          return AppColors.surfaceColorDark;
+        }),
+        elevation: WidgetStateProperty.resolveWith<double>((states) => 0.0),
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+          ),
+        ),
+        foregroundColor: WidgetStateProperty.all<Color>(
+          AppColors.textColorLight,
+        ),
+        textStyle: WidgetStateProperty.all<TextStyle>(
+          TextStyle(
+            color: AppColors.textColorLight,
+            fontSize: AppDimens.textSizeMedium.sp,
+          ),
+        ),
+      ),
+    ),
+    textTheme: TextTheme(
       titleSmall: TextStyle(
-        color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeMedium,
+        color: AppColors.secondaryTextColorLight,
+        fontSize: AppDimens.textSizeMedium.sp,
+      ),
+      titleMedium: TextStyle(
+        color: AppColors.textColorLight,
+        fontSize: AppDimens.textSizeLarge.sp,
       ),
       titleLarge: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeLarge,
+        fontSize: AppDimens.textSizeXXLarge.sp,
       ),
+
+      bodySmall: TextStyle(
+        color: AppColors.secondaryTextColorLight,
+        fontSize: AppDimens.textSizeSmall.sp,
+      ),
+      bodyLarge: TextStyle(
+        color: AppColors.textColorDark,
+        fontSize: AppDimens.textSizeLarge.sp,
+      ),
+      bodyMedium: TextStyle(
+        color: Colors.white,
+        fontSize: AppDimens.textSizeMedium.sp,
+      ),
+
       headlineSmall: TextStyle(
         color: AppColors.secondaryTextColorDark,
-        fontSize: AppDimens.textSizeSmall,
+        fontSize: AppDimens.textSizeSmall.sp,
       ),
       headlineMedium: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeExtraLarge,
+        fontSize: AppDimens.textSizeExtraLarge.sp,
       ),
       headlineLarge: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeLarge,
+        fontSize: AppDimens.textSizeLarge.sp,
       ),
     ),
     colorScheme: ColorScheme.dark(

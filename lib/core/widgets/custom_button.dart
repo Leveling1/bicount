@@ -21,28 +21,8 @@ class CustomButton extends StatelessWidget {
       height: 50,
       child: ElevatedButton(
         onPressed: loading ? null : onPressed,
-
-        style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.resolveWith<Color>((
-            Set<WidgetState> states,
-          ) {
-            if (states.contains(WidgetState.pressed)) {
-              return Colors.grey[300]!; // light grey when pressed
-            } else if (states.contains(WidgetState.hovered)) {
-              return const Color.fromARGB(255, 208, 208, 208);
-            }
-            return Theme.of(context).colorScheme.surface;
-          }),
-          elevation: WidgetStateProperty.resolveWith<double>((states) => 0.0),
-          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
-            ),
-          ),
-        ),
-        child: loading
-            ? CircularProgressIndicator.adaptive()
-            : Text(text, style: TextStyle(color: Colors.white)),
+        style: Theme.of(context).elevatedButtonTheme.style,
+        child: loading ? CircularProgressIndicator.adaptive() : Text(text),
       ),
     );
   }
