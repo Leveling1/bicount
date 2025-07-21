@@ -8,9 +8,7 @@ class AppTheme {
     brightness: Brightness.light,
     primaryColor: AppColors.primaryColorLight,
     scaffoldBackgroundColor: AppColors.backgroundColorLight,
-    iconTheme: const IconThemeData(
-      color: AppColors.inactiveColorLight,
-    ),
+    iconTheme: const IconThemeData(color: AppColors.inactiveColorLight),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AppColors.surfaceColorLight,
     ),
@@ -105,11 +103,9 @@ class AppTheme {
     brightness: Brightness.dark,
     primaryColor: AppColors.primaryColorDark,
     scaffoldBackgroundColor: AppColors.backgroundColorDark,
-    iconTheme: const IconThemeData(
-      color: AppColors.inactiveColorDark,
-    ),
+    iconTheme: const IconThemeData(color: AppColors.inactiveColorDark),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: Colors.black,//AppColors.backgroundColorDark,
+      backgroundColor: Colors.black, //AppColors.backgroundColorDark,
     ),
     cardColor: AppColors.cardColorDark,
     textButtonTheme: TextButtonThemeData(
@@ -155,7 +151,7 @@ class AppTheme {
         fontSize: AppDimens.textSizeMedium.sp,
       ),
       titleMedium: TextStyle(
-        color: AppColors.textColorLight,
+        color: AppColors.textColorDark,
         fontSize: AppDimens.textSizeLarge.sp,
       ),
       titleLarge: TextStyle(

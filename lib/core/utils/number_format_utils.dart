@@ -7,7 +7,10 @@ class NumberFormatUtils {
     String locale = 'en_US',
     String currencyCode = 'USD',
   }) {
-    final format = NumberFormat.currency(locale: locale, name: currencyCode);
+    final format = NumberFormat.currency(
+      locale: locale,
+      symbol: currencyCode == "USD" ? "\$" : "Fc",
+    );
     return format.format(value);
   }
 
@@ -26,4 +29,3 @@ class NumberFormatUtils {
     return '$sign $formatted';
   }
 }
-

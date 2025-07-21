@@ -24,7 +24,6 @@ class AppColors {
     end: Alignment.bottomRight,
   );
 
-
   /// Light Theme
   static const Color primaryColorLight = Color(0xFF76A646);
   static const Color backgroundColorLight = Color(0xFFF9F9F9);
@@ -36,7 +35,7 @@ class AppColors {
   static const Color negativeColorLight = Color(0xFFF44336);
   static const Color inactiveColorLight = Color(0xFFCCCCCC);
   static const LinearGradient cardLinearGradientLight = LinearGradient(
-    colors: [Colors.white70, Colors.white30],
+    colors: [Color(0XFF1E2028), Color(0XFF2B2E33)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
