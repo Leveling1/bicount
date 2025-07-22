@@ -1,23 +1,21 @@
-import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/memoji_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
-import 'package:bicount/core/utils/time_format_utils.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/home/presentation/widgets/card_type_revenue.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+
 import '../bloc/home_bloc.dart';
-import 'package:bicount/core/widgets/container_body.dart';
 
 typedef CardTapCallback = void Function(int index);
 
 class HomeScreen extends StatefulWidget {
   final CardTapCallback? onCardTap;
+
   const HomeScreen({super.key, this.onCardTap});
 
   @override
@@ -123,17 +121,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             transaction: TransactionModel(
                               id: "01",
                               name: MemojiUtils.defaultMemojis[index % 7].name!,
-                              type: "dépense",
+                              type: TransactionType.income,
                               date: DateTime.now(),
                               createdAt: DateTime.now(),
                               amount: 1250,
                               image: MemojiUtils
                                   .defaultMemojis[index % 7]
                                   .imagePath,
-                              frequency: "month",
+                              frequency: TransactionFrequency.cyclic,
                               sender: "sender",
-                              beneficiary: "beneficiary",
+                              beneficiary: {
+                                "0": "Jean Dupont",
+                                "1": "Alice Mambu",
+                              },
                               note: "note",
+                              currency: Currency.EUR,
                             ),
                           ),
                           Divider(),

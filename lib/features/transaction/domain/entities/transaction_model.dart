@@ -1,25 +1,35 @@
+import 'dart:convert';
+
+enum TransactionType { income, expense, transfer }
+
+enum TransactionFrequency { cyclic, fixe }
+
+enum Currency { USD, EUR, CDF }
+
 class TransactionModel {
-  final String id;
+  final String? id;
   final String name;
-  final String type;
+  final TransactionType type;
   final DateTime date;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final double amount;
-  final String image;
-  final String frequency;
+  final Currency currency;
+  final String? image;
+  final TransactionFrequency? frequency;
   final String sender;
-  final String beneficiary;
+  final Map<String, dynamic> beneficiary;
   final String note;
 
   const TransactionModel({
-    required this.id,
+    this.id,
     required this.name,
     required this.type,
     required this.date,
-    required this.createdAt,
+    this.createdAt,
     required this.amount,
-    required this.image,
-    required this.frequency,
+    required this.currency,
+    this.image,
+    this.frequency,
     required this.sender,
     required this.beneficiary,
     required this.note,
@@ -29,19 +39,43 @@ class TransactionModel {
     return TransactionModel(
       id: data["id"] ?? '',
       name: data["name"] ?? '',
-      type: data["type"] ?? '',
+      type: TransactionType.values.firstWhere((e) => e.name == data['type']),
       date: data["date"] is DateTime
           ? data["date"]
           : DateTime.tryParse(data["date"] ?? '') ?? DateTime.now(),
       createdAt: data["created_at"] is DateTime
           ? data["created_at"]
           : DateTime.tryParse(data["created_at"] ?? '') ?? DateTime.now(),
-      amount: data["amount"] ?? '',
-      image: data["image"] ?? '',
-      frequency: data["frequency"] ?? '',
-      sender: data["sender"] ?? '',
-      beneficiary: data["beneficiary"] ?? '',
+      amount: (data["amount"] is double)
+          ? data["amount"]
+          : double.tryParse(data["amount"].toString()) ?? 0.0,
+      currency: Currency.values.firstWhere((e) => e.name == data['currency']),
+      image: data["image"],
+      frequency: data["frequency"] != null
+          ? TransactionFrequency.values.firstWhere(
+              (e) => e.name == data['frequency'],
+            )
+          : null,
+      sender: data["sender"]?['name'] ?? '',
+      beneficiary: data["beneficiary"] is Map<String, dynamic>
+          ? data["beneficiary"]
+          : {"name": data["beneficiary"]?['name'] ?? ''},
       note: data["note"] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "type": type.name,
+      "date": date.toIso8601String(),
+      "amount": amount,
+      "currency": currency.name,
+      "image": image,
+      "frequency": frequency?.name,
+      "sender": sender,
+      "beneficiary": jsonEncode(beneficiary),
+      "note": note,
+    };
   }
 }

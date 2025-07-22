@@ -15,7 +15,7 @@ class TransactionCard extends StatelessWidget {
     String sign = transaction.type == Constants.expenseType ? '-' : '+';
     String time = TimeOfDay.fromDateTime(transaction.date).format(context);
     return InkWell(
-      onTap: (){
+      onTap: () {
         context.push('/transactionDetail', extra: transaction);
       },
       child: Container(
@@ -30,7 +30,7 @@ class TransactionCard extends StatelessWidget {
               child: SizedBox(
                 width: 30.w,
                 height: 30.h,
-                child: Image.asset(transaction.image),
+                child: Image.asset(transaction.image!),
               ),
             ),
             const SizedBox(width: 12),
@@ -68,7 +68,7 @@ class TransactionCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  transaction.type,
+                  transaction.type.name,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],

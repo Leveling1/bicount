@@ -1,5 +1,11 @@
-import 'package:dartz/dartz.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_model.dart';
+
+import '../../../authentification/domain/entities/user.dart';
 
 abstract class TransactionRepository {
-  // Add your repository interface here
+  Future<void> createTransaction(TransactionModel transaction);
+
+  Future<List<TransactionModel>> getAllTransactions();
+
+  Future<List<User>> getLinkedUsers();
 }

@@ -1,6 +1,7 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'app_colors.dart';
 
 class AppTheme {
@@ -62,6 +63,7 @@ class AppTheme {
       titleLarge: TextStyle(
         color: AppColors.textColorLight,
         fontSize: AppDimens.textSizeXXLarge.sp,
+        fontWeight: FontWeight.bold,
       ),
 
       bodySmall: TextStyle(

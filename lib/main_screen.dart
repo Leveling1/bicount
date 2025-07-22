@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_colors.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/features/company/presentation/screens/company_screen.dart';
@@ -5,6 +7,9 @@ import 'package:bicount/features/home/presentation/screens/home_screen.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import 'core/widgets/custom_bottom_sheet.dart';
+import 'features/transaction/presentation/screens/transaction_handler.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -16,6 +21,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   PageController pageController = PageController();
   ValueNotifier<double> scrollXPosition = ValueNotifier(0.0);
+
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -49,10 +55,11 @@ class _MainScreenState extends State<MainScreen> {
       CompanyScreen(),
       TransactionScreen(),
     ];
+    return [HomeScreen(), CompanyScreen(), TransactionScreen(), Container()];
   }
 
   List<String> _buildTitle() {
-    return ['', 'Company', 'Transaction'];
+    return ['', 'Company', 'Transaction', 'Settings'];
   }
 
   @override
@@ -106,6 +113,34 @@ class _MainScreenState extends State<MainScreen> {
         selectedIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
+      floatingActionButton: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return ScaleTransition(
+            scale: animation,
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        child: _selectedIndex != 0 && _selectedIndex != 3
+            ? FloatingActionButton(
+                key: const ValueKey('fab'),
+                onPressed: () {
+                  showCustomBottomSheet(
+                    context: context,
+                    child: const TransactionHandler(),
+                  );
+                },
+                child: Icon(
+                  Icons.add,
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
+              )
+            : const SizedBox.shrink(key: ValueKey('sizedBox')),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

@@ -12,10 +12,10 @@ import 'package:bicount/features/transaction/data/repositories/transaction_repos
 import 'package:bicount/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:toastification/toastification.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:toastification/toastification.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +30,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
@@ -59,7 +60,11 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<HomeBloc>(create: (context) => HomeBloc()),
           BlocProvider<CompanyBloc>(create: (context) => CompanyBloc()),
-          BlocProvider<TransactionBloc>(create: (context) => TransactionBloc()),
+          BlocProvider<TransactionBloc>(
+            create: (context) =>
+                TransactionBloc(context.read<TransactionRepositoryImpl>())
+                  ..add(GetAllTransactionsRequested()),
+          ),
         ],
         child: ToastificationWrapper(
           child: ScreenUtilInit(
