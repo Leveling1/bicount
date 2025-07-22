@@ -31,6 +31,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
     throw UnknownFailure();
   }
 
+  @override
   Future<List<User>> getLinkedUsers() async {
     final crud = CRUD(table: 'users');
     final authUser = Supabase.instance.client.auth.currentUser;

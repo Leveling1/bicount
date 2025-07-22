@@ -63,35 +63,60 @@ class _TransactionScreenState extends State<TransactionScreen> {
   final List<String> filters = ['All', 'Income', 'expense', 'Transfer'];
 
   @override
-  Widget build(BuildContext context) {
-    List<TransactionModel> filteredTransactions =
-        _selectedIndex == 0 && _searchController.text.isEmpty
-        ? transactions
-        : _selectedIndex == 0 && _searchController.text.isNotEmpty
-        ? transactions
-              .where(
-                (tx) => tx.name.toLowerCase().contains(
-                  _searchController.text.toLowerCase(),
-                ),
-              )
-              .toList()
-        : _selectedIndex != 0 && _searchController.text.isNotEmpty
-        ? transactions
-              .where(
-                (tx) =>
-                    tx.name.toLowerCase().contains(
-                      _searchController.text.toLowerCase(),
-                    ) &&
-                    tx.type == filters[_selectedIndex].toLowerCase(),
-              )
-              .toList()
-        : transactions
-              .where((tx) => tx.type == filters[_selectedIndex].toLowerCase())
-              .toList();
+  void initState() {
+    super.initState();
+    context.read<TransactionBloc>().add(GetAllTransactionsRequested());
+  }
 
-    final grouped = groupTransactionsByDate(filteredTransactions);
-    return BlocBuilder<TransactionBloc, TransactionState>(
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<TransactionBloc, TransactionState>(
+      listener: (context, state) {
+        if (state is TransactionCreated) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.toString())));
+        } else if (state is TransactionError) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.failure.message)));
+        }
+      },
       builder: (context, state) {
+        if (state is TransactionLoaded) {
+          transactions.clear();
+          transactions.addAll(state.transactions);
+        }
+
+        List<TransactionModel> filteredTransactions =
+            _selectedIndex == 0 && _searchController.text.isEmpty
+            ? transactions
+            : _selectedIndex == 0 && _searchController.text.isNotEmpty
+            ? transactions
+                  .where(
+                    (tx) => tx.name.toLowerCase().contains(
+                      _searchController.text.toLowerCase(),
+                    ),
+                  )
+                  .toList()
+            : _selectedIndex != 0 && _searchController.text.isNotEmpty
+            ? transactions
+                  .where(
+                    (tx) =>
+                        tx.name.toLowerCase().contains(
+                          _searchController.text.toLowerCase(),
+                        ) &&
+                        tx.type == filters[_selectedIndex].toLowerCase(),
+                  )
+                  .toList()
+            : transactions
+                  .where(
+                    (tx) => tx.type == filters[_selectedIndex].toLowerCase(),
+                  )
+                  .toList();
+
+        final grouped = groupTransactionsByDate(filteredTransactions);
+
         return transactions.isNotEmpty
             ? Column(
                 children: [
