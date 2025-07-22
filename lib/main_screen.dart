@@ -1,12 +1,10 @@
-import 'package:bicount/core/themes/app_colors.dart';
-import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/features/company/presentation/screens/company_screen.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -18,18 +16,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   PageController pageController = PageController();
   ValueNotifier<double> scrollXPosition = ValueNotifier(0.0);
-
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     final distance = (_selectedIndex - index).abs();
-    Duration duration = const Duration(seconds: 1);
+    Duration duration = const Duration(milliseconds: 500);
 
     if (distance == 1) {
       pageController.animateToPage(
         index,
         duration: duration,
-        curve: Curves.ease,
+        curve: Curves.linear,
       );
     } else {
       pageController.jumpToPage(index);
@@ -40,12 +37,34 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void _goToPage(int index) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _onItemTapped(index);
+    });
+  }
+
   List<Widget> _buildScreens() {
-    return [HomeScreen(), CompanyScreen(), TransactionScreen()];
+    return [
+      HomeScreen(onCardTap: _goToPage),
+      CompanyScreen(),
+      TransactionScreen(),
+    ];
   }
 
   List<String> _buildTitle() {
     return ['', 'Company', 'Transaction'];
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Handle deep link navigation
+    final location = GoRouter.of(context).state.uri.toString();
+    if (location == '/company') {
+      _goToPage(1);
+    } else if (location == '/transaction') {
+      _goToPage(2);
+    }
   }
 
   @override

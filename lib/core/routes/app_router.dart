@@ -1,10 +1,7 @@
-import 'package:bicount/features/authentification/presentation/bloc/authentification_bloc.dart';
 import 'package:bicount/features/authentification/presentation/screens/login_screen.dart';
 import 'package:bicount/features/authentification/presentation/screens/signup_screen.dart';
-import 'package:bicount/features/home/presentation/screens/home_screen.dart';
 import 'package:bicount/main_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -26,6 +23,8 @@ class AppRouter {
     navigatorKey: rootNavigatorKey,
     routes: [
       GoRoute(path: '/', builder: (context, state) => MainScreen()),
+      GoRoute(path: '/company', builder: (context, state) => MainScreen()),
+      GoRoute(path: '/transaction', builder: (context, state) => MainScreen()),
       GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
       GoRoute(
         path: '/signUp',
@@ -38,9 +37,9 @@ class AppRouter {
         pageBuilder: (context, state) {
           final transaction = state.extra as TransactionModel;
           return buildCustomTransitionPage(
-              childContain: DetailTransactionScreen(transaction: transaction),
-              state: state,
-              model: TransactionModel
+            childContain: DetailTransactionScreen(transaction: transaction),
+            state: state,
+            model: TransactionModel,
           );
         },
       ),
@@ -50,10 +49,9 @@ class AppRouter {
         pageBuilder: (context, state) {
           final company = state.extra as CompanyModel;
           return buildCustomTransitionPage(
-            childContain: DetailCompanyScreen(
-              company: company),
-              state: state,
-              model: CompanyModel
+            childContain: DetailCompanyScreen(company: company),
+            state: state,
+            model: CompanyModel,
           );
         },
       ),

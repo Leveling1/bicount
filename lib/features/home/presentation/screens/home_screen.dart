@@ -14,8 +14,11 @@ import 'package:hugeicons/hugeicons.dart';
 import '../bloc/home_bloc.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 
+typedef CardTapCallback = void Function(int index);
+
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final CardTapCallback? onCardTap;
+  const HomeScreen({super.key, this.onCardTap});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -77,7 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       SizedBox(width: AppDimens.spacingMedium),
                       CardTypeRevenue(
-                        onTap: () {},
+                        onTap: () {
+                          widget.onCardTap?.call(1); // CompanyScreen
+                        },
                         label: "Entreprises",
                         amount: 889.56,
                         icon: HugeIcon(
@@ -98,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        GoRouter.of(context).go("/transaction");
+                        widget.onCardTap?.call(2); // TransactionScreen
                       },
                       style: Theme.of(context).textButtonTheme.style,
                       child: Text(
