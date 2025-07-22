@@ -19,3 +19,9 @@ class TransactionLoaded extends TransactionState {
 
   TransactionLoaded(this.transactions);
 }
+
+class TransactionLinkedUsersLoaded extends TransactionState {
+  final List<User> users;
+
+  TransactionLinkedUsersLoaded(this.users);
+}

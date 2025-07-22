@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 enum TransactionType { income, expense, transfer }
 
 enum TransactionFrequency { cyclic, fixe }
@@ -15,7 +17,7 @@ class TransactionModel {
   final String? image;
   final TransactionFrequency? frequency;
   final String sender;
-  final String beneficiary;
+  final Map<String, dynamic> beneficiary;
   final String note;
 
   const TransactionModel({
@@ -54,8 +56,10 @@ class TransactionModel {
               (e) => e.name == data['frequency'],
             )
           : null,
-      sender: data["sender"] ?? '',
-      beneficiary: data["beneficiary"] ?? '',
+      sender: data["sender"]?['name'] ?? '',
+      beneficiary: data["beneficiary"] is Map<String, dynamic>
+          ? data["beneficiary"]
+          : {"name": data["beneficiary"]?['name'] ?? ''},
       note: data["note"] ?? '',
     );
   }
@@ -70,7 +74,7 @@ class TransactionModel {
       "image": image,
       "frequency": frequency?.name,
       "sender": sender,
-      "beneficiary": beneficiary,
+      "beneficiary": jsonEncode(beneficiary),
       "note": note,
     };
   }

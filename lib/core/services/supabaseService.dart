@@ -149,10 +149,11 @@ class CRUD {
   /// ```dart
   /// await userCRUD.readSimple();
   /// ```
-  Future<void> readSimple() async {
+  Future<List<Map<String, dynamic>>> readSimple() async {
     try {
       final data = await database.select();
       print('Fetched data: $data');
+      return List<Map<String, dynamic>>.from(data);
     } catch (e) {
       print('Read simple Error: $e');
       rethrow;
@@ -174,7 +175,7 @@ class CRUD {
 
   Future<PostgrestMap> readRowByID(String ID) async {
     try {
-      final data = await database.select().eq("UID", ID);
+      final data = await database.select().eq("uuid", ID);
       return data.isEmpty ? {} : data.first;
     } catch (e) {
       print('Read UID Error: $e');

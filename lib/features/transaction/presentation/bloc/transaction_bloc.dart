@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/failure.dart';
+import '../../../authentification/domain/entities/user.dart';
 import '../../domain/entities/transaction_model.dart';
 import '../../domain/repositories/transaction_repository.dart';
 
@@ -26,6 +27,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       try {
         final transactions = await repository.getAllTransactions();
         emit(TransactionLoaded(transactions));
+      } catch (e) {
+        emit(TransactionError(e is Failure ? e : UnknownFailure()));
+      }
+    });
+    on<GetLinkedUsersRequested>((event, emit) async {
+      emit(TransactionLoading());
+      try {
+        final users = await repository.getLinkedUsers();
+        emit(TransactionLinkedUsersLoaded(users));
       } catch (e) {
         emit(TransactionError(e is Failure ? e : UnknownFailure()));
       }

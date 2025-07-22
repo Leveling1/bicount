@@ -127,10 +127,10 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                     children: [
                       RowDetail(title: 'Sender', content: data.sender),
                       const SizedBox(height: 8),
-                      RowDetail(
+                      /*RowDetail(
                         title: 'Beneficiary',
                         content: data.beneficiary,
-                      ),
+                      ),*/
                     ],
                   ),
                 ),
@@ -147,7 +147,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                         content: formattedCreatedDateTime,
                       ),
                       const SizedBox(height: 8),
-                      RowDetail(title: 'Note', content: data.beneficiary),
+                      //RowDetail(title: 'Note', content: data.beneficiary),
                     ],
                   ),
                 ),

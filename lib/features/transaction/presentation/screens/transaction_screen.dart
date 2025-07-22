@@ -17,7 +17,7 @@ class TransactionScreen extends StatefulWidget {
 
 class _TransactionScreenState extends State<TransactionScreen> {
   int _selectedIndex = 0;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   void _onItemTapped(int index) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -27,15 +27,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
     });
   }
 
-  final List<Map<String, dynamic>> transactions = [];
+  final List<TransactionModel> transactions = [];
 
-  Map<String, List<Map<String, dynamic>>> groupTransactionsByDate(
-    List<Map<String, dynamic>> transactions,
+  Map<String, List<TransactionModel>> groupTransactionsByDate(
+    List<TransactionModel> transactions,
   ) {
-    Map<String, List<Map<String, dynamic>>> grouped = {};
+    Map<String, List<TransactionModel>> grouped = {};
 
     for (var tx in transactions) {
-      final DateTime date = tx['datetime'];
+      final DateTime date = tx.createdAt!;
       final now = DateTime.now();
 
       String key;
@@ -64,13 +64,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> filteredTransactions =
+    List<TransactionModel> filteredTransactions =
         _selectedIndex == 0 && _searchController.text.isEmpty
         ? transactions
         : _selectedIndex == 0 && _searchController.text.isNotEmpty
         ? transactions
               .where(
-                (tx) => tx['name'].toLowerCase().contains(
+                (tx) => tx.name.toLowerCase().contains(
                   _searchController.text.toLowerCase(),
                 ),
               )
@@ -79,16 +79,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
         ? transactions
               .where(
                 (tx) =>
-                    tx['name'].toLowerCase().contains(
+                    tx.name.toLowerCase().contains(
                       _searchController.text.toLowerCase(),
                     ) &&
-                    tx['type'] == filters[_selectedIndex].toLowerCase(),
+                    tx.type == filters[_selectedIndex].toLowerCase(),
               )
               .toList()
         : transactions
-              .where(
-                (tx) => tx['type'] == filters[_selectedIndex].toLowerCase(),
-              )
+              .where((tx) => tx.type == filters[_selectedIndex].toLowerCase())
               .toList();
 
     final grouped = groupTransactionsByDate(filteredTransactions);
@@ -128,8 +126,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                     ),
                                     const SizedBox(height: 8),
                                     ...entry.value.map((tx) {
-                                      TransactionModel transaction =
-                                          TransactionModel.fromJson(tx);
+                                      TransactionModel transaction = tx;
                                       return TransactionCard(
                                         transaction: transaction,
                                       );

@@ -9,3 +9,5 @@ class CreateTransactionEvent extends TransactionEvent {
 }
 
 class GetAllTransactionsRequested extends TransactionEvent {}
+
+class GetLinkedUsersRequested extends TransactionEvent {}

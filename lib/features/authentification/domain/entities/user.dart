@@ -13,4 +13,8 @@ class User extends Equatable {
   String toString() {
     return 'User(id: $id,  email: $email)';
   }
+
+  factory User.fromData(Map<String, dynamic> data) {
+    return User(id: data['id'], email: data['email']);
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'app_colors.dart';
 
 class AppTheme {
@@ -8,9 +9,7 @@ class AppTheme {
     brightness: Brightness.light,
     primaryColor: AppColors.primaryColorLight,
     scaffoldBackgroundColor: AppColors.backgroundColorLight,
-    iconTheme: const IconThemeData(
-      color: AppColors.inactiveColorLight,
-    ),
+    iconTheme: const IconThemeData(color: AppColors.inactiveColorLight),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AppColors.surfaceColorLight,
     ),
@@ -76,16 +75,18 @@ class AppTheme {
     brightness: Brightness.dark,
     primaryColor: AppColors.primaryColorDark,
     scaffoldBackgroundColor: AppColors.backgroundColorDark,
-    iconTheme: const IconThemeData(
-      color: AppColors.inactiveColorDark,
-    ),
+    iconTheme: const IconThemeData(color: AppColors.inactiveColorDark),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: Colors.black,//AppColors.backgroundColorDark,
+      backgroundColor: Colors.black, //AppColors.backgroundColorDark,
     ),
     cardColor: AppColors.cardColorDark,
-    textTheme: const TextTheme(
+    textTheme: TextTheme(
       bodyLarge: TextStyle(color: AppColors.textColorDark),
       bodyMedium: TextStyle(color: AppColors.secondaryTextColorDark),
+      bodySmall: TextStyle(
+        color: AppColors.secondaryTextColorDark,
+        fontSize: AppDimens.textSizeSmall.sp,
+      ),
       titleSmall: TextStyle(
         color: AppColors.textColorDark,
         fontSize: AppDimens.textSizeMedium,
