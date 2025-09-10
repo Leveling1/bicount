@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 SizedBox(
-                  height: 165.h,
+                  height: 155.h,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
 
@@ -138,7 +138,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               currency: Currency.EUR,
                             ),
                           ),
-                          Divider(),
+                          Divider(
+                            color: Theme.of(context).iconTheme.color,
+                            thickness: 0.7,
+                          ),
                         ],
                       );
                     },

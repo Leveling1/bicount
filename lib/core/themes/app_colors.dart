@@ -18,11 +18,6 @@ class AppColors {
   static const Color positiveColorDark = Color(0xFF4CAF50);
   static const Color negativeColorDark = Color(0xFFF44336);
   static const Color inactiveColorDark = Color(0xFF808080);
-  static const LinearGradient cardLinearGradientDark = LinearGradient(
-    colors: [Color(0XFF1E2028), Color(0XFF2B2E33)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
 
   /// Light Theme
   static const Color primaryColorLight = Color(0xFF76A646);
@@ -34,9 +29,4 @@ class AppColors {
   static const Color positiveColorLight = Color(0xFF4CAF50);
   static const Color negativeColorLight = Color(0xFFF44336);
   static const Color inactiveColorLight = Color(0xFFCCCCCC);
-  static const LinearGradient cardLinearGradientLight = LinearGradient(
-    colors: [Color(0XFF1E2028), Color(0XFF2B2E33)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
 }

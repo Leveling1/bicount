@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'app_colors.dart';
+import 'app_gradient.dart';
 
 class AppTheme {
   static ThemeData get lightTheme => ThemeData(
@@ -99,6 +100,19 @@ class AppTheme {
       error: AppColors.negativeColorLight,
       secondary: AppColors.positiveColorLight,
     ),
+
+    extensions: <ThemeExtension<dynamic>>[
+      AppGradients(
+        primaryGradient: LinearGradient(
+          colors: [Color(0xFFE1DFD7), Color(0xFFD4D1CC)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        secondaryGradient: LinearGradient(
+          colors: [Colors.orange, Colors.red],
+        ),
+      ),
+    ],
   );
 
   static ThemeData get darkTheme => ThemeData(
@@ -109,6 +123,7 @@ class AppTheme {
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.black, //AppColors.backgroundColorDark,
     ),
+
     cardColor: AppColors.cardColorDark,
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
@@ -193,5 +208,18 @@ class AppTheme {
       error: AppColors.negativeColorDark,
       secondary: AppColors.positiveColorDark,
     ),
+
+    extensions: <ThemeExtension<dynamic>>[
+      AppGradients(
+        primaryGradient: LinearGradient(
+          colors: [Color(0XFF1E2028), Color(0XFF2B2E33)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        secondaryGradient: LinearGradient(
+          colors: [Colors.orange, Colors.red],
+        ),
+      ),
+    ],
   );
 }
