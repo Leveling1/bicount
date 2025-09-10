@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/widgets/custom_bottom_sheet.dart';
+import 'features/company/presentation/screens/company_handler.dart';
 import 'features/transaction/presentation/screens/transaction_handler.dart';
 
 class MainScreen extends StatefulWidget {
@@ -130,7 +131,15 @@ class _MainScreenState extends State<MainScreen> {
                 onPressed: () {
                   showCustomBottomSheet(
                     context: context,
-                    child: const TransactionHandler(),
+                    minHeight: _selectedIndex == 1
+                        ? 0.5
+                        : 0.95,
+                    color: _selectedIndex == 1
+                      ? Theme.of(context).bottomNavigationBarTheme.backgroundColor
+                      : null,
+                    child: _selectedIndex == 1
+                        ? const CompanyHandler()
+                        : const TransactionHandler(),
                   );
                 },
                 child: Icon(

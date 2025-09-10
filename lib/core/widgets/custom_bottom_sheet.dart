@@ -5,17 +5,22 @@ import '../themes/app_dimens.dart';
 Future<T?> showCustomBottomSheet<T>({
   required BuildContext context,
   required Widget child,
+  required Color? color,
+  required double minHeight,
 }) {
+  color ??= Theme.of(context).scaffoldBackgroundColor;
   final screenHeight = MediaQuery.of(context).size.height;
+  final screenWidth = MediaQuery.of(context).size.width;
   return showModalBottomSheet<T>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    backgroundColor: color,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(AppDimens.radiusExtraLarge)),
     ),
     constraints: BoxConstraints(
-      minHeight: screenHeight * 0.95,
+      minWidth: screenWidth,
+      minHeight: screenHeight * minHeight,
       maxHeight: screenHeight * 0.95,
     ),
     builder: (BuildContext ctx) {
