@@ -71,7 +71,14 @@ class CustomFormField extends StatelessWidget {
   final String label;
   final String hint;
   final TextEditingController controller;
-  const CustomFormField({super.key, required this.controller, required this.label, required this.hint});
+  final TextInputType? inputType;
+  const CustomFormField({
+    super.key,
+    required this.controller,
+    required this.label,
+    required this.hint,
+    this.inputType = TextInputType.text,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +89,7 @@ class CustomFormField extends StatelessWidget {
         CustomFormTextField(
           controller: controller,
           hintText: hint,
-          inputType: TextInputType.multiline,
+          inputType: inputType,
         ),
       ],
     );

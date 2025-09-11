@@ -1,5 +1,3 @@
-import 'package:bicount/core/themes/app_colors.dart';
-import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/features/company/presentation/screens/company_screen.dart';
@@ -56,7 +54,6 @@ class _MainScreenState extends State<MainScreen> {
       CompanyScreen(),
       TransactionScreen(),
     ];
-    return [HomeScreen(), CompanyScreen(), TransactionScreen(), Container()];
   }
 
   List<String> _buildTitle() {

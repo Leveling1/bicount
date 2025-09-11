@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bicount/features/authentification/presentation/screens/login_screen.dart';
 import 'package:bicount/features/authentification/presentation/screens/signup_screen.dart';
 import 'package:bicount/main_screen.dart';
@@ -14,24 +16,17 @@ import '../utils/custom_transition.dart';
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class AppRouter {
-  bool get isAuthenticated =>
-      Supabase.instance.client.auth.currentSession != null;
+  final GoRouter _router;
 
-  GoRouter get router => _routes;
-
-  late final _routes = GoRouter(
+  AppRouter() : _router = GoRouter(
     navigatorKey: rootNavigatorKey,
     routes: [
       GoRoute(path: '/', builder: (context, state) => MainScreen()),
       GoRoute(path: '/company', builder: (context, state) => MainScreen()),
       GoRoute(path: '/transaction', builder: (context, state) => MainScreen()),
       GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
-      GoRoute(
-        path: '/signUp',
-        builder: (context, state) {
-          return SignUpScreen();
-        },
-      ),
+      GoRoute(path: '/signUp', builder: (context, state) => SignUpScreen()),
+
       GoRoute(
         path: '/transactionDetail',
         pageBuilder: (context, state) {
@@ -43,7 +38,6 @@ class AppRouter {
           );
         },
       ),
-
       GoRoute(
         path: '/companyDetail',
         pageBuilder: (context, state) {
@@ -57,15 +51,34 @@ class AppRouter {
       ),
     ],
     redirect: (context, state) {
-      final currentPath = state.uri.toString();
-      final loggingIn = currentPath == '/login' || currentPath == '/signUp';
-      if (!isAuthenticated && !loggingIn) {
-        return '/signUp';
-      }
-      if (isAuthenticated && loggingIn) {
-        return '/';
-      }
+      final supabase = Supabase.instance.client;
+      final session = supabase.auth.currentSession;
+
+      final isLoggedIn = session != null;
+      final loggingIn = state.uri.toString() == '/login' || state.uri.toString() == '/signUp';
+
+      if (!isLoggedIn && !loggingIn) return '/login';
+      if (isLoggedIn && loggingIn) return '/';
       return null;
     },
+    refreshListenable: GoRouterRefreshStream(Supabase.instance.client.auth.onAuthStateChange),
   );
+
+  GoRouter get router => _router;
+}
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen((event) {
+      notifyListeners();
+    });
+  }
+  late final StreamSubscription _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
 }

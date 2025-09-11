@@ -14,8 +14,9 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
     on<CreateCompanyEvent>((event, emit) async {
       emit(CompanyLoading());
       try {
-        await repository.createCompany(event.company, event.logoFile);
-        emit(CompanyCreated());
+        final CompanyModel createdCompany = await repository.createCompany(event.company, event.logoFile);
+        emit(CompanyCreated(createdCompany));
+
         add(GetAllCompanyRequested());
       } catch (e) {
         emit(CompanyError(e is Failure ? e : UnknownFailure()));

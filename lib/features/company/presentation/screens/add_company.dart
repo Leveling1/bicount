@@ -19,9 +19,6 @@ class AddCompany extends StatefulWidget {
 class _AddCompanyState extends State<AddCompany> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _description = TextEditingController();
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _phone = TextEditingController();
-  final TextEditingController _address = TextEditingController();
 
   File? _selectedImage;
 
@@ -31,7 +28,10 @@ class _AddCompanyState extends State<AddCompany> {
     return BlocConsumer<CompanyBloc, CompanyState>(
       listener: (context, state) {
         if (state is CompanyCreated) {
-          NotificationHelper.showSuccessNotification(context, state.toString());
+          NotificationHelper.showSuccessNotification(
+              context,
+              "Company successfully established"
+          );
         } else if (state is CompanyError) {
           NotificationHelper.showFailureNotification(context, state.failure.message);
         }
@@ -79,27 +79,10 @@ class _AddCompanyState extends State<AddCompany> {
               ),
               const SizedBox(height: 16),
               CustomFormField(
-                controller: _email,
-                label: "Email",
-                hint: 'Enter company email',
-              ),
-              const SizedBox(height: 16),
-              CustomFormField(
                 controller: _description,
                 label: "Description",
                 hint: 'Enter company description',
-              ),
-              const SizedBox(height: 16),
-              CustomFormField(
-                controller: _phone,
-                label: "Phone",
-                hint: 'Enter company phone',
-              ),
-              const SizedBox(height: 16),
-              CustomFormField(
-                controller: _address,
-                label: "Address",
-                hint: 'Enter company address',
+                inputType: TextInputType.multiline,
               ),
               const SizedBox(height: 32),
               CustomButton(
@@ -120,12 +103,9 @@ class _AddCompanyState extends State<AddCompany> {
       final company = CompanyModel(
         name: _name.text,
         description: _description.text,
-        email: _email.text,
-        phone: _phone.text,
-        address: _address.text,
         image: "",
       );
-      context.read<CompanyBloc>().add(CreateCompanyEvent(company));
+      context.read<CompanyBloc>().add(CreateCompanyEvent(company, logoFile: _selectedImage));
     }
   }
 }

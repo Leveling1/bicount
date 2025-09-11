@@ -9,18 +9,21 @@ abstract class Failure extends Equatable {
 
 //for server failure status code is 502
 class ServerFailure extends Failure {
-  ServerFailure();
   @override
-  List<Object?> get props => [];
+  final String message;
+  const ServerFailure(this.message);
 
   @override
-  final message = 'server failure';
+  String toString() => 'ServerFailure: $message';
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
 }
 
-//for not found failure status code is 404
 
+//for not found failure status code is 404
 class NotFoundFailure extends Failure {
-  NotFoundFailure();
+  const NotFoundFailure();
   @override
   List<Object?> get props => [];
 
@@ -30,7 +33,7 @@ class NotFoundFailure extends Failure {
 
 //for cache failure from device disk
 class CasheFailure extends Failure {
-  CasheFailure();
+  const CasheFailure();
 
   @override
   final message = 'cache failure';
@@ -43,14 +46,14 @@ class CasheFailure extends Failure {
 class ConnectionFailure extends Failure {
   final String message;
 
-  ConnectionFailure({required this.message});
+  const ConnectionFailure({required this.message});
   @override
   List<Object?> get props => [message];
 }
 
 //for error from choosing picture
 class ChoosePictureFailure extends Failure {
-  ChoosePictureFailure();
+  const ChoosePictureFailure();
 
   @override
   final message = 'choose picture failure failure';
@@ -61,7 +64,7 @@ class ChoosePictureFailure extends Failure {
 
 //for otp failure 403
 class Otpfailure extends Failure {
-  Otpfailure();
+  const Otpfailure();
 
   @override
   final message = 'otp failure';
@@ -72,10 +75,11 @@ class Otpfailure extends Failure {
 
 //for auth failure 401
 class AuthorizationFailure extends Failure {
-  AuthorizationFailure();
+  final String message;
+  const AuthorizationFailure(this.message);
 
   @override
-  final message = 'auth failure';
+  String toString() => 'AuthorizationFailure: $message';
   @override
   List<Object?> get props => [];
 }
@@ -103,8 +107,36 @@ class InitFailure extends Failure {
 //for authentication failure
 class AuthenticationFailure extends Failure {
   final String message;
-  AuthenticationFailure({this.message = 'Authentication failure'});
+  const AuthenticationFailure({this.message = 'Authentication failure'});
 
   @override
   List<Object?> get props => [message];
 }
+
+
+class ValidationFailure implements Exception {
+  final String message;
+  ValidationFailure(this.message);
+
+  @override
+  String toString() => 'ValidationFailure: $message';
+}
+
+
+
+class NetworkFailure implements Exception {
+  final String message;
+  NetworkFailure(this.message);
+
+  @override
+  String toString() => 'NetworkFailure: $message';
+}
+
+class DataParsingFailure implements Exception {
+  final String message;
+  DataParsingFailure(this.message);
+
+  @override
+  String toString() => 'DataParsingFailure: $message';
+}
+

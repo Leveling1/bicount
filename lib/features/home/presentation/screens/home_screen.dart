@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../bloc/home_bloc.dart';
 
@@ -68,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     children: [
                       CardTypeRevenue(
-                        onTap: () {},
+                        onTap: () { },
                         label: "Personnal",
                         amount: 5695.20,
                         icon: HugeIcon(

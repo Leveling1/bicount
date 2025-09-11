@@ -6,7 +6,11 @@ class CompanyInitial extends CompanyState {}
 
 class CompanyLoading extends CompanyState {}
 
-class CompanyCreated extends CompanyState {}
+class CompanyCreated extends CompanyState {
+  final CompanyModel company;
+
+  CompanyCreated(this.company);
+}
 
 class CompanyError extends CompanyState {
   final Failure failure;
