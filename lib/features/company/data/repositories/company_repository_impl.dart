@@ -22,6 +22,8 @@ class CompanyRepositoryImpl implements CompanyRepository {
       final accessToken = session?.accessToken;
       final uri = Uri.parse(Secrets.URLEndpoint_createCompany);
 
+      final uid = supabaseInstance.auth.currentUser!.id;
+
       final mimeType = lookupMimeType(logoFile!.path) ?? 'image/jpeg';
       final fileStream = http.ByteStream(logoFile.openRead());
       final fileLength = await logoFile.length();
@@ -30,6 +32,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
       var request = http.MultipartRequest("POST", uri)
         ..fields['name'] = company.name
         ..fields['description'] = company.description ?? ""
+        ..fields['uid'] = uid
         ..headers['Authorization'] = 'Bearer $accessToken'
         ..headers['apikey'] = Secrets.supabaseAnonKey
         ..files.add(

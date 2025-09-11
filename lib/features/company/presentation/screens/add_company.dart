@@ -32,6 +32,7 @@ class _AddCompanyState extends State<AddCompany> {
               context,
               "Company successfully established"
           );
+          Navigator.of(context).pop();
         } else if (state is CompanyError) {
           NotificationHelper.showFailureNotification(context, state.failure.message);
         }
