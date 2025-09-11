@@ -66,3 +66,26 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
     super.dispose();
   }
 }
+
+class CustomFormField extends StatelessWidget {
+  final String label;
+  final String hint;
+  final TextEditingController controller;
+  const CustomFormField({super.key, required this.controller, required this.label, required this.hint});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.titleMedium),
+        CustomFormTextField(
+          controller: controller,
+          hintText: hint,
+          inputType: TextInputType.multiline,
+        ),
+      ],
+    );
+  }
+}
+

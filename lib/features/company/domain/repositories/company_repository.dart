@@ -1,5 +1,7 @@
-import 'package:dartz/dartz.dart';
+import 'dart:io';
+
+import 'package:bicount/features/company/domain/entities/company_model.dart';
 
 abstract class CompanyRepository {
-  // Add your repository interface here
+  Future<void> createCompany(CompanyModel company, File? logoFile);
 }

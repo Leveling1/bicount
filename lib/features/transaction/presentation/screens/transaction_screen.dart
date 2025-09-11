@@ -5,6 +5,7 @@ import 'package:bicount/features/transaction/presentation/widgets/transaction_fi
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/services/notification_helper.dart';
 import '../../../../core/utils/date_format_utils.dart';
 import '../bloc/transaction_bloc.dart';
 
@@ -73,13 +74,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
     return BlocConsumer<TransactionBloc, TransactionState>(
       listener: (context, state) {
         if (state is TransactionCreated) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.toString())));
+          NotificationHelper.showSuccessNotification(context, state.toString());
         } else if (state is TransactionError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.failure.message)));
+          NotificationHelper.showFailureNotification(context, state.failure.message);
         }
       },
       builder: (context, state) {

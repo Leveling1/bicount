@@ -134,9 +134,7 @@ class _MainScreenState extends State<MainScreen> {
                     minHeight: _selectedIndex == 1
                         ? 0.5
                         : 0.95,
-                    color: _selectedIndex == 1
-                      ? Theme.of(context).bottomNavigationBarTheme.backgroundColor
-                      : null,
+                    color: null,
                     child: _selectedIndex == 1
                         ? const CompanyHandler()
                         : const TransactionHandler(),

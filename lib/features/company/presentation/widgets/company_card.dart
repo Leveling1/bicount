@@ -27,7 +27,7 @@ class CompanyCard extends StatelessWidget {
               child: SizedBox(
                 width: 30.w,
                 height: 30.h,
-                child: Image.asset(company.image),
+                child: Image.asset(company.image!),
               ),
             ),
             const SizedBox(width: 12),

@@ -1,47 +1,53 @@
 class CompanyModel {
-  final String id;
+  final String? id;
   final String name;
-  final String type;
-  final DateTime date;
+  final String? description;
+  final String? email;
+  final String? phone;
+  final String? address;
+  final String? image;
   final DateTime createdAt;
-  final double amount;
-  final String image;
-  final String frequency;
-  final String sender;
-  final String beneficiary;
-  final String note;
+  final DateTime? updatedAt;
 
-  const CompanyModel({
-    required this.id,
+  CompanyModel({
+    this.id,
     required this.name,
-    required this.type,
-    required this.date,
-    required this.createdAt,
-    required this.amount,
-    required this.image,
-    required this.frequency,
-    required this.sender,
-    required this.beneficiary,
-    required this.note,
-  });
+    this.description,
+    this.email,
+    this.phone,
+    this.address,
+    this.image,
+    DateTime? createdAt,
+    this.updatedAt,
+  }) : createdAt = createdAt ?? DateTime.now();
 
-  factory CompanyModel.fromJson(Map<String, dynamic> data) {
+  /// Convertir en Map (utile pour Firebase, Supabase, etc.)
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'email': email,
+      'phone': phone,
+      'address': address,
+      'logoUrl': image,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+    };
+  }
+
+  /// Créer une instance depuis un Map
+  factory CompanyModel.fromMap(Map<String, dynamic> map) {
     return CompanyModel(
-      id: data["id"] ?? '',
-      name: data["name"] ?? '',
-      type: data["type"] ?? '',
-      date: data["date"] is DateTime
-          ? data["date"]
-          : DateTime.tryParse(data["date"] ?? '') ?? DateTime.now(),
-      createdAt: data["created_at"] is DateTime
-          ? data["created_at"]
-          : DateTime.tryParse(data["created_at"] ?? '') ?? DateTime.now(),
-      amount: data["amount"] ?? '',
-      image: data["image"] ?? '',
-      frequency: data["frequency"] ?? '',
-      sender: data["sender"] ?? '',
-      beneficiary: data["beneficiary"] ?? '',
-      note: data["note"] ?? '',
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      description: map['description'],
+      email: map['email'],
+      phone: map['phone'],
+      address: map['address'],
+      image: map['logoUrl'],
+      createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: map['updatedAt'] != null ? DateTime.tryParse(map['updatedAt']) : null,
     );
   }
 }

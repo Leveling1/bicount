@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_amount_field.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_form_text_field.dart';
@@ -66,13 +67,9 @@ class _TransactionHandlerState extends State<TransactionHandler> {
     return BlocConsumer<TransactionBloc, TransactionState>(
       listener: (context, state) {
         if (state is TransactionCreated) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.toString())));
+          NotificationHelper.showSuccessNotification(context, state.toString());
         } else if (state is TransactionError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.failure.message)));
+          NotificationHelper.showFailureNotification(context, state.failure.message);
         }
       },
       builder: (context, state) {
@@ -92,15 +89,10 @@ class _TransactionHandlerState extends State<TransactionHandler> {
               const SizedBox(height: 16),
               SegmentedControlWidget(controller: _segmentedType),
               const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Title", style: Theme.of(context).textTheme.titleMedium),
-                  CustomFormTextField(
-                    controller: _name,
-                    hintText: 'Enter transaction name',
-                  ),
-                ],
+              CustomFormField(
+                controller: _name,
+                label: "Title",
+                hint: 'Enter transaction name',
               ),
               const SizedBox(height: 16),
               Column(
@@ -114,16 +106,10 @@ class _TransactionHandlerState extends State<TransactionHandler> {
                 ],
               ),
               const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Note", style: Theme.of(context).textTheme.titleMedium),
-                  CustomFormTextField(
-                    controller: _note,
-                    hintText: 'Add a note (optional)',
-                    inputType: TextInputType.multiline,
-                  ),
-                ],
+              CustomFormField(
+                controller: _note,
+                label: "Note",
+                hint: 'Add a note (optional)',
               ),
               const SizedBox(height: 16),
               Row(
