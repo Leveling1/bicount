@@ -5,16 +5,20 @@ class CompanyModel {
   final String name;
   final String? description;
   final String? image;
+  final int? sales;
+  final int? expenses;
+  final int? profit;
   final DateTime createdAt;
-  final DateTime? updatedAt;
 
   CompanyModel({
     this.id,
     required this.name,
     this.description,
     this.image,
+    this.sales,
+    this.expenses,
+    this.profit,
     DateTime? createdAt,
-    this.updatedAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
   /// Convertir en Map (utile pour Firebase, Supabase, etc.)
@@ -24,8 +28,10 @@ class CompanyModel {
       'name': name,
       'description': description,
       'logoUrl': image,
+      'sales': sales,
+      'expenses': expenses,
+      'profit': profit,
       'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 
@@ -35,9 +41,11 @@ class CompanyModel {
       id: map['id'] ?? '',
       name: map['name'] ?? '',
       description: map['description'],
-      image: map['logoUrl'],
+      image: map['image'],
+      sales: map['sales'] ?? 0.0,
+      expenses: map['expenses'] ?? 0.0,
+      profit: map['profit'] ?? 0.0,
       createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
-      updatedAt: map['updatedAt'] != null ? DateTime.tryParse(map['updatedAt']) : null,
     );
   }
 }

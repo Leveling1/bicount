@@ -20,7 +20,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       'assets/icons/home.svg',
       'assets/icons/company.svg',
       'assets/icons/transaction.svg',
-      'assets/icons/custom_user_iconcustom_user_icon.svg',
+      'assets/icons/custom_user_icon.svg',
     ];
     List<String> titles = const ['Home', 'Company', 'Transaction', 'Profile'];
 

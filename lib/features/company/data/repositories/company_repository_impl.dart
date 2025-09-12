@@ -13,16 +13,20 @@ import 'package:path/path.dart' as path;
 
 class CompanyRepositoryImpl implements CompanyRepository {
   CompanyRepositoryImpl();
+  WebSocket? _socket; // Plus utilisé
+  StreamSubscription? _sseSubscription;
+  final _controller = StreamController<List<CompanyModel>>.broadcast();
+  final supabaseInstance = Supabase.instance.client;
 
+  String get uid => supabaseInstance.auth.currentUser!.id;
+  String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
+
+  // For the creation company
   @override
   Future<CompanyModel> createCompany(CompanyModel company, File? logoFile) async {
     try {
-      final supabaseInstance = Supabase.instance.client;
-      final session = supabaseInstance.auth.currentSession;
-      final accessToken = session?.accessToken;
-      final uri = Uri.parse(Secrets.URLEndpoint_createCompany);
+      final uri = Uri.parse(Secrets.create_company_endpoint);
 
-      final uid = supabaseInstance.auth.currentUser!.id;
 
       final mimeType = lookupMimeType(logoFile!.path) ?? 'image/jpeg';
       final fileStream = http.ByteStream(logoFile.openRead());
@@ -125,5 +129,95 @@ class CompanyRepositoryImpl implements CompanyRepository {
       print(e);
       throw UnknownFailure();
     }
+  }
+
+  // For the stream app with screen
+  Stream<List<CompanyModel>> getCompanyStream() {
+    final controller = StreamController<List<CompanyModel>>();
+    _connectToCompanyStream(controller);
+    return controller.stream;
+  }
+
+  Future<void> _connectToCompanyStream(StreamController<List<CompanyModel>> controller) async {
+    try {
+      final url = Uri.parse("${Secrets.company_realtime_stream_endpoint}?uid=$uid");
+
+      final request = http.Request("GET", url)
+        ..headers["Accept"] = "text/event-stream"
+        ..headers["Authorization"] = "Bearer $accessToken"
+        ..headers["apikey"] = Secrets.supabaseAnonKey;
+
+      final response = await request.send();
+      final stream = response.stream.transform(utf8.decoder);
+
+      String buffer = "";
+      _sseSubscription = stream.listen((chunk) {
+        buffer += chunk;
+
+        while (buffer.contains("\n\n")) {
+          final index = buffer.indexOf("\n\n");
+          final eventString = buffer.substring(0, index).trim();
+          buffer = buffer.substring(index + 2);
+
+          String? eventName;
+          String? data;
+
+          for (final line in eventString.split("\n")) {
+            if (line.startsWith("event:")) {
+              eventName = line.replaceFirst("event:", "").trim();
+            } else if (line.startsWith("data:")) {
+              data = line.replaceFirst("data:", "").trim();
+            }
+          }
+
+          if (data != null) {
+            try {
+              final decoded = jsonDecode(data);
+              List<CompanyModel> companies = [];
+
+              switch (eventName) {
+                case "initial_data":
+                  companies = (decoded["companies"] as List)
+                      .map((c) => CompanyModel.fromMap(c))
+                      .toList();
+                  break;
+
+                case "company_change":
+                  companies = [CompanyModel.fromMap(decoded["payload"]["new"])];
+                  break;
+
+                case "links_change":
+                  companies = (decoded["companies"] as List)
+                      .map((c) => CompanyModel.fromMap(c))
+                      .toList();
+                  break;
+
+                default:
+                  break;
+              }
+
+              if (companies.isNotEmpty && !controller.isClosed) {
+                controller.add(companies);
+              }
+            } catch (e) {
+              if (!controller.isClosed) {
+                controller.addError(e);
+              }
+            }
+          }
+        }
+      }, onError: (error) {
+        if (!controller.isClosed) controller.addError(error);
+      }, onDone: () {
+        if (!controller.isClosed) controller.close();
+      });
+    } catch (e) {
+      if (!controller.isClosed) controller.addError(e);
+    }
+  }
+
+  Future<void> disconnect() async {
+    await _sseSubscription?.cancel();
+    _sseSubscription = null;
   }
 }

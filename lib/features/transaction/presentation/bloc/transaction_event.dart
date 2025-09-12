@@ -4,7 +4,6 @@ abstract class TransactionEvent {}
 
 class CreateTransactionEvent extends TransactionEvent {
   final TransactionModel transaction;
-
   CreateTransactionEvent(this.transaction);
 }
 

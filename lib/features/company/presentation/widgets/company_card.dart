@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../domain/entities/company_model.dart';
 
 class CompanyCard extends StatelessWidget {
@@ -27,7 +27,12 @@ class CompanyCard extends StatelessWidget {
               child: SizedBox(
                 width: 30.w,
                 height: 30.h,
-                child: Image.asset(company.image!),
+                child: CachedNetworkImage(
+                  imageUrl: company.image!,
+                  placeholder: (context, url) => const CircularProgressIndicator(), // affiché en attendant
+                  errorWidget: (context, url, error) => const Icon(Icons.error),   // si l’image échoue
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             const SizedBox(width: 12),

@@ -8,7 +8,20 @@ class CreateCompanyEvent extends CompanyEvent {
   CreateCompanyEvent(this.company, {this.logoFile});
 }
 
-// Add your events here
 class ExampleCompanyEvent extends CompanyEvent {}
 
-class GetAllCompanyRequested extends CompanyEvent {}
+
+// For stream app with screen
+class GetAllCompany extends CompanyEvent {}
+
+class CompanyDataUpdated extends CompanyEvent {
+  final List<CompanyModel> companies;
+
+  CompanyDataUpdated(this.companies);
+}
+
+class CompanyStreamError extends CompanyEvent {
+  final dynamic error;
+
+  CompanyStreamError(this.error);
+}
