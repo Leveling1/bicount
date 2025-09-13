@@ -10,14 +10,11 @@ part 'company_state.dart';
 
 class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
   final CompanyRepository repository;
-  StreamSubscription? _streamSubscription;
-  List<CompanyModel> _companies = [];
+  List<CompanyModel>? _cachedCompanies;
 
   CompanyBloc(this.repository) : super(CompanyInitial()) {
     on<CreateCompanyEvent>(_onCreateCompany);
     on<GetAllCompany>(_getAllCompany);
-    on<CompanyDataUpdated>(_onDataUpdated);
-    on<CompanyStreamError>(_onStreamError);
   }
 
   Future<void> _onCreateCompany(CreateCompanyEvent event, Emitter<CompanyState> emit) async {
@@ -32,46 +29,30 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
     }
   }
 
-  Future<void> _getAllCompany(GetAllCompany event, Emitter<CompanyState> emit) async {
+  Future<void> _getAllCompany(
+      GetAllCompany event, Emitter<CompanyState> emit) async {
+
+    // Émettre directement le cache si disponible
+    if (_cachedCompanies != null) {
+      emit(CompanyLoaded(List.from(_cachedCompanies!)));
+      return;
+    }
+
     emit(CompanyLoading());
-
-    // Annuler tout abonnement existant
-    await _streamSubscription?.cancel();
-
     try {
-      _streamSubscription = repository.getCompanyStream().listen(
-            (companies) {
-          // Ajouter un événement plutôt que d'émettre directement
-          add(CompanyDataUpdated(companies));
+      // Écoute le stream Realtime
+      await emit.forEach<List<CompanyModel>>(
+        repository.getCompanyStream(),
+        onData: (companies) {
+          // Mettre à jour le cache interne
+          _cachedCompanies = List.from(companies);
+          return CompanyLoaded(List.from(companies));
         },
-        onError: (error) {
-          add(CompanyStreamError(error));
-        },
+        onError: (error, stackTrace) =>
+            CompanyError(ServerFailure(error.toString())),
       );
     } catch (e) {
-      if (!isClosed) {
-        emit(CompanyError(e is Failure ? e : UnknownFailure()));
-      }
+      emit(CompanyError(ServerFailure(e.toString())));
     }
-  }
-
-  void _onDataUpdated(CompanyDataUpdated event, Emitter<CompanyState> emit) {
-    if (!isClosed) {
-      _companies = event.companies;
-      emit(CompanyLoaded(_companies));
-    }
-  }
-
-  void _onStreamError(CompanyStreamError event, Emitter<CompanyState> emit) {
-    if (!isClosed) {
-      emit(CompanyError(event.error is Failure ? event.error : UnknownFailure()));
-    }
-  }
-
-  @override
-  Future<void> close() {
-    _streamSubscription?.cancel();
-    repository.disconnect();
-    return super.close();
   }
 }

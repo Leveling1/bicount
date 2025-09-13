@@ -5,6 +5,7 @@ import '../../../../core/widgets/custom_search_field.dart';
 import '../../domain/entities/company_model.dart';
 import '../bloc/company_bloc.dart';
 import '../widgets/company_card.dart';
+import '../widgets/company_card_skeleton.dart';
 
 class CompanyScreen extends StatefulWidget {
   const CompanyScreen({super.key});
@@ -44,7 +45,11 @@ class _CompanyScreenState extends State<CompanyScreen> {
       },
       builder: (context, state) {
         if (state is CompanyLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return SingleChildScrollView(
+            child: Column(
+              children: List.generate(10, (_) => const CompanyCardSkeleton()),
+            ),
+          );
         } else if (state is CompanyLoaded) {
           if (state.companies.isEmpty) {
             return const Center(child: Text("You are not linked to any company."));
@@ -54,6 +59,9 @@ class _CompanyScreenState extends State<CompanyScreen> {
             final query = _searchController.text.toLowerCase();
             return company.name.toLowerCase().contains(query);
           }).toList();
+
+          filteredCompanies.sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
           return SingleChildScrollView(
             child: Column(

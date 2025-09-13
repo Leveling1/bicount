@@ -13,13 +13,14 @@ import 'package:path/path.dart' as path;
 
 class CompanyRepositoryImpl implements CompanyRepository {
   CompanyRepositoryImpl();
-  WebSocket? _socket; // Plus utilisé
-  StreamSubscription? _sseSubscription;
-  final _controller = StreamController<List<CompanyModel>>.broadcast();
   final supabaseInstance = Supabase.instance.client;
 
   String get uid => supabaseInstance.auth.currentUser!.id;
   String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
+
+  final _controller = StreamController<List<CompanyModel>>.broadcast();
+  // Liste locale toujours à jour
+  final List<CompanyModel> _currentCompanies = [];
 
   // For the creation company
   @override
@@ -132,92 +133,103 @@ class CompanyRepositoryImpl implements CompanyRepository {
   }
 
   // For the stream app with screen
+  @override
   Stream<List<CompanyModel>> getCompanyStream() {
-    final controller = StreamController<List<CompanyModel>>();
-    _connectToCompanyStream(controller);
-    return controller.stream;
+    // Charger état initial
+    _loadInitialCompanies();
+
+    // Abonnement Realtime sur table "company"
+    _subscribeToCompanyChanges();
+
+    // Abonnement Realtime sur table "company_with_user_link"
+    _subscribeToCompanyLinkChanges();
+
+    return _controller.stream;
   }
 
-  Future<void> _connectToCompanyStream(StreamController<List<CompanyModel>> controller) async {
+  Future<void> _loadInitialCompanies() async {
     try {
-      final url = Uri.parse("${Secrets.company_realtime_stream_endpoint}?uid=$uid");
-
-      final request = http.Request("GET", url)
-        ..headers["Accept"] = "text/event-stream"
-        ..headers["Authorization"] = "Bearer $accessToken"
-        ..headers["apikey"] = Secrets.supabaseAnonKey;
-
-      final response = await request.send();
-      final stream = response.stream.transform(utf8.decoder);
-
-      String buffer = "";
-      _sseSubscription = stream.listen((chunk) {
-        buffer += chunk;
-
-        while (buffer.contains("\n\n")) {
-          final index = buffer.indexOf("\n\n");
-          final eventString = buffer.substring(0, index).trim();
-          buffer = buffer.substring(index + 2);
-
-          String? eventName;
-          String? data;
-
-          for (final line in eventString.split("\n")) {
-            if (line.startsWith("event:")) {
-              eventName = line.replaceFirst("event:", "").trim();
-            } else if (line.startsWith("data:")) {
-              data = line.replaceFirst("data:", "").trim();
-            }
-          }
-
-          if (data != null) {
-            try {
-              final decoded = jsonDecode(data);
-              List<CompanyModel> companies = [];
-
-              switch (eventName) {
-                case "initial_data":
-                  companies = (decoded["companies"] as List)
-                      .map((c) => CompanyModel.fromMap(c))
-                      .toList();
-                  break;
-
-                case "company_change":
-                  companies = [CompanyModel.fromMap(decoded["payload"]["new"])];
-                  break;
-
-                case "links_change":
-                  companies = (decoded["companies"] as List)
-                      .map((c) => CompanyModel.fromMap(c))
-                      .toList();
-                  break;
-
-                default:
-                  break;
-              }
-
-              if (companies.isNotEmpty && !controller.isClosed) {
-                controller.add(companies);
-              }
-            } catch (e) {
-              if (!controller.isClosed) {
-                controller.addError(e);
-              }
-            }
-          }
-        }
-      }, onError: (error) {
-        if (!controller.isClosed) controller.addError(error);
-      }, onDone: () {
-        if (!controller.isClosed) controller.close();
-      });
+      final res = await supabaseInstance.from('company').select('*');
+      _currentCompanies
+        ..clear()
+        ..addAll((res as List).map((c) => CompanyModel.fromMap(c)));
+      _controller.add(List.from(_currentCompanies));
     } catch (e) {
-      if (!controller.isClosed) controller.addError(e);
+      _controller.addError(e);
     }
   }
 
-  Future<void> disconnect() async {
-    await _sseSubscription?.cancel();
-    _sseSubscription = null;
+  void _subscribeToCompanyChanges() {
+    supabaseInstance.channel('company_changes')
+        .onPostgresChanges(
+      event: PostgresChangeEvent.all,
+      schema: 'public',
+      table: 'company',
+      callback: (payload) {
+        switch (payload.eventType) {
+          case 'INSERT':
+            if (payload.newRecord != null) {
+              final company = CompanyModel.fromMap(payload.newRecord!);
+              _currentCompanies.add(company);
+            }
+            break;
+          case 'UPDATE':
+            if (payload.newRecord != null) {
+              final company = CompanyModel.fromMap(payload.newRecord!);
+              final index = _currentCompanies.indexWhere((c) => c.id == company.id);
+              if (index != -1) {
+                _currentCompanies[index] = company;
+              }
+            }
+            break;
+          case 'DELETE':
+            if (payload.oldRecord != null) {
+              final id = payload.oldRecord!['id'];
+              _currentCompanies.removeWhere((c) => c.id == id);
+            }
+            break;
+          case PostgresChangeEvent.all:
+            // TODO: Handle this case.
+            throw UnimplementedError();
+          case PostgresChangeEvent.insert:
+            // TODO: Handle this case.
+            throw UnimplementedError();
+          case PostgresChangeEvent.update:
+            // TODO: Handle this case.
+            throw UnimplementedError();
+          case PostgresChangeEvent.delete:
+            // TODO: Handle this case.
+            throw UnimplementedError();
+        }
+        _controller.add(List.from(_currentCompanies));
+      },
+    )
+        .subscribe();
+  }
+
+  void _subscribeToCompanyLinkChanges() {
+    supabaseInstance.channel('company_link_changes')
+        .onPostgresChanges(
+      event: PostgresChangeEvent.all,
+      schema: 'public',
+      table: 'company_with_user_link',
+      callback: (payload) async {
+        // Recharger toutes les companies liées quand un lien change
+        try {
+          final res = await supabaseInstance.from('company').select('*');
+          _currentCompanies
+            ..clear()
+            ..addAll((res as List).map((c) => CompanyModel.fromMap(c)));
+          _controller.add(List.from(_currentCompanies));
+        } catch (e) {
+          _controller.addError(e);
+        }
+      },
+    )
+        .subscribe();
+  }
+
+  Future<void> dispose() async {
+    await _controller.close();
   }
 }

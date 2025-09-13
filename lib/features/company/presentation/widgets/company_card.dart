@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
 import '../../domain/entities/company_model.dart';
+import 'company_image_skeleton.dart';
 
 class CompanyCard extends StatelessWidget {
   final CompanyModel company;
@@ -44,7 +45,7 @@ class CompanyCard extends StatelessWidget {
                     imageUrl: company.image!,
                     width: 60.w,
                     height: 60.h,
-                    placeholder: (context, url) => const CircularProgressIndicator(),
+                    placeholder: (context, url) => CompanyImageSkeleton(width: 60.w, height: 60.h),
                     errorWidget: (context, url, error) => const Icon(Icons.error),
                     fit: BoxFit.cover,
                   ) : Padding(

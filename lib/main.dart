@@ -59,8 +59,9 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider<HomeBloc>(create: (context) => HomeBloc()),
-          BlocProvider<CompanyBloc>(create: (context) => CompanyBloc(context.read<CompanyRepositoryImpl>()))
-            /*..add(GetAllCompanyRequested()))*/,
+          BlocProvider<CompanyBloc>(
+            create: (context) => CompanyBloc(CompanyRepositoryImpl(),)
+          ),
           BlocProvider<TransactionBloc>(
             create: (context) =>
                 TransactionBloc(context.read<TransactionRepositoryImpl>())

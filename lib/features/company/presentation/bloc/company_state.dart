@@ -12,14 +12,12 @@ class CompanyCreated extends CompanyState {
 
   CompanyCreated(this.company);
 }
-class CompanyError extends CompanyState {
-  final Failure failure;
 
-  CompanyError(this.failure);
-}
-
-// For stream app with screen
 class CompanyLoaded extends CompanyState {
   final List<CompanyModel> companies;
   CompanyLoaded(this.companies);
+}
+class CompanyError extends CompanyState {
+  final Failure failure;
+  CompanyError(this.failure);
 }
