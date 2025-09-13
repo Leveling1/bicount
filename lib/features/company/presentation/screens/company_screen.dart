@@ -14,7 +14,7 @@ class CompanyScreen extends StatefulWidget {
 }
 
 class _CompanyScreenState extends State<CompanyScreen> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -23,12 +23,19 @@ class _CompanyScreenState extends State<CompanyScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CompanyBloc>().add(GetAllCompany());
     });
+    _searchController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<CompanyModel> companies = [];
-    List<CompanyModel> filteredCompanies = [];
     return  BlocConsumer<CompanyBloc, CompanyState>(
       listener: (context, state) {
         if (state is CompanyError) {
@@ -42,12 +49,31 @@ class _CompanyScreenState extends State<CompanyScreen> {
           if (state.companies.isEmpty) {
             return const Center(child: Text("You are not linked to any company."));
           }
-          return ListView.builder(
-            itemCount: state.companies.length,
-            itemBuilder: (context, index) {
-              final company = state.companies[index];
-              return ListTile(title: CompanyCard(company: company));
-            },
+
+          final filteredCompanies = state.companies.where((company) {
+            final query = _searchController.text.toLowerCase();
+            return company.name.toLowerCase().contains(query);
+          }).toList();
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                state.companies.length > 10
+                  ? CustomSearchField(
+                      onChanged: (value){
+                        setState(() {
+                          _searchController.text = value;
+                        });
+                      },
+                    )
+                  : const SizedBox.shrink(),
+                const SizedBox(height: 20),
+                Column(
+                  children:
+                  filteredCompanies.map((company) => CompanyCard(company: company)).toList(),
+                )
+              ]
+            ),
           );
         } else if (state is CompanyError) {
           return Center(child: Text("Error: ${state.failure.message}"));
