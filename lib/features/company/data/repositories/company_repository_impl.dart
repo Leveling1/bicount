@@ -160,52 +160,50 @@ class CompanyRepositoryImpl implements CompanyRepository {
   }
 
   void _subscribeToCompanyChanges() {
-    supabaseInstance.channel('company_changes')
-        .onPostgresChanges(
-      event: PostgresChangeEvent.all,
+    final channel = supabaseInstance.channel('company_changes');
+
+    // INSERT
+    channel.onPostgresChanges(
+      event: PostgresChangeEvent.insert,
       schema: 'public',
       table: 'company',
       callback: (payload) {
-        switch (payload.eventType) {
-          case 'INSERT':
-            if (payload.newRecord != null) {
-              final company = CompanyModel.fromMap(payload.newRecord!);
-              _currentCompanies.add(company);
-            }
-            break;
-          case 'UPDATE':
-            if (payload.newRecord != null) {
-              final company = CompanyModel.fromMap(payload.newRecord!);
-              final index = _currentCompanies.indexWhere((c) => c.id == company.id);
-              if (index != -1) {
-                _currentCompanies[index] = company;
-              }
-            }
-            break;
-          case 'DELETE':
-            if (payload.oldRecord != null) {
-              final id = payload.oldRecord!['id'];
-              _currentCompanies.removeWhere((c) => c.id == id);
-            }
-            break;
-          case PostgresChangeEvent.all:
-            // TODO: Handle this case.
-            throw UnimplementedError();
-          case PostgresChangeEvent.insert:
-            // TODO: Handle this case.
-            throw UnimplementedError();
-          case PostgresChangeEvent.update:
-            // TODO: Handle this case.
-            throw UnimplementedError();
-          case PostgresChangeEvent.delete:
-            // TODO: Handle this case.
-            throw UnimplementedError();
-        }
+        final company = CompanyModel.fromMap(payload.newRecord);
+        _currentCompanies.add(company);
         _controller.add(List.from(_currentCompanies));
-      },
-    )
-        .subscribe();
+            },
+    );
+
+    // UPDATE
+    channel.onPostgresChanges(
+      event: PostgresChangeEvent.update,
+      schema: 'public',
+      table: 'company',
+      callback: (payload) {
+        final company = CompanyModel.fromMap(payload.newRecord);
+        final index = _currentCompanies.indexWhere((c) => c.id == company.id);
+        if (index != -1) {
+          _currentCompanies[index] = company; // remplacer l’ancienne
+          _controller.add(List.from(_currentCompanies));
+        }
+            },
+    );
+
+    // DELETE
+    channel.onPostgresChanges(
+      event: PostgresChangeEvent.delete,
+      schema: 'public',
+      table: 'company',
+      callback: (payload) {
+        final id = payload.oldRecord['id'];
+        _currentCompanies.removeWhere((c) => c.id == id);
+        _controller.add(List.from(_currentCompanies));
+            },
+    );
+
+    channel.subscribe();
   }
+
 
   void _subscribeToCompanyLinkChanges() {
     supabaseInstance.channel('company_link_changes')
@@ -226,7 +224,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
         }
       },
     )
-        .subscribe();
+    .subscribe();
   }
 
   Future<void> dispose() async {
