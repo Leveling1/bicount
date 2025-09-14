@@ -44,7 +44,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
       final userData = await crud.readRowByID(authUser.id);
       final currentUser = User.fromData(userData);
 
-      List<User> userList = (await linkedUsers(currentUser.id)).cast<User>();
+      List<User> userList = (await linkedUsers("${currentUser.id}")).cast<User>();
 
       return userList;
     } catch (e) {
