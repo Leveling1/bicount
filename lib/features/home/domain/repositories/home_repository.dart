@@ -1,6 +1,7 @@
+import '../../../authentification/data/models/user_model.dart';
 import '/core/errors/failure.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class HomeRepository {
-  // Add your repository interface here
+  Stream<UserModel> getDataStream();
 }

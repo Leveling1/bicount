@@ -8,8 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 
+import '../../../../core/services/notification_helper.dart';
 import '../bloc/home_bloc.dart';
 
 typedef CardTapCallback = void Function(int index);
@@ -24,135 +25,175 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    // Ici on déclenche la récupération des companies
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeBloc>().add(GetAllData());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.sizeOf(context).height;
-    return SingleChildScrollView(
-      child: SizedBox(
-        height: height - AppDimens.bottomBarHeight.h,
-        child: BlocBuilder<HomeBloc, HomeState>(
-          builder: (context, state) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: AppDimens.spacingMedium,
-              children: [
-                SizedBox(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppDimens.paddingExtraLarge,
-                    ),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Text(
-                            "Your balance",
-                            style: Theme.of(context).textTheme.titleSmall,
+    final double width = MediaQuery.sizeOf(context).width;
+    return BlocConsumer<HomeBloc, HomeState>(
+      listener: (context, state){
+        if (state is HomeError) {
+          NotificationHelper.showFailureNotification(context, state.toString());
+        }
+      },
+      builder: (context, state) {
+        return SingleChildScrollView(
+          child: SizedBox(
+            height: height - AppDimens.bottomBarHeight.h,
+            child: BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: AppDimens.spacingMedium,
+                  children: [
+                    SizedBox(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppDimens.paddingExtraLarge,
+                        ),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                "Your balance",
+                                style: Theme.of(context).textTheme.titleSmall,
+                              ),
+                              state is HomeLoading
+                              ? SkeletonItem(
+                                child: SkeletonLine(
+                                  style: SkeletonLineStyle(
+                                    height: Theme.of(context)
+                                        .textTheme.titleLarge!.fontSize,
+                                    width: width * 40,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              )
+                              : Text(
+                                state is HomeLoaded
+                                  ? NumberFormatUtils
+                                    .formatCurrency(state.data.profit as num)
+                                  : NumberFormatUtils.formatCurrency(0.0),
+                                style: Theme.of(context).textTheme.titleLarge!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           ),
-                          Text(
-                            NumberFormatUtils.formatCurrency(86290.49),
-                            style: Theme.of(context).textTheme.titleLarge!
-                                .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "Accounts",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    SizedBox(
+                      height: 155.h,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          CardTypeRevenue(
+                            onTap: () { },
+                            label: "Personnal",
+                            amount: state is HomeLoading
+                                ? 0.0
+                                : state is HomeLoaded
+                                ? state.data.personal_income!
+                                : 0.0,
+                            icon: HugeIcon(
+                              icon: HugeIcons.strokeRoundedUser03,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(width: AppDimens.spacingMedium),
+                          CardTypeRevenue(
+                            onTap: () {
+                              widget.onCardTap?.call(1); // CompanyScreen
+                            },
+                            label: "Entreprises",
+                            amount: state is HomeLoading
+                              ? 0.0
+                              : state is HomeLoaded
+                                ? state.data.company_income!
+                                : 0.0,
+                            icon: HugeIcon(
+                              icon: HugeIcons.strokeRoundedBuilding02,
+                              color: Colors.white,
+                            ),
+                            color: Colors.purple,
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ),
-                Text(
-                  "Accounts",
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                SizedBox(
-                  height: 155.h,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-
-                    children: [
-                      CardTypeRevenue(
-                        onTap: () { },
-                        label: "Personnal",
-                        amount: 5695.20,
-                        icon: HugeIcon(
-                          icon: HugeIcons.strokeRoundedUser03,
-                          color: Colors.white,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Transactions",
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
-                      ),
-                      SizedBox(width: AppDimens.spacingMedium),
-                      CardTypeRevenue(
-                        onTap: () {
-                          widget.onCardTap?.call(1); // CompanyScreen
-                        },
-                        label: "Entreprises",
-                        amount: 889.56,
-                        icon: HugeIcon(
-                          icon: HugeIcons.strokeRoundedBuilding02,
-                          color: Colors.white,
+                        TextButton(
+                          onPressed: () {
+                            widget.onCardTap?.call(2); // TransactionScreen
+                          },
+                          style: Theme.of(context).textButtonTheme.style,
+                          child: Text(
+                            "show more",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ),
-                        color: Colors.purple,
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Transactions",
-                      style: Theme.of(context).textTheme.titleMedium,
+                      ],
                     ),
-                    TextButton(
-                      onPressed: () {
-                        widget.onCardTap?.call(2); // TransactionScreen
-                      },
-                      style: Theme.of(context).textButtonTheme.style,
-                      child: Text(
-                        "show more",
-                        style: Theme.of(context).textTheme.bodyMedium,
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: 5,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              TransactionCard(
+                                transaction: TransactionModel(
+                                  id: "01",
+                                  name: MemojiUtils.defaultMemojis[index % 7].name!,
+                                  type: TransactionType.income,
+                                  date: DateTime.now(),
+                                  createdAt: DateTime.now(),
+                                  amount: 1250,
+                                  image: MemojiUtils
+                                      .defaultMemojis[index % 7]
+                                      .imagePath,
+                                  frequency: TransactionFrequency.cyclic,
+                                  sender: "sender",
+                                  beneficiary: {
+                                    "0": "Jean Dupont",
+                                    "1": "Alice Mambu",
+                                  },
+                                  note: "note",
+                                  currency: Currency.EUR,
+                                ),
+                              ),
+                              Divider(
+                                color: Theme.of(context).iconTheme.color,
+                                thickness: 0.7,
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ],
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          TransactionCard(
-                            transaction: TransactionModel(
-                              id: "01",
-                              name: MemojiUtils.defaultMemojis[index % 7].name!,
-                              type: TransactionType.income,
-                              date: DateTime.now(),
-                              createdAt: DateTime.now(),
-                              amount: 1250,
-                              image: MemojiUtils
-                                  .defaultMemojis[index % 7]
-                                  .imagePath,
-                              frequency: TransactionFrequency.cyclic,
-                              sender: "sender",
-                              beneficiary: {
-                                "0": "Jean Dupont",
-                                "1": "Alice Mambu",
-                              },
-                              note: "note",
-                              currency: Currency.EUR,
-                            ),
-                          ),
-                          Divider(
-                            color: Theme.of(context).iconTheme.color,
-                            thickness: 0.7,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-    );
+                );
+              },
+            ),
+          ),
+        );
+    },);
   }
 }

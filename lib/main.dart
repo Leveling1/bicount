@@ -58,9 +58,11 @@ class MyApp extends StatelessWidget {
                   .read<AuthentificationRepositoryImpl>(),
             ),
           ),
-          BlocProvider<HomeBloc>(create: (context) => HomeBloc()),
+          BlocProvider<HomeBloc>(
+            create: (context) => HomeBloc(HomeRepositoryImpl())
+          ),
           BlocProvider<CompanyBloc>(
-            create: (context) => CompanyBloc(CompanyRepositoryImpl(),)
+            create: (context) => CompanyBloc(CompanyRepositoryImpl())
           ),
           BlocProvider<TransactionBloc>(
             create: (context) =>
