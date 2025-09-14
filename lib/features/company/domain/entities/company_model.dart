@@ -1,13 +1,14 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 class CompanyModel {
   final int? id;
   final String name;
   final String? description;
   final String? image;
-  final int? sales;
-  final int? expenses;
-  final int? profit;
+  final double? sales;
+  final double? expenses;
+  final double? profit;
   final DateTime createdAt;
 
   CompanyModel({
@@ -42,9 +43,9 @@ class CompanyModel {
       name: map['name'] ?? '',
       description: map['description'],
       image: map['image'],
-      sales: map['sales'] ?? 0.0,
-      expenses: map['expenses'] ?? 0.0,
-      profit: map['profit'] ?? 0.0,
+      sales: (map['sales'] as num?)?.toDouble(),
+      expenses: (map['expenses'] as num?)?.toDouble(),
+      profit: (map['profit'] as num?)?.toDouble(),
       createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
     );
   }
