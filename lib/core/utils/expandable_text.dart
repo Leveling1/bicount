@@ -14,7 +14,8 @@ class ExpandableText extends StatefulWidget {
   State<ExpandableText> createState() => _ExpandableTextState();
 }
 
-class _ExpandableTextState extends State<ExpandableText> {
+class _ExpandableTextState extends State<ExpandableText>
+    with SingleTickerProviderStateMixin {
   bool _expanded = false;
 
   @override
@@ -22,7 +23,6 @@ class _ExpandableTextState extends State<ExpandableText> {
     final textWidget = Text(
       widget.text,
       softWrap: true,
-      textAlign: TextAlign.justify,
       overflow: TextOverflow.fade,
       maxLines: _expanded ? null : widget.trimLines,
     );
@@ -30,15 +30,25 @@ class _ExpandableTextState extends State<ExpandableText> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        textWidget,
+        /// Animation fluide quand on change la taille
+        AnimatedSize(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: Alignment.topCenter,
+          child: textWidget,
+        ),
+
         if (_shouldShowMore(widget.text))
           GestureDetector(
             onTap: () => setState(() => _expanded = !_expanded),
-            child: Text(
-              _expanded ? "Voir moins" : "Voir plus",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                _expanded ? "Voir moins" : "Voir plus",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -46,8 +56,8 @@ class _ExpandableTextState extends State<ExpandableText> {
     );
   }
 
-  /// Vérifie si le texte dépasse la limite
   bool _shouldShowMore(String text) {
+    // approximation simple : tu peux améliorer avec TextPainter
     return text.length > widget.trimLines * 50;
   }
 }
