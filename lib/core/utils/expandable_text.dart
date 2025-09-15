@@ -44,7 +44,7 @@ class _ExpandableTextState extends State<ExpandableText>
             child: Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Text(
-                _expanded ? "Voir moins" : "Voir plus",
+                _expanded ? "Show less" : "Show more",
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
