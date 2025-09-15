@@ -9,6 +9,7 @@ import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/number_format_utils.dart';
 import '../../domain/entities/company_model.dart';
 import 'company_image_skeleton.dart';
+import 'company_profil.dart';
 
 class CompanyCard extends StatelessWidget {
   final CompanyModel company;
@@ -18,7 +19,6 @@ class CompanyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
@@ -34,76 +34,59 @@ class CompanyCard extends StatelessWidget {
           onTap: (){
             context.push('/companyDetail', extra: company);
           },
-          child: Row(
-            children: [
-              // Avatar
-              CircleAvatar(
-                backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-                radius: 20,
-                child: ClipOval(
-                  child: company.image != null || company.image != ""
-                  ? CachedNetworkImage(
-                    imageUrl: company.image!,
-                    width: 60.w,
-                    height: 60.h,
-                    placeholder: (context, url) => CompanyImageSkeleton(width: 60.w, height: 60.h),
-                    errorWidget: (context, url, error) => const Icon(Icons.error),
-                    fit: BoxFit.cover,
-                  ) : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SvgPicture.asset(
-                      "assets/icons/Company_card_icon.svg",
-                      semanticsLabel: "Company",
-                      width: 60.w,
-                      height: 60.h,
-                      colorFilter: ColorFilter.mode(
-                        AppColors.inactiveColorDark,
-                        BlendMode.srcIn,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            child: Row(
+              children: [
+                // Avatar
+                CompanyProfil(
+                  width: 60,
+                  height: 60,
+                  image: company.image,
+                ),
+                const SizedBox(width: 12),
+
+                // Name and date
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        company.name,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                    ),
+                      company.description != null && company.description != ""
+                        ? const SizedBox(height: 4) : const SizedBox.shrink(),
+                      company.description != null && company.description != ""
+                        ? Text(
+                        company.description!,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontSize: Theme.of(context).textTheme.bodySmall!.fontSize!
+                        ),
+                      ) : const SizedBox.shrink(),
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-
-              // Name and date
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      company.name,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    company.description != null || company.description != ""
-                      ? const SizedBox(height: 4) : const SizedBox.shrink(),
-                    company.description != null || company.description != ""
-                      ? Text(
-                      company.description!,
-                      style: TextStyle(
-                        color: Colors.grey.shade500,
-                        fontSize: Theme.of(context).textTheme.bodySmall!.fontSize!
-                      ),
-                    ) : const SizedBox.shrink(),
-                  ],
+                const SizedBox(width: 12),
+                // Date
+                Text(
+                  NumberFormatUtils.formatCurrency(company.profit as num),
+                  style: TextStyle(
+                    color: company.profit! == 0.0
+                      ? Theme.of(context).iconTheme.color
+                      : company.profit! < 0
+                        ? Colors.red
+                        : Colors.green,
+                    fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
+                    fontWeight: FontWeight.bold
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              // Date
-              Text(
-                NumberFormatUtils.formatCurrency(company.profit as num),
-                style: TextStyle(
-                  color: company.profit! == 0.0
-                    ? Theme.of(context).iconTheme.color
-                    : company.profit! < 0
-                      ? Colors.red
-                      : Colors.green,
-                  fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

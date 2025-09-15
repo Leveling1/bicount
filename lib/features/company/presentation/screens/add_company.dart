@@ -74,6 +74,12 @@ class _AddCompanyState extends State<AddCompany> {
                       controller: _name,
                       label: "Company name",
                       hint: 'Enter company name',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a company name';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],

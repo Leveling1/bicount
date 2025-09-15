@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/themes/app_dimens.dart';
+import '../themes/app_dimens.dart';
 
 class DetailsCard extends StatelessWidget {
   final Widget child;

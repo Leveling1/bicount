@@ -7,7 +7,7 @@ import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/date_format_utils.dart';
 import '../../domain/entities/transaction_model.dart';
-import '../widgets/details_card.dart';
+import '../../../../core/widgets/details_card.dart';
 
 class DetailTransactionScreen extends StatefulWidget {
   final TransactionModel transaction;

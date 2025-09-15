@@ -28,27 +28,28 @@ class CompanyRepositoryImpl implements CompanyRepository {
     try {
       final uri = Uri.parse(Secrets.create_company_endpoint);
 
-
-      final mimeType = lookupMimeType(logoFile!.path) ?? 'image/jpeg';
-      final fileStream = http.ByteStream(logoFile.openRead());
-      final fileLength = await logoFile.length();
-      var mimeParts = mimeType.split('/');
-
       var request = http.MultipartRequest("POST", uri)
         ..fields['name'] = company.name
         ..fields['description'] = company.description ?? ""
         ..fields['uid'] = uid
         ..headers['Authorization'] = 'Bearer $accessToken'
-        ..headers['apikey'] = Secrets.supabaseAnonKey
-        ..files.add(
+        ..headers['apikey'] = Secrets.supabaseAnonKey;
+      if (logoFile != null) {
+        final mimeType = lookupMimeType(logoFile.path) ?? 'image/jpeg';
+        final fileStream = http.ByteStream(logoFile.openRead());
+        final fileLength = await logoFile.length();
+        var mimeParts = mimeType.split('/');
+
+        request.files.add(
           http.MultipartFile(
             'logo',
             fileStream,
             fileLength,
             filename: path.basename(logoFile.path),
             contentType: MediaType(mimeParts[0], mimeParts[1]),
-          ),
+          )
         );
+      }
 
     final response = await request.send();
     final responseBody = await response.stream.bytesToString();
