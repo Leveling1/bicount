@@ -7,6 +7,7 @@ import '../../../../core/widgets/details_card.dart';
 import '../../domain/entities/company_model.dart';
 import '../widgets/company_card_info.dart';
 import '../widgets/company_profil.dart';
+import '../widgets/custom_pie_chart.dart';
 
 class DetailCompanyScreen extends StatefulWidget {
   final CompanyModel company;
@@ -76,10 +77,18 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                   widget.company.name,
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
-                DetailsCard(
+                widget.company.description != null && widget.company.description != ""
+                ? DetailsCard(
                   child: ExpandableText(
                     widget.company.description!,
                   ),
+                ) : const SizedBox.shrink(),
+                const SizedBox(height: AppDimens.marginMedium),
+                CustomPieChart(
+                  profit: widget.company.profit!,
+                  salary: widget.company.salary!,
+                  equipment: widget.company.equipment!,
+                  service: widget.company.service!,
                 ),
                 Row(
                   children: [
@@ -127,6 +136,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: AppDimens.marginMedium),
               ],
             ),
           ),

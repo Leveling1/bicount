@@ -8,6 +8,14 @@ class AppColors {
   static const Color quaternaryColorBasic = Color(0xFF0554F2);
   static const Color backgroundColorBasic = Color(0xFFEFF2EB);
 
+  static const Color profitColor   = Color(0xFF2E7D32);
+  static const Color salaryColor   = Color(0xFF0554F2);
+  static const Color equipmentColor= Color(0xFF6D4C41);
+  static const Color serviceColor  = Color(0xFF00897B);
+  static const Color expensesColor = Color(0xFFC62828);
+  static const Color salesColor    = Color(0xFFF9A825);
+
+
   /// Dark Theme
   static const Color primaryColorDark = Color(0xFF76A646);
   static const Color backgroundColorDark = Color(0xFF1A1A1A);

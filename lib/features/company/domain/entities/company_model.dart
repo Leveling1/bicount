@@ -9,6 +9,9 @@ class CompanyModel {
   final double? sales;
   final double? expenses;
   final double? profit;
+  final double? salary;
+  final double? equipment;
+  final double? service;
   final DateTime createdAt;
 
   CompanyModel({
@@ -19,6 +22,9 @@ class CompanyModel {
     this.sales,
     this.expenses,
     this.profit,
+    this.salary,
+    this.equipment,
+    this.service,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -32,6 +38,9 @@ class CompanyModel {
       'sales': sales,
       'expenses': expenses,
       'profit': profit,
+      'salary': salary,
+      'equipment': equipment,
+      'service': service,
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -46,6 +55,9 @@ class CompanyModel {
       sales: (map['sales'] as num?)?.toDouble(),
       expenses: (map['expenses'] as num?)?.toDouble(),
       profit: (map['profit'] as num?)?.toDouble(),
+      salary: (map['salary'] as num?)?.toDouble(),
+      equipment: (map['equipment'] as num?)?.toDouble(),
+      service: (map['service'] as num?)?.toDouble(),
       createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
     );
   }
