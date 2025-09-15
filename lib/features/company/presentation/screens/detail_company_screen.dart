@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
+import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/expandable_text.dart';
 import '../../../../core/widgets/details_card.dart';
@@ -95,20 +96,20 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                     Flexible(
                       flex: 1,
                       child: CompanyCardInfo(
-                        title: "Sales",
+                        title: "Profit",
                         value: 0,
                         percent: 0,
-                        color: Colors.red,
+                        color: AppColors.profitColor,
                       ),
                     ),
                     const SizedBox(width: AppDimens.marginMedium),
                     Flexible(
                       flex: 1,
                       child: CompanyCardInfo(
-                        title: "Profit",
+                        title: "Salary",
                         value: 0,
                         percent: 0,
-                        color: Colors.green,
+                        color: AppColors.salaryColor,
                       ),
                     ),
                   ],
@@ -118,20 +119,20 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                     Flexible(
                       flex: 1,
                       child: CompanyCardInfo(
-                        title: "Sales",
+                        title: "Equipment",
                         value: 0,
                         percent: 0,
-                        color: Colors.orange,
+                        color: AppColors.equipmentColor,
                       ),
                     ),
                     const SizedBox(width: AppDimens.marginMedium),
                     Flexible(
                       flex: 1,
                       child: CompanyCardInfo(
-                        title: "Profit",
+                        title: "Third-party service",
                         value: 0,
                         percent: 0,
-                        color: Colors.blueAccent,
+                        color: AppColors.serviceColor,
                       ),
                     ),
                   ],
