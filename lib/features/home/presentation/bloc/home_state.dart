@@ -7,11 +7,16 @@ class HomeInitial extends HomeState {}
 class HomeLoading extends HomeState {}
 
 class HomeError extends HomeState {
-  final Failure failure;
-  HomeError(this.failure);
+  final String message;
+  HomeError(this.message);
 }
 
 class HomeLoaded extends HomeState {
   final UserModel data;
   HomeLoaded(this.data);
+}
+
+class HomeNoInternet extends HomeState {
+  final String message;
+  HomeNoInternet({this.message = "No internet connection"});
 }

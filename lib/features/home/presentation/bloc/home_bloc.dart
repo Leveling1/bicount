@@ -14,9 +14,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetAllData>(_getAllData);
   }
 
-  Future<void> _getAllData(
-      GetAllData event, Emitter<HomeState> emit) async {
-
+  Future<void> _getAllData(GetAllData event, Emitter<HomeState> emit) async {
     // Émettre directement le cache si disponible
     if (_cachedData != null) {
       emit(HomeLoaded(_cachedData!));
@@ -24,20 +22,30 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
 
     emit(HomeLoading());
+
     try {
       // Écoute le stream Realtime
       await emit.forEach<UserModel>(
         repository.getDataStream(),
-        onData: (companies) {
+        onData: (userData) {
           // Mettre à jour le cache interne
-          _cachedData = companies;
-          return HomeLoaded(companies);
+          _cachedData = userData;
+          return HomeLoaded(userData);
         },
-        onError: (error, stackTrace) =>
-            HomeError(ServerFailure(error.toString())),
+        onError: (error, stackTrace) {
+          if (error.toString().contains("No internet")) {
+            return HomeNoInternet(message: "No internet connection");
+          } else {
+            return HomeError(error.toString());
+          }
+        },
       );
     } catch (e) {
-      emit(HomeError(ServerFailure(e.toString())));
+      if (e.toString().contains("No internet")) {
+        emit(HomeNoInternet(message: "No internet connection"));
+      } else {
+        emit(HomeError(e.toString()));
+      }
     }
   }
 }

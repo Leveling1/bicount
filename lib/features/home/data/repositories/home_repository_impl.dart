@@ -1,50 +1,70 @@
 import 'dart:async';
-
 import 'package:bicount/features/authentification/data/models/user_model.dart';
-
-import '/core/errors/failure.dart';
 import '/features/home/domain/repositories/home_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:dartz/dartz.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   HomeRepositoryImpl();
-  final supabaseInstance = Supabase.instance.client;
-  String get uid => supabaseInstance.auth.currentUser!.id;
-  String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
+
+  final supabase = Supabase.instance.client;
   RealtimeChannel? _channel;
   final StreamController<UserModel> _controller = StreamController<UserModel>.broadcast();
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
+
+  String get uid => supabase.auth.currentUser!.id;
+  String? get accessToken => supabase.auth.currentSession?.accessToken;
 
   @override
   Stream<UserModel> getDataStream() {
-    // 1. Récupérer les données initiales
     _loadInitialData();
-
-    // 2. S'abonner aux changements
     _subscribeToChanges();
+
+    _connectivitySub = Connectivity().onConnectivityChanged.listen((statuses) {
+      final status = statuses.isNotEmpty ? statuses.first : ConnectivityResult.none;
+
+      if (status == ConnectivityResult.none) {
+        _controller.addError("No internet connection");
+      } else {
+        _reloadData();
+      }
+    });
+
 
     return _controller.stream;
   }
 
+  /// Charge les données utilisateur actuelles
   Future<void> _loadInitialData() async {
     try {
-      final res = await supabaseInstance
-          .from('users')
-          .select('*')
-          .eq('uuid', uid)
-          .single();
-
-      final UserModel currentData = UserModel.fromJson(res);
-      _controller.add(currentData);
+      final user = await _fetchUser();
+      _controller.add(user);
     } catch (e) {
-      print('Erreur lors du chargement initial: $e');
-      _controller.addError(e);
+      _handleError(e);
     }
   }
 
+  /// Recharge les données + resouscrit au canal
+  Future<void> _reloadData() async {
+    await _loadInitialData();
+    _subscribeToChanges();
+  }
+
+  /// Récupération depuis Supabase
+  Future<UserModel> _fetchUser() async {
+    final res = await supabase
+        .from('users')
+        .select('*')
+        .eq('uuid', uid)
+        .single();
+    return UserModel.fromJson(res);
+  }
+
   void _subscribeToChanges() {
-    _channel = supabaseInstance.channel('users-$uid')
-        .onPostgresChanges(
+    // Nettoyer l’ancienne souscription avant d’en créer une nouvelle
+    _channel?.unsubscribe();
+
+    _channel = supabase.channel('users-$uid').onPostgresChanges(
       event: PostgresChangeEvent.all,
       schema: 'public',
       table: 'users',
@@ -55,41 +75,38 @@ class HomeRepositoryImpl implements HomeRepository {
       ),
       callback: (payload) async {
         try {
-          print('Changement détecté: ${payload.eventType}');
-
-          // Utiliser directement les nouvelles données du payload si possible
-          if (payload.newRecord != null) {
-            final UserModel updatedData = UserModel.fromJson(payload.newRecord!);
-            _controller.add(updatedData);
-          } else {
-            // Fallback: récupérer depuis la DB
-            final res = await supabaseInstance
-                .from('users')
-                .select('*')
-                .eq('uuid', uid)
-                .single();
-
-            final UserModel currentData = UserModel.fromJson(res);
-            _controller.add(currentData);
-          }
+          _controller.add(UserModel.fromJson(payload.newRecord));
         } catch (e) {
-          print('Erreur dans le callback: $e');
-          _controller.addError(e);
+          _handleError(e);
         }
       },
     ).subscribe((status, [error]) {
-      if (status == RealtimeSubscribeStatus.subscribed) {
-        print('Abonnement réussi au canal users-$uid');
-      } else if (status == RealtimeSubscribeStatus.channelError) {
-        print('Erreur d\'abonnement: $error');
-        _controller.addError(error ?? 'Erreur d\'abonnement');
+      switch (status) {
+        case RealtimeSubscribeStatus.subscribed:
+          break;
+        case RealtimeSubscribeStatus.channelError:
+          _controller.addError(error ?? "Subscription error");
+          break;
+        case RealtimeSubscribeStatus.closed:
+          _controller.addError("No internet connection");
+          break;
+        case RealtimeSubscribeStatus.timedOut:
+          _controller.addError("Subscription timed out");
+          break;
       }
     });
   }
 
-// N'oubliez pas de nettoyer les ressources
+  void _handleError(Object e) {
+    final message = e.toString().contains("SocketException")
+        ? "No internet connection"
+        : "Loading error: $e";
+    _controller.addError(message);
+  }
+
   void dispose() {
     _channel?.unsubscribe();
+    _connectivitySub?.cancel();
     _controller.close();
   }
 }

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 
 import '../../../../core/services/notification_helper.dart';
 import '../bloc/home_bloc.dart';
@@ -42,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state){
         if (state is HomeError) {
-          NotificationHelper.showFailureNotification(context, state.toString());
+          NotificationHelper.showFailureNotification(context, state.message);
         }
       },
       builder: (context, state) {
@@ -67,22 +66,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 "Your balance",
                                 style: Theme.of(context).textTheme.titleSmall,
                               ),
-                              state is HomeLoading
-                              ? SkeletonItem(
-                                child: SkeletonLine(
-                                  style: SkeletonLineStyle(
-                                    height: Theme.of(context)
-                                        .textTheme.titleLarge!.fontSize,
-                                    width: width * 40,
-                                    borderRadius: BorderRadius.circular(8),
+
+                              Text(
+                                  NumberFormatUtils.formatCurrency(
+                                    state is HomeLoading
+                                      ? 0.0
+                                      : state is HomeLoaded
+                                        ? state.data.profit as num
+                                        : 0.0
                                   ),
-                                ),
-                              )
-                              : Text(
-                                state is HomeLoaded
-                                  ? NumberFormatUtils
-                                    .formatCurrency(state.data.profit as num)
-                                  : NumberFormatUtils.formatCurrency(0.0),
                                 style: Theme.of(context).textTheme.titleLarge!
                                     .copyWith(fontWeight: FontWeight.bold),
                               ),
