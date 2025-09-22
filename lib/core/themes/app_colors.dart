@@ -8,12 +8,12 @@ class AppColors {
   static const Color quaternaryColorBasic = Color(0xFF0554F2);
   static const Color backgroundColorBasic = Color(0xFFEFF2EB);
 
-  static const Color profitColor   = Color(0xFF2E7D32);
-  static const Color salaryColor   = Color(0xFF0554F2);
-  static const Color equipmentColor= Color(0xFF6D4C41);
-  static const Color serviceColor  = Color(0xFF00897B);
-  static const Color expensesColor = Color(0xFFC62828);
-  static const Color salesColor    = Color(0xFFF9A825);
+  static const Color profitColor    = Color(0xFF70e000);
+  static const Color salaryColor    = Color(0xFF00509d);
+  static const Color equipmentColor = Color(0xFFffd60a);
+  static const Color serviceColor   = Color(0xFFfb8500);
+  static const Color expensesColor  = Color(0xFFd00000);
+  static const Color salesColor     = Color(0xFFf72585);
 
 
   /// Dark Theme

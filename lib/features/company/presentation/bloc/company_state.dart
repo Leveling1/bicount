@@ -9,7 +9,6 @@ class CompanyLoading extends CompanyState {}
 // For the creation of a company
 class CompanyCreated extends CompanyState {
   final CompanyModel company;
-
   CompanyCreated(this.company);
 }
 
@@ -20,4 +19,16 @@ class CompanyLoaded extends CompanyState {
 class CompanyError extends CompanyState {
   final Failure failure;
   CompanyError(this.failure);
+}
+
+// For the creation group of a company
+class CompanyGroupCreated extends CompanyState {
+  final CompanyGroupModel company;
+  CompanyGroupCreated(this.company);
+}
+
+// For the creation project of a company
+class CompanyGroupError extends CompanyState {
+  final Failure failure;
+  CompanyGroupError(this.failure);
 }
