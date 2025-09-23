@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_search_field.dart';
-import '../../domain/entities/company_model.dart';
 import '../bloc/company_bloc.dart';
 import '../widgets/company_card.dart';
 import '../widgets/company_card_skeleton.dart';

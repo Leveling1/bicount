@@ -7,7 +7,7 @@ import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_form_text_field.dart';
 import '../../../../core/widgets/custom_pick_image.dart';
-import '../../domain/entities/company_group_model.dart';
+import '../../domain/entities/group_model.dart';
 
 class AddCompanyGroup extends StatefulWidget {
   final int idCompany;
@@ -97,7 +97,7 @@ class _AddCompanyGroupState extends State<AddCompanyGroup> {
                 ),
                 const SizedBox(height: 32),
                 CustomButton(
-                  text: 'Save',
+                  text: 'Add',
                   loading: state is CompanyLoading,
                   onPressed: _submit,
                 ),
@@ -111,7 +111,7 @@ class _AddCompanyGroupState extends State<AddCompanyGroup> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      final group = CompanyGroupModel(
+      final group = GroupModel(
         idCompany: widget.idCompany,
         name: _name.text,
         description: _description.text,

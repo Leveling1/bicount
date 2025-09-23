@@ -1,22 +1,22 @@
 import 'dart:convert';
 import 'dart:ffi';
 
-class CompanyGroupModel {
+class ProjectModel {
   final int? id;
   final int idCompany;
   final String name;
   final String? description;
   final String? image;
-  final int? number;
+  final String? state;
   final DateTime createdAt;
 
-  CompanyGroupModel({
+  ProjectModel({
     this.id,
     required this.idCompany,
     required this.name,
     this.description,
     this.image,
-    this.number,
+    this.state,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -28,20 +28,20 @@ class CompanyGroupModel {
       'name': name,
       'description': description,
       'logoUrl': image,
-      'number': number,
+      'state': state,
       'createdAt': createdAt.toIso8601String(),
     };
   }
 
   /// Créer une instance depuis un Map
-  factory CompanyGroupModel.fromMap(Map<String, dynamic> map) {
-    return CompanyGroupModel(
+  factory ProjectModel.fromMap(Map<String, dynamic> map) {
+    return ProjectModel(
       id: map['id'] ?? '',
       idCompany: map['id_company'] ?? '',
       name: map['name'] ?? '',
       description: map['description'],
       image: map['image'],
-      number: map['number'],
+      state: map['number'],
       createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
     );
   }

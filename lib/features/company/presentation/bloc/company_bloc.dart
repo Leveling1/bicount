@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/errors/failure.dart';
-import '../../domain/entities/company_group_model.dart';
+import '../../domain/entities/group_model.dart';
 import '../../domain/entities/company_model.dart';
 import '../../domain/repositories/company_repository.dart';
 part 'company_event.dart';

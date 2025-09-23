@@ -9,7 +9,7 @@ class CreateCompanyEvent extends CompanyEvent {
 }
 
 class CreateCompanyGroupEvent extends CompanyEvent {
-  final CompanyGroupModel group;
+  final GroupModel group;
   final File? logoFile;
   CreateCompanyGroupEvent(this.group, {this.logoFile});
 }

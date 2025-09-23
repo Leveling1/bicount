@@ -23,7 +23,7 @@ class CompanyError extends CompanyState {
 
 // For the creation group of a company
 class CompanyGroupCreated extends CompanyState {
-  final CompanyGroupModel company;
+  final GroupModel company;
   CompanyGroupCreated(this.company);
 }
 

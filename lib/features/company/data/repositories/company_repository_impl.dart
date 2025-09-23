@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:bicount/features/company/domain/entities/company_group_model.dart';
+import 'package:bicount/features/company/domain/entities/group_model.dart';
 import 'package:bicount/features/company/domain/entities/company_model.dart';
 import 'package:bicount/features/company/domain/repositories/company_repository.dart';
 import 'package:http/http.dart' as http;
@@ -136,7 +136,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
 
   // For the creation of group company
   @override
-  Future<CompanyGroupModel> createCompanyGroup(CompanyGroupModel group, File? logoFile) async {
+  Future<GroupModel> createCompanyGroup(GroupModel group, File? logoFile) async {
     try {
       final uri = Uri.parse(Secrets.create_company_group_endpoint);
 
@@ -184,7 +184,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
               throw DataParsingFailure('Invalid response format: missing name field');
             }
 
-            final createdGroup = CompanyGroupModel.fromMap(responseData);
+            final createdGroup = GroupModel.fromMap(responseData);
 
             return createdGroup;
           } catch (parseError) {
