@@ -1,5 +1,9 @@
 
 
+import 'dart:io';
+
+import '../entities/project_model.dart';
+
 abstract class ProjectRepository {
-  // Add your repository interface here
+  Future<ProjectModel> createProject(ProjectModel project, File? logoFile);
 }

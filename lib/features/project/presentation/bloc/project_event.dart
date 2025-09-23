@@ -2,5 +2,8 @@ part of 'project_bloc.dart';
 
 abstract class ProjectEvent {}
 
-// Add your events here
-class ExampleProjectEvent extends ProjectEvent {}
+class CreateProjectEvent extends ProjectEvent {
+  final ProjectModel project;
+  final File? logoFile;
+  CreateProjectEvent(this.project, {this.logoFile});
+}

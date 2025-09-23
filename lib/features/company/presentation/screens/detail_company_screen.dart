@@ -1,3 +1,4 @@
+import 'package:bicount/features/project/presentation/screens/add_project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
@@ -229,7 +230,16 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                 TitleIconButtomRow(
                   title: 'Project',
                   icon: Icons.add,
-                  onPressed: (){},
+                  onPressed: (){
+                    showCustomBottomSheet(
+                      context: context,
+                      minHeight: 0.95,
+                      color: null,
+                      child: AddProject(
+                        idCompany: widget.company.id!,
+                      ),
+                    );
+                  },
                 ),
                 _spacerHeight(),
               ],

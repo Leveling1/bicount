@@ -21,7 +21,7 @@ class GroupRepositoryImpl implements GroupRepository {
   @override
   Future<GroupModel> createGroup(GroupModel group, File? logoFile) async {
     try {
-      final uri = Uri.parse(Secrets.create_company_group_endpoint);
+      final uri = Uri.parse(Secrets.create_group_endpoint);
 
       var request = http.MultipartRequest("POST", uri)
         ..fields['name'] = group.name

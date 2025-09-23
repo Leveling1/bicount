@@ -20,6 +20,7 @@ import 'package:toastification/toastification.dart';
 import 'features/group/data/repositories/group_repository_impl.dart';
 import 'features/group/presentation/bloc/group_bloc.dart';
 import 'features/project/data/repositories/project_repository_impl.dart';
+import 'features/project/presentation/bloc/project_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -82,6 +83,10 @@ class MyApp extends StatelessWidget {
           BlocProvider<GroupBloc>(
             create: (context) =>
             GroupBloc(context.read<GroupRepositoryImpl>()),
+          ),
+          BlocProvider<ProjectBloc>(
+            create: (context) =>
+                ProjectBloc(context.read<ProjectRepositoryImpl>()),
           ),
         ],
         child: ToastificationWrapper(
