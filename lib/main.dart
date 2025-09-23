@@ -17,6 +17,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:toastification/toastification.dart';
 
+import 'features/group/data/repositories/group_repository_impl.dart';
+import 'features/group/presentation/bloc/group_bloc.dart';
+import 'features/project/data/repositories/project_repository_impl.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -49,6 +53,12 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<TransactionRepositoryImpl>(
           create: (_) => TransactionRepositoryImpl(),
         ),
+        RepositoryProvider<GroupRepositoryImpl>(
+          create: (_) => GroupRepositoryImpl(),
+        ),
+        RepositoryProvider<ProjectRepositoryImpl>(
+          create: (_) => ProjectRepositoryImpl(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -68,6 +78,10 @@ class MyApp extends StatelessWidget {
             create: (context) =>
                 TransactionBloc(context.read<TransactionRepositoryImpl>())
                   ..add(GetAllTransactionsRequested()),
+          ),
+          BlocProvider<GroupBloc>(
+            create: (context) =>
+            GroupBloc(context.read<GroupRepositoryImpl>()),
           ),
         ],
         child: ToastificationWrapper(

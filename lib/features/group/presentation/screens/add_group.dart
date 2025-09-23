@@ -2,22 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bicount/features/company/presentation/bloc/company_bloc.dart';
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_form_text_field.dart';
 import '../../../../core/widgets/custom_pick_image.dart';
 import '../../domain/entities/group_model.dart';
+import '../bloc/group_bloc.dart';
 
-class AddCompanyGroup extends StatefulWidget {
+class AddGroup extends StatefulWidget {
   final int idCompany;
-  const AddCompanyGroup({super.key, required this.idCompany});
+  const AddGroup({super.key, required this.idCompany});
 
   @override
-  State<AddCompanyGroup> createState() => _AddCompanyGroupState();
+  State<AddGroup> createState() => _AddGroupState();
 }
 
-class _AddCompanyGroupState extends State<AddCompanyGroup> {
+class _AddGroupState extends State<AddGroup> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _description = TextEditingController();
 
@@ -26,15 +26,15 @@ class _AddCompanyGroupState extends State<AddCompanyGroup> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CompanyBloc, CompanyState>(
+    return BlocConsumer<GroupBloc, GroupState>(
         listener: (context, state) {
-          if (state is CompanyGroupCreated) {
+          if (state is GroupCreated) {
             NotificationHelper.showSuccessNotification(
               context,
               "Group successfully established"
             );
             Navigator.of(context).pop();
-          } else if (state is CompanyGroupError) {
+          } else if (state is GroupError) {
             NotificationHelper.showFailureNotification(
               context,
               state.failure.message
@@ -98,7 +98,7 @@ class _AddCompanyGroupState extends State<AddCompanyGroup> {
                 const SizedBox(height: 32),
                 CustomButton(
                   text: 'Add',
-                  loading: state is CompanyLoading,
+                  loading: state is GroupLoading,
                   onPressed: _submit,
                 ),
                 const SizedBox(height: 16),
@@ -116,8 +116,8 @@ class _AddCompanyGroupState extends State<AddCompanyGroup> {
         name: _name.text,
         description: _description.text,
       );
-      context.read<CompanyBloc>().add(
-        CreateCompanyGroupEvent(
+      context.read<GroupBloc>().add(
+        CreateGroupEvent(
           group,
           logoFile: _selectedImage
         )

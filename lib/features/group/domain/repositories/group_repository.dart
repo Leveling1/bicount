@@ -1,5 +1,7 @@
+import 'dart:io';
 
+import '../entities/group_model.dart';
 
 abstract class GroupRepository {
-  // Add your repository interface here
+  Future<GroupModel> createGroup(GroupModel company, File? logoFile);
 }

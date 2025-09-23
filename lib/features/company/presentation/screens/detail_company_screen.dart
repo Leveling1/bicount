@@ -6,14 +6,14 @@ import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/expandable_text.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/details_card.dart';
-import '../../domain/entities/group_model.dart';
+import '../../../group/domain/entities/group_model.dart';
 import '../../domain/entities/company_model.dart';
 import '../widgets/company_card_info.dart';
 import '../widgets/company_profil.dart';
 import '../widgets/custom_pie_chart.dart';
-import '../widgets/group_card.dart';
+import '../../../group/presentation/widgets/group_card.dart';
 import '../widgets/title_icon_buttom_row.dart';
-import 'add_group.dart';
+import '../../../group/presentation/screens/add_group.dart';
 
 class DetailCompanyScreen extends StatefulWidget {
   final CompanyModel company;
@@ -203,7 +203,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                       context: context,
                       minHeight: 0.95,
                       color: null,
-                      child: AddCompanyGroup(
+                      child: AddGroup(
                         idCompany: widget.company.id!,
                       ),
                     );

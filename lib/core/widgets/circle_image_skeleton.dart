@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 
-class CompanyImageSkeleton extends StatelessWidget {
+class CircleImageSkeleton extends StatelessWidget {
   final double width;
   final double height;
 
-  const CompanyImageSkeleton({super.key, required this.width, required this.height});
+  const CircleImageSkeleton({super.key, required this.width, required this.height});
 
   @override
   Widget build(BuildContext context) {

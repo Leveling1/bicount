@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
+import '../../../../core/widgets/circle_image_skeleton.dart';
 import '../../domain/entities/group_model.dart';
-import 'company_image_skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class GroupCard extends StatelessWidget {
@@ -44,7 +44,7 @@ class GroupCard extends StatelessWidget {
                       imageUrl: group.image!,
                       width: width.w,
                       height: height.h,
-                      placeholder: (context, url) => CompanyImageSkeleton(
+                      placeholder: (context, url) => CircleImageSkeleton(
                           width: width.w,
                           height: height.h
                       ),

@@ -2,5 +2,8 @@ part of 'group_bloc.dart';
 
 abstract class GroupEvent {}
 
-// Add your events here
-class ExampleGroupEvent extends GroupEvent {}
+class CreateGroupEvent extends GroupEvent {
+  final GroupModel group;
+  final File? logoFile;
+  CreateGroupEvent(this.group, {this.logoFile});
+}

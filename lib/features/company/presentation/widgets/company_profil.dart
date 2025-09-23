@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/themes/app_colors.dart';
-import 'company_image_skeleton.dart';
+import '../../../../core/widgets/circle_image_skeleton.dart';
 
 class CompanyProfil extends StatelessWidget {
   final double width;
@@ -29,7 +29,7 @@ class CompanyProfil extends StatelessWidget {
           imageUrl: image!,
           width: width.w,
           height: height.h,
-          placeholder: (context, url) => CompanyImageSkeleton(
+          placeholder: (context, url) => CircleImageSkeleton(
             width: width.w,
             height: height.h
           ),
