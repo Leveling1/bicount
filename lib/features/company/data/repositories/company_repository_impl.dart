@@ -233,4 +233,10 @@ class CompanyRepositoryImpl implements CompanyRepository {
     await _controller.close();
   }
 
+  // For the detail company
+  @override
+  Stream<CompanyModel> getCompanyDetailStream() {
+    // TODO: implement getCompanyDetailStream
+    throw UnimplementedError();
+  }
 }

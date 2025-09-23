@@ -12,10 +12,12 @@ part 'company_state.dart';
 class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
   final CompanyRepository repository;
   List<CompanyModel>? _cachedCompanies;
+  CompanyModel? _cachedCompanyDetail;
 
   CompanyBloc(this.repository) : super(CompanyInitial()) {
     on<CreateCompanyEvent>(_onCreateCompany);
     on<GetAllCompany>(_getAllCompany);
+    on<GetCompanyDetail>(_getCompanyDetail);
   }
 
   Future<void> _onCreateCompany(CreateCompanyEvent event, Emitter<CompanyState> emit) async {
@@ -55,6 +57,34 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       );
     } catch (e) {
       emit(CompanyError(ServerFailure(e.toString())));
+    }
+  }
+
+
+  // For the company details
+  Future<void> _getCompanyDetail(GetCompanyDetail event, Emitter<CompanyState> emit) async {
+
+    // Émettre directement le cache si disponible
+    if (_cachedCompanyDetail != null) {
+      emit(CompanyDetailLoaded(_cachedCompanyDetail!));
+      return;
+    }
+
+    emit(CompanyDetailLoading());
+    try {
+      // Écoute le stream Realtime
+      await emit.forEach<CompanyModel>(
+        repository.getCompanyDetailStream(),
+        onData: (companyDetail) {
+          // Mettre à jour le cache interne
+          _cachedCompanyDetail = companyDetail;
+          return CompanyDetailLoaded(companyDetail);
+        },
+        onError: (error, stackTrace) =>
+            CompanyDetailError(ServerFailure(error.toString())),
+      );
+    } catch (e) {
+      emit(CompanyDetailError(ServerFailure(e.toString())));
     }
   }
 }
