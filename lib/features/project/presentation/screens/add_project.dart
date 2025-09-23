@@ -31,7 +31,7 @@ class _AddProjectState extends State<AddProject> {
           if (state is ProjectCreated) {
             NotificationHelper.showSuccessNotification(
                 context,
-                "Group successfully established"
+                "The project is launched"
             );
             Navigator.of(context).pop();
           } else if (state is ProjectError) {
