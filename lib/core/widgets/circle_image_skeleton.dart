@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 
 class CircleImageSkeleton extends StatelessWidget {

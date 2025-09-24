@@ -25,7 +25,10 @@ class CompanyStreamError extends CompanyEvent {
 }
 
 // For the company details
-class GetCompanyDetail extends CompanyEvent {}
+class GetCompanyDetail extends CompanyEvent {
+  CompanyModel company;
+  GetCompanyDetail(this.company);
+}
 
 class CompanyDetailsDataUpdated extends CompanyEvent {
   final CompanyModel companies;

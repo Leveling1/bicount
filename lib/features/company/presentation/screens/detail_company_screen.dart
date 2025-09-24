@@ -8,7 +8,6 @@ import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/expandable_text.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/details_card.dart';
-import '../../../group/domain/entities/group_model.dart';
 import '../../domain/entities/company_model.dart';
 import '../bloc/company_bloc.dart';
 import '../widgets/company_card_info.dart';
@@ -18,6 +17,7 @@ import '../../../group/presentation/widgets/group_card.dart';
 import '../widgets/title_icon_buttom_row.dart';
 import '../../../group/presentation/screens/add_group.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 
 class DetailCompanyScreen extends StatefulWidget {
   final CompanyModel company;
@@ -31,60 +31,12 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
   Widget _spacerHeight() => const SizedBox(height: AppDimens.marginMedium);
   Widget _spacerWidth() => const SizedBox(width: AppDimens.marginMedium);
 
-  final List<GroupModel> ephemeralCompanyGroups = [
-    GroupModel(
-      id: 1,
-      idCompany: 101,
-      name: "Tech Innovators",
-      description: "Groupe dédié aux startups tech innovantes.",
-      image: "https://example.com/images/tech_innovators.png",
-      number: 25,
-      createdAt: DateTime.now(),
-    ),
-    GroupModel(
-      id: 2,
-      idCompany: 102,
-      name: "Green Energy Alliance",
-      description: "Promotion des solutions énergétiques durables.",
-      image: null, // pas d'image
-      number: 40,
-      createdAt: DateTime.now(),
-    ),
-    GroupModel(
-      id: 3,
-      idCompany: 103,
-      name: "Marketing Gurus",
-      description: null, // pas de description
-      image: "https://example.com/images/marketing_gurus.png",
-      number: 10, // nombre non défini
-      createdAt: DateTime.now(),
-    ),
-    GroupModel(
-      id: 4,
-      idCompany: 104,
-      name: "AI Research Lab",
-      description: "Laboratoire de recherche en intelligence artificielle.",
-      image: "https://example.com/images/ai_lab.png",
-      number: 12,
-      createdAt: DateTime.now(),
-    ),
-    GroupModel(
-      id: 5,
-      idCompany: 105,
-      name: "E-commerce Pioneers",
-      description: "Experts dans le commerce en ligne et le retail digital.",
-      image: null,
-      number: 30,
-      createdAt: DateTime.now(),
-    ),
-  ];
-
   @override
   void initState() {
     super.initState();
     // Ici on déclenche la récupération des companies
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CompanyBloc>().add(GetCompanyDetail());
+      context.read<CompanyBloc>().add(GetCompanyDetail(widget.company));
     });
   }
 
@@ -97,7 +49,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
           NotificationHelper.showFailureNotification(context, state.toString());
         }
       },
-      builder: (context, asyncSnapshot) {
+      builder: (context, state) {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppBar(
@@ -144,76 +96,83 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
               child: Center(
                 child: Column(
                   children: [
-                    CompanyProfil(
-                      width: 100,
-                      height: 100,
-                      radius: 50,
-                      image: widget.company.image,
-                    ),
-                    _spacerHeight(),
-                    Text(
-                      widget.company.name,
-                      style: Theme.of(context).textTheme.headlineLarge,
-                    ),
-                    widget.company.description != null && widget.company.description != ""
-                    ? DetailsCard(
-                      child: ExpandableText(
-                        widget.company.description!,
-                      ),
-                    ) : const SizedBox.shrink(),
-                    _spacerHeight(),
-                    CustomPieChart(
-                      profit: widget.company.profit!,
-                      salary: widget.company.salary!,
-                      equipment: widget.company.equipment!,
-                      service: widget.company.service!,
-                    ),
-                    Row(
+                    state is CompanyDetailLoading
+                    ? _skeletonBox()
+                    : state is CompanyDetailLoaded
+                    ? Column(
                       children: [
-                        Flexible(
-                          flex: 1,
-                          child: CompanyCardInfo(
-                            title: "Profit",
-                            value: widget.company.profit!,
-                            percent: 0,
-                            color: AppColors.profitColor,
-                          ),
+                        CompanyProfil(
+                          width: 100,
+                          height: 100,
+                          radius: 50,
+                          image: state.company.image,
                         ),
-                        _spacerWidth(),
-                        Flexible(
-                          flex: 1,
-                          child: CompanyCardInfo(
-                            title: "Salary",
-                            value:  widget.company.salary!,
-                            percent: 0,
-                            color: AppColors.salaryColor,
+                        _spacerHeight(),
+                        Text(
+                          state.company.name,
+                          style: Theme.of(context).textTheme.headlineLarge,
+                        ),
+                        state.company.description != null && state.company.description != ""
+                            ? DetailsCard(
+                          child: ExpandableText(
+                            state.company.description!,
                           ),
+                        ) : const SizedBox.shrink(),
+                        _spacerHeight(),
+                        CustomPieChart(
+                          profit: state.company.profit!,
+                          salary: state.company.salary!,
+                          equipment: state.company.equipment!,
+                          service: state.company.service!,
+                        ),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              child: CompanyCardInfo(
+                                title: "Profit",
+                                value: state.company.profit!,
+                                percent: _percent(value: state.company.profit!, total: state.company.sales!),
+                                color: AppColors.profitColor,
+                              ),
+                            ),
+                            _spacerWidth(),
+                            Flexible(
+                              flex: 1,
+                              child: CompanyCardInfo(
+                                title: "Salary",
+                                value:  state.company.salary!,
+                                percent: _percent(value: state.company.salary!, total: state.company.sales!),
+                                color: AppColors.salaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              child: CompanyCardInfo(
+                                title: "Equipment",
+                                value: state.company.equipment!,
+                                percent: _percent(value: state.company.equipment!, total: state.company.sales!),
+                                color: AppColors.equipmentColor,
+                              ),
+                            ),
+                            _spacerWidth(),
+                            Flexible(
+                              flex: 1,
+                              child: CompanyCardInfo(
+                                title: "Third-party service",
+                                value: state.company.service!,
+                                percent: _percent(value: state.company.service!, total: state.company.sales!),
+                                color: AppColors.serviceColor,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                    Row(
-                      children: [
-                        Flexible(
-                          flex: 1,
-                          child: CompanyCardInfo(
-                            title: "Equipment",
-                            value: widget.company.equipment!,
-                            percent: 0,
-                            color: AppColors.equipmentColor,
-                          ),
-                        ),
-                        _spacerWidth(),
-                        Flexible(
-                          flex: 1,
-                          child: CompanyCardInfo(
-                            title: "Third-party service",
-                            value: widget.company.service!,
-                            percent: 0,
-                            color: AppColors.serviceColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                    ) : _skeletonBox(),
                     _spacerHeight(),
                     TitleIconButtomRow(
                       title: 'Group',
@@ -230,21 +189,24 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                       },
                     ),
                     _spacerHeight(),
-                    SizedBox(
-                      height: 170, // hauteur fixe
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal, // 👈 défilement horizontal
-                        padding: const EdgeInsets.only(right: 16),
-                        itemCount: ephemeralCompanyGroups.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 12), // espace entre les items
-                        itemBuilder: (context, index) {
-                          return GroupCard(
-                            group: ephemeralCompanyGroups[index],
-                            onTap: (){}
-                          );
-                        },
-                      ),
-                    ),
+                    state is CompanyDetailLoading
+                    ? const SizedBox()
+                    : state is CompanyDetailLoaded
+                      ? SizedBox(
+                        height: 170, // hauteur fixe
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal, // 👈 défilement horizontal
+                          padding: const EdgeInsets.only(right: 16),
+                          itemCount: state.company.groups!.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 12), // espace entre les items
+                          itemBuilder: (context, index) {
+                            return GroupCard(
+                              group: state.company.groups![index],
+                              onTap: (){}
+                            );
+                          },
+                        ),
+                      ) : const SizedBox(),
                     _spacerHeight(),
                     TitleIconButtomRow(
                       title: 'Project',
@@ -269,5 +231,137 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
         );
       }
     );
+  }
+
+  Widget _skeletonBox() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Avatar circulaire
+        const SkeletonAvatar(
+          style: SkeletonAvatarStyle(
+            shape: BoxShape.circle,
+            width: 100,
+            height: 100,
+          ),
+        ),
+
+        _spacerHeight(),
+
+        // Nom de l’entreprise
+        SkeletonLine(
+          style: SkeletonLineStyle(
+            width: 180,
+            height: 28,
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+
+        _spacerHeight(),
+
+        // Description
+        SkeletonItem(
+          child: Column(
+            children: [
+              SkeletonLine(
+                style: SkeletonLineStyle(
+                  height: 14,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              const SizedBox(height: 6),
+              SkeletonLine(
+                style: SkeletonLineStyle(
+                  width: double.infinity,
+                  height: 14,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              const SizedBox(height: 6),
+              SkeletonLine(
+                style: SkeletonLineStyle(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  height: 14,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        _spacerHeight(),
+
+        // Pie chart (cercle simulé)
+        const SkeletonAvatar(
+          style: SkeletonAvatarStyle(
+            shape: BoxShape.circle,
+            width: 200,
+            height: 200,
+          ),
+        ),
+
+        _spacerHeight(),
+
+        // Ligne 1 : Profit / Salary
+        Row(
+          children: [
+            Expanded(
+              child: SkeletonItem(
+                child: SkeletonLine(
+                  style: SkeletonLineStyle(
+                    height: 100,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+            ),
+            _spacerWidth(),
+            Expanded(
+              child: SkeletonItem(
+                child: SkeletonLine(
+                  style: SkeletonLineStyle(
+                    height: 100,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        _spacerHeight(),
+
+        // Ligne 2 : Equipment / Service
+        Row(
+          children: [
+            Expanded(
+              child: SkeletonItem(
+                child: SkeletonLine(
+                  style: SkeletonLineStyle(
+                    height: 100,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+            ),
+            _spacerWidth(),
+            Expanded(
+              child: SkeletonItem(
+                child: SkeletonLine(
+                  style: SkeletonLineStyle(
+                    height: 100,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  double _percent({required double value, required double total}){
+    return double.parse(((value * 100)/total).toStringAsFixed(1));
   }
 }

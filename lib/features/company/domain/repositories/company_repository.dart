@@ -7,5 +7,5 @@ import '../../../group/domain/entities/group_model.dart';
 abstract class CompanyRepository {
   Future<CompanyModel> createCompany(CompanyModel company, File? logoFile);
   Stream<List<CompanyModel>> getCompanyStream();
-  Stream<CompanyModel> getCompanyDetailStream();
+  Stream<CompanyModel> getCompanyDetailStream(CompanyModel company);
 }

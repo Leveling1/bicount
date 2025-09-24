@@ -12,6 +12,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as path;
 
+import '../../../project/domain/entities/project_model.dart';
+
 class CompanyRepositoryImpl implements CompanyRepository {
   CompanyRepositoryImpl();
   final supabaseInstance = Supabase.instance.client;
@@ -19,7 +21,14 @@ class CompanyRepositoryImpl implements CompanyRepository {
   String get uid => supabaseInstance.auth.currentUser!.id;
   String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
 
-  final _controller = StreamController<List<CompanyModel>>.broadcast();
+  final _compagny = StreamController<List<CompanyModel>>.broadcast();
+
+  // For the company detail
+  final _companyController = StreamController<CompanyModel>.broadcast();
+  CompanyModel? _currentCompany;
+  List<GroupModel> _currentGroups = [];
+  List<ProjectModel> _currentProjects = [];
+
   // Liste locale toujours à jour
   final List<CompanyModel> _currentCompanies = [];
 
@@ -146,7 +155,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
     // Abonnement Realtime sur table "company_with_user_link"
     _subscribeToCompanyLinkChanges();
 
-    return _controller.stream;
+    return _compagny.stream;
   }
 
   Future<void> _loadInitialCompanies() async {
@@ -155,9 +164,9 @@ class CompanyRepositoryImpl implements CompanyRepository {
       _currentCompanies
         ..clear()
         ..addAll((res as List).map((c) => CompanyModel.fromMap(c)));
-      _controller.add(List.from(_currentCompanies));
+      _compagny.add(List.from(_currentCompanies));
     } catch (e) {
-      _controller.addError(e);
+      _compagny.addError(e);
     }
   }
 
@@ -172,7 +181,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
       callback: (payload) {
         final company = CompanyModel.fromMap(payload.newRecord);
         _currentCompanies.add(company);
-        _controller.add(List.from(_currentCompanies));
+        _compagny.add(List.from(_currentCompanies));
             },
     );
 
@@ -186,7 +195,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
         final index = _currentCompanies.indexWhere((c) => c.id == company.id);
         if (index != -1) {
           _currentCompanies[index] = company; // remplacer l’ancienne
-          _controller.add(List.from(_currentCompanies));
+          _compagny.add(List.from(_currentCompanies));
         }
             },
     );
@@ -199,7 +208,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
       callback: (payload) {
         final id = payload.oldRecord['id'];
         _currentCompanies.removeWhere((c) => c.id == id);
-        _controller.add(List.from(_currentCompanies));
+        _compagny.add(List.from(_currentCompanies));
             },
     );
 
@@ -220,9 +229,9 @@ class CompanyRepositoryImpl implements CompanyRepository {
           _currentCompanies
             ..clear()
             ..addAll((res as List).map((c) => CompanyModel.fromMap(c)));
-          _controller.add(List.from(_currentCompanies));
+          _compagny.add(List.from(_currentCompanies));
         } catch (e) {
-          _controller.addError(e);
+          _compagny.addError(e);
         }
       },
     )
@@ -230,13 +239,203 @@ class CompanyRepositoryImpl implements CompanyRepository {
   }
 
   Future<void> dispose() async {
-    await _controller.close();
+    await _compagny.close();
   }
 
   // For the detail company
   @override
-  Stream<CompanyModel> getCompanyDetailStream() {
-    // TODO: implement getCompanyDetailStream
-    throw UnimplementedError();
+  Stream<CompanyModel> getCompanyDetailStream(CompanyModel company) {
+    int companyId = company.id!;
+    // Charger les données initiales
+    _loadCompanyDetail(companyId);
+
+    // S'abonner aux changements
+    _subscribeToCompanyDetailChanges(companyId);
+    _subscribeToGroupChanges(companyId);
+    _subscribeToProjectChanges(companyId);
+
+    return _companyController.stream;
+  }
+
+  Future<void> _loadCompanyDetail(int companyId) async {
+    try {
+      // 1. Charger la company
+      final companyRes = await supabaseInstance
+          .from('company')
+          .select('*')
+          .eq('id', companyId)
+          .maybeSingle();
+
+      if (companyRes == null) return;
+
+      _currentCompany = CompanyModel.fromMap(companyRes);
+
+      // 2. Charger les groups liés
+      final groupRes = await supabaseInstance
+          .from('company_group')
+          .select('*')
+          .eq('id_company', companyId);
+
+      _currentGroups =
+          (groupRes as List).map((g) => GroupModel.fromMap(g)).toList();
+
+      // 3. Charger les projets liés
+      final projectRes = await supabaseInstance
+          .from('project')
+          .select('*')
+          .eq('id_company', companyId);
+
+      _currentProjects =
+          (projectRes as List).map((p) => ProjectModel.fromMap(p)).toList();
+
+      // 4. Fusionner et émettre le modèle complet
+      _emitUpdatedCompany();
+    } catch (e) {
+      _companyController.addError(e);
+    }
+  }
+
+  void _emitUpdatedCompany() {
+    if (_currentCompany == null) return;
+
+    final updated = CompanyModel(
+      id: _currentCompany!.id,
+      name: _currentCompany!.name,
+      description: _currentCompany!.description,
+      image: _currentCompany!.image,
+      sales: _currentCompany!.sales,
+      expenses: _currentCompany!.expenses,
+      profit: _currentCompany!.profit,
+      salary: _currentCompany!.salary,
+      equipment: _currentCompany!.equipment,
+      service: _currentCompany!.service,
+      createdAt: _currentCompany!.createdAt,
+      projects: _currentProjects,
+      groups: _currentGroups,
+    );
+
+    _companyController.add(updated);
+  }
+
+  /// --- SUBSCRIPTIONS ---
+
+  void _subscribeToCompanyDetailChanges(int companyId) {
+    final channel = supabaseInstance.channel('company_changes');
+
+    channel.onPostgresChanges(
+      event: PostgresChangeEvent.update,
+      schema: 'public',
+      table: 'company',
+      filter: PostgresChangeFilter(
+        type: PostgresChangeFilterType.eq,
+        column: 'id',
+        value: companyId,
+      ),
+      callback: (payload) {
+        _currentCompany = CompanyModel.fromMap(payload.newRecord);
+        _emitUpdatedCompany();
+      },
+    );
+
+    channel.subscribe();
+  }
+
+  void _subscribeToGroupChanges(int companyId) {
+    final channel = supabaseInstance.channel('group_changes');
+
+    // INSERT
+    channel.onPostgresChanges(
+      event: PostgresChangeEvent.insert,
+      schema: 'public',
+      table: 'company_group',
+      callback: (payload) {
+        if (payload.newRecord['id_company'] == companyId) {
+          _currentGroups.add(GroupModel.fromMap(payload.newRecord));
+          _emitUpdatedCompany();
+        }
+      },
+    );
+
+    // UPDATE
+    channel.onPostgresChanges(
+      event: PostgresChangeEvent.update,
+      schema: 'public',
+      table: 'company_group',
+      callback: (payload) {
+        if (payload.newRecord['id_company'] == companyId) {
+          final group = GroupModel.fromMap(payload.newRecord);
+          final index =
+          _currentGroups.indexWhere((g) => g.id == group.id);
+          if (index != -1) {
+            _currentGroups[index] = group;
+            _emitUpdatedCompany();
+          }
+        }
+      },
+    );
+
+    // DELETE
+    channel.onPostgresChanges(
+      event: PostgresChangeEvent.delete,
+      schema: 'public',
+      table: 'company_group',
+      callback: (payload) {
+        if (payload.oldRecord['id_company'] == companyId) {
+          _currentGroups
+              .removeWhere((g) => g.id == payload.oldRecord['id']);
+          _emitUpdatedCompany();
+        }
+      },
+    );
+
+    channel.subscribe();
+  }
+
+  void _subscribeToProjectChanges(int companyId) {
+    final channel = supabaseInstance.channel('project_changes');
+
+    channel.onPostgresChanges(
+      event: PostgresChangeEvent.insert,
+      schema: 'public',
+      table: 'project',
+      callback: (payload) {
+        if (payload.newRecord['id_company'] == companyId) {
+          _currentProjects.add(ProjectModel.fromMap(payload.newRecord));
+          _emitUpdatedCompany();
+        }
+      },
+    );
+
+    channel.onPostgresChanges(
+      event: PostgresChangeEvent.update,
+      schema: 'public',
+      table: 'project',
+      callback: (payload) {
+        if (payload.newRecord['id_company'] == companyId) {
+          final project = ProjectModel.fromMap(payload.newRecord);
+          final index =
+          _currentProjects.indexWhere((p) => p.id == project.id);
+          if (index != -1) {
+            _currentProjects[index] = project;
+            _emitUpdatedCompany();
+          }
+        }
+      },
+    );
+
+    channel.onPostgresChanges(
+      event: PostgresChangeEvent.delete,
+      schema: 'public',
+      table: 'project',
+      callback: (payload) {
+        if (payload.oldRecord['id_company'] == companyId) {
+          _currentProjects
+              .removeWhere((p) => p.id == payload.oldRecord['id']);
+          _emitUpdatedCompany();
+        }
+      },
+    );
+
+    channel.subscribe();
   }
 }

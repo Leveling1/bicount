@@ -63,7 +63,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
 
   // For the company details
   Future<void> _getCompanyDetail(GetCompanyDetail event, Emitter<CompanyState> emit) async {
-
     // Émettre directement le cache si disponible
     if (_cachedCompanyDetail != null) {
       emit(CompanyDetailLoaded(_cachedCompanyDetail!));
@@ -74,7 +73,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
     try {
       // Écoute le stream Realtime
       await emit.forEach<CompanyModel>(
-        repository.getCompanyDetailStream(),
+        repository.getCompanyDetailStream(event.company),
         onData: (companyDetail) {
           // Mettre à jour le cache interne
           _cachedCompanyDetail = companyDetail;

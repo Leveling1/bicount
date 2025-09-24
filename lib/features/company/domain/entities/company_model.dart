@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:bicount/features/project/domain/entities/project_model.dart';
+
+import '../../../group/domain/entities/group_model.dart';
+
 class CompanyModel {
   final int? id;
   final String name;
@@ -13,6 +17,8 @@ class CompanyModel {
   final double? equipment;
   final double? service;
   final DateTime createdAt;
+  final List<ProjectModel>? projects;
+  final List<GroupModel>? groups;
 
   CompanyModel({
     this.id,
@@ -25,6 +31,8 @@ class CompanyModel {
     this.salary,
     this.equipment,
     this.service,
+    this.projects,
+    this.groups,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -58,6 +66,8 @@ class CompanyModel {
       salary: (map['salary'] as num?)?.toDouble(),
       equipment: (map['equipment'] as num?)?.toDouble(),
       service: (map['service'] as num?)?.toDouble(),
+      projects: (map['projects'] as List<dynamic>?)?.map((e) => ProjectModel.fromMap(e)).toList(),
+      groups: (map['groups'] as List<dynamic>?)?.map((e) => GroupModel.fromMap(e)).toList(),
       createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
     );
   }
