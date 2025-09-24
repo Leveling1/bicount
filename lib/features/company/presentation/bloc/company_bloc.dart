@@ -64,7 +64,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
   // For the company details
   Future<void> _getCompanyDetail(GetCompanyDetail event, Emitter<CompanyState> emit) async {
     // Émettre directement le cache si disponible
-    if (_cachedCompanyDetail != null) {
+    if (_cachedCompanyDetail != null && _cachedCompanyDetail!.id == event.company.id) {
       emit(CompanyDetailLoaded(_cachedCompanyDetail!));
       return;
     }

@@ -115,6 +115,7 @@ class _AddProjectState extends State<AddProject> {
         idCompany: widget.idCompany,
         name: _name.text,
         description: _description.text,
+        initiator: '',
       );
       context.read<ProjectBloc>().add(
           CreateProjectEvent(

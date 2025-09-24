@@ -5,6 +5,7 @@ class ProjectModel {
   final int? id;
   final int idCompany;
   final String name;
+  final String initiator;
   final String? description;
   final String? image;
   final String? state;
@@ -14,6 +15,7 @@ class ProjectModel {
     this.id,
     required this.idCompany,
     required this.name,
+    required this.initiator,
     this.description,
     this.image,
     this.state,
@@ -26,6 +28,7 @@ class ProjectModel {
       'id': id,
       'id_company': idCompany,
       'name': name,
+      'initiator': initiator,
       'description': description,
       'logoUrl': image,
       'state': state,
@@ -39,6 +42,7 @@ class ProjectModel {
       id: map['id'] ?? '',
       idCompany: map['id_company'] ?? '',
       name: map['name'] ?? '',
+      initiator: map['initiator'] ?? '',
       description: map['description'],
       image: map['image'],
       state: map['number'],

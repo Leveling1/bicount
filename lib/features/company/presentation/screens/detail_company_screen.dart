@@ -8,16 +8,17 @@ import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/expandable_text.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/details_card.dart';
+import '../../../project/presentation/widgets/project_card.dart';
 import '../../domain/entities/company_model.dart';
 import '../bloc/company_bloc.dart';
 import '../widgets/company_card_info.dart';
 import '../widgets/company_profil.dart';
 import '../widgets/custom_pie_chart.dart';
 import '../../../group/presentation/widgets/group_card.dart';
+import '../widgets/skeletonBox.dart';
 import '../widgets/title_icon_buttom_row.dart';
 import '../../../group/presentation/screens/add_group.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 
 class DetailCompanyScreen extends StatefulWidget {
   final CompanyModel company;
@@ -97,14 +98,14 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                 child: Column(
                   children: [
                     state is CompanyDetailLoading
-                    ? _skeletonBox()
+                    ? SkeletonBox()
                     : state is CompanyDetailLoaded
                     ? Column(
                       children: [
                         CompanyProfil(
                           width: 100,
                           height: 100,
-                          radius: 50,
+                          radius: 40,
                           image: state.company.image,
                         ),
                         _spacerHeight(),
@@ -172,7 +173,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                           ],
                         ),
                       ],
-                    ) : _skeletonBox(),
+                    ) : SkeletonBox(),
                     _spacerHeight(),
                     TitleIconButtomRow(
                       title: 'Group',
@@ -190,12 +191,23 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                     ),
                     _spacerHeight(),
                     state is CompanyDetailLoading
-                    ? const SizedBox()
+                    ? SizedBox(
+                      height: 170,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.only(right: 16),
+                        itemCount: 10, // Skeleton : 10 items
+                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        itemBuilder: (context, index) {
+                          return const GroupCardSkeleton();
+                        },
+                      ),
+                    )
                     : state is CompanyDetailLoaded
                       ? SizedBox(
                         height: 170, // hauteur fixe
                         child: ListView.separated(
-                          scrollDirection: Axis.horizontal, // 👈 défilement horizontal
+                          scrollDirection: Axis.horizontal,
                           padding: const EdgeInsets.only(right: 16),
                           itemCount: state.company.groups!.length,
                           separatorBuilder: (_, __) => const SizedBox(width: 12), // espace entre les items
@@ -206,7 +218,20 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                             );
                           },
                         ),
-                      ) : const SizedBox(),
+                      )
+                    : SizedBox(
+                      height: 170,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.only(right: 16),
+                        itemCount: 10, // Skeleton : 10 items
+                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        itemBuilder: (context, index) {
+                          return const GroupCardSkeleton();
+                        },
+                      ),
+                    )
+                    ,
                     _spacerHeight(),
                     TitleIconButtomRow(
                       title: 'Project',
@@ -223,6 +248,14 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                       },
                     ),
                     _spacerHeight(),
+                    state is CompanyDetailLoading
+                        ? const SizedBox()
+                        : state is CompanyDetailLoaded && state.company.projects != null && state.company.projects!.isNotEmpty
+                        ? Column(
+                      children: state.company.projects!.map((projectData) {
+                        return ProjectCard(project: projectData,);
+                      }).toList(),
+                    ) : const Text("Aucun projet disponible"),
                   ],
                 ),
               ),
@@ -230,134 +263,6 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
           ),
         );
       }
-    );
-  }
-
-  Widget _skeletonBox() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Avatar circulaire
-        const SkeletonAvatar(
-          style: SkeletonAvatarStyle(
-            shape: BoxShape.circle,
-            width: 100,
-            height: 100,
-          ),
-        ),
-
-        _spacerHeight(),
-
-        // Nom de l’entreprise
-        SkeletonLine(
-          style: SkeletonLineStyle(
-            width: 180,
-            height: 28,
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-
-        _spacerHeight(),
-
-        // Description
-        SkeletonItem(
-          child: Column(
-            children: [
-              SkeletonLine(
-                style: SkeletonLineStyle(
-                  height: 14,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              const SizedBox(height: 6),
-              SkeletonLine(
-                style: SkeletonLineStyle(
-                  width: double.infinity,
-                  height: 14,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              const SizedBox(height: 6),
-              SkeletonLine(
-                style: SkeletonLineStyle(
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  height: 14,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        _spacerHeight(),
-
-        // Pie chart (cercle simulé)
-        const SkeletonAvatar(
-          style: SkeletonAvatarStyle(
-            shape: BoxShape.circle,
-            width: 200,
-            height: 200,
-          ),
-        ),
-
-        _spacerHeight(),
-
-        // Ligne 1 : Profit / Salary
-        Row(
-          children: [
-            Expanded(
-              child: SkeletonItem(
-                child: SkeletonLine(
-                  style: SkeletonLineStyle(
-                    height: 100,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-            ),
-            _spacerWidth(),
-            Expanded(
-              child: SkeletonItem(
-                child: SkeletonLine(
-                  style: SkeletonLineStyle(
-                    height: 100,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-
-        _spacerHeight(),
-
-        // Ligne 2 : Equipment / Service
-        Row(
-          children: [
-            Expanded(
-              child: SkeletonItem(
-                child: SkeletonLine(
-                  style: SkeletonLineStyle(
-                    height: 100,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-            ),
-            _spacerWidth(),
-            Expanded(
-              child: SkeletonItem(
-                child: SkeletonLine(
-                  style: SkeletonLineStyle(
-                    height: 100,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 
