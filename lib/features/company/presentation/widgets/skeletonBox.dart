@@ -15,22 +15,24 @@ class SkeletonBox extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Avatar circulaire
-        const SkeletonAvatar(
-          style: SkeletonAvatarStyle(
-            shape: BoxShape.circle,
-            width: 100,
-            height: 100,
+        SkeletonItem(
+          child: CircleAvatar(
+            radius: 50,
+            backgroundColor: Theme.of(context).cardColor.withValues(alpha: 0.3),
           ),
         ),
 
         _spacerHeight(),
 
         // Nom de l’entreprise
-        SkeletonLine(
-          style: SkeletonLineStyle(
-            width: 180, // largeur fixe centrée
+        SkeletonItem(
+          child: Container(
+            width: 180,
             height: 28,
-            borderRadius: BorderRadius.circular(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: Theme.of(context).cardColor.withValues(alpha: 0.3),
+            ),
           ),
         ),
 
@@ -39,29 +41,32 @@ class SkeletonBox extends StatelessWidget {
         // Description
         SkeletonItem(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center, // centrage
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SkeletonLine(
-                style: SkeletonLineStyle(
-                  width: 220, // largeur fixe
-                  height: 14,
+              Container(
+                width: 220,
+                height: 14,
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
               const SizedBox(height: 6),
-              SkeletonLine(
-                style: SkeletonLineStyle(
-                  width: 250, // largeur fixe
-                  height: 14,
+              Container(
+                width: 250,
+                height: 14,
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
               const SizedBox(height: 6),
-              SkeletonLine(
-                style: SkeletonLineStyle(
-                  width: MediaQuery.of(context).size.width * 0.6, // largeur contrôlée
-                  height: 14,
+              Container(
+                width: MediaQuery.of(context).size.width * 0.6,
+                height: 14,
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
             ],
@@ -71,11 +76,10 @@ class SkeletonBox extends StatelessWidget {
         _spacerHeight(),
 
         // Pie chart (cercle simulé)
-        const SkeletonAvatar(
-          style: SkeletonAvatarStyle(
-            shape: BoxShape.circle,
-            width: 200,
-            height: 200,
+        SkeletonItem(
+          child: CircleAvatar(
+            radius: 100,
+            backgroundColor: Theme.of(context).cardColor.withValues(alpha: 0.3),
           ),
         ),
 
@@ -87,10 +91,11 @@ class SkeletonBox extends StatelessWidget {
           children: [
             Expanded(
               child: SkeletonItem(
-                child: SkeletonLine(
-                  style: SkeletonLineStyle(
-                    height: 100,
+                child: Container(
+                  height: 100,
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
+                    color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
                 ),
               ),
@@ -98,10 +103,11 @@ class SkeletonBox extends StatelessWidget {
             _spacerWidth(),
             Expanded(
               child: SkeletonItem(
-                child: SkeletonLine(
-                  style: SkeletonLineStyle(
-                    height: 100,
+                child: Container(
+                  height: 100,
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
+                    color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
                 ),
               ),
@@ -117,10 +123,11 @@ class SkeletonBox extends StatelessWidget {
           children: [
             Expanded(
               child: SkeletonItem(
-                child: SkeletonLine(
-                  style: SkeletonLineStyle(
-                    height: 100,
+                child: Container(
+                  height: 100,
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
+                    color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
                 ),
               ),
@@ -128,10 +135,11 @@ class SkeletonBox extends StatelessWidget {
             _spacerWidth(),
             Expanded(
               child: SkeletonItem(
-                child: SkeletonLine(
-                  style: SkeletonLineStyle(
-                    height: 100,
+                child: Container(
+                  height: 100,
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
+                    color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
                 ),
               ),
@@ -148,8 +156,6 @@ class GroupCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = 120.0;
-    final height = 120.0;
     final radius = 50.0;
 
     return SizedBox(
@@ -162,7 +168,7 @@ class GroupCardSkeleton extends StatelessWidget {
             SkeletonItem(
               child: CircleAvatar(
                 radius: radius,
-                backgroundColor: Theme.of(context).dividerColor.withOpacity(0.3),
+                backgroundColor: Theme.of(context).cardColor.withValues(alpha: 0.3),
               ),
             ),
             const SizedBox(height: 8),
@@ -173,7 +179,7 @@ class GroupCardSkeleton extends StatelessWidget {
                 height: 12,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
-                  color: Theme.of(context).dividerColor.withOpacity(0.3),
+                  color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
             ),
@@ -185,7 +191,7 @@ class GroupCardSkeleton extends StatelessWidget {
                 height: 10,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
-                  color: Theme.of(context).dividerColor.withOpacity(0.2),
+                  color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
             ),

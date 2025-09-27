@@ -10,12 +10,9 @@ class CircleImageSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SkeletonItem(
-      child: SkeletonAvatar(
-        style: SkeletonAvatarStyle(
-          width: width,
-          height: height,
-          borderRadius: BorderRadius.circular(width / 2), // cercle
-        ),
+      child: CircleAvatar(
+        radius: width,
+        backgroundColor: Theme.of(context).cardColor.withValues(alpha: 0.3),
       ),
     );
   }

@@ -205,7 +205,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                       ),
                     )
                     : state is DetailLoaded
-                      ? SizedBox(
+                      ? state.company.groups!.isNotEmpty ? SizedBox(
                         height: 170, // hauteur fixe
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
@@ -219,7 +219,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                             );
                           },
                         ),
-                      )
+                      ) : const Text("You haven't opened any teams.")
                     : SizedBox(
                       height: 170,
                       child: ListView.separated(
@@ -231,8 +231,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                           return const GroupCardSkeleton();
                         },
                       ),
-                    )
-                    ,
+                    ),
                     _spacerHeight(),
                     TitleIconButtomRow(
                       title: 'Project',
@@ -256,7 +255,12 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                       children: state.company.projects!.map((projectData) {
                         return ProjectCard(project: projectData,);
                       }).toList(),
-                    ) : const Text("Aucun projet disponible"),
+                    ) : Column(
+                      children: [
+                        const Text("No projects have been launched."),
+                        _spacerHeight(),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -268,6 +272,8 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
   }
 
   double _percent({required double value, required double total}){
-    return double.parse(((value * 100)/total).toStringAsFixed(1));
+    return value != 0
+        ? double.parse(((value * 100)/total).toStringAsFixed(1))
+        : 0.0;
   }
 }
