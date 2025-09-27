@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_search_field.dart';
-import '../bloc/company_bloc.dart';
+import '../bloc/list_bloc/list_bloc.dart';
 import '../widgets/company_card.dart';
 import '../widgets/company_card_skeleton.dart';
 
@@ -21,7 +21,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
     super.initState();
     // Ici on déclenche la récupération des companies
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CompanyBloc>().add(GetAllCompany());
+      context.read<ListBloc>().add(GetAllCompany());
     });
     _searchController.addListener(() {
       setState(() {});
@@ -36,20 +36,20 @@ class _CompanyScreenState extends State<CompanyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  BlocConsumer<CompanyBloc, CompanyState>(
+    return  BlocConsumer<ListBloc, ListState>(
       listener: (context, state) {
-        if (state is CompanyError) {
+        if (state is ListError) {
           NotificationHelper.showFailureNotification(context, state.toString());
         }
       },
       builder: (context, state) {
-        if (state is CompanyLoading) {
+        if (state is ListLoading) {
           return SingleChildScrollView(
             child: Column(
               children: List.generate(10, (_) => const CompanyCardSkeleton()),
             ),
           );
-        } else if (state is CompanyLoaded) {
+        } else if (state is ListLoaded) {
           if (state.companies.isEmpty) {
             return const Center(child: Text("You are not linked to any company."));
           }
@@ -82,7 +82,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
               ]
             ),
           );
-        } else if (state is CompanyError) {
+        } else if (state is ListError) {
           return Center(child: Text("Error: ${state.failure.message}"));
         }
         return const SizedBox.shrink();

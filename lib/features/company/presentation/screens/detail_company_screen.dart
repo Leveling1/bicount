@@ -2,6 +2,7 @@ import 'package:bicount/features/project/presentation/screens/add_project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
@@ -10,7 +11,7 @@ import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/details_card.dart';
 import '../../../project/presentation/widgets/project_card.dart';
 import '../../domain/entities/company_model.dart';
-import '../bloc/company_bloc.dart';
+import '../bloc/detail_bloc/detail_bloc.dart';
 import '../widgets/company_card_info.dart';
 import '../widgets/company_profil.dart';
 import '../widgets/custom_pie_chart.dart';
@@ -37,16 +38,16 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
     super.initState();
     // Ici on déclenche la récupération des companies
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CompanyBloc>().add(GetCompanyDetail(widget.company));
+      context.read<DetailBloc>().add(GetCompanyDetail(widget.company));
     });
   }
 
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CompanyBloc, CompanyState>(
+    return BlocConsumer<DetailBloc, DetailState>(
       listener: (context, state) {
-        if (state is CompanyDetailError) {
+        if (state is DetailError) {
           NotificationHelper.showFailureNotification(context, state.toString());
         }
       },
@@ -64,7 +65,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
             scrolledUnderElevation: 0,
             surfaceTintColor: Colors.transparent,
             leading: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
               icon: SizedBox(
                 width: 20,
                 height: 20,
@@ -97,9 +98,9 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
               child: Center(
                 child: Column(
                   children: [
-                    state is CompanyDetailLoading
+                    state is DetailLoading
                     ? SkeletonBox()
-                    : state is CompanyDetailLoaded
+                    : state is DetailLoaded
                     ? Column(
                       children: [
                         CompanyProfil(
@@ -190,7 +191,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                       },
                     ),
                     _spacerHeight(),
-                    state is CompanyDetailLoading
+                    state is DetailLoading
                     ? SizedBox(
                       height: 170,
                       child: ListView.separated(
@@ -203,7 +204,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                         },
                       ),
                     )
-                    : state is CompanyDetailLoaded
+                    : state is DetailLoaded
                       ? SizedBox(
                         height: 170, // hauteur fixe
                         child: ListView.separated(
@@ -248,9 +249,9 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                       },
                     ),
                     _spacerHeight(),
-                    state is CompanyDetailLoading
+                    state is DetailLoading
                         ? const SizedBox()
-                        : state is CompanyDetailLoaded && state.company.projects != null && state.company.projects!.isNotEmpty
+                        : state is DetailLoaded && state.company.projects != null && state.company.projects!.isNotEmpty
                         ? Column(
                       children: state.company.projects!.map((projectData) {
                         return ProjectCard(project: projectData,);

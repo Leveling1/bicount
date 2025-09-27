@@ -20,15 +20,3 @@ class CompanyError extends CompanyState {
   final Failure failure;
   CompanyError(this.failure);
 }
-
-// For the company details
-class CompanyDetailLoading extends CompanyState {}
-
-class CompanyDetailLoaded extends CompanyState {
-  final CompanyModel company;
-  CompanyDetailLoaded(this.company);
-}
-class CompanyDetailError extends CompanyState {
-  final Failure failure;
-  CompanyDetailError(this.failure);
-}

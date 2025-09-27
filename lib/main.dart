@@ -17,6 +17,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:toastification/toastification.dart';
 
+import 'features/company/presentation/bloc/detail_bloc/detail_bloc.dart';
+import 'features/company/presentation/bloc/list_bloc/list_bloc.dart';
 import 'features/group/data/repositories/group_repository_impl.dart';
 import 'features/group/presentation/bloc/group_bloc.dart';
 import 'features/project/data/repositories/project_repository_impl.dart';
@@ -74,6 +76,12 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<CompanyBloc>(
             create: (context) => CompanyBloc(CompanyRepositoryImpl())
+          ),
+          BlocProvider<ListBloc>(
+              create: (context) => ListBloc(CompanyRepositoryImpl())
+          ),
+          BlocProvider<DetailBloc>(
+              create: (context) => DetailBloc(CompanyRepositoryImpl())
           ),
           BlocProvider<TransactionBloc>(
             create: (context) =>
