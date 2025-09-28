@@ -11,7 +11,7 @@ import '../../../../core/errors/failure.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as path;
-
+import 'package:uuid/uuid.dart';
 import '../../../project/domain/entities/project_model.dart';
 
 class CompanyRepositoryImpl implements CompanyRepository {
@@ -19,6 +19,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
   final supabaseInstance = Supabase.instance.client;
 
   String get uid => supabaseInstance.auth.currentUser!.id;
+  var uuid = Uuid();
   String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
 
   final _compagny = StreamController<List<CompanyModel>>.broadcast();
@@ -35,6 +36,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
   // For the creation company
   @override
   Future<CompanyModel> createCompany(CompanyModel company, File? logoFile) async {
+    String CID = uuid.v4();
     try {
       final uri = Uri.parse(Secrets.create_company_endpoint);
 
@@ -42,6 +44,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
         ..fields['name'] = company.name
         ..fields['description'] = company.description ?? ""
         ..fields['uid'] = uid
+        ..fields['CID'] = CID
         ..headers['Authorization'] = 'Bearer $accessToken'
         ..headers['apikey'] = Secrets.supabaseAnonKey;
       if (logoFile != null) {

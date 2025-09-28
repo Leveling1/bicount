@@ -1,3 +1,4 @@
+import 'package:bicount/features/company/presentation/screens/share_company.dart';
 import 'package:bicount/features/project/presentation/screens/add_project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -81,6 +82,23 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
               ),
             ),
             actions: [
+              IconButton(
+                onPressed: () {
+                  showCustomBottomSheet(
+                    context: context,
+                    minHeight: 0.95,
+                    color: null,
+                    child: ShareCompany(
+                      CID: widget.company.CID!,
+                    ),
+                  );
+                },
+                icon: Icon(
+                  Icons.ios_share_outlined,
+                  color: Theme.of(context).textTheme.titleSmall!.color,
+                  size: 20,
+                ),
+              ),
               IconButton(
                 onPressed: () {},
                 icon: Icon(

@@ -7,6 +7,7 @@ import '../../../group/domain/entities/group_model.dart';
 
 class CompanyModel {
   final int? id;
+  final String? CID;
   final String name;
   final String? description;
   final String? image;
@@ -22,6 +23,7 @@ class CompanyModel {
 
   CompanyModel({
     this.id,
+    this.CID,
     required this.name,
     this.description,
     this.image,
@@ -40,6 +42,7 @@ class CompanyModel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'CID': CID,
       'name': name,
       'description': description,
       'logoUrl': image,
@@ -57,6 +60,7 @@ class CompanyModel {
   factory CompanyModel.fromMap(Map<String, dynamic> map) {
     return CompanyModel(
       id: map['id'] ?? '',
+      CID: map['CID'] ?? '',
       name: map['name'] ?? '',
       description: map['description'],
       image: map['image'],
