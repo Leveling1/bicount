@@ -8,7 +8,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../features/company/domain/entities/company_model.dart';
 import '../../features/company/presentation/screens/detail_company_screen.dart';
+import '../../features/group/domain/entities/group_model.dart';
+import '../../features/group/presentation/screens/group_screen.dart';
 import '../../features/main/presentation/screens/main_screen.dart';
+import '../../features/project/domain/entities/project_model.dart';
+import '../../features/project/presentation/screens/project_screen.dart';
 import '../../features/transaction/domain/entities/transaction_model.dart';
 import '../../features/transaction/presentation/screens/detail_transaction_screen.dart';
 import '../utils/custom_transition.dart';
@@ -46,6 +50,30 @@ class AppRouter {
             childContain: DetailCompanyScreen(company: company),
             state: state,
             model: CompanyModel,
+          );
+        },
+      ),
+
+      GoRoute(
+        path: '/project',
+        pageBuilder: (context, state) {
+          final projectData = state.extra as ProjectModel;
+          return buildCustomTransitionPage(
+            childContain: ProjectScreen(projectData: projectData),
+            state: state,
+            model: ProjectModel,
+          );
+        },
+      ),
+
+      GoRoute(
+        path: '/group',
+        pageBuilder: (context, state) {
+          final groupData = state.extra as GroupModel;
+          return buildCustomTransitionPage(
+            childContain: GroupScreen(groupData: groupData),
+            state: state,
+            model: GroupModel,
           );
         },
       ),

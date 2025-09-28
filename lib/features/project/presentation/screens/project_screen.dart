@@ -1,9 +1,11 @@
+import 'package:bicount/features/project/domain/entities/project_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/project_bloc.dart';
 
 class ProjectScreen extends StatelessWidget {
-  const ProjectScreen({super.key});
+  final ProjectModel projectData;
+  const ProjectScreen({super.key, required this.projectData});
 
   @override
   Widget build(BuildContext context) {
