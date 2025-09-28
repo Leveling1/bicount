@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/notification_helper.dart';
@@ -8,6 +7,7 @@ import '../../../../core/widgets/custom_form_text_field.dart';
 import '../../../../core/widgets/custom_pick_image.dart';
 import '../../domain/entities/project_model.dart';
 import '../bloc/project_bloc.dart';
+import 'package:intl/intl.dart';
 
 class AddProject extends StatefulWidget {
   final int idCompany;
@@ -21,6 +21,7 @@ class _AddProjectState extends State<AddProject> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _description = TextEditingController();
   final TextEditingController _initiator = TextEditingController();
+  final TextEditingController _startDate = TextEditingController();
 
   File? _selectedImage;
 
@@ -103,12 +104,13 @@ class _AddProjectState extends State<AddProject> {
                 ),
                 const SizedBox(height: 16),
                 CustomFormField(
-                  controller: _initiator,
-                  label: "Initiate by",
-                  hint: 'Enter the name of the sponsor',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the name of the sponsor';
+                  label: "Start date",
+                  hint: 'DD MMMM YYYY',
+                  controller: _startDate,
+                  isDate: true,
+                  validator: (date) {
+                    if (date == null) {
+                      return "Veuillez choisir une date";
                     }
                     return null;
                   },
@@ -140,7 +142,7 @@ class _AddProjectState extends State<AddProject> {
         idCompany: widget.idCompany,
         name: _name.text,
         description: _description.text,
-        startDate: DateTime.now(),
+        startDate:  DateFormat("dd MMMM yyyy", 'en_US').parse(_startDate.text),
         initiator: _initiator.text,
       );
       context.read<ProjectBloc>().add(
@@ -152,3 +154,4 @@ class _AddProjectState extends State<AddProject> {
     }
   }
 }
+

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../themes/app_colors.dart';
+import 'custom_form_date_field.dart';
 
 class CustomFormTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
@@ -72,16 +73,18 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
 class CustomFormField extends StatelessWidget {
   final String label;
   final String hint;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final TextInputType? inputType;
   final validator;
+  final bool isDate;
   const CustomFormField({
     super.key,
-    required this.controller,
+    this.controller,
     required this.label,
     required this.hint,
     this.inputType = TextInputType.text,
-    this.validator
+    this.validator,
+    this.isDate = false,
   });
 
   @override
@@ -90,7 +93,13 @@ class CustomFormField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: Theme.of(context).textTheme.titleMedium),
-        CustomFormTextField(
+        isDate
+        ? CustomFormDateField(
+          hintText: hint,
+          validator: validator,
+          controller: controller,
+        )
+        : CustomFormTextField(
           controller: controller,
           hintText: hint,
           inputType: inputType,

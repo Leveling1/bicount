@@ -28,6 +28,8 @@ class ProjectRepositoryImpl implements ProjectRepository {
       var request = http.MultipartRequest("POST", uri)
         ..fields['name'] = project.name
         ..fields['description'] = project.description ?? ""
+        ..fields['initiator'] = project.initiator
+        ..fields['startDate'] = project.startDate.toIso8601String()
         ..fields['idCompany'] = "${project.idCompany}"
         ..headers['Authorization'] = 'Bearer $accessToken'
         ..headers['apikey'] = Secrets.supabaseAnonKey;
