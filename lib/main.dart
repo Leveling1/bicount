@@ -21,6 +21,9 @@ import 'features/company/presentation/bloc/detail_bloc/detail_bloc.dart';
 import 'features/company/presentation/bloc/list_bloc/list_bloc.dart';
 import 'features/group/data/repositories/group_repository_impl.dart';
 import 'features/group/presentation/bloc/group_bloc.dart';
+import 'features/main/data/repositories/main_repository_impl.dart';
+import 'features/main/domain/repositories/main_repository.dart';
+import 'features/main/presentation/bloc/main_bloc.dart';
 import 'features/project/data/repositories/project_repository_impl.dart';
 import 'features/project/presentation/bloc/project_bloc.dart';
 
@@ -47,6 +50,9 @@ class MyApp extends StatelessWidget {
             SupabaseAuthentification(Supabase.instance.client),
           ),
         ),
+        RepositoryProvider<MainRepositoryImpl>(
+          create: (_) => MainRepositoryImpl(),
+        ),
         RepositoryProvider<HomeRepositoryImpl>(
           create: (_) => HomeRepositoryImpl(),
         ),
@@ -70,6 +76,9 @@ class MyApp extends StatelessWidget {
               authentificationRepository: context
                   .read<AuthentificationRepositoryImpl>(),
             ),
+          ),
+          BlocProvider<MainBloc>(
+            create: (context) => MainBloc(MainRepositoryImpl()),
           ),
           BlocProvider<HomeBloc>(
             create: (context) => HomeBloc(HomeRepositoryImpl())

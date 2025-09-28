@@ -1,5 +1,5 @@
 
-
+enum NetworkStatus { connected, disconnected, unstable }
 abstract class MainRepository {
-  // Add your repository interface here
+  Stream<NetworkStatus> get networkStatus;
 }

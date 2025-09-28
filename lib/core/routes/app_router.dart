@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:bicount/features/authentification/presentation/screens/login_screen.dart';
 import 'package:bicount/features/authentification/presentation/screens/signup_screen.dart';
-import 'package:bicount/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../features/company/domain/entities/company_model.dart';
 import '../../features/company/presentation/screens/detail_company_screen.dart';
+import '../../features/main/presentation/screens/main_screen.dart';
 import '../../features/transaction/domain/entities/transaction_model.dart';
 import '../../features/transaction/presentation/screens/detail_transaction_screen.dart';
 import '../utils/custom_transition.dart';
