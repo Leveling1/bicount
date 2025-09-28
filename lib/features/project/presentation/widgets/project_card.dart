@@ -48,7 +48,7 @@ class ProjectCard extends StatelessWidget {
                   ) : Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Icon(
-                      Icons.people,
+                      Icons.lightbulb,
                       size: 30,
                       color: AppColors.inactiveColorDark,
                     ),

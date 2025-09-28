@@ -93,6 +93,189 @@ class AppTheme {
         fontSize: AppDimens.textSizeExtraLarge.sp,
       ),
     ),
+
+    datePickerTheme: DatePickerThemeData(
+      // Couleurs de base
+      backgroundColor: AppColors.cardColorLight,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: Colors.black.withValues(alpha: 0.2),
+      elevation: 0,
+
+      // En-tête du calendrier
+      headerBackgroundColor: Colors.transparent,
+      headerForegroundColor: AppColors.textColorLight,
+      headerHeadlineStyle: const TextStyle(
+        fontWeight: FontWeight.bold,
+        color: AppColors.textColorLight,
+        fontSize: 28,
+        height: 1.2,
+      ),
+      headerHelpStyle: const TextStyle(
+        fontWeight: FontWeight.bold,
+        color: AppColors.textColorLight,
+        fontSize: 18,
+      ),
+
+      // Dividers/séparateurs
+      dividerColor: AppColors.textColorLight.withValues(alpha: 0.1),
+
+      // Style du jour aujourd'hui
+      todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.primaryColorLight;
+        }
+        return AppColors.primaryColorLight.withValues(alpha: 0.2);
+      }),
+      todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return Colors.white;
+        }
+        return AppColors.primaryColorLight;
+      }),
+      todayBorder: const BorderSide(
+        color: AppColors.primaryColorLight,
+        width: 1,
+      ),
+
+      // Style du jour sélectionné
+      dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.primaryColorLight;
+        }
+        if (states.contains(WidgetState.disabled)) {
+          return Colors.transparent;
+        }
+        return Colors.transparent;
+      }),
+      dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return Colors.white;
+        }
+        if (states.contains(WidgetState.disabled)) {
+          return AppColors.textColorLight.withValues(alpha: 0.3);
+        }
+        return AppColors.textColorLight;
+      }),
+
+      // Style des jours au survol/focus/pressed
+      dayOverlayColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.pressed)) {
+          return AppColors.primaryColorLight.withValues(alpha: 0.3);
+        }
+        if (states.contains(WidgetState.hovered)) {
+          return AppColors.primaryColorLight.withValues(alpha: 0.1);
+        }
+        if (states.contains(WidgetState.focused)) {
+          return AppColors.primaryColorLight.withValues(alpha: 0.2);
+        }
+        return Colors.transparent;
+      }),
+
+      // Styles de texte pour les jours
+      dayStyle: const TextStyle(
+        fontWeight: FontWeight.w400,
+        color: AppColors.textColorLight,
+      ),
+
+      // Style des en-têtes des jours
+      weekdayStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textColorLight.withValues(alpha: 0.7),
+      ),
+
+      // Style des années
+      yearStyle: const TextStyle(
+        fontWeight: FontWeight.w400,
+        color: AppColors.textColorLight,
+      ),
+      yearForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return Colors.white;
+        }
+        if (states.contains(WidgetState.disabled)) {
+          return AppColors.textColorLight.withValues(alpha: 0.3);
+        }
+        return AppColors.textColorLight;
+      }),
+      yearBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.primaryColorLight;
+        }
+        return Colors.transparent;
+      }),
+      yearOverlayColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.pressed)) {
+          return AppColors.primaryColorLight.withValues(alpha: 0.3);
+        }
+        if (states.contains(WidgetState.hovered)) {
+          return AppColors.primaryColorLight.withValues(alpha: 0.1);
+        }
+        if (states.contains(WidgetState.focused)) {
+          return AppColors.primaryColorLight.withValues(alpha: 0.2);
+        }
+        return Colors.transparent;
+      }),
+
+      // Boutons de confirmation/annulation
+      confirmButtonStyle: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(AppColors.primaryColorLight),
+        foregroundColor: WidgetStateProperty.all(Colors.white),
+        textStyle: WidgetStateProperty.all(
+          const TextStyle(fontWeight: FontWeight.w500),
+        ),
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+      cancelButtonStyle: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(Colors.transparent),
+        foregroundColor: WidgetStateProperty.all(AppColors.primaryColorLight),
+        textStyle: WidgetStateProperty.all(
+          const TextStyle(fontWeight: FontWeight.w500),
+        ),
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+        overlayColor: WidgetStateProperty.all(
+          AppColors.primaryColorLight.withValues(alpha: 0.1),
+        ),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+
+      // Forme générale des éléments
+      dayShape: WidgetStateProperty.all(CircleBorder()),
+      yearShape: WidgetStateProperty.all(CircleBorder()),
+
+      // Localisation et format
+      locale: const Locale('en', 'EN'),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.cardColorLight,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: AppColors.primaryColorLight.withValues(alpha: 0.3),
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppColors.primaryColorLight, width: 2),
+        ),
+        labelStyle: const TextStyle(color: AppColors.textColorLight),
+        hintStyle: TextStyle(color: AppColors.textColorLight.withValues(alpha: 0.6)),
+      ),
+    ),
+
     colorScheme: ColorScheme.light(
       primary: AppColors.primaryColorLight,
 
@@ -202,6 +385,195 @@ class AppTheme {
         fontSize: AppDimens.textSizeLarge.sp,
       ),
     ),
+
+    datePickerTheme: DatePickerThemeData(
+      // Couleurs de base
+      backgroundColor: AppColors.cardColorDark,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: Colors.black.withValues(alpha: 0.2),
+      elevation: 0,
+
+      // En-tête du calendrier - MODIFIÉ POUR AGRANDIR
+      headerBackgroundColor: Colors.transparent,
+      headerForegroundColor: AppColors.textColorDark,
+      headerHeadlineStyle: const TextStyle(
+        fontWeight: FontWeight.bold,
+        color: AppColors.textColorDark,
+        fontSize: 28, // Taille plus grande pour une meilleure visibilité
+        height: 1.2, // Espacement des lignes
+      ),
+      headerHelpStyle: const TextStyle(
+        fontWeight: FontWeight.bold,
+        color: AppColors.textColorDark,
+        fontSize: 18, // Augmenté aussi
+      ),
+
+      // Dividers/séparateurs
+      dividerColor: AppColors.textColorDark.withValues(alpha: 0.1),
+
+      // Style du jour aujourd'hui
+      todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.primaryColorDark;
+        }
+        return AppColors.primaryColorDark.withValues(alpha: 0.2);
+      }),
+      todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return Colors.white;
+        }
+        return AppColors.primaryColorDark;
+      }),
+      todayBorder: const BorderSide(
+        color: AppColors.primaryColorDark,
+        width: 1,
+      ),
+
+      // Style du jour sélectionné
+      dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.primaryColorDark;
+        }
+        if (states.contains(WidgetState.disabled)) {
+          return Colors.transparent;
+        }
+        return Colors.transparent;
+      }),
+      dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return Colors.white;
+        }
+        if (states.contains(WidgetState.disabled)) {
+          return AppColors.textColorDark.withValues(alpha: 0.3);
+        }
+        return AppColors.textColorDark;
+      }),
+
+      // Style des jours au survol/focus/pressed
+      dayOverlayColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.pressed)) {
+          return AppColors.primaryColorDark.withValues(alpha: 0.3);
+        }
+        if (states.contains(WidgetState.hovered)) {
+          return AppColors.primaryColorDark.withValues(alpha: 0.1);
+        }
+        if (states.contains(WidgetState.focused)) {
+          return AppColors.primaryColorDark.withValues(alpha: 0.2);
+        }
+        return Colors.transparent;
+      }),
+
+      // Styles de texte pour les jours
+      dayStyle: const TextStyle(
+        fontWeight: FontWeight.w400,
+        color: AppColors.textColorDark,
+      ),
+
+      // Style des en-têtes des jours de la semaine (L M M J V S D)
+      weekdayStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textColorDark.withValues(alpha: 0.7),
+      ),
+
+      // Style des années dans la vue année
+      yearStyle: const TextStyle(
+        fontWeight: FontWeight.w400,
+        color: AppColors.textColorDark,
+      ),
+      yearForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return Colors.white;
+        }
+        if (states.contains(WidgetState.disabled)) {
+          return AppColors.textColorDark.withValues(alpha: 0.3);
+        }
+        return AppColors.textColorDark;
+      }),
+      yearBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.primaryColorDark;
+        }
+        return Colors.transparent;
+      }),
+      yearOverlayColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.pressed)) {
+          return AppColors.primaryColorDark.withValues(alpha: 0.3);
+        }
+        if (states.contains(WidgetState.hovered)) {
+          return AppColors.primaryColorDark.withValues(alpha: 0.1);
+        }
+        if (states.contains(WidgetState.focused)) {
+          return AppColors.primaryColorDark.withValues(alpha: 0.2);
+        }
+        return Colors.transparent;
+      }),
+
+      // Boutons de confirmation/annulation (si utilisés)
+      confirmButtonStyle: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(AppColors.primaryColorDark),
+        foregroundColor: WidgetStateProperty.all(Colors.white),
+        textStyle: WidgetStateProperty.all(
+          const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+      cancelButtonStyle: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(Colors.transparent),
+        foregroundColor: WidgetStateProperty.all(AppColors.primaryColorDark),
+        textStyle: WidgetStateProperty.all(
+          const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+        overlayColor: WidgetStateProperty.all(
+          AppColors.primaryColorDark.withValues(alpha: 0.1),
+        ),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+
+      // Forme générale des éléments
+      dayShape: WidgetStateProperty.all(
+        CircleBorder(),
+      ),
+      yearShape: WidgetStateProperty.all(
+        CircleBorder(),
+      ),
+
+      // Localisation et format
+      locale: const Locale('en', 'EN'),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.cardColorDark,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: AppColors.primaryColorDark.withValues(alpha: 0.3)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppColors.primaryColorDark, width: 2),
+        ),
+        labelStyle: const TextStyle(color: AppColors.textColorDark),
+        hintStyle: TextStyle(color: AppColors.textColorDark.withValues(alpha: 0.6)),
+      ),
+    ),
+
     colorScheme: ColorScheme.dark(
       primary: AppColors.primaryColorDark,
       surface: AppColors.surfaceColorDark,

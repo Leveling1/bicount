@@ -22,6 +22,7 @@ class _AddProjectState extends State<AddProject> {
   final TextEditingController _description = TextEditingController();
   final TextEditingController _initiator = TextEditingController();
   final TextEditingController _startDate = TextEditingController();
+  final TextEditingController _endDate = TextEditingController();
 
   File? _selectedImage;
 
@@ -115,6 +116,12 @@ class _AddProjectState extends State<AddProject> {
                     return null;
                   },
                 ),
+                CustomFormField(
+                  label: "End date",
+                  hint: 'DD MMMM YYYY (optional)',
+                  controller: _endDate,
+                  isDate: true,
+                ),
                 const SizedBox(height: 16),
                 CustomFormField(
                   controller: _description,
@@ -143,6 +150,7 @@ class _AddProjectState extends State<AddProject> {
         name: _name.text,
         description: _description.text,
         startDate:  DateFormat("dd MMMM yyyy", 'en_US').parse(_startDate.text),
+        endDate:  DateFormat("dd MMMM yyyy", 'en_US').parse(_endDate.text),
         initiator: _initiator.text,
       );
       context.read<ProjectBloc>().add(
