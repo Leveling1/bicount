@@ -8,17 +8,24 @@ class ProjectModel {
   final String initiator;
   final String? description;
   final String? image;
-  final String? state;
+  final int? state;
+  final double? profit;
   final DateTime createdAt;
+  final DateTime startDate;
+  final DateTime? endDate;
+
 
   ProjectModel({
     this.id,
     required this.idCompany,
     required this.name,
     required this.initiator,
+    required this.startDate,
+    this.endDate,
     this.description,
     this.image,
     this.state,
+    this.profit,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -32,6 +39,9 @@ class ProjectModel {
       'description': description,
       'logoUrl': image,
       'state': state,
+      'profit': profit,
+      'start_date': startDate.toIso8601String(),
+      'end_date': endDate,
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -46,6 +56,11 @@ class ProjectModel {
       description: map['description'],
       image: map['image'],
       state: map['number'],
+      profit: map['profit'] != null ? (map['profit'] as num).toDouble() : 0.0,
+      startDate: DateTime.tryParse(map['start_date'] ?? '') ?? DateTime.now(),
+      endDate: map['end_date'] != null && map['end_date'].isNotEmpty
+          ? DateTime.tryParse(map['end_date'])
+          : null,
       createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
     );
   }

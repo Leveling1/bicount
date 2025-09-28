@@ -20,6 +20,7 @@ class AddProject extends StatefulWidget {
 class _AddProjectState extends State<AddProject> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _description = TextEditingController();
+  final TextEditingController _initiator = TextEditingController();
 
   File? _selectedImage;
 
@@ -59,7 +60,7 @@ class _AddProjectState extends State<AddProject> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Logo", style: Theme.of(context).textTheme.titleMedium),
+                          Text("Image", style: Theme.of(context).textTheme.titleMedium),
                           CustomPickImage(
                             selectedImage: _selectedImage,
                             onImageSelected: (File? image) {
@@ -90,6 +91,30 @@ class _AddProjectState extends State<AddProject> {
                 ),
                 const SizedBox(height: 16),
                 CustomFormField(
+                  controller: _initiator,
+                  label: "Initiate by",
+                  hint: 'Enter the name of the sponsor',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the name of the sponsor';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                CustomFormField(
+                  controller: _initiator,
+                  label: "Initiate by",
+                  hint: 'Enter the name of the sponsor',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the name of the sponsor';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                CustomFormField(
                   controller: _description,
                   label: "Description",
                   hint: 'Enter project description',
@@ -115,7 +140,8 @@ class _AddProjectState extends State<AddProject> {
         idCompany: widget.idCompany,
         name: _name.text,
         description: _description.text,
-        initiator: '',
+        startDate: DateTime.now(),
+        initiator: _initiator.text,
       );
       context.read<ProjectBloc>().add(
           CreateProjectEvent(

@@ -32,13 +32,15 @@ class DetailCompanyScreen extends StatefulWidget {
 class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
   Widget _spacerHeight() => const SizedBox(height: AppDimens.marginMedium);
   Widget _spacerWidth() => const SizedBox(width: AppDimens.marginMedium);
+  late CompanyModel company;
 
   @override
   void initState() {
     super.initState();
+    company = widget.company;
     // Ici on déclenche la récupération des companies
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<DetailBloc>().add(GetCompanyDetail(widget.company));
+      context.read<DetailBloc>().add(GetCompanyDetail(company));
     });
   }
 
@@ -48,7 +50,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
     return BlocConsumer<DetailBloc, DetailState>(
       listener: (context, state) {
         if (state is DetailError) {
-          NotificationHelper.showFailureNotification(context, state.toString());
+          NotificationHelper.showFailureNotification(context, state.failure.message.toString());
         }
       },
       builder: (context, state) {
