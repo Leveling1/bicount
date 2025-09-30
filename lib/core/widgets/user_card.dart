@@ -35,10 +35,10 @@ class UserCard extends StatelessWidget {
                   // Avatar
                   CircleAvatar(
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    radius: 20,
+                    radius: 30,
                     child: SizedBox(
-                      width: 30.w,
-                      height: 30.h,
+                      width: 60.w,
+                      height: 60.h,
                       child: Image.asset(user.image!),
                     ),
                   ),
