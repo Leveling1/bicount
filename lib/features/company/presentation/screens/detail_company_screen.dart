@@ -110,10 +110,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
             ],
           ),
           body: Padding(
-            padding: EdgeInsets.only(
-              left: AppDimens.paddingLarge,
-              right: AppDimens.paddingLarge,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: AppDimens.paddingLarge,),
             child: SingleChildScrollView(
               child: Center(
                 child: Column(
@@ -235,7 +232,9 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                           itemBuilder: (context, index) {
                             return GroupCard(
                               group: state.company.groups![index],
-                              onTap: (){}
+                              onTap: (){
+                                context.push('/group', extra: state.company.groups![index]);
+                              }
                             );
                           },
                         ),
