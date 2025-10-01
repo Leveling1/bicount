@@ -1,7 +1,7 @@
 import 'package:bicount/features/group/domain/entities/member_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 import '../themes/app_dimens.dart';
 
 class UserCard extends StatelessWidget {
@@ -63,3 +63,20 @@ class UserCard extends StatelessWidget {
     );
   }
 }
+
+class UserCardSkeleton extends StatelessWidget {
+  const UserCardSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SkeletonItem(
+      child: Container(
+        decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge)
+        ),
+      ),
+    );
+  }
+}
+

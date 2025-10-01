@@ -14,47 +14,29 @@ import '../../domain/entities/member_model.dart';
 import '../bloc/group_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class GroupScreen extends StatelessWidget {
+import '../widgets/grid_view_skeleton.dart';
+
+class GroupScreen extends StatefulWidget {
   final GroupModel groupData;
   const GroupScreen({super.key, required this.groupData});
+
+  @override
+  State<GroupScreen> createState() => _GroupScreenState();
+}
+
+class _GroupScreenState extends State<GroupScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<GroupBloc>().add(GetAllGroupDetails(widget.groupData));
+  }
 
   @override
   Widget build(BuildContext context) {
     final width = 120.0;
     final height = 120.0;
     final radius = 40.0;
-
-    final List<MemberModel> members = [
-      MemberModel(
-        id: 1,
-        UID: "UID_123456",
-        name: "Alice Dupont",
-        role: "Admin",
-        image: MemojiUtils.defaultMemojis[0].imagePath,
-      ),
-      MemberModel(
-        id: 2,
-        UID: "UID_789012",
-        name: "Jean Kabila",
-        role: "Moderator",
-        image: MemojiUtils.defaultMemojis[1].imagePath,
-      ),
-      MemberModel(
-        id: 3,
-        UID: "UID_456789",
-        name: "Fatoumata Diop",
-        role: "User",
-        image: MemojiUtils.defaultMemojis[2].imagePath,
-      ),
-      MemberModel(
-        id: 10,
-        UID: "UID_999999",
-        name: "Samuel Mwamba",
-        role: "Editor",
-        image: MemojiUtils.defaultMemojis[3].imagePath,
-      ),
-    ];
-
 
     return Scaffold(
       appBar: AppBar(
@@ -100,7 +82,8 @@ class GroupScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<GroupBloc, GroupState>(
+      body: BlocConsumer<GroupBloc, GroupState>(
+        listener: (context, state) {},
         builder: (context, state) {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: AppDimens.paddingLarge,),
@@ -114,9 +97,9 @@ class GroupScreen extends StatelessWidget {
                         backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
                         radius: radius,
                         child: ClipOval(
-                          child: groupData.image != null && groupData.image != ""
+                          child: widget.groupData.image != null && widget.groupData.image != ""
                           ? CachedNetworkImage(
-                            imageUrl: groupData.image!,
+                            imageUrl: widget.groupData.image!,
                             width: width.w,
                             height: height.h,
                             placeholder: (context, url) => CircleImageSkeleton(
@@ -141,17 +124,17 @@ class GroupScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              groupData.name,
+                              widget.groupData.name,
                               style: Theme.of(context).textTheme.headlineLarge,
                             ),
                             Text(
-                              '${groupData.number} members',
+                              '${widget.groupData.number} members',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                             const SizedBox(height: 5,),
-                            groupData.description != null && groupData.description != ""
+                            widget.groupData.description != null && widget.groupData.description != ""
                             ? ExpandableText(
-                              groupData.description!,
+                              widget.groupData.description!,
                             ) : const SizedBox.shrink(),
                           ],
                         ),
@@ -159,21 +142,27 @@ class GroupScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 15,),
-                  GridView.builder(
-                    itemCount: members.length,
-                    shrinkWrap: true, // Important pour une GridView dans une SingleChildScrollView
-                    physics: const NeverScrollableScrollPhysics(), // Pour éviter le scroll interne
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Nombre de colonnes
-                      crossAxisSpacing: 10.0, // Espace horizontal entre les cartes
-                      mainAxisSpacing: 10.0, // Espace vertical entre les cartes
-                      childAspectRatio: 3 / 3, // Ratio largeur/hauteur pour chaque carte
-                    ),
-                    itemBuilder: (context, index) {
-                      final member = members[index];
-                      return UserCard(user: member);
-                    },
-                  ),
+                  state is GroupDetailsLoading
+                  ? const MembersSkeleton()
+                  : state is GroupDetailsLoaded
+                    ? state.members.isNotEmpty
+                      ? GridView.builder(
+                      itemCount: state.members.length,
+                        shrinkWrap: true, // Important pour une GridView dans une SingleChildScrollView
+                        physics: const NeverScrollableScrollPhysics(), // Pour éviter le scroll interne
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, // Nombre de colonnes
+                          crossAxisSpacing: 10.0, // Espace horizontal entre les cartes
+                          mainAxisSpacing: 10.0, // Espace vertical entre les cartes
+                          childAspectRatio: 3 / 3, // Ratio largeur/hauteur pour chaque carte
+                        ),
+                        itemBuilder: (context, index) {
+                          final member = state.members[index];
+                          return UserCard(user: member);
+                        },
+                      )
+                      : Center(child: const Text("No members"))
+                    : const MembersSkeleton(),
 
                 ],
               ),

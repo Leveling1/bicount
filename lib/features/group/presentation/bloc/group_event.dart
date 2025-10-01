@@ -7,3 +7,8 @@ class CreateGroupEvent extends GroupEvent {
   final File? logoFile;
   CreateGroupEvent(this.group, {this.logoFile});
 }
+
+class GetAllGroupDetails extends GroupEvent {
+  final GroupModel group;
+  GetAllGroupDetails(this.group);
+}

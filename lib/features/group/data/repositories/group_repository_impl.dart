@@ -1,6 +1,8 @@
 import 'dart:io';
 import '../../../../core/constants/secrets.dart';
+import '../../../../core/utils/memoji_utils.dart';
 import '../../domain/entities/group_model.dart';
+import '../../domain/entities/member_model.dart';
 import '../../domain/repositories/group_repository.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -127,4 +129,29 @@ class GroupRepositoryImpl implements GroupRepository {
       throw UnknownFailure();
     }
   }
+
+  @override
+  Future<List<MemberModel>> getAllGroupDetails(GroupModel group) async {
+    try {
+      final response = await supabaseInstance
+          .from('member_group')
+          .select()
+          .eq('id_company', group.idCompany)
+          .eq('id_group', group.id as Object);
+
+      if (response == null || response.isEmpty) {
+        return [];
+      }
+
+      final List<MemberModel> members = response
+          .map<MemberModel>((memberData) => MemberModel.fromMap(memberData))
+          .toList();
+
+      return members;
+    } catch (e) {
+      throw ServerFailure('Failed to fetch group members.');
+    }
+  }
+
+
 }
