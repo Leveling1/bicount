@@ -78,6 +78,21 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      //context.read<MainBloc>().add(GetAllStartData());
+    });
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    scrollXPosition.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<MainBloc, MainState>(
       listener: (context, state) {

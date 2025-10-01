@@ -43,3 +43,8 @@ class MainStateConnexion extends MainState {
     return 'MainStateConnexion(selectedIndex: $selectedIndex, networkStatus: $networkStatus)';
   }
 }
+
+//For the start data like members with a link
+class MainLoading extends MainState {  }
+
+class MainLoaded extends MainState {  }
