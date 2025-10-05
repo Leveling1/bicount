@@ -215,7 +215,7 @@ class _GroupScreenState extends State<GroupScreen> {
                 const SizedBox(height: 5),
                 widget.groupData.description != null && widget.groupData.description != ""
                     ? ExpandableText(
-                      "${widget.groupData.description!} fuhzoiufzuhfuzfhiuzhfiuzhfuzhfiuhfuzhfui zifizhfuzhfzhiuf zfu hzifzhf zhf zhfzh fzhf zhfizhf zfizhfiuzfhiuzfh iuzfzhfiuzh iuzhfzh fzhfizhfiuzhfiuzhf ziuzhfuzfu hziuf hziufhz iuzuf zfzifh ziuf hzfzh fiuzfhuzhf uzfh izfiuz fizfi zhfuizhfiuzfhiuz fizhfiuhiufhuifheui fizuhfzifhiuz",
+                      widget.groupData.description!,
                       onHeightChanged: (newHeight, isExpanded) {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           if (mounted) {
