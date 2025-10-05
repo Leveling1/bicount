@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ExpandableText extends StatefulWidget {
   final String text;
   final int trimLines;
+  final TextStyle? textStyle;
   final void Function(double, bool)? onHeightChanged;
 
   const ExpandableText(
@@ -10,6 +11,7 @@ class ExpandableText extends StatefulWidget {
         super.key,
         this.trimLines = 2,
         this.onHeightChanged,
+        this.textStyle
       });
 
   @override
@@ -53,6 +55,7 @@ class _ExpandableTextState extends State<ExpandableText>
       softWrap: true,
       overflow: TextOverflow.fade,
       maxLines: _expanded ? null : widget.trimLines,
+      style: widget.textStyle
     );
 
     return AnimatedSize(

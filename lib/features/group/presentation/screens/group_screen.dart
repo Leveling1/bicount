@@ -45,7 +45,7 @@ class _GroupScreenState extends State<GroupScreen> {
     // Déclencher un rebuild lorsque la position change
     setState(() {
       // Si le défilement est supérieur à 100 pixels, on considère qu'on a atteint l'AppBar
-      _isAtAppBar = _scrollController.offset > 130;
+      _isAtAppBar = _scrollController.offset > 150;
     });
   }
 
@@ -142,7 +142,7 @@ class _GroupScreenState extends State<GroupScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).scaffoldBackgroundColor, // Couleur normale
                       borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(AppDimens.borderRadiusLarge),
+                        top: Radius.circular(AppDimens.borderRadiusUltraLarge),
                       ),
                     ),
                     child: Padding(
@@ -206,7 +206,10 @@ class _GroupScreenState extends State<GroupScreen> {
               children: [
                 Text(
                   widget.groupData.name,
-                  style: Theme.of(context).textTheme.headlineLarge,
+                  style: TextStyle(
+                    fontSize: Theme.of(context).textTheme.headlineLarge!.fontSize,
+                    color: AppColors.textColorDark
+                  ),
                 ),
                 Text(
                   '${widget.groupData.number} members',
@@ -216,6 +219,10 @@ class _GroupScreenState extends State<GroupScreen> {
                 widget.groupData.description != null && widget.groupData.description != ""
                     ? ExpandableText(
                       widget.groupData.description!,
+                      textStyle: TextStyle(
+                        fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                        color: AppColors.textColorDark
+                      ),
                       onHeightChanged: (newHeight, isExpanded) {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           if (mounted) {
@@ -243,7 +250,14 @@ class _GroupScreenState extends State<GroupScreen> {
 
   // Méthode pour construire la grille des membres
   Widget _buildMembersGrid(List<MemberModel> members) {
-    if (members.isEmpty) return Center(child: const Text("No members yet."));
+    if (members.isEmpty) {
+      return Center(
+        child: Text(
+            "No members yet.",
+          style: Theme.of(context).textTheme.bodyMedium,
+        )
+      );
+    }
 
     return GridView.builder(
       itemCount: members.length,

@@ -50,7 +50,7 @@ class AppDimens {
   static const double letterSpacingTight = 0.6;
 
   // Heights
-  static const double bottomBarHeight = 95.0;
+  static const double bottomBarHeight = 80.0;
   static const double appBarHeight = 70.0;
   static const double appBarTabletHeight = 200.0;
   static const double toolBarHeight = 100.0;
