@@ -20,6 +20,20 @@ class CompanyCardInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    IconData iconPath;
+    switch (title) {
+      case "Profit":
+        iconPath = Icons.trending_up;
+        break;
+      case "Salary":
+        iconPath = Icons.account_balance_wallet;
+        break;
+      case "Equipment":
+        iconPath = Icons.build;
+        break;
+      default: // "Third-party service" or any other case
+        iconPath = Icons.work;
+    }
     return DetailsCard(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -53,22 +67,12 @@ class CompanyCardInfo extends StatelessWidget {
           const SizedBox(height: 20),
           CircleAvatar(
             backgroundColor: color,
-            radius: 20,
-            child: ClipOval(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset(
-                  "assets/icons/company_card_icon.svg",
-                  semanticsLabel: "Company",
-                  width: 50.w,
-                  height: 50.h,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).cardColor,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-            ),
+            radius: 20.r, // Using .r for radius to scale consistently
+            child: Icon(
+              iconPath,
+              size: 24.sp, // Adjust size to fit within the avatar
+              color: Theme.of(context).cardColor,
+            )
           )
         ],
       )

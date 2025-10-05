@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/widgets/circle_image_skeleton.dart';
+import 'package:flutter_svg/svg.dart';
 
 class CompanyProfil extends StatelessWidget {
   final double width;
@@ -38,7 +38,7 @@ class CompanyProfil extends StatelessWidget {
         ) : Padding(
           padding: const EdgeInsets.all(8.0),
           child: SvgPicture.asset(
-            "assets/icons/company_card_icon.svg",
+            "assets/icons/company.svg",
             semanticsLabel: "Company",
             width: width.w,
             height: height.h,

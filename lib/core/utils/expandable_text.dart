@@ -55,50 +55,47 @@ class _ExpandableTextState extends State<ExpandableText>
       maxLines: _expanded ? null : widget.trimLines,
     );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AnimatedSize(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            // Supprimez le minHeight problématique, utilisez plutôt la contrainte
-            constraints: BoxConstraints(
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      alignment: Alignment.topCenter,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ConstrainedBox(
+            constraints: const BoxConstraints(
               minHeight: 0,
             ),
             child: textWidget,
           ),
-        ),
-        // Afficher le bouton uniquement si nécessaire
-        if (_showMoreButton)
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _expanded = !_expanded;
-              });
-              // Re-vérifier le débordement après expansion/réduction
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (widget.onHeightChanged != null) {
-                  final RenderBox? box = _textKey.currentContext?.findRenderObject() as RenderBox?;
-                  if (box != null) {
-                    widget.onHeightChanged!(box.size.height, _expanded);
+          if (_showMoreButton)
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _expanded = !_expanded;
+                });
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (widget.onHeightChanged != null) {
+                    final RenderBox? box = _textKey.currentContext?.findRenderObject() as RenderBox?;
+                    if (box != null) {
+                      widget.onHeightChanged!(box.size.height, _expanded);
+                    }
                   }
-                }
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(
-                _expanded ? "Show less" : "Show more",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold,
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  _expanded ? "Show less" : "Show more", // Le texte du bouton change ici
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor, // Adaptez la couleur selon votre thème
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

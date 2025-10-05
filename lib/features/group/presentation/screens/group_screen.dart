@@ -29,7 +29,7 @@ class _GroupScreenState extends State<GroupScreen> {
   bool _isAtAppBar = false;
 
   final GlobalKey _headerKey = GlobalKey();
-  double _headerHeight = 125.0;
+  double _headerHeight = 130.0;
 
 
   @override
@@ -136,6 +136,9 @@ class _GroupScreenState extends State<GroupScreen> {
                 // 2. Contenu principal avec couleur dynamique
                 SliverToBoxAdapter(
                   child: Container(
+                    constraints: BoxConstraints(
+                      minHeight: MediaQuery.sizeOf(context).height - _headerHeight,
+                    ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).scaffoldBackgroundColor, // Couleur normale
                       borderRadius: BorderRadius.vertical(
@@ -218,17 +221,12 @@ class _GroupScreenState extends State<GroupScreen> {
                           if (mounted) {
                             if (isExpanded) {
                               setState(() {
-                                _headerHeight += newHeight;
+                                _headerHeight = 80.h + newHeight;
                               });
                             } else {
                               setState(() {
-                                _headerHeight = 125;
+                                _headerHeight = 130;
                               });
-                              /*Future.delayed(const Duration(milliseconds: 300), () {
-                                setState(() {
-                                  _headerHeight = 125;
-                                });
-                              });*/
                             }
                           }
                         });
@@ -245,7 +243,7 @@ class _GroupScreenState extends State<GroupScreen> {
 
   // Méthode pour construire la grille des membres
   Widget _buildMembersGrid(List<MemberModel> members) {
-    if (members.isEmpty) return const MembersSkeleton();
+    if (members.isEmpty) return Center(child: const Text("No members yet."));
 
     return GridView.builder(
       itemCount: members.length,
