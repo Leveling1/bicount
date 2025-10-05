@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:brick_core/core.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
+import '../../../../brick/repository.dart';
 import '../../domain/repositories/main_repository.dart';
+import '../models/start.model.dart';
 
 class MainRepositoryImpl implements MainRepository {
   final Connectivity _connectivity = Connectivity();
@@ -123,5 +126,13 @@ class MainRepositoryImpl implements MainRepository {
     if (!_controller.isClosed) {
       _controller.close();
     }
+  }
+
+  @override
+  // TODO: implement startData
+  Stream<List<Start>> get startData {
+    final Stream<List<Start>> startDataStream =
+    Repository().subscribe<Start>(query: Query.where('name', 'Thomas'));
+    return startDataStream;
   }
 }

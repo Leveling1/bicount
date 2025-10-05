@@ -1,4 +1,3 @@
-import 'package:bicount/core/constants/secrets.dart';
 import 'package:bicount/core/routes/app_router.dart';
 import 'package:bicount/core/themes/app_theme.dart';
 import 'package:bicount/features/authentification/data/data_sources/remote_datasource/supabase_authentification.dart';
@@ -14,15 +13,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sqflite/sqflite.dart' show databaseFactory;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:toastification/toastification.dart';
 
+import 'brick/repository.dart';
 import 'features/company/presentation/bloc/detail_bloc/detail_bloc.dart';
 import 'features/company/presentation/bloc/list_bloc/list_bloc.dart';
 import 'features/group/data/repositories/group_repository_impl.dart';
 import 'features/group/presentation/bloc/group_bloc.dart';
 import 'features/main/data/repositories/main_repository_impl.dart';
-import 'features/main/domain/repositories/main_repository.dart';
 import 'features/main/presentation/bloc/main_bloc.dart';
 import 'features/project/data/repositories/project_repository_impl.dart';
 import 'features/project/presentation/bloc/project_bloc.dart';
@@ -30,10 +30,8 @@ import 'features/project/presentation/bloc/project_bloc.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Supabase.initialize(
-    url: Secrets.supabaseProjectUrl,
-    anonKey: Secrets.supabaseAnonKey,
-  );
+  await Repository.configure(databaseFactory);
+  await Repository().initialize();
 
   runApp(const MyApp());
 }

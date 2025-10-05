@@ -2,6 +2,7 @@ import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/features/company/presentation/screens/company_screen.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
+import 'package:bicount/features/main/domain/entities/start_data_model.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +12,7 @@ import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../company/presentation/screens/company_handler.dart';
 import '../../../transaction/presentation/screens/transaction_handler.dart';
+import '../../data/models/start.model.dart';
 import '../bloc/main_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,6 +25,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  late List<Start> startData;
   PageController pageController = PageController();
   ValueNotifier<double> scrollXPosition = ValueNotifier(0.0);
 
@@ -81,7 +84,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      //context.read<MainBloc>().add(GetAllStartData());
+      context.read<MainBloc>().add(GetAllStartData());
     });
   }
 
@@ -108,6 +111,9 @@ class _MainScreenState extends State<MainScreen> {
                 "Unstable internet connection"
             );
           }
+        }
+        if(state is MainLoaded){
+          startData = state.startData;
         }
       },
       builder: (context, state) {

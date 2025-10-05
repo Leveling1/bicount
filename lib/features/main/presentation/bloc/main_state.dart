@@ -47,4 +47,8 @@ class MainStateConnexion extends MainState {
 //For the start data like members with a link
 class MainLoading extends MainState {  }
 
-class MainLoaded extends MainState {  }
+class MainLoaded extends MainState {
+  final List<Start> startData;
+  const MainLoaded(this.startData);
+
+}

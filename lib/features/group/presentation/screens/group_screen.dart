@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/expandable_text.dart';
-import '../../../../core/utils/memoji_utils.dart';
 import '../../../../core/widgets/circle_image_skeleton.dart';
 import '../../../../core/widgets/user_card.dart';
 import '../../domain/entities/group_model.dart';
