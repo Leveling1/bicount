@@ -74,7 +74,7 @@ class CompanyCard extends StatelessWidget {
                 const SizedBox(width: 12),
                 // Date
                 Text(
-                  NumberFormatUtils.formatCurrency(company.profit as num),
+                  NumberFormatUtils.formatCurrency(company.profit!),
                   style: TextStyle(
                     color: company.profit! == 0.0
                       ? Theme.of(context).iconTheme.color

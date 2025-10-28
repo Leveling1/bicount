@@ -59,7 +59,7 @@ class CompanyModel {
   /// Créer une instance depuis un Map
   factory CompanyModel.fromMap(Map<String, dynamic> map) {
     return CompanyModel(
-      id: map['id'] ?? '',
+      id: map['id'],
       CID: map['CID'] ?? '',
       name: map['name'] ?? '',
       description: map['description'],

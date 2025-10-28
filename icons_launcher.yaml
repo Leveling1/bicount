@@ -4,10 +4,10 @@ icons_launcher:
     android:
       enable: true
       image_path: "assets/app_icon/icon.png"
-      notification_image: "assets/app_icon/icon_foreground.png"
-      adaptive_background_image: "assets/app_icon/icon_background.png"
-      adaptive_foreground_image: "assets/app_icon/icon_foreground.png"
-      adaptive_round_image: "assets/app_icon/icon_round.png"
+      notification_image: "assets/app_icon/icon.png"
+      adaptive_background_color: "#132318"
+      adaptive_foreground_image: "assets/app_icon/icon.png"
+      adaptive_round_image: "assets/app_icon/icon.png"
     ios:
       enable: true
     web:
