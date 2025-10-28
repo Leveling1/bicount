@@ -62,4 +62,11 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
       return Left(AuthenticationFailure(message: e.toString()));
     }
   }
+
+  // For the authentification with google process
+  @override
+  Future<Either<Failure, void>> authWithGoogle() {
+    // TODO: implement authWithGoogle
+    throw UnimplementedError();
+  }
 }

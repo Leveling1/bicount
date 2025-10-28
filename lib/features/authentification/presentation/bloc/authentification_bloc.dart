@@ -29,5 +29,15 @@ class AuthentificationBloc
         (user) => emit(SignInSuccess()),
       );
     });
+
+    // For the authentification with google process
+    on<AuthWithGoogleEvent>((event, emit) async {
+      emit(AuthWithGoogleLoading());
+      final result = await authentificationRepository.authWithGoogle();
+      result.fold(
+            (failure) => emit(AuthWithGoogleFailure(error: failure.message)),
+            (user) => emit(AuthWithGoogleSuccess()),
+      );
+    });
   }
 }

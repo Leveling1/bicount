@@ -44,20 +44,6 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
       keyboardType: widget.inputType,
       textInputAction: TextInputAction.next,
       validator: widget.validator,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Theme.of(context).cardColor,
-        hintText: widget.hintText,
-        hintStyle: Theme.of(
-          context,
-        ).textTheme.titleSmall!.copyWith(color: AppColors.inactiveColorDark),
-        border: const OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
-        // force une hauteur mini quand pas d'erreur
-        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-      ),
     );
   }
 

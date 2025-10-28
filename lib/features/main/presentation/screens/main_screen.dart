@@ -2,7 +2,6 @@ import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/features/company/presentation/screens/company_screen.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
-import 'package:bicount/features/main/domain/entities/start_data_model.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

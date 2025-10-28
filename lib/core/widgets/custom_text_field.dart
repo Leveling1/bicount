@@ -75,15 +75,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           textInputAction: widget.textInputAction,
           onFieldSubmitted: widget.onFieldSubmitted,
           decoration: InputDecoration(
-            hint: Text(
-              widget.label,
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                color: AppColors.inactiveColorDark,
-              ),
-            ),
-            border: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColors.inactiveColorDark),
-            ),
+            hintText: widget.label,
             suffixIcon: widget.type == CustomTextFieldType.password
                 ? IconButton(
                     icon: Icon(

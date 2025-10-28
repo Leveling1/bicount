@@ -15,6 +15,44 @@ class AppTheme {
       backgroundColor: AppColors.surfaceColorLight,
     ),
 
+    /// Card theme light
+    cardColor: AppColors.cardColorLight,
+
+    /// Input decoration theme light
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: AppColors.cardColorLight,
+      prefixIconColor: AppColors.inactiveColorLight,
+      suffixIconColor: AppColors.inactiveColorLight,
+      focusColor: AppColors.primaryColorLight,
+      hoverColor: AppColors.primaryColorLight,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+        borderSide: BorderSide.none,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+        borderSide: BorderSide.none,
+      ),
+      floatingLabelStyle: TextStyle(
+          color: AppColors.primaryColorLight,
+          fontSize: AppDimens.textSizeSmall.sp,
+          fontFamily: 'Lexend'
+      ),
+      contentPadding: AppDimens.paddingAllSmall,
+      hintStyle: TextStyle(
+          color: AppColors.inactiveColorLight,
+          fontSize: AppDimens.textSizeSmall.sp,
+          fontFamily: 'Lexend'
+      ),
+      labelStyle: TextStyle(
+          color: AppColors.textColorLight,
+          fontSize: AppDimens.textSizeMedium.sp,
+          fontFamily: 'Lexend'
+      ),
+    ),
+
+    /// Text button theme light
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         textStyle: WidgetStatePropertyAll(
@@ -22,6 +60,8 @@ class AppTheme {
         ),
       ),
     ),
+
+    /// Elevated button theme light
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.resolveWith<Color>((
@@ -51,7 +91,8 @@ class AppTheme {
         ),
       ),
     ),
-    cardColor: AppColors.cardColorLight,
+
+    /// Text theme light
     textTheme: TextTheme(
       titleSmall: TextStyle(
         color: AppColors.secondaryTextColorLight,
@@ -94,6 +135,8 @@ class AppTheme {
       ),
     ),
 
+
+    /// Date picker theme light
     datePickerTheme: DatePickerThemeData(
       // Couleurs de base
       backgroundColor: AppColors.cardColorLight,
@@ -276,6 +319,7 @@ class AppTheme {
       ),
     ),
 
+    /// Color scheme light
     colorScheme: ColorScheme.light(
       primary: AppColors.primaryColorLight,
 
@@ -284,6 +328,7 @@ class AppTheme {
       secondary: AppColors.positiveColorLight,
     ),
 
+    /// Extensions light
     extensions: <ThemeExtension<dynamic>>[
       AppGradients(
         primaryGradient: LinearGradient(
@@ -307,7 +352,50 @@ class AppTheme {
       backgroundColor: Colors.black, //AppColors.backgroundColorDark,
     ),
 
+    /// Card theme dark
     cardColor: AppColors.cardColorDark,
+
+    /// Input theme dark
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: AppColors.cardColorDark,
+      prefixIconColor: AppColors.inactiveColorDark,
+      suffixIconColor: AppColors.inactiveColorDark,
+      focusColor: AppColors.primaryColorDark,
+      hoverColor: AppColors.primaryColorDark,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+        borderSide: BorderSide.none,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+        borderSide: BorderSide.none,
+      ),
+      floatingLabelStyle: TextStyle(
+          color: AppColors.primaryColorDark,
+          fontSize: AppDimens.textSizeMedium.sp,
+          fontFamily: 'Lexend'
+      ),
+      contentPadding: AppDimens.paddingAllSmall,
+      hintStyle: TextStyle(
+          color: AppColors.inactiveColorDark,
+          fontSize: AppDimens.textSizeMedium.sp,
+          fontFamily: 'Lexend'
+      ),
+      labelStyle: TextStyle(
+          color: AppColors.textColorDark,
+          fontSize: AppDimens.textSizeMedium.sp,
+          fontFamily: 'Lexend'
+      ),
+    ),
+
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: AppColors.primaryColorDark,
+      selectionColor: AppColors.primaryColorDark,
+      selectionHandleColor: AppColors.primaryColorDark,
+    ),
+
+    /// Text button theme dark
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         textStyle: WidgetStatePropertyAll(
@@ -316,6 +404,7 @@ class AppTheme {
       ),
     ),
 
+    /// Elevated button theme dark
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.resolveWith<Color>((
@@ -345,9 +434,11 @@ class AppTheme {
         ),
       ),
     ),
+
+    /// Text theme dark
     textTheme: TextTheme(
       titleSmall: TextStyle(
-        color: AppColors.secondaryTextColorLight,
+        color: AppColors.secondaryTextColorDark,
         fontSize: AppDimens.textSizeMedium.sp,
       ),
       titleMedium: TextStyle(
@@ -360,7 +451,7 @@ class AppTheme {
       ),
 
       bodySmall: TextStyle(
-        color: AppColors.secondaryTextColorLight,
+        color: AppColors.secondaryTextColorDark,
         fontSize: AppDimens.textSizeSmall.sp,
       ),
       bodyLarge: TextStyle(
@@ -368,7 +459,7 @@ class AppTheme {
         fontSize: AppDimens.textSizeLarge.sp,
       ),
       bodyMedium: TextStyle(
-        color: Colors.white,
+        color: AppColors.textColorDark,
         fontSize: AppDimens.textSizeMedium.sp,
       ),
 
@@ -386,6 +477,7 @@ class AppTheme {
       ),
     ),
 
+    /// Date picker theme dark
     datePickerTheme: DatePickerThemeData(
       // Couleurs de base
       backgroundColor: AppColors.cardColorDark,
@@ -574,6 +666,7 @@ class AppTheme {
       ),
     ),
 
+    /// Color scheme dark
     colorScheme: ColorScheme.dark(
       primary: AppColors.primaryColorDark,
       surface: AppColors.surfaceColorDark,
@@ -581,6 +674,7 @@ class AppTheme {
       secondary: AppColors.positiveColorDark,
     ),
 
+    /// Extensions dark
     extensions: <ThemeExtension<dynamic>>[
       AppGradients(
         primaryGradient: LinearGradient(

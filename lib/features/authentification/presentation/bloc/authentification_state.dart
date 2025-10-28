@@ -34,3 +34,11 @@ class SendPasswordResetEmailFailure extends AuthentificationFailure {
   final String error;
   SendPasswordResetEmailFailure({required this.error});
 }
+
+// For authentification with google process
+class AuthWithGoogleLoading extends AuthentificationLoading {}
+class AuthWithGoogleSuccess extends AuthentificationSuccess {}
+class AuthWithGoogleFailure extends AuthentificationFailure {
+  final String error;
+  AuthWithGoogleFailure({required this.error});
+}

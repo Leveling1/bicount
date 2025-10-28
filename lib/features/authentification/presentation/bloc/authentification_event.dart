@@ -25,3 +25,7 @@ class SendPasswordResetEmailEvent extends AuthentificationEvent {
   final String email;
   SendPasswordResetEmailEvent({required this.email});
 }
+
+// Authentification with google
+class AuthWithGoogleEvent extends AuthentificationEvent {}
+
