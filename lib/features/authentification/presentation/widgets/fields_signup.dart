@@ -15,8 +15,10 @@ class FieldsSignUp extends StatefulWidget {
 }
 
 class _FieldsSignUpState extends State<FieldsSignUp> {
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final FocusNode _usernameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   bool _rememberMe = false;
@@ -26,6 +28,7 @@ class _FieldsSignUpState extends State<FieldsSignUp> {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthentificationBloc>().add(
         SignUpEvent(
+          username: _usernameController.text,
           email: _emailController.text,
           password: _passwordController.text,
         ),
@@ -35,8 +38,10 @@ class _FieldsSignUpState extends State<FieldsSignUp> {
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _usernameFocus.dispose();
     _emailFocus.dispose();
     _passwordFocus.dispose();
     super.dispose();
@@ -49,6 +54,16 @@ class _FieldsSignUpState extends State<FieldsSignUp> {
       child: Column(
         spacing: AppDimens.spacingMedium,
         children: [
+          CustomTextField(
+            label: "example",
+            textController: _usernameController,
+            title: "Your user name",
+            node: _usernameFocus,
+            textInputAction: TextInputAction.next,
+            onFieldSubmitted: (_) {
+              FocusScope.of(context).requestFocus(_passwordFocus);
+            },
+          ),
           CustomTextField(
             label: "example@gmail.com",
             textController: _emailController,

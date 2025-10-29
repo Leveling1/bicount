@@ -1,4 +1,4 @@
-import '../../../authentification/data/models/user_model.dart';
+import '../../../authentification/data/models/user.model.dart';
 import '/core/errors/failure.dart';
 import 'package:dartz/dartz.dart';
 

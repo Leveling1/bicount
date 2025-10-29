@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
 
-class StartDataModel {
+class Start {
   final int? id;
   final int idCompany;
   final String name;
@@ -10,7 +10,7 @@ class StartDataModel {
   final int? number;
   final DateTime createdAt;
 
-  StartDataModel({
+  Start({
     this.id,
     required this.idCompany,
     required this.name,
@@ -34,8 +34,8 @@ class StartDataModel {
   }
 
   /// Créer une instance depuis un Map
-  factory StartDataModel.fromMap(Map<String, dynamic> map) {
-    return StartDataModel(
+  factory Start.fromMap(Map<String, dynamic> map) {
+    return Start(
       id: map['id'] ?? '',
       idCompany: map['id_company'] ?? '',
       name: map['name'] ?? '',

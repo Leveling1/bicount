@@ -11,7 +11,7 @@ import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../company/presentation/screens/company_handler.dart';
 import '../../../transaction/presentation/screens/transaction_handler.dart';
-import '../../data/models/start.model.dart';
+import '../../domain/entities/start_data_model.dart';
 import '../bloc/main_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

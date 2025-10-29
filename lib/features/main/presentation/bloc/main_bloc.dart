@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/models/start.model.dart';
 import '../../data/repositories/main_repository_impl.dart';
 import '../../domain/entities/start_data_model.dart';
 import '../../domain/repositories/main_repository.dart';

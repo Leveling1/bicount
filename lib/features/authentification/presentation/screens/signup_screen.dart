@@ -26,48 +26,48 @@ class SignUpScreen extends StatelessWidget {
             child: Padding(
               padding: AppDimens.paddingAllMedium,
               child: SingleChildScrollView(
-                child: SizedBox(
-                  height: height - 2 * AppDimens.paddingAllMedium.vertical,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: height / 4,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Let's Get Started",
-                              style: Theme.of(context).textTheme.headlineMedium,
-                            ),
-                            Text(
-                              "Fill the login to continue",
-                              style: Theme.of(context).textTheme.headlineSmall,
-                            ),
-                          ],
-                        ),
-                      ),
-                      FieldsSignUp(loading: state is SignUpLoading),
-                      Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: height / 10,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Already have an account?"),
-                          TextButton(
-                            onPressed: () {
-                              GoRouter.of(context).go('/login');
-                            },
-                            child: Text(
-                              "Log in",
-                              style: Theme.of(context).textTheme.bodyMedium!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                            ),
+                          Text(
+                            "Let's Get Started",
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          Text(
+                            "Fill the login to continue",
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: AppDimens.spacingLarge),
+                    FieldsSignUp(loading: state is SignUpLoading),
+                    const SizedBox(height: AppDimens.spacingExtraLarge),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Already have an account?"),
+                        TextButton(
+                          onPressed: () {
+                            GoRouter.of(context).go('/login');
+                          },
+                          child: Text(
+                            "Log in",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),

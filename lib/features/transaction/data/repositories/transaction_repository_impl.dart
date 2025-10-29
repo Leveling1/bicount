@@ -32,7 +32,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
   }
 
   @override
-  Future<List<User>> getLinkedUsers() async {
+  Future<List<UserEntity>> getLinkedUsers() async {
     final crud = CRUD(table: 'users');
     final authUser = Supabase.instance.client.auth.currentUser;
 
@@ -42,9 +42,9 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
     try {
       final userData = await crud.readRowByID(authUser.id);
-      final currentUser = User.fromData(userData);
+      final currentUser = UserEntity.fromData(userData);
 
-      List<User> userList = (await linkedUsers("${currentUser.id}")).cast<User>();
+      List<UserEntity> userList = (await linkedUsers("${currentUser.sid}")).cast<UserEntity>();
 
       return userList;
     } catch (e) {

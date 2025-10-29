@@ -2,14 +2,16 @@ part of 'authentification_bloc.dart';
 
 abstract class AuthentificationEvent {}
 
-// Add your events here
-class ExampleAuthentificationEvent extends AuthentificationEvent {}
-
 class SignUpEvent extends AuthentificationEvent {
+  final String username;
   final String email;
   final String password;
 
-  SignUpEvent({required this.email, required this.password});
+  SignUpEvent({
+    required this.username,
+    required this.email,
+    required this.password
+  });
 }
 
 class SignInEvent extends AuthentificationEvent {

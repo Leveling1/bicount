@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             amount: state is HomeLoading
                                 ? 0.0
                                 : state is HomeLoaded
-                                ? state.data.personal_income!
+                                ? state.data.personalIncome!
                                 : 0.0,
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedUser03,
@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             amount: state is HomeLoading
                               ? 0.0
                               : state is HomeLoaded
-                                ? state.data.company_income!
+                                ? state.data.companyIncome!
                                 : 0.0,
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedBuilding02,

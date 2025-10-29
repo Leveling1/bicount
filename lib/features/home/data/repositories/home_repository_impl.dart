@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'package:bicount/features/authentification/data/models/user_model.dart';
+import 'package:bicount/features/authentification/data/models/user.model.dart';
+import '../../../authentification/domain/entities/user.dart';
 import '/features/home/domain/repositories/home_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -38,7 +39,7 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<void> _loadInitialData() async {
     try {
       final user = await _fetchUser();
-      _controller.add(user);
+      _controller.add(user as UserModel);
     } catch (e) {
       _handleError(e);
     }
@@ -51,13 +52,13 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   /// Récupération depuis Supabase
-  Future<UserModel> _fetchUser() async {
+  Future<UserEntity> _fetchUser() async {
     final res = await supabase
         .from('users')
         .select('*')
         .eq('uuid', uid)
         .single();
-    return UserModel.fromJson(res);
+    return UserEntity.fromData(res);
   }
 
   void _subscribeToChanges() {
@@ -75,7 +76,7 @@ class HomeRepositoryImpl implements HomeRepository {
       ),
       callback: (payload) async {
         try {
-          _controller.add(UserModel.fromJson(payload.newRecord));
+          _controller.add(UserEntity.fromData(payload.newRecord) as UserModel);
         } catch (e) {
           _handleError(e);
         }

@@ -6,7 +6,6 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import '../../../../brick/repository.dart';
 import '../../domain/repositories/main_repository.dart';
-import '../models/start.model.dart';
 
 class MainRepositoryImpl implements MainRepository {
   final Connectivity _connectivity = Connectivity();
@@ -128,11 +127,11 @@ class MainRepositoryImpl implements MainRepository {
     }
   }
 
-  @override
+/*@override
   // TODO: implement startData
   Stream<List<Start>> get startData {
     final Stream<List<Start>> startDataStream =
     Repository().subscribe<Start>(query: Query.where('name', 'Thomas'));
     return startDataStream;
-  }
+  }*/
 }

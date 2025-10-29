@@ -3,11 +3,11 @@ import 'package:dartz/dartz.dart';
 import '../entities/user.dart';
 
 abstract class AuthentificationRepository {
-  Future<Either<Failure, User>> signInWithEmailAndPassword(
+  Future<Either<Failure, UserEntity>> signInWithEmailAndPassword(
     String email,
     String password,
   );
-  Future<Either<Failure, User>> signUp(String email, String password);
+  Future<Either<Failure, UserEntity>> signUp(String username, String email, String password);
   Future<Either<Failure, void>> signOut();
   Future<Either<Failure, void>> sendPasswordResetEmail(String email);
 

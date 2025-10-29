@@ -1,58 +1,44 @@
 import 'package:equatable/equatable.dart';
 
-class User extends Equatable {
-  final int? id;
+class UserEntity {
+  final String? sid;
   final String uid;
   final String email;
-  final String name;
+  final String? username;
   final double? sales;
   final double? expenses;
   final double? profit;
-  final double? company_income;
-  final double? personal_income;
+  final double? companyIncome;
+  final double? personalIncome;
 
-  const User({
-    required this.id,
+  const UserEntity({
+    required this.sid,
     required this.uid,
     required this.email,
-    required this.name,
+    required this.username,
     this.sales,
     this.expenses,
     this.profit,
-    this.company_income,
-    this.personal_income,
+    this.companyIncome,
+    this.personalIncome,
   });
 
   @override
-  List<Object?> get props => [
-    id,
-    uid,
-    email,
-    name,
-    sales,
-    expenses,
-    profit,
-    company_income,
-    personal_income,
-  ];
-
-  @override
   String toString() {
-    return 'User(id: $id, uuid: $uid, email: $email, name: $name, sales: $sales, expenses: $expenses, profit: $profit, company_income: $company_income, personal_income: $personal_income)';
+    return 'User(id: $sid, uuid: $uid, email: $email, name: $username, sales: $sales, expenses: $expenses, profit: $profit, company_income: $companyIncome, personal_income: $personalIncome)';
   }
 
-  factory User.fromData(Map<String, dynamic> data) {
-    return User(
-      id: data['id'],
+  factory UserEntity.fromData(Map<String, dynamic> data) {
+    return UserEntity(
+      sid: data['sid'],
       uid: data['uuid'] as String,
       email: data['email'] as String,
-      name: data['name'] as String,
+      username: data['username'] as String,
       sales: data['sales'] as double?,
       expenses: data['expenses'] as double?,
       profit: data['profit'] as double?,
-      company_income: (data['company_income'] as num?)?.toDouble(),
-      personal_income: (data['personal_income'] as num?)?.toDouble(),
+      companyIncome: (data['company_income'] as num?)?.toDouble(),
+      personalIncome: (data['personal_income'] as num?)?.toDouble(),
     );
   }
 }
-

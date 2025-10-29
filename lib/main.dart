@@ -18,6 +18,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:toastification/toastification.dart';
 
 import 'brick/repository.dart';
+import 'features/authentification/data/data_sources/local_datasource/local_authentification.dart';
 import 'features/company/presentation/bloc/detail_bloc/detail_bloc.dart';
 import 'features/company/presentation/bloc/list_bloc/list_bloc.dart';
 import 'features/group/data/repositories/group_repository_impl.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
       providers: [
         RepositoryProvider<AuthentificationRepositoryImpl>(
           create: (_) => AuthentificationRepositoryImpl(
+            LocalAuthentification(),
             SupabaseAuthentification(Supabase.instance.client),
           ),
         ),

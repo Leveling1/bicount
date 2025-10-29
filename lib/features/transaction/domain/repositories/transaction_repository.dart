@@ -7,5 +7,5 @@ abstract class TransactionRepository {
 
   Future<List<TransactionModel>> getAllTransactions();
 
-  Future<List<User>> getLinkedUsers();
+  Future<List<UserEntity>> getLinkedUsers();
 }

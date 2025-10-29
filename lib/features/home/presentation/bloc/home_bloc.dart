@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/failure.dart';
-import '../../../authentification/data/models/user_model.dart';
+import '../../../authentification/data/models/user.model.dart';
 import '../../domain/repositories/home_repository.dart';
 part 'home_event.dart';
 part 'home_state.dart';
