@@ -10,7 +10,7 @@ import '../../domain/entities/group_model.dart';
 import '../bloc/group_bloc.dart';
 
 class AddGroup extends StatefulWidget {
-  final int idCompany;
+  final String idCompany;
   const AddGroup({super.key, required this.idCompany});
 
   @override

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bicount/features/authentification/presentation/screens/login_screen.dart';
 import 'package:bicount/features/authentification/presentation/screens/signup_screen.dart';
+import 'package:bicount/features/company/data/models/company.model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -45,11 +46,11 @@ class AppRouter {
       GoRoute(
         path: '/companyDetail',
         pageBuilder: (context, state) {
-          final company = state.extra as CompanyEntity;
+          final company = state.extra as CompanyModel;
           return buildCustomTransitionPage(
             childContain: DetailCompanyScreen(company: company),
             state: state,
-            model: CompanyEntity,
+            model: CompanyModel,
           );
         },
       ),

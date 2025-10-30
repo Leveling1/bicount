@@ -3,7 +3,7 @@ import 'dart:ffi';
 
 class GroupModel {
   final int? id;
-  final int idCompany;
+  final String idCompany;
   final String name;
   final String? description;
   final String? image;

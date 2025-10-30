@@ -18,16 +18,12 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
   Future<void> _getAllCompany(GetAllCompany event, Emitter<ListState> emit) async {
     emit(ListLoading());
+
     try {
-      // Écoute le stream Realtime
       await emit.forEach<List<CompanyModel>>(
         repository.getCompanyStream(),
-        onData: (companies) {
-          // Mettre à jour le cache interne
-          return ListLoaded(List.from(companies));
-        },
-        onError: (error, stackTrace) =>
-            ListError(ServerFailure(error.toString())),
+        onData: (companies) => ListLoaded(companies),
+        onError: (error, stackTrace) => ListError(ServerFailure(error.toString())),
       );
     } catch (e) {
       emit(ListError(ServerFailure(e.toString())));

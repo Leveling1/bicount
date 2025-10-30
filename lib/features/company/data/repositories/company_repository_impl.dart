@@ -6,6 +6,7 @@ import 'package:bicount/features/company/domain/entities/company.dart';
 import 'package:bicount/features/company/domain/repositories/company_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:rxdart/rxdart.dart';
 import '../../../../core/constants/secrets.dart';
 import '../../../../core/errors/failure.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -32,14 +33,11 @@ class CompanyRepositoryImpl implements CompanyRepository {
 
   // For the company detail
   final _companyController = StreamController<CompanyEntity>.broadcast();
-  CompanyEntity? _currentCompany;
+  CompanyModel? _currentCompany;
   List<GroupModel> _currentGroups = [];
   List<ProjectModel> _currentProjects = [];
 
-  // Liste locale toujours à jour
-  final List<CompanyEntity> _currentCompanies = [];
-
-  // For the creation company
+  /// For the creation company
   @override
   Future<CompanyEntity> createCompany(CompanyEntity company, File? logoFile) async {
     String cid = uuid.v4();
@@ -54,6 +52,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
         ..fields['lid'] = uuid.v4()
         ..headers['Authorization'] = 'Bearer $accessToken'
         ..headers['apikey'] = Secrets.supabaseAnonKey;
+
       if (logoFile != null) {
         final mimeType = lookupMimeType(logoFile.path) ?? 'image/jpeg';
         final fileStream = http.ByteStream(logoFile.openRead());
@@ -61,38 +60,47 @@ class CompanyRepositoryImpl implements CompanyRepository {
         var mimeParts = mimeType.split('/');
 
         request.files.add(
-          http.MultipartFile(
-            'logo',
-            fileStream,
-            fileLength,
-            filename: path.basename(logoFile.path),
-            contentType: MediaType(mimeParts[0], mimeParts[1]),
-          )
+            http.MultipartFile(
+              'logo',
+              fileStream,
+              fileLength,
+              filename: path.basename(logoFile.path),
+              contentType: MediaType(mimeParts[0], mimeParts[1]),
+            )
         );
       }
 
-    final response = await request.send();
-    final responseBody = await response.stream.bytesToString();
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
 
       switch (response.statusCode) {
         case 200:
           try {
             final Map<String, dynamic> responseData = jsonDecode(responseBody);
 
-            print("Je suis venue");
             // Vérifiez si la réponse contient une erreur
             if (responseData.containsKey('error')) {
-              print("Vérifiez si la réponse contient une erreur");
               throw ValidationFailure(responseData['error']);
             }
 
-            // Vérifiez les champs requis
-            if (responseData['name'] == null) {
-              print("Vérifiez les champs requis");
-              throw DataParsingFailure('Invalid response format: missing name field');
+            // Vérifiez si la réponse indique le succès
+            if (responseData['success'] != true) {
+              final errorMessage = responseData['error'] ?? 'La création a échoué sans message d\'erreur';
+              throw ValidationFailure(errorMessage);
             }
 
-            final createdCompany = CompanyEntity.fromMap(responseData);
+            // ⚠️ CORRECTION: Extraire les données de "company" et non de la racine
+            final companyData = responseData['company'];
+            if (companyData == null) {
+              throw DataParsingFailure('Réponse invalide: champ "company" manquant');
+            }
+
+            // Vérifiez les champs requis dans companyData
+            if (companyData['name'] == null) {
+              throw DataParsingFailure('Invalid response format: missing name field in company data');
+            }
+
+            final createdCompany = CompanyEntity.fromMap(companyData); // ← Utiliser companyData
 
             return createdCompany;
           } catch (parseError) {
@@ -148,19 +156,17 @@ class CompanyRepositoryImpl implements CompanyRepository {
           e is DataParsingFailure) {
         rethrow;
       }
-      print(e);
       throw UnknownFailure();
     }
   }
 
-  // For the stream app with screen
+  /// For the stream app with screen
   @override
   Stream<List<CompanyModel>> getCompanyStream() {
     try {
-      final companyLinks = localDataSource.getCompanyLink();
+      final companies = localDataSource.getCompany();
       remoteDataSource.subscribeDeleteChanges();
-      final companyStream = localDataSource.getCompany(companyLinks);
-      return companyStream;
+      return companies;
     } catch (e) {
       return Stream.error(
         MessageFailure(message: "Une erreur s'est produite : ${e.toString()}"),
@@ -168,94 +174,10 @@ class CompanyRepositoryImpl implements CompanyRepository {
     }
   }
 
-  Future<void> _loadInitialCompanies() async {
-    try {
-      final res = await supabaseInstance.from('company').select('*');
-      _currentCompanies
-        ..clear()
-        ..addAll((res as List).map((c) => CompanyEntity.fromMap(c)));
-      _company.add(List.from(_currentCompanies));
-    } catch (e) {
-      _company.addError(e);
-    }
-  }
-
-  void _subscribeToCompanyChanges() {
-    final channel = supabaseInstance.channel('company_changes');
-
-    // INSERT
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.insert,
-      schema: 'public',
-      table: 'company',
-      callback: (payload) {
-        final company = CompanyEntity.fromMap(payload.newRecord);
-        _currentCompanies.add(company);
-        _company.add(List.from(_currentCompanies));
-            },
-    );
-
-    // UPDATE
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.update,
-      schema: 'public',
-      table: 'company',
-      callback: (payload) {
-        final company = CompanyEntity.fromMap(payload.newRecord);
-        final index = _currentCompanies.indexWhere((c) => c.id == company.id);
-        if (index != -1) {
-          _currentCompanies[index] = company; // remplacer l’ancienne
-          _company.add(List.from(_currentCompanies));
-        }
-            },
-    );
-
-    // DELETE
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.delete,
-      schema: 'public',
-      table: 'company',
-      callback: (payload) {
-        final id = payload.oldRecord['id'];
-        _currentCompanies.removeWhere((c) => c.id == id);
-        _company.add(List.from(_currentCompanies));
-            },
-    );
-
-    channel.subscribe();
-  }
-
-
-  void _subscribeToCompanyLinkChanges() {
-    supabaseInstance.channel('company_link_changes')
-        .onPostgresChanges(
-      event: PostgresChangeEvent.all,
-      schema: 'public',
-      table: 'company_with_user_link',
-      callback: (payload) async {
-        // Recharger toutes les companies liées quand un lien change
-        try {
-          final res = await supabaseInstance.from('company').select('*');
-          _currentCompanies
-            ..clear()
-            ..addAll((res as List).map((c) => CompanyEntity.fromMap(c)));
-          _company.add(List.from(_currentCompanies));
-        } catch (e) {
-          _company.addError(e);
-        }
-      },
-    )
-    .subscribe();
-  }
-
-  Future<void> dispose() async {
-    await _company.close();
-  }
-
-  // For the detail company
+  /// For the detail company
   @override
-  Stream<CompanyEntity> getCompanyDetailStream(CompanyEntity company) {
-    int companyId = company.id!;
+  Stream<CompanyEntity> getCompanyDetailStream(CompanyModel company) {
+    String companyId = company.cid!;
     // Charger les données initiales
     _loadCompanyDetail(companyId);
 
@@ -267,18 +189,18 @@ class CompanyRepositoryImpl implements CompanyRepository {
     return _companyController.stream;
   }
 
-  Future<void> _loadCompanyDetail(int companyId) async {
+  Future<void> _loadCompanyDetail(String companyId) async {
     try {
       // 1. Charger la company
       final companyRes = await supabaseInstance
           .from('company')
           .select('*')
-          .eq('id', companyId)
+          .eq('cid', companyId)
           .maybeSingle();
 
       if (companyRes == null) return;
 
-      _currentCompany = CompanyEntity.fromMap(companyRes);
+      _currentCompany = companyRes as CompanyModel?;
 
       // 2. Charger les groups liés
       final groupRes = await supabaseInstance
@@ -309,7 +231,6 @@ class CompanyRepositoryImpl implements CompanyRepository {
     if (_currentCompany == null) return;
 
     final updated = CompanyEntity(
-      id: _currentCompany!.id,
       name: _currentCompany!.name,
       description: _currentCompany!.description,
       image: _currentCompany!.image,
@@ -319,7 +240,6 @@ class CompanyRepositoryImpl implements CompanyRepository {
       salary: _currentCompany!.salary,
       equipment: _currentCompany!.equipment,
       service: _currentCompany!.service,
-      createdAt: _currentCompany!.createdAt,
       projects: _currentProjects,
       groups: _currentGroups,
     );
@@ -327,9 +247,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
     _companyController.add(updated);
   }
 
-  /// --- SUBSCRIPTIONS ---
-
-  void _subscribeToCompanyDetailChanges(int companyId) {
+  void _subscribeToCompanyDetailChanges(String companyId) {
     final channel = supabaseInstance.channel('company_changes');
 
     channel.onPostgresChanges(
@@ -338,11 +256,11 @@ class CompanyRepositoryImpl implements CompanyRepository {
       table: 'company',
       filter: PostgresChangeFilter(
         type: PostgresChangeFilterType.eq,
-        column: 'id',
+        column: 'cid',
         value: companyId,
       ),
       callback: (payload) {
-        _currentCompany = CompanyEntity.fromMap(payload.newRecord);
+        _currentCompany = payload.newRecord as CompanyModel?;
         _emitUpdatedCompany();
       },
     );
@@ -350,7 +268,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
     channel.subscribe();
   }
 
-  void _subscribeToGroupChanges(int companyId) {
+  void _subscribeToGroupChanges(String companyId) {
     final channel = supabaseInstance.channel('group_changes');
 
     // INSERT
@@ -359,7 +277,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
       schema: 'public',
       table: 'company_group',
       callback: (payload) {
-        if (payload.newRecord['id_company'] == companyId) {
+        if (payload.newRecord['cid'] == companyId) {
           _currentGroups.add(GroupModel.fromMap(payload.newRecord));
           _emitUpdatedCompany();
         }
@@ -372,7 +290,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
       schema: 'public',
       table: 'company_group',
       callback: (payload) {
-        if (payload.newRecord['id_company'] == companyId) {
+        if (payload.newRecord['cid'] == companyId) {
           final group = GroupModel.fromMap(payload.newRecord);
           final index =
           _currentGroups.indexWhere((g) => g.id == group.id);
@@ -390,7 +308,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
       schema: 'public',
       table: 'company_group',
       callback: (payload) {
-        if (payload.oldRecord['id_company'] == companyId) {
+        if (payload.oldRecord['cid'] == companyId) {
           _currentGroups
               .removeWhere((g) => g.id == payload.oldRecord['id']);
           _emitUpdatedCompany();
@@ -401,7 +319,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
     channel.subscribe();
   }
 
-  void _subscribeToProjectChanges(int companyId) {
+  void _subscribeToProjectChanges(String companyId) {
     final channel = supabaseInstance.channel('project_changes');
 
     channel.onPostgresChanges(
@@ -409,7 +327,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
       schema: 'public',
       table: 'project',
       callback: (payload) {
-        if (payload.newRecord['id_company'] == companyId) {
+        if (payload.newRecord['cid'] == companyId) {
           _currentProjects.add(ProjectModel.fromMap(payload.newRecord));
           _emitUpdatedCompany();
         }
@@ -421,7 +339,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
       schema: 'public',
       table: 'project',
       callback: (payload) {
-        if (payload.newRecord['id_company'] == companyId) {
+        if (payload.newRecord['cid'] == companyId) {
           final project = ProjectModel.fromMap(payload.newRecord);
           final index =
           _currentProjects.indexWhere((p) => p.id == project.id);
@@ -438,7 +356,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
       schema: 'public',
       table: 'project',
       callback: (payload) {
-        if (payload.oldRecord['id_company'] == companyId) {
+        if (payload.oldRecord['cid'] == companyId) {
           _currentProjects
               .removeWhere((p) => p.id == payload.oldRecord['id']);
           _emitUpdatedCompany();

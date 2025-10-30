@@ -9,7 +9,7 @@ class GetCompanyDetail extends DetailEvent {
 }
 
 class DetailsDataUpdated extends DetailEvent {
-  final CompanyEntity companies;
+  final CompanyModel companies;
   DetailsDataUpdated(this.companies);
 }
 

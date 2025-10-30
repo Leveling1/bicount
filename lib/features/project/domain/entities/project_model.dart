@@ -3,7 +3,7 @@ import 'dart:ffi';
 
 class ProjectModel {
   final int? id;
-  final int idCompany;
+  final String idCompany;
   final String name;
   final String initiator;
   final String? description;

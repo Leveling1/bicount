@@ -1,4 +1,3 @@
-import 'package:brick_core/core.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../../brick/repository.dart';
 import '../../models/company_with_user_link.model.dart';
@@ -10,20 +9,16 @@ class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
 
   @override
   void subscribeDeleteChanges() {
-    final channel = supabaseInstance.channel('company_links_change');
+    final channel = supabaseInstance.channel('company_change');
     // DELETE
     channel.onPostgresChanges(
       event: PostgresChangeEvent.delete,
       schema: 'public',
-      table: 'company_with_user_link',
+      table: 'companies',
       callback: (payload) async {
-        final uid = payload.oldRecord['uid'];
-
         final results = await Repository().get<CompanyWithUserLinkModel>(
-          query: Query(where: [Where.exact('uid', uid)]),
           policy: OfflineFirstGetPolicy.localOnly,
         );
-
         if (results.isEmpty) return;
         await Repository().delete<CompanyWithUserLinkModel>(results.first);
       },

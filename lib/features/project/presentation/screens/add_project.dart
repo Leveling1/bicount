@@ -10,7 +10,7 @@ import '../bloc/project_bloc.dart';
 import 'package:intl/intl.dart';
 
 class AddProject extends StatefulWidget {
-  final int idCompany;
+  final String idCompany;
   const AddProject({super.key, required this.idCompany});
 
   @override
