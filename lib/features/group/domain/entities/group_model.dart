@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
 
-class GroupModel {
+class GroupEntity {
   final int? id;
   final String idCompany;
   final String name;
@@ -10,7 +10,7 @@ class GroupModel {
   final int? number;
   final DateTime createdAt;
 
-  GroupModel({
+  GroupEntity({
     this.id,
     required this.idCompany,
     required this.name,
@@ -34,8 +34,8 @@ class GroupModel {
   }
 
   /// Créer une instance depuis un Map
-  factory GroupModel.fromMap(Map<String, dynamic> map) {
-    return GroupModel(
+  factory GroupEntity.fromMap(Map<String, dynamic> map) {
+    return GroupEntity(
       id: map['id'] ?? '',
       idCompany: map['id_company'] ?? '',
       name: map['name'] ?? '',

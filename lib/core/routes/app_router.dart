@@ -46,11 +46,11 @@ class AppRouter {
       GoRoute(
         path: '/companyDetail',
         pageBuilder: (context, state) {
-          final company = state.extra as CompanyModel;
+          final cid = state.extra as String;
           return buildCustomTransitionPage(
-            childContain: DetailCompanyScreen(company: company),
+            childContain: DetailCompanyScreen(cid: cid),
             state: state,
-            model: CompanyModel,
+            model: String,
           );
         },
       ),
@@ -58,11 +58,11 @@ class AppRouter {
       GoRoute(
         path: '/project',
         pageBuilder: (context, state) {
-          final projectData = state.extra as ProjectModel;
+          final projectData = state.extra as ProjectEntity;
           return buildCustomTransitionPage(
             childContain: ProjectScreen(projectData: projectData),
             state: state,
-            model: ProjectModel,
+            model: ProjectEntity,
           );
         },
       ),
@@ -70,11 +70,11 @@ class AppRouter {
       GoRoute(
         path: '/group',
         pageBuilder: (context, state) {
-          final groupData = state.extra as GroupModel;
+          final groupData = state.extra as GroupEntity;
           return buildCustomTransitionPage(
             childContain: GroupScreen(groupData: groupData),
             state: state,
-            model: GroupModel,
+            model: GroupEntity,
           );
         },
       ),

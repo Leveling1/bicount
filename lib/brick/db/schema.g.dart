@@ -1,11 +1,11 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
-part '20251030021126.migration.dart';
+part '20251030162940.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
-  const Migration20251030021126(),};
+  const Migration20251030162940(),};
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
@@ -79,6 +79,54 @@ final schema = Schema(
       },
       indices: <SchemaIndex>{
         SchemaIndex(columns: ['lid'], unique: true),
+      },
+    ),
+    SchemaTable(
+      'GroupModel',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('cid', Column.varchar),
+        SchemaColumn('name', Column.varchar),
+        SchemaColumn('description', Column.varchar),
+        SchemaColumn('image', Column.varchar),
+        SchemaColumn('number', Column.integer),
+        SchemaColumn('created_at', Column.varchar),
+        SchemaColumn('gid', Column.varchar, unique: true),
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(columns: ['gid'], unique: true),
+      },
+    ),
+    SchemaTable(
+      'ProjectModel',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('cid', Column.varchar),
+        SchemaColumn('name', Column.varchar),
+        SchemaColumn('initiator', Column.varchar),
+        SchemaColumn('description', Column.varchar),
+        SchemaColumn('image', Column.varchar),
+        SchemaColumn('state', Column.integer),
+        SchemaColumn('profit', Column.Double),
+        SchemaColumn('created_at', Column.varchar),
+        SchemaColumn('start_date', Column.varchar),
+        SchemaColumn('end_date', Column.varchar),
+        SchemaColumn('pid', Column.varchar, unique: true),
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(columns: ['pid'], unique: true),
       },
     ),
   },

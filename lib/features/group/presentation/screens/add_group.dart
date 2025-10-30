@@ -111,7 +111,7 @@ class _AddGroupState extends State<AddGroup> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      final group = GroupModel(
+      final group = GroupEntity(
         idCompany: widget.idCompany,
         name: _name.text,
         description: _description.text,

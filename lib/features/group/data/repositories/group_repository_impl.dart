@@ -21,7 +21,7 @@ class GroupRepositoryImpl implements GroupRepository {
   String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
   // For the creation of group company
   @override
-  Future<GroupModel> createGroup(GroupModel group, File? logoFile) async {
+  Future<GroupEntity> createGroup(GroupEntity group, File? logoFile) async {
     try {
       final uri = Uri.parse(Secrets.create_group_endpoint);
 
@@ -69,7 +69,7 @@ class GroupRepositoryImpl implements GroupRepository {
               throw DataParsingFailure('Invalid response format: missing name field');
             }
 
-            final createdGroup = GroupModel.fromMap(responseData);
+            final createdGroup = GroupEntity.fromMap(responseData);
 
             return createdGroup;
           } catch (parseError) {
@@ -131,7 +131,7 @@ class GroupRepositoryImpl implements GroupRepository {
   }
 
   @override
-  Future<List<MemberModel>> getAllGroupDetails(GroupModel group) async {
+  Future<List<MemberModel>> getAllGroupDetails(GroupEntity group) async {
     try {
       final response = await supabaseInstance
           .from('member_group')

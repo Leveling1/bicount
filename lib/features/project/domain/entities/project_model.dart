@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:ffi';
 
-class ProjectModel {
+class ProjectEntity {
   final int? id;
-  final String idCompany;
+  final String pid;
+  final String cid;
   final String name;
   final String initiator;
   final String? description;
@@ -15,9 +16,10 @@ class ProjectModel {
   final DateTime? endDate;
 
 
-  ProjectModel({
+  ProjectEntity({
     this.id,
-    required this.idCompany,
+    required this.pid,
+    required this.cid,
     required this.name,
     required this.initiator,
     required this.startDate,
@@ -33,7 +35,7 @@ class ProjectModel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'id_company': idCompany,
+      'id_company': cid,
       'name': name,
       'initiator': initiator,
       'description': description,
@@ -47,10 +49,11 @@ class ProjectModel {
   }
 
   /// Créer une instance depuis un Map
-  factory ProjectModel.fromMap(Map<String, dynamic> map) {
-    return ProjectModel(
+  factory ProjectEntity.fromMap(Map<String, dynamic> map) {
+    return ProjectEntity(
       id: map['id'] ?? '',
-      idCompany: map['id_company'] ?? '',
+      cid: map['cid'] ?? '',
+      pid: map['pid'] ?? '',
       name: map['name'] ?? '',
       initiator: map['initiator'] ?? '',
       description: map['description'],

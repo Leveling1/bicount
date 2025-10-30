@@ -9,10 +9,12 @@ part of 'schema.g.dart';
 
 // The migration version must **always** mirror the file name
 
-const List<MigrationCommand> _migration_20251030021126_up = [
+const List<MigrationCommand> _migration_20251030162940_up = [
   InsertTable('UserModel'),
   InsertTable('CompanyModel'),
   InsertTable('CompanyWithUserLinkModel'),
+  InsertTable('GroupModel'),
+  InsertTable('ProjectModel'),
   InsertColumn('uid', Column.varchar, onTable: 'UserModel'),
   InsertColumn('username', Column.varchar, onTable: 'UserModel'),
   InsertColumn('email', Column.varchar, onTable: 'UserModel'),
@@ -37,15 +39,37 @@ const List<MigrationCommand> _migration_20251030021126_up = [
   InsertColumn('user_id', Column.varchar, onTable: 'CompanyWithUserLinkModel'),
   InsertColumn('role', Column.varchar, onTable: 'CompanyWithUserLinkModel'),
   InsertColumn('lid', Column.varchar, onTable: 'CompanyWithUserLinkModel', unique: true),
+  InsertColumn('cid', Column.varchar, onTable: 'GroupModel'),
+  InsertColumn('name', Column.varchar, onTable: 'GroupModel'),
+  InsertColumn('description', Column.varchar, onTable: 'GroupModel'),
+  InsertColumn('image', Column.varchar, onTable: 'GroupModel'),
+  InsertColumn('number', Column.integer, onTable: 'GroupModel'),
+  InsertColumn('created_at', Column.varchar, onTable: 'GroupModel'),
+  InsertColumn('gid', Column.varchar, onTable: 'GroupModel', unique: true),
+  InsertColumn('cid', Column.varchar, onTable: 'ProjectModel'),
+  InsertColumn('name', Column.varchar, onTable: 'ProjectModel'),
+  InsertColumn('initiator', Column.varchar, onTable: 'ProjectModel'),
+  InsertColumn('description', Column.varchar, onTable: 'ProjectModel'),
+  InsertColumn('image', Column.varchar, onTable: 'ProjectModel'),
+  InsertColumn('state', Column.integer, onTable: 'ProjectModel'),
+  InsertColumn('profit', Column.Double, onTable: 'ProjectModel'),
+  InsertColumn('created_at', Column.varchar, onTable: 'ProjectModel'),
+  InsertColumn('start_date', Column.varchar, onTable: 'ProjectModel'),
+  InsertColumn('end_date', Column.varchar, onTable: 'ProjectModel'),
+  InsertColumn('pid', Column.varchar, onTable: 'ProjectModel', unique: true),
   CreateIndex(columns: ['sid'], onTable: 'UserModel', unique: true),
   CreateIndex(columns: ['cid'], onTable: 'CompanyModel', unique: true),
-  CreateIndex(columns: ['lid'], onTable: 'CompanyWithUserLinkModel', unique: true)
+  CreateIndex(columns: ['lid'], onTable: 'CompanyWithUserLinkModel', unique: true),
+  CreateIndex(columns: ['gid'], onTable: 'GroupModel', unique: true),
+  CreateIndex(columns: ['pid'], onTable: 'ProjectModel', unique: true)
 ];
 
-const List<MigrationCommand> _migration_20251030021126_down = [
+const List<MigrationCommand> _migration_20251030162940_down = [
   DropTable('UserModel'),
   DropTable('CompanyModel'),
   DropTable('CompanyWithUserLinkModel'),
+  DropTable('GroupModel'),
+  DropTable('ProjectModel'),
   DropColumn('uid', onTable: 'UserModel'),
   DropColumn('username', onTable: 'UserModel'),
   DropColumn('email', onTable: 'UserModel'),
@@ -70,9 +94,29 @@ const List<MigrationCommand> _migration_20251030021126_down = [
   DropColumn('user_id', onTable: 'CompanyWithUserLinkModel'),
   DropColumn('role', onTable: 'CompanyWithUserLinkModel'),
   DropColumn('lid', onTable: 'CompanyWithUserLinkModel'),
+  DropColumn('cid', onTable: 'GroupModel'),
+  DropColumn('name', onTable: 'GroupModel'),
+  DropColumn('description', onTable: 'GroupModel'),
+  DropColumn('image', onTable: 'GroupModel'),
+  DropColumn('number', onTable: 'GroupModel'),
+  DropColumn('created_at', onTable: 'GroupModel'),
+  DropColumn('gid', onTable: 'GroupModel'),
+  DropColumn('cid', onTable: 'ProjectModel'),
+  DropColumn('name', onTable: 'ProjectModel'),
+  DropColumn('initiator', onTable: 'ProjectModel'),
+  DropColumn('description', onTable: 'ProjectModel'),
+  DropColumn('image', onTable: 'ProjectModel'),
+  DropColumn('state', onTable: 'ProjectModel'),
+  DropColumn('profit', onTable: 'ProjectModel'),
+  DropColumn('created_at', onTable: 'ProjectModel'),
+  DropColumn('start_date', onTable: 'ProjectModel'),
+  DropColumn('end_date', onTable: 'ProjectModel'),
+  DropColumn('pid', onTable: 'ProjectModel'),
   DropIndex('index_UserModel_on_sid'),
   DropIndex('index_CompanyModel_on_cid'),
-  DropIndex('index_CompanyWithUserLinkModel_on_lid')
+  DropIndex('index_CompanyWithUserLinkModel_on_lid'),
+  DropIndex('index_GroupModel_on_gid'),
+  DropIndex('index_ProjectModel_on_pid')
 ];
 
 //
@@ -80,15 +124,15 @@ const List<MigrationCommand> _migration_20251030021126_down = [
 //
 
 @Migratable(
-  version: '20251030021126',
-  up: _migration_20251030021126_up,
-  down: _migration_20251030021126_down,
+  version: '20251030162940',
+  up: _migration_20251030162940_up,
+  down: _migration_20251030162940_down,
 )
-class Migration20251030021126 extends Migration {
-  const Migration20251030021126()
+class Migration20251030162940 extends Migration {
+  const Migration20251030162940()
     : super(
-        version: 20251030021126,
-        up: _migration_20251030021126_up,
-        down: _migration_20251030021126_down,
+        version: 20251030162940,
+        up: _migration_20251030162940_up,
+        down: _migration_20251030162940_down,
       );
 }

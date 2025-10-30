@@ -24,8 +24,8 @@ import '../../../group/presentation/screens/add_group.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DetailCompanyScreen extends StatefulWidget {
-  final CompanyModel company;
-  const DetailCompanyScreen({super.key, required this.company});
+  final String cid;
+  const DetailCompanyScreen({super.key, required this.cid});
 
   @override
   State<DetailCompanyScreen> createState() => _DetailCompanyScreenState();
@@ -34,15 +34,13 @@ class DetailCompanyScreen extends StatefulWidget {
 class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
   Widget _spacerHeight() => const SizedBox(height: AppDimens.marginMedium);
   Widget _spacerWidth() => const SizedBox(width: AppDimens.marginMedium);
-  late CompanyEntity company;
 
   @override
   void initState() {
     super.initState();
-    company = widget.company as CompanyEntity;
     // Ici on déclenche la récupération des companies
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<DetailBloc>().add(GetCompanyDetail(company));
+      context.read<DetailBloc>().add(GetCompanyDetail(widget.cid));
     });
   }
 
@@ -90,7 +88,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                     minHeight: 0.95,
                     color: null,
                     child: ShareCompany(
-                      CID: widget.company.cid!,
+                      cid: widget.cid,
                     ),
                   );
                 },
@@ -203,7 +201,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                           minHeight: 0.95,
                           color: null,
                           child: AddGroup(
-                            idCompany: widget.company.cid!,
+                            idCompany: widget.cid,
                           ),
                         );
                       },
@@ -262,7 +260,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                           minHeight: 0.95,
                           color: null,
                           child: AddProject(
-                            idCompany: widget.company.cid!,
+                            idCompany: widget.cid,
                           ),
                         );
                       },

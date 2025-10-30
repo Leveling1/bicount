@@ -4,20 +4,23 @@ import 'dart:io';
 import 'package:bicount/features/group/domain/entities/group_model.dart';
 import 'package:bicount/features/company/domain/entities/company.dart';
 import 'package:bicount/features/company/domain/repositories/company_repository.dart';
+import 'package:brick_core/core.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:rxdart/rxdart.dart';
+import '../../../../brick/repository.dart';
 import '../../../../core/constants/secrets.dart';
 import '../../../../core/errors/failure.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';
+import '../../../group/data/models/group.model.dart';
+import '../../../project/data/models/project.model.dart';
 import '../../../project/domain/entities/project_model.dart';
 import '../data_sources/local_datasource/company_local_datasource.dart';
 import '../data_sources/remote_datasource/company_remote_datasource.dart';
 import '../models/company.model.dart';
-import '../models/company_with_user_link.model.dart';
 
 class CompanyRepositoryImpl implements CompanyRepository {
   final CompanyRemoteDataSource remoteDataSource;
@@ -30,12 +33,6 @@ class CompanyRepositoryImpl implements CompanyRepository {
   String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
 
   late StreamController<List<CompanyModel>> _company;
-
-  // For the company detail
-  final _companyController = StreamController<CompanyEntity>.broadcast();
-  CompanyModel? _currentCompany;
-  List<GroupModel> _currentGroups = [];
-  List<ProjectModel> _currentProjects = [];
 
   /// For the creation company
   @override
@@ -160,7 +157,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
     }
   }
 
-  /// For the stream app with screen
+  /// To create a feed and have all the user's companies
   @override
   Stream<List<CompanyModel>> getCompanyStream() {
     try {
@@ -176,194 +173,51 @@ class CompanyRepositoryImpl implements CompanyRepository {
 
   /// For the detail company
   @override
-  Stream<CompanyEntity> getCompanyDetailStream(CompanyModel company) {
-    String companyId = company.cid!;
-    // Charger les données initiales
-    _loadCompanyDetail(companyId);
-
-    // S'abonner aux changements
-    _subscribeToCompanyDetailChanges(companyId);
-    _subscribeToGroupChanges(companyId);
-    _subscribeToProjectChanges(companyId);
-
-    return _companyController.stream;
-  }
-
-  Future<void> _loadCompanyDetail(String companyId) async {
+  Stream<CompanyEntity> getCompanyDetailStream(String cid) {
     try {
-      // 1. Charger la company
-      final companyRes = await supabaseInstance
-          .from('company')
-          .select('*')
-          .eq('cid', companyId)
-          .maybeSingle();
+      // Récupérer les trois streams
+      Stream<CompanyModel> companyStream = localDataSource.getCompanyDetails(cid);
+      Stream<List<ProjectModel>> projectStream = localDataSource.getCompanyProjects(cid);
+      Stream<List<GroupModel>> groupStream = localDataSource.getCompanyGroups(cid);
 
-      if (companyRes == null) return;
-
-      _currentCompany = companyRes as CompanyModel?;
-
-      // 2. Charger les groups liés
-      final groupRes = await supabaseInstance
-          .from('company_group')
-          .select('*')
-          .eq('id_company', companyId);
-
-      _currentGroups =
-          (groupRes as List).map((g) => GroupModel.fromMap(g)).toList();
-
-      // 3. Charger les projets liés
-      final projectRes = await supabaseInstance
-          .from('project')
-          .select('*')
-          .eq('id_company', companyId);
-
-      _currentProjects =
-          (projectRes as List).map((p) => ProjectModel.fromMap(p)).toList();
-
-      // 4. Fusionner et émettre le modèle complet
-      _emitUpdatedCompany();
+      // CORRECTION: Combiner les trois streams en un seul
+      return Rx.combineLatest3<CompanyModel, List<ProjectModel>, List<GroupModel>, CompanyEntity>(
+        companyStream,
+        projectStream,
+        groupStream,
+            (CompanyModel company, List<ProjectModel> projects, List<GroupModel> groups) {
+          return _convertToEntity(company, projects, groups);
+        },
+      ).handleError((error) {
+        print("❌ Erreur dans combineLatest3: $error");
+        throw MessageFailure(message: "Erreur de combinaison des données: ${error.toString()}");
+      });
     } catch (e) {
-      _companyController.addError(e);
+      return Stream.error(
+        MessageFailure(message: "Erreur lors de la récupération des détails: ${e.toString()}"),
+      );
     }
   }
 
-  void _emitUpdatedCompany() {
-    if (_currentCompany == null) return;
-
-    final updated = CompanyEntity(
-      name: _currentCompany!.name,
-      description: _currentCompany!.description,
-      image: _currentCompany!.image,
-      sales: _currentCompany!.sales,
-      expenses: _currentCompany!.expenses,
-      profit: _currentCompany!.profit,
-      salary: _currentCompany!.salary,
-      equipment: _currentCompany!.equipment,
-      service: _currentCompany!.service,
-      projects: _currentProjects,
-      groups: _currentGroups,
+// CORRECTION: La méthode prend maintenant les données directement, pas les streams
+  CompanyEntity _convertToEntity(
+      CompanyModel model,
+      List<ProjectModel> projects,
+      List<GroupModel> groups
+      ) {
+    return CompanyEntity(
+      cid: model.cid ?? '',
+      name: model.name,
+      description: model.description,
+      image: model.image,
+      sales: model.sales ?? 0.0,
+      expenses: model.expenses ?? 0.0,
+      profit: model.profit ?? 0.0,
+      salary: model.salary ?? 0.0,
+      equipment: model.equipment ?? 0.0,
+      service: model.service ?? 0.0,
+      projects: projects.map((project) => project).toList(),
+      groups: groups.map((group) => group).toList(),
     );
-
-    _companyController.add(updated);
-  }
-
-  void _subscribeToCompanyDetailChanges(String companyId) {
-    final channel = supabaseInstance.channel('company_changes');
-
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.update,
-      schema: 'public',
-      table: 'company',
-      filter: PostgresChangeFilter(
-        type: PostgresChangeFilterType.eq,
-        column: 'cid',
-        value: companyId,
-      ),
-      callback: (payload) {
-        _currentCompany = payload.newRecord as CompanyModel?;
-        _emitUpdatedCompany();
-      },
-    );
-
-    channel.subscribe();
-  }
-
-  void _subscribeToGroupChanges(String companyId) {
-    final channel = supabaseInstance.channel('group_changes');
-
-    // INSERT
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.insert,
-      schema: 'public',
-      table: 'company_group',
-      callback: (payload) {
-        if (payload.newRecord['cid'] == companyId) {
-          _currentGroups.add(GroupModel.fromMap(payload.newRecord));
-          _emitUpdatedCompany();
-        }
-      },
-    );
-
-    // UPDATE
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.update,
-      schema: 'public',
-      table: 'company_group',
-      callback: (payload) {
-        if (payload.newRecord['cid'] == companyId) {
-          final group = GroupModel.fromMap(payload.newRecord);
-          final index =
-          _currentGroups.indexWhere((g) => g.id == group.id);
-          if (index != -1) {
-            _currentGroups[index] = group;
-            _emitUpdatedCompany();
-          }
-        }
-      },
-    );
-
-    // DELETE
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.delete,
-      schema: 'public',
-      table: 'company_group',
-      callback: (payload) {
-        if (payload.oldRecord['cid'] == companyId) {
-          _currentGroups
-              .removeWhere((g) => g.id == payload.oldRecord['id']);
-          _emitUpdatedCompany();
-        }
-      },
-    );
-
-    channel.subscribe();
-  }
-
-  void _subscribeToProjectChanges(String companyId) {
-    final channel = supabaseInstance.channel('project_changes');
-
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.insert,
-      schema: 'public',
-      table: 'project',
-      callback: (payload) {
-        if (payload.newRecord['cid'] == companyId) {
-          _currentProjects.add(ProjectModel.fromMap(payload.newRecord));
-          _emitUpdatedCompany();
-        }
-      },
-    );
-
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.update,
-      schema: 'public',
-      table: 'project',
-      callback: (payload) {
-        if (payload.newRecord['cid'] == companyId) {
-          final project = ProjectModel.fromMap(payload.newRecord);
-          final index =
-          _currentProjects.indexWhere((p) => p.id == project.id);
-          if (index != -1) {
-            _currentProjects[index] = project;
-            _emitUpdatedCompany();
-          }
-        }
-      },
-    );
-
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.delete,
-      schema: 'public',
-      table: 'project',
-      callback: (payload) {
-        if (payload.oldRecord['cid'] == companyId) {
-          _currentProjects
-              .removeWhere((p) => p.id == payload.oldRecord['id']);
-          _emitUpdatedCompany();
-        }
-      },
-    );
-
-    channel.subscribe();
   }
 }

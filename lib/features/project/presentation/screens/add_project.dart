@@ -145,8 +145,9 @@ class _AddProjectState extends State<AddProject> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      final project = ProjectModel(
-        idCompany: widget.idCompany,
+      final project = ProjectEntity(
+        pid: '',
+        cid: widget.idCompany,
         name: _name.text,
         description: _description.text,
         startDate:  DateFormat("dd MMMM yyyy", 'en_US').parse(_startDate.text),

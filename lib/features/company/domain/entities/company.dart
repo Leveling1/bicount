@@ -1,13 +1,12 @@
-import 'dart:convert';
-import 'dart:ffi';
-
+import 'package:bicount/features/project/data/models/project.model.dart';
 import 'package:bicount/features/project/domain/entities/project_model.dart';
 
+import '../../../group/data/models/group.model.dart';
 import '../../../group/domain/entities/group_model.dart';
 
 class CompanyEntity {
   final int? id;
-  final String? CID;
+  final String? cid;
   final String name;
   final String? description;
   final String? image;
@@ -23,7 +22,7 @@ class CompanyEntity {
 
   CompanyEntity({
     this.id,
-    this.CID,
+    this.cid,
     required this.name,
     this.description,
     this.image,
@@ -42,7 +41,7 @@ class CompanyEntity {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'CID': CID,
+      'cid': cid,
       'name': name,
       'description': description,
       'logoUrl': image,
@@ -60,7 +59,7 @@ class CompanyEntity {
   factory CompanyEntity.fromMap(Map<String, dynamic> map) {
     return CompanyEntity(
       id: map['id'],
-      CID: map['CID'] ?? '',
+      cid: map['cid'] ?? '',
       name: map['name'] ?? '',
       description: map['description'],
       image: map['image'],
@@ -70,8 +69,8 @@ class CompanyEntity {
       salary: (map['salary'] as num?)?.toDouble(),
       equipment: (map['equipment'] as num?)?.toDouble(),
       service: (map['service'] as num?)?.toDouble(),
-      projects: (map['projects'] as List<dynamic>?)?.map((e) => ProjectModel.fromMap(e)).toList(),
-      groups: (map['groups'] as List<dynamic>?)?.map((e) => GroupModel.fromMap(e)).toList(),
+      projects: (map['projects']),
+      groups: (map['groups']),
       createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
     );
   }

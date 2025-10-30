@@ -8,5 +8,5 @@ import '../../data/models/company.model.dart';
 abstract class CompanyRepository {
   Future<CompanyEntity> createCompany(CompanyEntity company, File? logoFile);
   Stream<List<CompanyModel>> getCompanyStream();
-  Stream<CompanyEntity> getCompanyDetailStream(CompanyModel company);
+  Stream<CompanyEntity> getCompanyDetailStream(String cid);
 }

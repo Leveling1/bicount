@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ShareCompany extends StatefulWidget {
-  final String CID;
-  const ShareCompany({super.key, required this.CID});
+  final String cid;
+  const ShareCompany({super.key, required this.cid});
 
   @override
   State<ShareCompany> createState() => _ShareCompanyState();

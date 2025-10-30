@@ -20,7 +20,7 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
   // For the company details
   Future<void> _getCompanyDetail(GetCompanyDetail event, Emitter<DetailState> emit) async {
     // Émettre directement le cache si disponible
-    if (_cachedCompanyDetail != null && _cachedCompanyDetail!.id == event.company.id) {
+    if (_cachedCompanyDetail != null && _cachedCompanyDetail!.id == event.cid) {
       emit(DetailLoaded(_cachedCompanyDetail!));
       return;
     }
@@ -29,7 +29,7 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
     try {
       // Écoute le stream Realtime
       await emit.forEach<CompanyEntity>(
-        repository.getCompanyDetailStream(event.company as CompanyModel),
+        repository.getCompanyDetailStream(event.cid),
         onData: (companyDetail) {
           // Mettre à jour le cache interne
           _cachedCompanyDetail = companyDetail;

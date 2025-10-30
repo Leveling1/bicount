@@ -1,3 +1,4 @@
+import 'package:bicount/features/project/data/models/project.model.dart';
 import 'package:bicount/features/project/domain/entities/project_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,7 +15,7 @@ class ProjectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String endDate = project.endDate != null
-        ? formatDateSmall(project.endDate!)
+        ? formatDateSmall(DateTime.parse(project.endDate!))
         : "now";
     return Material(
       color: Colors.transparent,
@@ -80,7 +81,7 @@ class ProjectCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${formatDateSmall(project.startDate)} - $endDate',
+                    '${formatDateSmall(DateTime.parse(project.startDate))} - $endDate',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Text(

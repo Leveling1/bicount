@@ -7,7 +7,7 @@ class GroupInitial extends GroupState {}
 class GroupLoading extends GroupState {}
 
 class GroupCreated extends GroupState {
-  final GroupModel group;
+  final GroupEntity group;
   GroupCreated(this.group);
 }
 

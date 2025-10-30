@@ -7,7 +7,7 @@ class ProjectInitial extends ProjectState {}
 class ProjectLoading extends ProjectState {}
 
 class ProjectCreated extends ProjectState {
-  final ProjectModel project;
+  final ProjectEntity project;
   ProjectCreated(this.project);
 }
 

@@ -21,7 +21,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
   String get uid => supabaseInstance.auth.currentUser!.id;
   String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
   @override
-  Future<ProjectModel> createProject(ProjectModel project, File? logoFile) async {
+  Future<ProjectEntity> createProject(ProjectEntity project, File? logoFile) async {
     try {
       final uri = Uri.parse(Secrets.create_project_endpoint);
 
@@ -31,7 +31,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
         ..fields['initiator'] = project.initiator
         ..fields['startDate'] = project.startDate.toIso8601String()
         ..fields['endDate'] = project.endDate?.toIso8601String() ?? ""
-        ..fields['idCompany'] = "${project.idCompany}"
+        ..fields['idCompany'] = "${project.cid}"
         ..headers['Authorization'] = 'Bearer $accessToken'
         ..headers['apikey'] = Secrets.supabaseAnonKey;
       if (logoFile != null) {
@@ -72,7 +72,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
               throw DataParsingFailure('Invalid response format: missing name field');
             }
 
-            final createdGroup = ProjectModel.fromMap(responseData);
+            final createdGroup = ProjectEntity.fromMap(responseData);
 
             return createdGroup;
           } catch (parseError) {

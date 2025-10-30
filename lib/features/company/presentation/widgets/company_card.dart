@@ -33,7 +33,7 @@ class CompanyCard extends StatelessWidget {
           splashColor: Colors.transparent,
           highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: (){
-            context.push('/companyDetail', extra: company);
+            context.push('/companyDetail', extra: company.cid);
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),

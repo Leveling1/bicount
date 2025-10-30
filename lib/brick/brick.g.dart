@@ -22,16 +22,22 @@ import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;
 import '../features/authentification/data/models/user.model.dart';
 import '../features/company/data/models/company.model.dart';
 import '../features/company/data/models/company_with_user_link.model.dart';
+import '../features/group/data/models/group.model.dart';
+import '../features/project/data/models/project.model.dart';
 
 part 'adapters/user_model_adapter.g.dart';
 part 'adapters/company_model_adapter.g.dart';
 part 'adapters/company_with_user_link_model_adapter.g.dart';
+part 'adapters/group_model_adapter.g.dart';
+part 'adapters/project_model_adapter.g.dart';
 
 /// Supabase mappings should only be used when initializing a [SupabaseProvider]
 final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
   UserModel: UserModelAdapter(),
   CompanyModel: CompanyModelAdapter(),
-  CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter()
+  CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
+  GroupModel: GroupModelAdapter(),
+  ProjectModel: ProjectModelAdapter()
 };
 final supabaseModelDictionary = SupabaseModelDictionary(supabaseMappings);
 
@@ -39,6 +45,8 @@ final supabaseModelDictionary = SupabaseModelDictionary(supabaseMappings);
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   UserModel: UserModelAdapter(),
   CompanyModel: CompanyModelAdapter(),
-  CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter()
+  CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
+  GroupModel: GroupModelAdapter(),
+  ProjectModel: ProjectModelAdapter()
 };
 final sqliteModelDictionary = SqliteModelDictionary(sqliteMappings);

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/project_bloc.dart';
 
 class ProjectScreen extends StatelessWidget {
-  final ProjectModel projectData;
+  final ProjectEntity projectData;
   const ProjectScreen({super.key, required this.projectData});
 
   @override

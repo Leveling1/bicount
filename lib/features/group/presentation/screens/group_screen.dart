@@ -16,7 +16,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../widgets/grid_view_skeleton.dart';
 
 class GroupScreen extends StatefulWidget {
-  final GroupModel groupData;
+  final GroupEntity groupData;
   const GroupScreen({super.key, required this.groupData});
 
   @override

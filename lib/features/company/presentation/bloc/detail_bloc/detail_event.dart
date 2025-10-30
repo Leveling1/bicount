@@ -4,12 +4,12 @@ abstract class DetailEvent {}
 
 // For the company details
 class GetCompanyDetail extends DetailEvent {
-  CompanyEntity company;
-  GetCompanyDetail(this.company);
+  String cid;
+  GetCompanyDetail(this.cid);
 }
 
 class DetailsDataUpdated extends DetailEvent {
-  final CompanyModel companies;
+  final CompanyEntity companies;
   DetailsDataUpdated(this.companies);
 }
 
