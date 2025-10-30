@@ -20,17 +20,25 @@ import 'package:brick_offline_first/brick_offline_first.dart' show RuntimeOfflin
 import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;
 
 import '../features/authentification/data/models/user.model.dart';
+import '../features/company/data/models/company.model.dart';
+import '../features/company/data/models/company_with_user_link.model.dart';
 
 part 'adapters/user_model_adapter.g.dart';
+part 'adapters/company_model_adapter.g.dart';
+part 'adapters/company_with_user_link_model_adapter.g.dart';
 
 /// Supabase mappings should only be used when initializing a [SupabaseProvider]
 final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
-  UserModel: UserModelAdapter()
+  UserModel: UserModelAdapter(),
+  CompanyModel: CompanyModelAdapter(),
+  CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter()
 };
 final supabaseModelDictionary = SupabaseModelDictionary(supabaseMappings);
 
 /// Sqlite mappings should only be used when initializing a [SqliteProvider]
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
-  UserModel: UserModelAdapter()
+  UserModel: UserModelAdapter(),
+  CompanyModel: CompanyModelAdapter(),
+  CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter()
 };
 final sqliteModelDictionary = SqliteModelDictionary(sqliteMappings);

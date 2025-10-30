@@ -5,7 +5,7 @@ import 'package:bicount/features/project/domain/entities/project_model.dart';
 
 import '../../../group/domain/entities/group_model.dart';
 
-class CompanyModel {
+class CompanyEntity {
   final int? id;
   final String? CID;
   final String name;
@@ -21,7 +21,7 @@ class CompanyModel {
   final List<ProjectModel>? projects;
   final List<GroupModel>? groups;
 
-  CompanyModel({
+  CompanyEntity({
     this.id,
     this.CID,
     required this.name,
@@ -57,8 +57,8 @@ class CompanyModel {
   }
 
   /// Créer une instance depuis un Map
-  factory CompanyModel.fromMap(Map<String, dynamic> map) {
-    return CompanyModel(
+  factory CompanyEntity.fromMap(Map<String, dynamic> map) {
+    return CompanyEntity(
       id: map['id'],
       CID: map['CID'] ?? '',
       name: map['name'] ?? '',

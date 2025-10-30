@@ -7,7 +7,7 @@ import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_form_text_field.dart';
 import '../../../../core/widgets/custom_pick_image.dart';
-import '../../domain/entities/company_model.dart';
+import '../../domain/entities/company.dart';
 
 class AddCompany extends StatefulWidget {
   const AddCompany({super.key});
@@ -107,7 +107,7 @@ class _AddCompanyState extends State<AddCompany> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      final company = CompanyModel(
+      final company = CompanyEntity(
         name: _name.text,
         description: _description.text,
         image: "",

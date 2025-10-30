@@ -7,7 +7,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/number_format_utils.dart';
-import '../../domain/entities/company_model.dart';
+import '../../data/models/company.model.dart';
+import '../../domain/entities/company.dart';
 import '../../../../core/widgets/circle_image_skeleton.dart';
 import 'company_profil.dart';
 

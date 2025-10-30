@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../features/company/domain/entities/company_model.dart';
+import '../../features/company/domain/entities/company.dart';
 import '../../features/company/presentation/screens/detail_company_screen.dart';
 import '../../features/group/domain/entities/group_model.dart';
 import '../../features/group/presentation/screens/group_screen.dart';
@@ -45,11 +45,11 @@ class AppRouter {
       GoRoute(
         path: '/companyDetail',
         pageBuilder: (context, state) {
-          final company = state.extra as CompanyModel;
+          final company = state.extra as CompanyEntity;
           return buildCustomTransitionPage(
             childContain: DetailCompanyScreen(company: company),
             state: state,
-            model: CompanyModel,
+            model: CompanyEntity,
           );
         },
       ),

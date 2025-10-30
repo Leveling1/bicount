@@ -7,7 +7,7 @@ class DetailInitial extends DetailState {}
 class DetailLoading extends DetailState {}
 
 class DetailLoaded extends DetailState {
-  final CompanyModel company;
+  final CompanyEntity company;
   DetailLoaded(this.company);
 }
 class DetailError extends DetailState {

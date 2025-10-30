@@ -19,6 +19,8 @@ import 'package:toastification/toastification.dart';
 
 import 'brick/repository.dart';
 import 'features/authentification/data/data_sources/local_datasource/local_authentification.dart';
+import 'features/company/data/data_sources/local_datasource/local_company_data_source_impl.dart';
+import 'features/company/data/data_sources/remote_datasource/company_remote_data_source_impl.dart';
 import 'features/company/presentation/bloc/detail_bloc/detail_bloc.dart';
 import 'features/company/presentation/bloc/list_bloc/list_bloc.dart';
 import 'features/group/data/repositories/group_repository_impl.dart';
@@ -57,7 +59,10 @@ class MyApp extends StatelessWidget {
           create: (_) => HomeRepositoryImpl(),
         ),
         RepositoryProvider<CompanyRepositoryImpl>(
-          create: (_) => CompanyRepositoryImpl(),
+          create: (_) => CompanyRepositoryImpl(
+            CompanyRemoteDataSourceImpl(),
+            LocalCompanyDataSourceImpl(),
+          ),
         ),
         RepositoryProvider<TransactionRepositoryImpl>(
           create: (_) => TransactionRepositoryImpl(),
@@ -84,13 +89,22 @@ class MyApp extends StatelessWidget {
             create: (context) => HomeBloc(HomeRepositoryImpl())
           ),
           BlocProvider<CompanyBloc>(
-            create: (context) => CompanyBloc(CompanyRepositoryImpl())
+            create: (context) => CompanyBloc(CompanyRepositoryImpl(
+              CompanyRemoteDataSourceImpl(),
+              LocalCompanyDataSourceImpl()),
+            )
           ),
           BlocProvider<ListBloc>(
-              create: (context) => ListBloc(CompanyRepositoryImpl())
+              create: (context) => ListBloc(CompanyRepositoryImpl(
+                  CompanyRemoteDataSourceImpl(),
+                  LocalCompanyDataSourceImpl()),
+              )
           ),
           BlocProvider<DetailBloc>(
-              create: (context) => DetailBloc(CompanyRepositoryImpl())
+              create: (context) => DetailBloc(CompanyRepositoryImpl(
+                  CompanyRemoteDataSourceImpl(),
+                  LocalCompanyDataSourceImpl()),
+              )
           ),
           BlocProvider<TransactionBloc>(
             create: (context) =>

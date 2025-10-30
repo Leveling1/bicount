@@ -1,9 +1,7 @@
-import 'package:dartz/dartz.dart';
+
+import 'dart:async';
+import 'package:bicount/features/company/data/models/company_with_user_link.model.dart';
 
 abstract class CompanyRemoteDataSource {
-  // Add your remote data source interface here
-}
-
-class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
-  // Add your remote data source implementation here
+  void subscribeDeleteChanges();
 }

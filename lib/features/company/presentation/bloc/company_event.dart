@@ -3,7 +3,7 @@ part of 'company_bloc.dart';
 abstract class CompanyEvent {}
 
 class CreateCompanyEvent extends CompanyEvent {
-  final CompanyModel company;
+  final CompanyEntity company;
   final File? logoFile;
   CreateCompanyEvent(this.company, {this.logoFile});
 }

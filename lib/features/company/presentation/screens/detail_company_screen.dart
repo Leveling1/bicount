@@ -11,7 +11,7 @@ import '../../../../core/utils/expandable_text.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/details_card.dart';
 import '../../../project/presentation/widgets/project_card.dart';
-import '../../domain/entities/company_model.dart';
+import '../../domain/entities/company.dart';
 import '../bloc/detail_bloc/detail_bloc.dart';
 import '../widgets/company_card_info.dart';
 import '../widgets/company_profil.dart';
@@ -23,7 +23,7 @@ import '../../../group/presentation/screens/add_group.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DetailCompanyScreen extends StatefulWidget {
-  final CompanyModel company;
+  final CompanyEntity company;
   const DetailCompanyScreen({super.key, required this.company});
 
   @override
@@ -33,7 +33,7 @@ class DetailCompanyScreen extends StatefulWidget {
 class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
   Widget _spacerHeight() => const SizedBox(height: AppDimens.marginMedium);
   Widget _spacerWidth() => const SizedBox(width: AppDimens.marginMedium);
-  late CompanyModel company;
+  late CompanyEntity company;
 
   @override
   void initState() {

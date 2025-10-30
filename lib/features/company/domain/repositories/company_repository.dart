@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:bicount/features/company/domain/entities/company_model.dart';
+import 'package:bicount/features/company/domain/entities/company.dart';
 
 import '../../../group/domain/entities/group_model.dart';
+import '../../data/models/company.model.dart';
 
 abstract class CompanyRepository {
-  Future<CompanyModel> createCompany(CompanyModel company, File? logoFile);
+  Future<CompanyEntity> createCompany(CompanyEntity company, File? logoFile);
   Stream<List<CompanyModel>> getCompanyStream();
-  Stream<CompanyModel> getCompanyDetailStream(CompanyModel company);
+  Stream<CompanyEntity> getCompanyDetailStream(CompanyEntity company);
 }

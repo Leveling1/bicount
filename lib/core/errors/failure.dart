@@ -140,3 +140,12 @@ class DataParsingFailure implements Exception {
   String toString() => 'DataParsingFailure: $message';
 }
 
+// Pour un echec avec message
+class MessageFailure extends Failure {
+  final String message;
+
+  MessageFailure({required this.message});
+  @override
+  List<Object?> get props => [message];
+}
+

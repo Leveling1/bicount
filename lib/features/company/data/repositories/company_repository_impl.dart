@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:bicount/features/group/domain/entities/group_model.dart';
-import 'package:bicount/features/company/domain/entities/company_model.dart';
+import 'package:bicount/features/company/domain/entities/company.dart';
 import 'package:bicount/features/company/domain/repositories/company_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -13,30 +13,36 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';
 import '../../../project/domain/entities/project_model.dart';
+import '../data_sources/local_datasource/company_local_datasource.dart';
+import '../data_sources/remote_datasource/company_remote_datasource.dart';
+import '../models/company.model.dart';
+import '../models/company_with_user_link.model.dart';
 
 class CompanyRepositoryImpl implements CompanyRepository {
-  CompanyRepositoryImpl();
-  final supabaseInstance = Supabase.instance.client;
+  final CompanyRemoteDataSource remoteDataSource;
+  final CompanyLocalDataSource localDataSource;
+  CompanyRepositoryImpl(this.remoteDataSource, this.localDataSource);
 
+  final supabaseInstance = Supabase.instance.client;
   String get uid => supabaseInstance.auth.currentUser!.id;
   var uuid = Uuid();
   String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
 
-  final _compagny = StreamController<List<CompanyModel>>.broadcast();
+  late StreamController<List<CompanyModel>> _company;
 
   // For the company detail
-  final _companyController = StreamController<CompanyModel>.broadcast();
-  CompanyModel? _currentCompany;
+  final _companyController = StreamController<CompanyEntity>.broadcast();
+  CompanyEntity? _currentCompany;
   List<GroupModel> _currentGroups = [];
   List<ProjectModel> _currentProjects = [];
 
   // Liste locale toujours à jour
-  final List<CompanyModel> _currentCompanies = [];
+  final List<CompanyEntity> _currentCompanies = [];
 
   // For the creation company
   @override
-  Future<CompanyModel> createCompany(CompanyModel company, File? logoFile) async {
-    String CID = uuid.v4();
+  Future<CompanyEntity> createCompany(CompanyEntity company, File? logoFile) async {
+    String cid = uuid.v4();
     try {
       final uri = Uri.parse(Secrets.create_company_endpoint);
 
@@ -44,7 +50,8 @@ class CompanyRepositoryImpl implements CompanyRepository {
         ..fields['name'] = company.name
         ..fields['description'] = company.description ?? ""
         ..fields['uid'] = uid
-        ..fields['CID'] = CID
+        ..fields['cid'] = cid
+        ..fields['lid'] = uuid.v4()
         ..headers['Authorization'] = 'Bearer $accessToken'
         ..headers['apikey'] = Secrets.supabaseAnonKey;
       if (logoFile != null) {
@@ -85,7 +92,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
               throw DataParsingFailure('Invalid response format: missing name field');
             }
 
-            final createdCompany = CompanyModel.fromMap(responseData);
+            final createdCompany = CompanyEntity.fromMap(responseData);
 
             return createdCompany;
           } catch (parseError) {
@@ -149,16 +156,16 @@ class CompanyRepositoryImpl implements CompanyRepository {
   // For the stream app with screen
   @override
   Stream<List<CompanyModel>> getCompanyStream() {
-    // Charger état initial
-    _loadInitialCompanies();
-
-    // Abonnement Realtime sur table "company"
-    _subscribeToCompanyChanges();
-
-    // Abonnement Realtime sur table "company_with_user_link"
-    _subscribeToCompanyLinkChanges();
-
-    return _compagny.stream;
+    try {
+      final companyLinks = localDataSource.getCompanyLink();
+      remoteDataSource.subscribeDeleteChanges();
+      final companyStream = localDataSource.getCompany(companyLinks);
+      return companyStream;
+    } catch (e) {
+      return Stream.error(
+        MessageFailure(message: "Une erreur s'est produite : ${e.toString()}"),
+      );
+    }
   }
 
   Future<void> _loadInitialCompanies() async {
@@ -166,10 +173,10 @@ class CompanyRepositoryImpl implements CompanyRepository {
       final res = await supabaseInstance.from('company').select('*');
       _currentCompanies
         ..clear()
-        ..addAll((res as List).map((c) => CompanyModel.fromMap(c)));
-      _compagny.add(List.from(_currentCompanies));
+        ..addAll((res as List).map((c) => CompanyEntity.fromMap(c)));
+      _company.add(List.from(_currentCompanies));
     } catch (e) {
-      _compagny.addError(e);
+      _company.addError(e);
     }
   }
 
@@ -182,9 +189,9 @@ class CompanyRepositoryImpl implements CompanyRepository {
       schema: 'public',
       table: 'company',
       callback: (payload) {
-        final company = CompanyModel.fromMap(payload.newRecord);
+        final company = CompanyEntity.fromMap(payload.newRecord);
         _currentCompanies.add(company);
-        _compagny.add(List.from(_currentCompanies));
+        _company.add(List.from(_currentCompanies));
             },
     );
 
@@ -194,11 +201,11 @@ class CompanyRepositoryImpl implements CompanyRepository {
       schema: 'public',
       table: 'company',
       callback: (payload) {
-        final company = CompanyModel.fromMap(payload.newRecord);
+        final company = CompanyEntity.fromMap(payload.newRecord);
         final index = _currentCompanies.indexWhere((c) => c.id == company.id);
         if (index != -1) {
           _currentCompanies[index] = company; // remplacer l’ancienne
-          _compagny.add(List.from(_currentCompanies));
+          _company.add(List.from(_currentCompanies));
         }
             },
     );
@@ -211,7 +218,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
       callback: (payload) {
         final id = payload.oldRecord['id'];
         _currentCompanies.removeWhere((c) => c.id == id);
-        _compagny.add(List.from(_currentCompanies));
+        _company.add(List.from(_currentCompanies));
             },
     );
 
@@ -231,10 +238,10 @@ class CompanyRepositoryImpl implements CompanyRepository {
           final res = await supabaseInstance.from('company').select('*');
           _currentCompanies
             ..clear()
-            ..addAll((res as List).map((c) => CompanyModel.fromMap(c)));
-          _compagny.add(List.from(_currentCompanies));
+            ..addAll((res as List).map((c) => CompanyEntity.fromMap(c)));
+          _company.add(List.from(_currentCompanies));
         } catch (e) {
-          _compagny.addError(e);
+          _company.addError(e);
         }
       },
     )
@@ -242,12 +249,12 @@ class CompanyRepositoryImpl implements CompanyRepository {
   }
 
   Future<void> dispose() async {
-    await _compagny.close();
+    await _company.close();
   }
 
   // For the detail company
   @override
-  Stream<CompanyModel> getCompanyDetailStream(CompanyModel company) {
+  Stream<CompanyEntity> getCompanyDetailStream(CompanyEntity company) {
     int companyId = company.id!;
     // Charger les données initiales
     _loadCompanyDetail(companyId);
@@ -271,7 +278,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
 
       if (companyRes == null) return;
 
-      _currentCompany = CompanyModel.fromMap(companyRes);
+      _currentCompany = CompanyEntity.fromMap(companyRes);
 
       // 2. Charger les groups liés
       final groupRes = await supabaseInstance
@@ -301,7 +308,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
   void _emitUpdatedCompany() {
     if (_currentCompany == null) return;
 
-    final updated = CompanyModel(
+    final updated = CompanyEntity(
       id: _currentCompany!.id,
       name: _currentCompany!.name,
       description: _currentCompany!.description,
@@ -335,7 +342,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
         value: companyId,
       ),
       callback: (payload) {
-        _currentCompany = CompanyModel.fromMap(payload.newRecord);
+        _currentCompany = CompanyEntity.fromMap(payload.newRecord);
         _emitUpdatedCompany();
       },
     );

@@ -2,7 +2,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/errors/failure.dart';
-import '../../../domain/entities/company_model.dart';
+import '../../../domain/entities/company.dart';
 import '../../../domain/repositories/company_repository.dart';
 
 part 'detail_state.dart';
@@ -10,7 +10,7 @@ part 'detail_event.dart';
 
 class DetailBloc extends Bloc<DetailEvent, DetailState> {
   final CompanyRepository repository;
-  CompanyModel? _cachedCompanyDetail;
+  CompanyEntity? _cachedCompanyDetail;
 
   DetailBloc(this.repository) : super(DetailInitial()) {
     on<GetCompanyDetail>(_getCompanyDetail);
@@ -27,7 +27,7 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
     emit(DetailLoading());
     try {
       // Écoute le stream Realtime
-      await emit.forEach<CompanyModel>(
+      await emit.forEach<CompanyEntity>(
         repository.getCompanyDetailStream(event.company),
         onData: (companyDetail) {
           // Mettre à jour le cache interne

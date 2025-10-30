@@ -8,12 +8,12 @@ class CompanyLoading extends CompanyState {}
 
 // For the creation of a company
 class CompanyCreated extends CompanyState {
-  final CompanyModel company;
+  final CompanyEntity company;
   CompanyCreated(this.company);
 }
 
 class CompanyLoaded extends CompanyState {
-  final List<CompanyModel> companies;
+  final List<CompanyEntity> companies;
   CompanyLoaded(this.companies);
 }
 class CompanyError extends CompanyState {

@@ -8,7 +8,7 @@ class ListLoading extends ListState {}
 
 // For the creation of a company
 class ListCreated extends ListState {
-  final CompanyModel company;
+  final CompanyEntity company;
   ListCreated(this.company);
 }
 
