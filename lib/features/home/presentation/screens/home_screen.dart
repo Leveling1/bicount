@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           return Column(
                             children: [
                               TransactionCard(
-                                transaction: TransactionModel(
+                                transaction: TransactionEntity(
                                   id: "01",
                                   name: MemojiUtils.defaultMemojis[index % 7].name!,
                                   type: TransactionType.income,

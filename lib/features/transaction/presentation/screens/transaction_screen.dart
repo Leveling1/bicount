@@ -28,12 +28,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
     });
   }
 
-  final List<TransactionModel> transactions = [];
+  final List<TransactionEntity> transactions = [];
 
-  Map<String, List<TransactionModel>> groupTransactionsByDate(
-    List<TransactionModel> transactions,
+  Map<String, List<TransactionEntity>> groupTransactionsByDate(
+    List<TransactionEntity> transactions,
   ) {
-    Map<String, List<TransactionModel>> grouped = {};
+    Map<String, List<TransactionEntity>> grouped = {};
 
     for (var tx in transactions) {
       final DateTime date = tx.createdAt!;
@@ -85,7 +85,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
           transactions.addAll(state.transactions);
         }
 
-        List<TransactionModel> filteredTransactions =
+        List<TransactionEntity> filteredTransactions =
             _selectedIndex == 0 && _searchController.text.isEmpty
             ? transactions
             : _selectedIndex == 0 && _searchController.text.isNotEmpty
@@ -148,7 +148,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                     ),
                                     const SizedBox(height: 8),
                                     ...entry.value.map((tx) {
-                                      TransactionModel transaction = tx;
+                                      TransactionEntity transaction = tx;
                                       return TransactionCard(
                                         transaction: transaction,
                                       );

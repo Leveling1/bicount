@@ -10,7 +10,7 @@ import '../../domain/entities/transaction_model.dart';
 import '../../../../core/widgets/details_card.dart';
 
 class DetailTransactionScreen extends StatefulWidget {
-  final TransactionModel transaction;
+  final TransactionEntity transaction;
 
   const DetailTransactionScreen({super.key, required this.transaction});
 
@@ -21,7 +21,7 @@ class DetailTransactionScreen extends StatefulWidget {
 
 class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
   final double size = 20;
-  late TransactionModel data;
+  late TransactionEntity data;
 
   @override
   void initState() {

@@ -234,7 +234,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
         for (int i = 0; i < _beneficiaryList.length; i++)
           '$i': _beneficiaryList[i].text,
       };
-      final transaction = TransactionModel(
+      final transaction = TransactionEntity(
         name: _name.text,
         type: TransactionType.values.firstWhere((e) => e.name == _type.text),
         date: DateTime.now(),

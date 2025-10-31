@@ -92,11 +92,11 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
   }
 
   // Méthode pour libérer les ressources d'une entreprise spécifique
-  void disposeCompanyDetails(String companyId) {
-    _companyDetailsSubscriptions[companyId]?.cancel();
-    _companyDetailsSubscriptions.remove(companyId);
-    _companyDetailsCache[companyId]?.close();
-    _companyDetailsCache.remove(companyId);
+  void disposeCompanyDetails(String cid) {
+    _companyDetailsSubscriptions[cid]?.cancel();
+    _companyDetailsSubscriptions.remove(cid);
+    _companyDetailsCache[cid]?.close();
+    _companyDetailsCache.remove(cid);
   }
 
   void dispose() {
@@ -163,16 +163,13 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
   @override
   Stream<List<GroupModel>> getCompanyGroups(String cid) {
     try {
-      // Vérifier si on a déjà un cache pour cette entreprise
       if (_groupCompanyCache.containsKey(cid)) {
         return _groupCompanyCache[cid]!.stream;
       }
 
-      // CORRECTION: Créer un BehaviorSubject pour une LISTE de projets, pas un seul projet
       final groupsController = BehaviorSubject<List<GroupModel>>.seeded([]);
       _groupCompanyCache[cid] = groupsController;
 
-      // S'abonner aux projets de l'entreprise
       final StreamSubscription<List<GroupModel>> subscription =
       Repository().subscribeToRealtime<GroupModel>(
           query: Query(where: [Where.exact('cid', cid)])
@@ -190,5 +187,14 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
         MessageFailure(message: "Erreur lors de la récupération des groupes: ${e.toString()}"),
       );
     }
+  }
+
+  // Méthode pour nettoyer le cache
+  void disposeCompanyGroups(String cid) {
+    _groupCompanySubscriptions[cid]?.cancel();
+    _groupCompanySubscriptions.remove(cid);
+
+    _groupCompanyCache[cid]?.close();
+    _groupCompanyCache.remove(cid);
   }
 }

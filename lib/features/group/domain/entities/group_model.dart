@@ -3,7 +3,7 @@ import 'dart:ffi';
 
 class GroupEntity {
   final int? id;
-  final String idCompany;
+  final String cid;
   final String name;
   final String? description;
   final String? image;
@@ -12,7 +12,7 @@ class GroupEntity {
 
   GroupEntity({
     this.id,
-    required this.idCompany,
+    required this.cid,
     required this.name,
     this.description,
     this.image,
@@ -24,7 +24,7 @@ class GroupEntity {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'id_company': idCompany,
+      'id_company': cid,
       'name': name,
       'description': description,
       'logoUrl': image,
@@ -37,7 +37,7 @@ class GroupEntity {
   factory GroupEntity.fromMap(Map<String, dynamic> map) {
     return GroupEntity(
       id: map['id'] ?? '',
-      idCompany: map['id_company'] ?? '',
+      cid: map['id_company'] ?? '',
       name: map['name'] ?? '',
       description: map['description'],
       image: map['image'],

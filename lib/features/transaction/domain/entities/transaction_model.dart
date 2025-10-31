@@ -6,7 +6,7 @@ enum TransactionFrequency { cyclic, fixe }
 
 enum Currency { USD, EUR, CDF }
 
-class TransactionModel {
+class TransactionEntity {
   final String? id;
   final String name;
   final TransactionType type;
@@ -20,7 +20,7 @@ class TransactionModel {
   final Map<String, dynamic> beneficiary;
   final String note;
 
-  const TransactionModel({
+  const TransactionEntity({
     this.id,
     required this.name,
     required this.type,
@@ -35,8 +35,8 @@ class TransactionModel {
     required this.note,
   });
 
-  factory TransactionModel.fromJson(Map<String, dynamic> data) {
-    return TransactionModel(
+  factory TransactionEntity.fromJson(Map<String, dynamic> data) {
+    return TransactionEntity(
       id: data["id"] ?? '',
       name: data["name"] ?? '',
       type: TransactionType.values.firstWhere((e) => e.name == data['type']),

@@ -11,7 +11,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
   TransactionRepositoryImpl();
 
   @override
-  Future<void> createTransaction(TransactionModel transaction) async {
+  Future<void> createTransaction(TransactionEntity transaction) async {
     CRUD crud = CRUD(table: 'transaction');
     try {
       crud.create(transaction);
@@ -21,7 +21,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
   }
 
   @override
-  Future<List<TransactionModel>> getAllTransactions() {
+  Future<List<TransactionEntity>> getAllTransactions() {
     CRUD crud = CRUD(table: 'transaction');
     /*try {
       return crud.readSimple();

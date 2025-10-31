@@ -35,11 +35,11 @@ class AppRouter {
       GoRoute(
         path: '/transactionDetail',
         pageBuilder: (context, state) {
-          final transaction = state.extra as TransactionModel;
+          final transaction = state.extra as TransactionEntity;
           return buildCustomTransitionPage(
             childContain: DetailTransactionScreen(transaction: transaction),
             state: state,
-            model: TransactionModel,
+            model: TransactionEntity,
           );
         },
       ),

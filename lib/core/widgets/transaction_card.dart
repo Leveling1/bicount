@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class TransactionCard extends StatelessWidget {
-  final TransactionModel transaction;
+  final TransactionEntity transaction;
 
   const TransactionCard({super.key, required this.transaction});
 

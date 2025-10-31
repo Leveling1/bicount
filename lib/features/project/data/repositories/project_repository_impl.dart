@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as path;
 import 'package:supabase_flutter/supabase_flutter.dart' as http;
+import 'package:uuid/uuid.dart';
 
 import '../../../../core/constants/secrets.dart';
 import '../../../../core/errors/failure.dart';
@@ -20,6 +21,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
 
   String get uid => supabaseInstance.auth.currentUser!.id;
   String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
+  var uuid = Uuid();
   @override
   Future<ProjectEntity> createProject(ProjectEntity project, File? logoFile) async {
     try {
@@ -31,7 +33,8 @@ class ProjectRepositoryImpl implements ProjectRepository {
         ..fields['initiator'] = project.initiator
         ..fields['startDate'] = project.startDate.toIso8601String()
         ..fields['endDate'] = project.endDate?.toIso8601String() ?? ""
-        ..fields['idCompany'] = "${project.cid}"
+        ..fields['cid'] = project.cid
+        ..fields['pid'] = uuid.v4()
         ..headers['Authorization'] = 'Bearer $accessToken'
         ..headers['apikey'] = Secrets.supabaseAnonKey;
       if (logoFile != null) {

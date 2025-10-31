@@ -3,9 +3,9 @@ import 'package:bicount/features/transaction/domain/entities/transaction_model.d
 import '../../../authentification/domain/entities/user.dart';
 
 abstract class TransactionRepository {
-  Future<void> createTransaction(TransactionModel transaction);
+  Future<void> createTransaction(TransactionEntity transaction);
 
-  Future<List<TransactionModel>> getAllTransactions();
+  Future<List<TransactionEntity>> getAllTransactions();
 
   Future<List<UserEntity>> getLinkedUsers();
 }

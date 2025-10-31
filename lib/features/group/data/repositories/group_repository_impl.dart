@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:uuid/uuid.dart';
+
 import '../../../../core/constants/secrets.dart';
 import '../../../../core/utils/memoji_utils.dart';
 import '../../domain/entities/group_model.dart';
@@ -19,6 +21,8 @@ class GroupRepositoryImpl implements GroupRepository {
 
   String get uid => supabaseInstance.auth.currentUser!.id;
   String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
+
+  var uuid = Uuid();
   // For the creation of group company
   @override
   Future<GroupEntity> createGroup(GroupEntity group, File? logoFile) async {
@@ -28,7 +32,8 @@ class GroupRepositoryImpl implements GroupRepository {
       var request = http.MultipartRequest("POST", uri)
         ..fields['name'] = group.name
         ..fields['description'] = group.description ?? ""
-        ..fields['idCompany'] = "${group.idCompany}"
+        ..fields['cid'] = group.cid
+        ..fields['gid'] = uuid.v4()
         ..headers['Authorization'] = 'Bearer $accessToken'
         ..headers['apikey'] = Secrets.supabaseAnonKey;
       if (logoFile != null) {
@@ -136,7 +141,7 @@ class GroupRepositoryImpl implements GroupRepository {
       final response = await supabaseInstance
           .from('member_group')
           .select()
-          .eq('id_company', group.idCompany)
+          .eq('id_company', group.cid)
           .eq('id_group', group.id as Object);
 
       if (response == null || response.isEmpty) {

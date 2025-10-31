@@ -185,11 +185,10 @@ class CompanyRepositoryImpl implements CompanyRepository {
         companyStream,
         projectStream,
         groupStream,
-            (CompanyModel company, List<ProjectModel> projects, List<GroupModel> groups) {
+        (CompanyModel company, List<ProjectModel> projects, List<GroupModel> groups) {
           return _convertToEntity(company, projects, groups);
         },
       ).handleError((error) {
-        print("❌ Erreur dans combineLatest3: $error");
         throw MessageFailure(message: "Erreur de combinaison des données: ${error.toString()}");
       });
     } catch (e) {
@@ -204,7 +203,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
       CompanyModel model,
       List<ProjectModel> projects,
       List<GroupModel> groups
-      ) {
+    ) {
     return CompanyEntity(
       cid: model.cid ?? '',
       name: model.name,
