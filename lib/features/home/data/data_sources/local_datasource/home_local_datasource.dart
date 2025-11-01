@@ -1,6 +1,5 @@
-import '/core/errors/failure.dart';
-import 'package:dartz/dartz.dart';
+import 'package:bicount/features/authentification/data/models/user.model.dart';
 
-class HomeLocalDataSource {
-  // Add your local data source implementation here
+abstract class HomeLocalDataSource {
+  Stream<UserModel> getOwnData();
 }

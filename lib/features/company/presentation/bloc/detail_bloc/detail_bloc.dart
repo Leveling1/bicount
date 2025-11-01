@@ -11,7 +11,6 @@ part 'detail_event.dart';
 
 class DetailBloc extends Bloc<DetailEvent, DetailState> {
   final CompanyRepository repository;
-  CompanyEntity? _cachedCompanyDetail;
 
   DetailBloc(this.repository) : super(DetailInitial()) {
     on<GetCompanyDetail>(_getCompanyDetail);
@@ -19,11 +18,6 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
 
   // For the company details
   Future<void> _getCompanyDetail(GetCompanyDetail event, Emitter<DetailState> emit) async {
-    // Émettre directement le cache si disponible
-    if (_cachedCompanyDetail != null && _cachedCompanyDetail!.id == event.cid) {
-      emit(DetailLoaded(_cachedCompanyDetail!));
-      return;
-    }
 
     emit(DetailLoading());
     try {
@@ -31,8 +25,6 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
       await emit.forEach<CompanyEntity>(
         repository.getCompanyDetailStream(event.cid),
         onData: (companyDetail) {
-          // Mettre à jour le cache interne
-          _cachedCompanyDetail = companyDetail;
           return DetailLoaded(companyDetail);
         },
         onError: (error, stackTrace) =>

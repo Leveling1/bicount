@@ -1,16 +1,18 @@
 import 'package:bicount/core/widgets/custom_search_field.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
-import 'package:bicount/features/transaction/domain/entities/transaction_model.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/utils/date_format_utils.dart';
+import '../../data/models/transaction.model.dart';
 import '../bloc/transaction_bloc.dart';
 
 class TransactionScreen extends StatefulWidget {
-  const TransactionScreen({super.key});
+  final List<TransactionModel> transactions;
+  const TransactionScreen({super.key, required this.transactions});
 
   @override
   State<TransactionScreen> createState() => _TransactionScreenState();
@@ -28,15 +30,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
     });
   }
 
-  final List<TransactionEntity> transactions = [];
+  final List<TransactionModel> transactions = [];
 
-  Map<String, List<TransactionEntity>> groupTransactionsByDate(
-    List<TransactionEntity> transactions,
+  Map<String, List<TransactionModel>> groupTransactionsByDate(
+    List<TransactionModel> transactions,
   ) {
-    Map<String, List<TransactionEntity>> grouped = {};
+    Map<String, List<TransactionModel>> grouped = {};
 
     for (var tx in transactions) {
-      final DateTime date = tx.createdAt!;
+      final DateTime date = DateTime.parse(tx.createdAt!);
       final now = DateTime.now();
 
       String key;
@@ -66,7 +68,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<TransactionBloc>().add(GetAllTransactionsRequested());
   }
 
   @override
@@ -80,12 +81,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         }
       },
       builder: (context, state) {
-        if (state is TransactionLoaded) {
-          transactions.clear();
-          transactions.addAll(state.transactions);
-        }
-
-        List<TransactionEntity> filteredTransactions =
+        List<TransactionModel> filteredTransactions =
             _selectedIndex == 0 && _searchController.text.isEmpty
             ? transactions
             : _selectedIndex == 0 && _searchController.text.isNotEmpty
@@ -148,7 +144,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                     ),
                                     const SizedBox(height: 8),
                                     ...entry.value.map((tx) {
-                                      TransactionEntity transaction = tx;
+                                      TransactionEntity transaction = TransactionEntity.fromTransaction(tx);
                                       return TransactionCard(
                                         transaction: transaction,
                                       );

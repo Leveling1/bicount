@@ -1,4 +1,4 @@
-import 'package:bicount/features/transaction/domain/entities/transaction_model.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide User;
 
 import '../../../../core/errors/failure.dart';
@@ -6,6 +6,7 @@ import '../../../../core/services/get_linked_users.dart';
 import '../../../../core/services/supabaseService.dart';
 import '../../../authentification/domain/entities/user.dart';
 import '../../domain/repositories/transaction_repository.dart';
+import '../models/transaction.model.dart';
 
 class TransactionRepositoryImpl extends TransactionRepository {
   TransactionRepositoryImpl();
@@ -18,17 +19,6 @@ class TransactionRepositoryImpl extends TransactionRepository {
     } catch (e) {
       throw UnknownFailure();
     }
-  }
-
-  @override
-  Future<List<TransactionEntity>> getAllTransactions() {
-    CRUD crud = CRUD(table: 'transaction');
-    /*try {
-      return crud.readSimple();
-    } catch (e) {
-      throw UnknownFailure();
-    }*/
-    throw UnknownFailure();
   }
 
   @override

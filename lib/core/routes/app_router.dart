@@ -14,7 +14,7 @@ import '../../features/group/presentation/screens/group_screen.dart';
 import '../../features/main/presentation/screens/main_screen.dart';
 import '../../features/project/domain/entities/project_model.dart';
 import '../../features/project/presentation/screens/project_screen.dart';
-import '../../features/transaction/domain/entities/transaction_model.dart';
+import '../../features/transaction/domain/entities/transaction_entity.dart';
 import '../../features/transaction/presentation/screens/detail_transaction_screen.dart';
 import '../utils/custom_transition.dart';
 

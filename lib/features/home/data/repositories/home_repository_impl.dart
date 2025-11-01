@@ -1,12 +1,19 @@
 import 'dart:async';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
-import '../../../authentification/domain/entities/user.dart';
+import 'package:bicount/features/home/domain/entities/home.dart';
+import 'package:bicount/features/transaction/data/models/transaction.model.dart';
+import 'package:rxdart/rxdart.dart';
+import '../../../../core/errors/failure.dart';
+import '../data_sources/local_datasource/home_local_datasource.dart';
+import '../data_sources/remote_datasource/home_remote_datasource.dart';
 import '/features/home/domain/repositories/home_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
-  HomeRepositoryImpl();
+  final HomeRemoteDataSource remoteDataSource;
+  final HomeLocalDataSource localDataSource;
+  HomeRepositoryImpl(this.remoteDataSource, this.localDataSource);
 
   final supabase = Supabase.instance.client;
   RealtimeChannel? _channel;
@@ -17,97 +24,35 @@ class HomeRepositoryImpl implements HomeRepository {
   String? get accessToken => supabase.auth.currentSession?.accessToken;
 
   @override
-  Stream<UserModel> getDataStream() {
-    _loadInitialData();
-    _subscribeToChanges();
-
-    _connectivitySub = Connectivity().onConnectivityChanged.listen((statuses) {
-      final status = statuses.isNotEmpty ? statuses.first : ConnectivityResult.none;
-
-      if (status == ConnectivityResult.none) {
-        _controller.addError("No internet connection");
-      } else {
-        _reloadData();
-      }
-    });
-
-
-    return _controller.stream;
-  }
-
-  /// Charge les données utilisateur actuelles
-  Future<void> _loadInitialData() async {
+  Stream<HomeEntity> getDataStream() { // Correction du type de retour
     try {
-      final user = await _fetchUser();
-      _controller.add(user as UserModel);
+      // Récupérer les deux streams
+      Stream<UserModel> ownDataStream = localDataSource.getOwnData();
+
+      // Combiner les deux streams en un seul
+      return Rx.combineLatest<UserModel, HomeEntity>(
+        [ownDataStream],
+        (value) {
+          final ownData = value[0];
+          return _convertToEntity(ownData);
+        },
+      ).handleError((error) {
+        throw MessageFailure(message: "Erreur de combinaison des données: ${error.toString()}");
+      });
     } catch (e) {
-      _handleError(e);
+      return Stream.error(
+        MessageFailure(message: "Erreur lors de la récupération des détails: ${e.toString()}"),
+      );
     }
   }
 
-  /// Recharge les données + resouscrit au canal
-  Future<void> _reloadData() async {
-    await _loadInitialData();
-    _subscribeToChanges();
+// CORRECTION: La méthode prend seulement 2 paramètres maintenant
+  HomeEntity _convertToEntity(
+      UserModel model
+  ) {
+    return HomeEntity(
+      ownData: model,
+    );
   }
 
-  /// Récupération depuis Supabase
-  Future<UserEntity> _fetchUser() async {
-    final res = await supabase
-        .from('users')
-        .select('*')
-        .eq('uuid', uid)
-        .single();
-    return UserEntity.fromData(res);
-  }
-
-  void _subscribeToChanges() {
-    // Nettoyer l’ancienne souscription avant d’en créer une nouvelle
-    _channel?.unsubscribe();
-
-    _channel = supabase.channel('users-$uid').onPostgresChanges(
-      event: PostgresChangeEvent.all,
-      schema: 'public',
-      table: 'users',
-      filter: PostgresChangeFilter(
-        column: 'uuid',
-        value: uid,
-        type: PostgresChangeFilterType.eq,
-      ),
-      callback: (payload) async {
-        try {
-          _controller.add(UserEntity.fromData(payload.newRecord) as UserModel);
-        } catch (e) {
-          _handleError(e);
-        }
-      },
-    ).subscribe((status, [error]) {
-      switch (status) {
-        case RealtimeSubscribeStatus.subscribed:
-          break;
-        case RealtimeSubscribeStatus.channelError:
-          _controller.addError(error ?? "Subscription error");
-          break;
-        case RealtimeSubscribeStatus.closed:
-          _controller.addError("No internet connection");
-          break;
-        case RealtimeSubscribeStatus.timedOut:
-          _controller.addError("Subscription timed out");
-          break;
-      }
-    });
-  }
-
-  void _handleError(Object e) {
-    final message = e.toString().contains("SocketException")
-        ? "No internet connection"
-        : "Loading error: $e";
-    _controller.addError(message);
-  }
-
-  void dispose() {
-    _channel?.unsubscribe();
-    _connectivitySub?.cancel();
-    _controller.close();
-  }
 }

@@ -1,14 +1,21 @@
 import 'dart:async';
 
+import 'package:bicount/features/main/domain/entities/main_entity.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:brick_core/core.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../../brick/repository.dart';
+import '../../../../core/errors/failure.dart';
+import '../../../transaction/data/models/transaction.model.dart';
 import '../../domain/repositories/main_repository.dart';
+import '../data_sources/local_datasource/main_local_datasource.dart';
 
 class MainRepositoryImpl implements MainRepository {
   final Connectivity _connectivity = Connectivity();
+  final MainLocalDataSource localDataSource;
   final InternetConnectionChecker _checker = InternetConnectionChecker();
 
   final StreamController<NetworkStatus> _controller =
@@ -19,7 +26,7 @@ class MainRepositoryImpl implements MainRepository {
   NetworkStatus _currentStatus = NetworkStatus.connected;
   StreamSubscription? _connectivitySubscription;
 
-  MainRepositoryImpl() {
+  MainRepositoryImpl(this.localDataSource) {
     _initializeNetworkMonitoring();
   }
 
@@ -127,11 +134,32 @@ class MainRepositoryImpl implements MainRepository {
     }
   }
 
-/*@override
-  // TODO: implement startData
-  Stream<List<Start>> get startData {
-    final Stream<List<Start>> startDataStream =
-    Repository().subscribe<Start>(query: Query.where('name', 'Thomas'));
-    return startDataStream;
-  }*/
+  @override
+  Stream<MainEntity> getStartDataStream() {
+    try {
+
+      Stream<List<TransactionModel>> transactionStream = localDataSource.getTransaction();
+      // Abonnement au flux temps réel des utilisateurs
+      return Rx.combineLatest<List<TransactionModel>, MainEntity>(
+        [transactionStream],
+            (values) {
+          final transaction = values[0];
+          return _convertToEntity(transaction);
+        },
+      ).handleError((error, stackTrace) {
+        throw MessageFailure(message: "Erreur de combinaison des données: ${error.toString()}");
+      });
+    } catch (e) {
+      // En cas d’erreur, on renvoie un flux d’erreur
+      return Stream.error(MessageFailure(message: e.toString()));
+    }
+  }
+
+  MainEntity _convertToEntity(
+      List<TransactionModel> transactions,
+      ) {
+    return MainEntity(
+        transactions: transactions
+    );
+  }
 }

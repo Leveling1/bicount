@@ -48,7 +48,11 @@ class MainStateConnexion extends MainState {
 class MainLoading extends MainState {  }
 
 class MainLoaded extends MainState {
-  final List<Start> startData;
+  final MainEntity startData;
   const MainLoaded(this.startData);
+}
 
+class MainError extends MainState {
+  final String error;
+  MainError(this.error);
 }

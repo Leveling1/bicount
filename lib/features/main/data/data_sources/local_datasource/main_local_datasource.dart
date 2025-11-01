@@ -1,5 +1,5 @@
-import 'package:dartz/dartz.dart';
+import '../../../../transaction/data/models/transaction.model.dart';
 
-class MainLocalDataSource {
-  // Add your local data source implementation here
+abstract class MainLocalDataSource {
+  Stream<List<TransactionModel>> getTransaction();
 }

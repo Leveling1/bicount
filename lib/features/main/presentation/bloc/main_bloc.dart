@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/repositories/main_repository_impl.dart';
-import '../../domain/entities/start_data_model.dart';
+import '../../domain/entities/main_entity.dart';
 import '../../domain/repositories/main_repository.dart';
 part 'main_event.dart';
 part 'main_state.dart';
@@ -32,9 +32,18 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
   void _onGetAllStartData(
       GetAllStartData event, Emitter<MainState> emit) async {
-    if (repository is MainRepositoryImpl) {
-      emit(MainLoading());
-
+    try {
+      // Écoute le stream Realtime
+      await emit.forEach<MainEntity>(
+        repository.getStartDataStream(),
+        onData: (data) {
+          return MainLoaded(data);
+        },
+        onError: (error, stackTrace) =>
+            MainError(error.toString()),
+      );
+    } catch (e) {
+      emit(MainError(e.toString()));
     }
   }
 

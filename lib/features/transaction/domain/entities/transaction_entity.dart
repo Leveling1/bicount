@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../../data/models/transaction.model.dart';
+
 enum TransactionType { income, expense, transfer }
 
 enum TransactionFrequency { cyclic, fixe }
@@ -17,7 +19,7 @@ class TransactionEntity {
   final String? image;
   final TransactionFrequency? frequency;
   final String sender;
-  final Map<String, dynamic> beneficiary;
+  final String beneficiary;
   final String note;
 
   const TransactionEntity({
@@ -77,5 +79,21 @@ class TransactionEntity {
       "beneficiary": jsonEncode(beneficiary),
       "note": note,
     };
+  }
+
+  factory TransactionEntity.fromTransaction(TransactionModel transaction) {
+    return TransactionEntity(
+      name: transaction.name,
+      type: TransactionType.values.byName(transaction.type),
+      date: DateTime.tryParse(transaction.date)!,
+      createdAt: DateTime.tryParse(transaction.createdAt ?? ''),
+      amount: transaction.amount,
+      currency: Currency.values.byName(transaction.currency),
+      image: transaction.image,
+      frequency: transaction.frequency != null ? TransactionFrequency.values.byName(transaction.frequency!) : null,
+      sender: transaction.senderId,
+      beneficiary: transaction.beneficiaryId,
+      note: transaction.note,
+    );
   }
 }

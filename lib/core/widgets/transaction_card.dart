@@ -1,9 +1,11 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/themes/app_colors.dart';
-import 'package:bicount/features/transaction/domain/entities/transaction_model.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../features/transaction/data/models/transaction.model.dart';
 
 class TransactionCard extends StatelessWidget {
   final TransactionEntity transaction;
@@ -68,7 +70,7 @@ class TransactionCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  transaction.type.name,
+                  '${transaction.type}',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],

@@ -3,21 +3,22 @@ import 'package:bicount/core/utils/memoji_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/home/presentation/widgets/card_type_revenue.dart';
-import 'package:bicount/features/transaction/domain/entities/transaction_model.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/services/notification_helper.dart';
+import '../../../transaction/data/models/transaction.model.dart';
 import '../bloc/home_bloc.dart';
 
 typedef CardTapCallback = void Function(int index);
 
 class HomeScreen extends StatefulWidget {
   final CardTapCallback? onCardTap;
-
-  const HomeScreen({super.key, this.onCardTap});
+  final List<TransactionModel> transactions;
+  const HomeScreen({super.key, this.onCardTap, required this.transactions});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -37,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.sizeOf(context).height;
-    final double width = MediaQuery.sizeOf(context).width;
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state){
         if (state is HomeError) {
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     state is HomeLoading
                                       ? 0.0
                                       : state is HomeLoaded
-                                        ? state.data.profit as num
+                                        ? state.data.ownData.profit as num
                                         : 0.0
                                   ),
                                 style: Theme.of(context).textTheme.titleLarge!
@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             amount: state is HomeLoading
                                 ? 0.0
                                 : state is HomeLoaded
-                                ? state.data.personalIncome!
+                                ? state.data.ownData.personalIncome!
                                 : 0.0,
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedUser03,
@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             amount: state is HomeLoading
                               ? 0.0
                               : state is HomeLoaded
-                                ? state.data.companyIncome!
+                                ? state.data.ownData.companyIncome!
                                 : 0.0,
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedBuilding02,
@@ -144,41 +144,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: 5,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              TransactionCard(
-                                transaction: TransactionEntity(
-                                  id: "01",
-                                  name: MemojiUtils.defaultMemojis[index % 7].name!,
-                                  type: TransactionType.income,
-                                  date: DateTime.now(),
-                                  createdAt: DateTime.now(),
-                                  amount: 1250,
-                                  image: MemojiUtils
-                                      .defaultMemojis[index % 7]
-                                      .imagePath,
-                                  frequency: TransactionFrequency.cyclic,
-                                  sender: "sender",
-                                  beneficiary: {
-                                    "0": "Jean Dupont",
-                                    "1": "Alice Mambu",
-                                  },
-                                  note: "note",
-                                  currency: Currency.EUR,
-                                ),
-                              ),
-                              Divider(
-                                color: Theme.of(context).iconTheme.color,
-                                thickness: 0.7,
-                              ),
-                            ],
-                          );
-                        },
-                      ),
+                    state is HomeLoading ? const CircularProgressIndicator()
+                      : state is HomeLoaded
+                        ? Expanded(
+                          child: ListView.builder(
+                            itemCount: 5,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children:
+                                widget.transactions.map((transaction) {
+                                  final transactionEntity = TransactionEntity.fromTransaction(transaction);
+                                  return TransactionCard(transaction: transactionEntity);
+                                }).toList(),
+                              );
+                            },
+                          ),
+                        )
+                      : Column(
+                      children: [
+                        Text("No data"),
+                      ],
                     ),
                   ],
                 );

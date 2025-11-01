@@ -25,6 +25,9 @@ import 'features/company/presentation/bloc/detail_bloc/detail_bloc.dart';
 import 'features/company/presentation/bloc/list_bloc/list_bloc.dart';
 import 'features/group/data/repositories/group_repository_impl.dart';
 import 'features/group/presentation/bloc/group_bloc.dart';
+import 'features/home/data/data_sources/local_datasource/local_home_data_source_impl.dart';
+import 'features/home/data/data_sources/remote_datasource/remote_home_data_source_impl.dart';
+import 'features/main/data/data_sources/local_datasource/local_main_data_source_impl.dart';
 import 'features/main/data/repositories/main_repository_impl.dart';
 import 'features/main/presentation/bloc/main_bloc.dart';
 import 'features/project/data/repositories/project_repository_impl.dart';
@@ -53,10 +56,15 @@ class MyApp extends StatelessWidget {
           ),
         ),
         RepositoryProvider<MainRepositoryImpl>(
-          create: (_) => MainRepositoryImpl(),
+          create: (_) => MainRepositoryImpl(
+            LocalMainDataSourceImpl(),
+          ),
         ),
         RepositoryProvider<HomeRepositoryImpl>(
-          create: (_) => HomeRepositoryImpl(),
+          create: (_) => HomeRepositoryImpl(
+            RemoteHomeDataSourceImpl(),
+            LocalHomeDataSourceImpl(),
+          ),
         ),
         RepositoryProvider<CompanyRepositoryImpl>(
           create: (_) => CompanyRepositoryImpl(
@@ -83,10 +91,15 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider<MainBloc>(
-            create: (context) => MainBloc(MainRepositoryImpl()),
+            create: (context) => MainBloc(MainRepositoryImpl(
+              LocalMainDataSourceImpl(),
+            )),
           ),
           BlocProvider<HomeBloc>(
-            create: (context) => HomeBloc(HomeRepositoryImpl())
+            create: (context) => HomeBloc(HomeRepositoryImpl(
+              RemoteHomeDataSourceImpl(),
+              LocalHomeDataSourceImpl(),
+            ))
           ),
           BlocProvider<CompanyBloc>(
             create: (context) => CompanyBloc(CompanyRepositoryImpl(
@@ -108,8 +121,7 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<TransactionBloc>(
             create: (context) =>
-                TransactionBloc(context.read<TransactionRepositoryImpl>())
-                  ..add(GetAllTransactionsRequested()),
+              TransactionBloc(context.read<TransactionRepositoryImpl>()),
           ),
           BlocProvider<GroupBloc>(
             create: (context) =>

@@ -1,8 +1,9 @@
+import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/failure.dart';
 import '../../../authentification/domain/entities/user.dart';
-import '../../domain/entities/transaction_model.dart';
+import '../../domain/entities/transaction_entity.dart';
 import '../../domain/repositories/transaction_repository.dart';
 
 part 'transaction_event.dart';
@@ -17,16 +18,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       try {
         await repository.createTransaction(event.transaction);
         emit(TransactionCreated());
-        add(GetAllTransactionsRequested());
-      } catch (e) {
-        emit(TransactionError(e is Failure ? e : UnknownFailure()));
-      }
-    });
-    on<GetAllTransactionsRequested>((event, emit) async {
-      emit(TransactionLoading());
-      try {
-        final transactions = await repository.getAllTransactions();
-        emit(TransactionLoaded(transactions));
       } catch (e) {
         emit(TransactionError(e is Failure ? e : UnknownFailure()));
       }

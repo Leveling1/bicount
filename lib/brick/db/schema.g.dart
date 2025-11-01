@@ -1,15 +1,14 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
-part '20251030162940.migration.dart';
+part '20251031165942.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
-final migrations = <Migration>{
-  const Migration20251030162940(),};
+final migrations = <Migration>{const Migration20251031165942()};
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  0,
+  20251031165942,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -104,6 +103,46 @@ final schema = Schema(
       },
     ),
     SchemaTable(
+      'FriendsModel',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('uid', Column.varchar),
+        SchemaColumn('username', Column.varchar),
+        SchemaColumn('email', Column.varchar),
+        SchemaColumn('sid', Column.varchar, unique: true),
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(columns: ['sid'], unique: true),
+      },
+    ),
+    SchemaTable(
+      'UserLinksModel',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('user_a_id', Column.varchar),
+        SchemaColumn('user_b_id', Column.varchar),
+        SchemaColumn('link_type', Column.varchar),
+        SchemaColumn('status', Column.varchar),
+        SchemaColumn('created_at', Column.varchar),
+        SchemaColumn('lid', Column.varchar, unique: true),
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(columns: ['lid'], unique: true),
+      },
+    ),
+    SchemaTable(
       'ProjectModel',
       columns: <SchemaColumn>{
         SchemaColumn(
@@ -127,6 +166,34 @@ final schema = Schema(
       },
       indices: <SchemaIndex>{
         SchemaIndex(columns: ['pid'], unique: true),
+      },
+    ),
+    SchemaTable(
+      'TransactionModel',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('gtid', Column.varchar),
+        SchemaColumn('name', Column.varchar),
+        SchemaColumn('type', Column.varchar),
+        SchemaColumn('beneficiary_id', Column.varchar),
+        SchemaColumn('sender_id', Column.varchar),
+        SchemaColumn('date', Column.varchar),
+        SchemaColumn('note', Column.varchar),
+        SchemaColumn('amount', Column.Double),
+        SchemaColumn('currency', Column.varchar),
+        SchemaColumn('image', Column.varchar),
+        SchemaColumn('frequency', Column.varchar),
+        SchemaColumn('created_at', Column.varchar),
+        SchemaColumn('tid', Column.varchar, unique: true),
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(columns: ['tid'], unique: true),
       },
     ),
   },

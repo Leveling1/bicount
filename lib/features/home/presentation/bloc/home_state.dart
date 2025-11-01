@@ -12,7 +12,7 @@ class HomeError extends HomeState {
 }
 
 class HomeLoaded extends HomeState {
-  final UserModel data;
+  final HomeEntity data;
   HomeLoaded(this.data);
 }
 

@@ -7,6 +7,4 @@ class CreateTransactionEvent extends TransactionEvent {
   CreateTransactionEvent(this.transaction);
 }
 
-class GetAllTransactionsRequested extends TransactionEvent {}
-
 class GetLinkedUsersRequested extends TransactionEvent {}

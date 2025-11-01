@@ -23,13 +23,19 @@ import '../features/authentification/data/models/user.model.dart';
 import '../features/company/data/models/company.model.dart';
 import '../features/company/data/models/company_with_user_link.model.dart';
 import '../features/group/data/models/group.model.dart';
+import '../features/main/data/models/friends.model.dart';
+import '../features/main/data/models/user_links.model.dart';
 import '../features/project/data/models/project.model.dart';
+import '../features/transaction/data/models/transaction.model.dart';
 
 part 'adapters/user_model_adapter.g.dart';
 part 'adapters/company_model_adapter.g.dart';
 part 'adapters/company_with_user_link_model_adapter.g.dart';
 part 'adapters/group_model_adapter.g.dart';
+part 'adapters/friends_model_adapter.g.dart';
+part 'adapters/user_links_model_adapter.g.dart';
 part 'adapters/project_model_adapter.g.dart';
+part 'adapters/transaction_model_adapter.g.dart';
 
 /// Supabase mappings should only be used when initializing a [SupabaseProvider]
 final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
@@ -37,7 +43,10 @@ final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
   CompanyModel: CompanyModelAdapter(),
   CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
   GroupModel: GroupModelAdapter(),
-  ProjectModel: ProjectModelAdapter()
+  FriendsModel: FriendsModelAdapter(),
+  UserLinksModel: UserLinksModelAdapter(),
+  ProjectModel: ProjectModelAdapter(),
+  TransactionModel: TransactionModelAdapter()
 };
 final supabaseModelDictionary = SupabaseModelDictionary(supabaseMappings);
 
@@ -47,6 +56,9 @@ final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   CompanyModel: CompanyModelAdapter(),
   CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
   GroupModel: GroupModelAdapter(),
-  ProjectModel: ProjectModelAdapter()
+  FriendsModel: FriendsModelAdapter(),
+  UserLinksModel: UserLinksModelAdapter(),
+  ProjectModel: ProjectModelAdapter(),
+  TransactionModel: TransactionModelAdapter()
 };
 final sqliteModelDictionary = SqliteModelDictionary(sqliteMappings);

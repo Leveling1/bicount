@@ -11,7 +11,7 @@ import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../company/presentation/screens/company_handler.dart';
 import '../../../transaction/presentation/screens/transaction_handler.dart';
-import '../../domain/entities/start_data_model.dart';
+import '../../domain/entities/main_entity.dart';
 import '../bloc/main_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,7 +24,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  late List<Start> startData;
+  late List<MainEntity> startData;
   PageController pageController = PageController();
   ValueNotifier<double> scrollXPosition = ValueNotifier(0.0);
 
@@ -55,11 +55,16 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  List<Widget> _buildScreens() {
+  List<Widget> _buildScreens(MainEntity data) {
     return [
-      HomeScreen(onCardTap: _goToPage),
+      HomeScreen(
+        onCardTap: _goToPage,
+        transactions: data.transactions,
+      ),
       CompanyScreen(),
-      TransactionScreen(),
+      TransactionScreen(
+        transactions: data.transactions,
+      ),
     ];
   }
 
@@ -111,9 +116,6 @@ class _MainScreenState extends State<MainScreen> {
             );
           }
         }
-        if(state is MainLoaded){
-          startData = state.startData;
-        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -146,7 +148,11 @@ class _MainScreenState extends State<MainScreen> {
                   _selectedIndex = index;
                 });
               },
-              children: _buildScreens(),
+              children: _buildScreens(
+                state is MainLoaded
+                  ? state.startData
+                  : MainEntity.fromEmpty()
+              ),
             ),
           ),
           bottomNavigationBar: CustomBottomNavigationBar(

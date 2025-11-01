@@ -6,7 +6,7 @@ import '../../../../core/widgets/custom_amount_field.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_form_text_field.dart';
 import '../../../../core/widgets/custom_suggestion_text_field.dart';
-import '../../domain/entities/transaction_model.dart';
+import '../../domain/entities/transaction_entity.dart';
 import '../bloc/transaction_bloc.dart';
 import '../widgets/segment_control.dart';
 
@@ -241,7 +241,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
         amount: double.parse(_amount.text),
         currency: Currency.values.firstWhere((e) => e.name == 'EUR'),
         sender: _sender.text,
-        beneficiary: beneficiariesMap,
+        beneficiary: "beneficiariesMap",
         note: _note.text,
       );
       context.read<TransactionBloc>().add(CreateTransactionEvent(transaction));

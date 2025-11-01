@@ -14,12 +14,6 @@ class TransactionError extends TransactionState {
   TransactionError(this.failure);
 }
 
-class TransactionLoaded extends TransactionState {
-  final List<TransactionEntity> transactions;
-
-  TransactionLoaded(this.transactions);
-}
-
 class TransactionLinkedUsersLoaded extends TransactionState {
   final List<UserEntity> users;
 
