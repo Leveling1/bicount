@@ -181,8 +181,12 @@ class _MainScreenState extends State<MainScreen> {
                       : 0.95,
                   color: null,
                   child: _selectedIndex == 1
-                      ? const CompanyHandler()
-                      : const TransactionHandler(),
+                    ? const CompanyHandler()
+                    : TransactionHandler(
+                      usersLink: state is MainLoaded
+                        ? state.startData.usersLink
+                        : [],
+                  ),
                 );
               },
               child: Icon(

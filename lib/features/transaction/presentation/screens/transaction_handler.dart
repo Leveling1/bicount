@@ -6,12 +6,14 @@ import '../../../../core/widgets/custom_amount_field.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_form_text_field.dart';
 import '../../../../core/widgets/custom_suggestion_text_field.dart';
+import '../../../authentification/data/models/user.model.dart';
 import '../../domain/entities/transaction_entity.dart';
 import '../bloc/transaction_bloc.dart';
 import '../widgets/segment_control.dart';
 
 class TransactionHandler extends StatefulWidget {
-  const TransactionHandler({super.key});
+  final List<UserModel> usersLink;
+  const TransactionHandler({super.key, required this.usersLink});
 
   @override
   State<TransactionHandler> createState() => _TransactionHandlerState();
@@ -40,7 +42,6 @@ class _TransactionHandlerState extends State<TransactionHandler> {
     _segmentedType = SegmentedControlController();
     _segmentedType.addListener(_onSegmentChanged);
     _type.text = _segmentedType.selectedValue;
-    context.read<TransactionBloc>().add(GetLinkedUsersRequested());
   }
 
   @override
@@ -73,11 +74,12 @@ class _TransactionHandlerState extends State<TransactionHandler> {
         }
       },
       builder: (context, state) {
-        List<String> linkedUserEmails = [];
 
-        if (state is TransactionLinkedUsersLoaded) {
-          linkedUserEmails = state.users.map((user) => user.email).toList();
+        List<String> linkedUser = [];
+        if (widget.usersLink.isNotEmpty) {
+          linkedUser = widget.usersLink.map((user) => user.username).toList();
         }
+
         return Form(
           key: _formKey,
           child: Column(
@@ -128,7 +130,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
                         CustomSuggestionTextField(
                           controller: _sender,
                           hintText: 'Enter sender name',
-                          options: linkedUserEmails,
+                          options: linkedUser,
                           isVisible: false,
                         ),
                       ],
@@ -176,44 +178,44 @@ class _TransactionHandlerState extends State<TransactionHandler> {
                     },
                     isVisible: _type.text != 'Transfer' ? true : false,
                     hintText: 'Enter beneficiary name',
-                    options: linkedUserEmails,
+                    options: linkedUser,
                   ),
                 ],
               ),
 
               _type.text != 'Transfer'
-                  ? _beneficiaryList.isNotEmpty
-                        ? Column(
-                            children: _beneficiaryList.asMap().entries.map((
-                              entry,
-                            ) {
-                              int index = entry.key;
-                              TextEditingController controller = entry.value;
+                ? _beneficiaryList.isNotEmpty
+                  ? Column(
+                    children: _beneficiaryList.asMap().entries.map((
+                      entry,
+                    ) {
+                      int index = entry.key;
+                      TextEditingController controller = entry.value;
 
-                              return SizedBox(
-                                width: double.infinity,
-                                child: ListTile(
-                                  title: Text(
-                                    controller.text.isNotEmpty
-                                        ? controller.text
-                                        : 'Aucun texte',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ), //Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  trailing: IconButton(
-                                    icon: const Icon(
-                                      Icons.close,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed: () => _removeItem(index),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          )
-                        : const SizedBox.shrink()
-                  : const SizedBox.shrink(),
+                        return SizedBox(
+                          width: double.infinity,
+                          child: ListTile(
+                            title: Text(
+                              controller.text.isNotEmpty
+                                ? controller.text
+                                : 'Aucun texte',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ), //Theme.of(context).textTheme.bodySmall,
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(
+                                Icons.close,
+                                  color: Colors.red,
+                              ),
+                              onPressed: () => _removeItem(index),
+                            ),
+                          ),
+                        );
+                    }).toList(),
+                  )
+            : const SizedBox.shrink()
+            : const SizedBox.shrink(),
               const SizedBox(height: 32),
               CustomButton(
                 text: 'Save',

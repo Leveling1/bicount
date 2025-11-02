@@ -1,4 +1,3 @@
-import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/failure.dart';
@@ -18,15 +17,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       try {
         await repository.createTransaction(event.transaction);
         emit(TransactionCreated());
-      } catch (e) {
-        emit(TransactionError(e is Failure ? e : UnknownFailure()));
-      }
-    });
-    on<GetLinkedUsersRequested>((event, emit) async {
-      emit(TransactionLoading());
-      try {
-        final users = await repository.getLinkedUsers();
-        emit(TransactionLinkedUsersLoaded(users));
       } catch (e) {
         emit(TransactionError(e is Failure ? e : UnknownFailure()));
       }

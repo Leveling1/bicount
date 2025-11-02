@@ -20,25 +20,4 @@ class TransactionRepositoryImpl extends TransactionRepository {
       throw UnknownFailure();
     }
   }
-
-  @override
-  Future<List<UserEntity>> getLinkedUsers() async {
-    final crud = CRUD(table: 'users');
-    final authUser = Supabase.instance.client.auth.currentUser;
-
-    if (authUser == null) {
-      throw Exception('Utilisateur non connecté');
-    }
-
-    try {
-      final userData = await crud.readRowByID(authUser.id);
-      final currentUser = UserEntity.fromData(userData);
-
-      List<UserEntity> userList = (await linkedUsers("${currentUser.sid}")).cast<UserEntity>();
-
-      return userList;
-    } catch (e) {
-      throw UnknownFailure();
-    }
-  }
 }

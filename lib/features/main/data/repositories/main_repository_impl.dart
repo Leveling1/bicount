@@ -159,7 +159,8 @@ class MainRepositoryImpl implements MainRepository {
       List<TransactionModel> transactions,
       ) {
     return MainEntity(
-        transactions: transactions
+      usersLink: [],
+      transactions: transactions
     );
   }
 }

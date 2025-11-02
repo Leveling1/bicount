@@ -5,6 +5,4 @@ import '../../data/models/transaction.model.dart';
 
 abstract class TransactionRepository {
   Future<void> createTransaction(TransactionEntity transaction);
-
-  Future<List<UserEntity>> getLinkedUsers();
 }
