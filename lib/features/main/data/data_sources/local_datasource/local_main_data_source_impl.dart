@@ -8,12 +8,85 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../brick/repository.dart';
 import '../../../../../core/errors/failure.dart';
+import '../../../../authentification/data/models/user.model.dart';
 
 class LocalMainDataSourceImpl implements MainLocalDataSource{
-
   final supabase = Supabase.instance.client;
   String get uid => supabase.auth.currentUser!.id;
 
+  /// For the own information
+  final Map<String, BehaviorSubject<UserModel>> _userDetailsCache = {};
+  final Map<String, StreamSubscription<List<UserModel>>> _userDetailsSubscriptions = {};
+  @override
+  Stream<UserModel> getUserDetails() {
+    try {
+      // Si déjà en cache, retourner le stream existant
+      if (_userDetailsCache.containsKey(uid)) {
+        return _userDetailsCache[uid]!.stream;
+      }
+
+      // Créer un nouveau BehaviorSubject pour cette entreprise
+      final companyDetailsController = BehaviorSubject<UserModel>();
+      _userDetailsCache[uid] = companyDetailsController;
+
+      // CORRECTION: Le type de subscription est StreamSubscription<List<CompanyModel>>
+      final StreamSubscription<List<UserModel>> subscription =
+      Repository().subscribeToRealtime<UserModel>(
+          query: Query(where: [Where.exact('sid', uid)])
+      ).listen((List<UserModel> companies) { // Spécifier le type List<CompanyModel>
+        if (companies.isNotEmpty) {
+          // Prendre le premier élément de la liste
+          companyDetailsController.add(companies.first);
+        } else {
+          companyDetailsController.addError(
+              MessageFailure(message: "Entreprise non trouvée")
+          );
+        }
+      }, onError: (error) {
+        companyDetailsController.addError(error);
+      });
+
+      _userDetailsSubscriptions[uid] = subscription;
+
+      return companyDetailsController.stream;
+    } catch (e) {
+      return Stream.error(
+        MessageFailure(message: "Erreur lors de la récupération des détails: ${e.toString()}"),
+      );
+    }
+  }
+
+  /// For the List of linked user
+  final Map<String, BehaviorSubject<List<UserModel>>> _userLinkCache = {};
+  final Map<String, StreamSubscription<List<UserModel>>> _userLinkSubscriptions = {};
+  @override
+  Stream<List<UserModel>> getLinkedUser() {
+    try {
+      if (_userLinkCache.containsKey(uid)) {
+        return _userLinkCache[uid]!.stream;
+      }
+      final projectsController = BehaviorSubject<List<UserModel>>.seeded([]);
+      _userLinkCache[uid] = projectsController;
+
+      final StreamSubscription<List<UserModel>> subscription =
+      Repository().subscribeToRealtime<UserModel>().listen(
+      (List<UserModel> projects) {
+        projectsController.add(projects);
+      }, onError: (error) {
+        projectsController.addError(error);
+      });
+
+      _userLinkSubscriptions[uid] = subscription;
+
+      return projectsController.stream;
+    } catch (e) {
+      return Stream.error(
+        MessageFailure(message: "Erreur lors de la récupération des projets: ${e.toString()}"),
+      );
+    }
+  }
+
+  /// For the List of transaction
   final Map<String, BehaviorSubject<List<TransactionModel>>> _transactionCache = {};
   final Map<String, StreamSubscription<List<TransactionModel>>> _transactionSubscriptions = {};
   @override
@@ -22,8 +95,8 @@ class LocalMainDataSourceImpl implements MainLocalDataSource{
       if (_transactionCache.containsKey(uid)) {
         return _transactionCache[uid]!.stream;
       }
-      final projectsController = BehaviorSubject<List<TransactionModel>>.seeded([]);
-      _transactionCache[uid] = projectsController;
+      final transactionsController = BehaviorSubject<List<TransactionModel>>.seeded([]);
+      _transactionCache[uid] = transactionsController;
 
       final StreamSubscription<List<TransactionModel>> subscription =
       Repository().subscribeToRealtime<TransactionModel>(
@@ -35,15 +108,15 @@ class LocalMainDataSourceImpl implements MainLocalDataSource{
                 ], isRequired: false)
               ]
           )
-      ).listen((List<TransactionModel> projects) {
-        projectsController.add(projects);
+      ).listen((List<TransactionModel> transactions) {
+        transactionsController.add(transactions);
       }, onError: (error) {
-        projectsController.addError(error);
+        transactionsController.addError(error);
       });
 
       _transactionSubscriptions[uid] = subscription;
 
-      return projectsController.stream;
+      return transactionsController.stream;
     } catch (e) {
       return Stream.error(
         MessageFailure(message: "Erreur lors de la récupération des projets: ${e.toString()}"),

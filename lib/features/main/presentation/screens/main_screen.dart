@@ -10,6 +10,7 @@ import '../../../../core/constants/network_status.dart';
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../company/presentation/screens/company_handler.dart';
+import '../../../profile/presentation/screens/profile_screen.dart';
 import '../../../transaction/presentation/screens/transaction_handler.dart';
 import '../../domain/entities/main_entity.dart';
 import '../bloc/main_bloc.dart';
@@ -65,11 +66,12 @@ class _MainScreenState extends State<MainScreen> {
       TransactionScreen(
         transactions: data.transactions,
       ),
+      ProfileScreen(data: data)
     ];
   }
 
   List<String> _buildTitle() {
-    return ['', 'Company', 'Transaction', 'Settings'];
+    return ['', 'Company', 'Transaction', 'Profile'];
   }
 
   @override
@@ -136,7 +138,7 @@ class _MainScreenState extends State<MainScreen> {
               child: Text(
                 _buildTitle()[_selectedIndex],
                 key: ValueKey(_selectedIndex),
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
           ),

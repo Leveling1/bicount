@@ -29,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Ici on déclenche la récupération des companies
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeBloc>().add(GetAllData());
     });
@@ -125,7 +124,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    Row(
+                    widget.transactions.isNotEmpty
+                    ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -143,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ],
-                    ),
+                    ) : const SizedBox.shrink(),
                     state is HomeLoading ? const CircularProgressIndicator()
                       : state is HomeLoaded
                         ? Expanded(

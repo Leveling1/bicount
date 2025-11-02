@@ -30,6 +30,8 @@ import 'features/home/data/data_sources/remote_datasource/remote_home_data_sourc
 import 'features/main/data/data_sources/local_datasource/local_main_data_source_impl.dart';
 import 'features/main/data/repositories/main_repository_impl.dart';
 import 'features/main/presentation/bloc/main_bloc.dart';
+import 'features/profile/data/repositories/profile_repository_impl.dart';
+import 'features/profile/presentation/bloc/profile_bloc.dart';
 import 'features/project/data/repositories/project_repository_impl.dart';
 import 'features/project/presentation/bloc/project_bloc.dart';
 
@@ -81,6 +83,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<ProjectRepositoryImpl>(
           create: (_) => ProjectRepositoryImpl(),
         ),
+        RepositoryProvider<ProfileRepositoryImpl>(
+          create: (_) => ProfileRepositoryImpl(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -130,6 +135,10 @@ class MyApp extends StatelessWidget {
           BlocProvider<ProjectBloc>(
             create: (context) =>
                 ProjectBloc(context.read<ProjectRepositoryImpl>()),
+          ),
+          BlocProvider<ProfileBloc>(
+            create: (context) =>
+                ProfileBloc(context.read<ProfileRepositoryImpl>()),
           ),
         ],
         child: ToastificationWrapper(

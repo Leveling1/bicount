@@ -6,9 +6,11 @@ import 'package:brick_core/core.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../brick/repository.dart';
 import '../../../../core/errors/failure.dart';
+import '../../../authentification/data/models/user.model.dart';
 import '../../../transaction/data/models/transaction.model.dart';
 import '../../domain/repositories/main_repository.dart';
 import '../data_sources/local_datasource/main_local_datasource.dart';
@@ -137,14 +139,20 @@ class MainRepositoryImpl implements MainRepository {
   @override
   Stream<MainEntity> getStartDataStream() {
     try {
-
+      Stream<UserModel> userStream = localDataSource.getUserDetails();
+      Stream<List<UserModel>> userLinkStream = localDataSource.getLinkedUser();
       Stream<List<TransactionModel>> transactionStream = localDataSource.getTransaction();
       // Abonnement au flux temps réel des utilisateurs
-      return Rx.combineLatest<List<TransactionModel>, MainEntity>(
-        [transactionStream],
-            (values) {
-          final transaction = values[0];
-          return _convertToEntity(transaction);
+      return Rx.combineLatest3<UserModel, List<UserModel>, List<TransactionModel>, MainEntity>(
+        userStream,
+        userLinkStream,
+        transactionStream,
+        (UserModel user, List<UserModel> usersLink, List<TransactionModel> transactions) {
+          return _convertToEntity(
+            user,
+            usersLink,
+            transactions
+          );
         },
       ).handleError((error, stackTrace) {
         throw MessageFailure(message: "Erreur de combinaison des données: ${error.toString()}");
@@ -156,10 +164,13 @@ class MainRepositoryImpl implements MainRepository {
   }
 
   MainEntity _convertToEntity(
+      UserModel user,
+      List<UserModel> usersLink,
       List<TransactionModel> transactions,
       ) {
     return MainEntity(
-      usersLink: [],
+      user: user,
+      usersLink: usersLink,
       transactions: transactions
     );
   }
