@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../themes/app_dimens.dart';
 
@@ -27,12 +28,26 @@ Future<T?> showCustomBottomSheet<T>({
       return SafeArea(
         child: Padding(
           padding: EdgeInsets.only(
-            top: 25,
+            top: 15,
             left: 25,
             right: 25,
             bottom: MediaQuery.of(ctx).viewInsets.bottom,
           ),
-          child: SingleChildScrollView(child: child),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 50.w,
+                height: 5.h,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
+                ),
+              ),
+              const SizedBox(height: 25),
+              Expanded(child: SingleChildScrollView(child: child)),
+            ],
+          ),
         ),
       );
     },

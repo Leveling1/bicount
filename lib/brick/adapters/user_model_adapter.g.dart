@@ -8,6 +8,7 @@ Future<UserModel> _$UserModelFromSupabase(
 }) async {
   return UserModel(
     uid: data['uid'] as String,
+    image: data['image'] as String,
     username: data['username'] as String,
     email: data['email'] as String,
     sales: data['sales'] == null ? null : data['sales'] as double?,
@@ -30,6 +31,7 @@ Future<Map<String, dynamic>> _$UserModelToSupabase(
 }) async {
   return {
     'uid': instance.uid,
+    'image': instance.image,
     'username': instance.username,
     'email': instance.email,
     'sales': instance.sales,
@@ -48,6 +50,7 @@ Future<UserModel> _$UserModelFromSqlite(
 }) async {
   return UserModel(
     uid: data['uid'] as String,
+    image: data['image'] as String,
     username: data['username'] as String,
     email: data['email'] as String,
     sales: data['sales'] == null ? null : data['sales'] as double?,
@@ -70,6 +73,7 @@ Future<Map<String, dynamic>> _$UserModelToSqlite(
 }) async {
   return {
     'uid': instance.uid,
+    'image': instance.image,
     'username': instance.username,
     'email': instance.email,
     'sales': instance.sales,
@@ -94,6 +98,10 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
     'uid': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'uid',
+    ),
+    'image': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'image',
     ),
     'username': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -143,6 +151,12 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
     'uid': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'uid',
+      iterable: false,
+      type: String,
+    ),
+    'image': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'image',
       iterable: false,
       type: String,
     ),

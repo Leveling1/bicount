@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 )
 class FriendsModel extends OfflineFirstWithSupabaseModel {
   final String uid;
+  final String image;
   final String username;
   final String email;
 
@@ -18,6 +19,7 @@ class FriendsModel extends OfflineFirstWithSupabaseModel {
   FriendsModel({
     String? sid,
     required this.uid,
+    required this.image,
     required this.username,
     required this.email,
   })  : sid = sid ?? const Uuid().v4(),

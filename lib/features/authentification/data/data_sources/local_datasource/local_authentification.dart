@@ -18,6 +18,7 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
       final user = UserModel(
         sid: uid,
         uid: uid,
+        image: 'assets/memoji/memoji_1.png',
         email: email,
         username: name,
         sales: 0.0,

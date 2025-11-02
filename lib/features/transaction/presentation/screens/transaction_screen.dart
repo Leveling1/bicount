@@ -156,16 +156,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
                             ),
                           ),
                         )
-                      : Expanded(
-                          child: const Center(
-                            child: Text('No transactions found'),
-                          ),
+                      : const Center(
+                          child: Text('No transactions found'),
                         ),
                 ],
               )
-            : Expanded(
-                child: const Center(child: Text('No transactions found')),
-              );
+            : const Center(child: Text('No transactions found'));
       },
     );
   }

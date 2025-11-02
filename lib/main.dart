@@ -7,6 +7,7 @@ import 'package:bicount/features/company/data/repositories/company_repository_im
 import 'package:bicount/features/company/presentation/bloc/company_bloc.dart';
 import 'package:bicount/features/home/data/repositories/home_repository_impl.dart';
 import 'package:bicount/features/home/presentation/bloc/home_bloc.dart';
+import 'package:bicount/features/transaction/data/data_sources/local_datasource/local_transaction_data_source_impl.dart';
 import 'package:bicount/features/transaction/data/repositories/transaction_repository_impl.dart';
 import 'package:bicount/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +76,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
         RepositoryProvider<TransactionRepositoryImpl>(
-          create: (_) => TransactionRepositoryImpl(),
+          create: (_) => TransactionRepositoryImpl(
+            LocalTransactionDataSourceImpl(),
+          ),
         ),
         RepositoryProvider<GroupRepositoryImpl>(
           create: (_) => GroupRepositoryImpl(),

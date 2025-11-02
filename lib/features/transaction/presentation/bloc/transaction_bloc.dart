@@ -12,14 +12,34 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final TransactionRepository repository;
 
   TransactionBloc(this.repository) : super(TransactionInitial()) {
-    on<CreateTransactionEvent>((event, emit) async {
-      emit(TransactionLoading());
-      try {
-        await repository.createTransaction(event.transaction);
-        emit(TransactionCreated());
-      } catch (e) {
-        emit(TransactionError(e is Failure ? e : UnknownFailure()));
+    on<CreateTransactionEvent>(_onCreateTransaction);
+  }
+
+  Future<void> _onCreateTransaction(
+      CreateTransactionEvent event,
+      Emitter<TransactionState> emit,
+      ) async {
+    emit(TransactionLoading());
+
+    try {
+      // Validation
+      if (event.transaction['beneficiaryList']?.isEmpty ?? true) {
+        emit(TransactionError(MessageFailure(message: 'Aucun bénéficiaire spécifié')));
+        return;
       }
-    });
+
+      // Exécution
+      await repository.createTransaction(event.transaction);
+
+      // Succès
+      emit(TransactionCreated());
+
+    } on MessageFailure catch (e) {
+      emit(TransactionError(e));
+    } on Failure catch (e) {
+      emit(TransactionError(e));
+    } catch (e) {
+      emit(TransactionError(UnknownFailure()));
+    }
   }
 }

@@ -4,5 +4,5 @@ import '../../../authentification/domain/entities/user.dart';
 import '../../data/models/transaction.model.dart';
 
 abstract class TransactionRepository {
-  Future<void> createTransaction(TransactionEntity transaction);
+  Future<void> createTransaction(Map<String, dynamic> transaction);
 }

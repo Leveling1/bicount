@@ -110,7 +110,10 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
         ),
         child: Text(
           text,
-          style: Theme.of(context).textTheme.titleSmall,
+          style: isSelected ? TextStyle(
+            color: Theme.of(context).colorScheme.tertiary,
+            fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+          ): Theme.of(context).textTheme.titleSmall,
         ),
       ),
     );

@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../../brick/repository.dart';
 import '../../../../../core/errors/failure.dart';
 import '../../../../authentification/data/models/user.model.dart';
+import '../../models/friends.model.dart';
 
 class LocalMainDataSourceImpl implements MainLocalDataSource{
   final supabase = Supabase.instance.client;
@@ -57,28 +58,28 @@ class LocalMainDataSourceImpl implements MainLocalDataSource{
   }
 
   /// For the List of linked user
-  final Map<String, BehaviorSubject<List<UserModel>>> _userLinkCache = {};
-  final Map<String, StreamSubscription<List<UserModel>>> _userLinkSubscriptions = {};
+  final Map<String, BehaviorSubject<List<FriendsModel>>> _userLinkCache = {};
+  final Map<String, StreamSubscription<List<FriendsModel>>> _userLinkSubscriptions = {};
   @override
-  Stream<List<UserModel>> getLinkedUser() {
+  Stream<List<FriendsModel>> getFriends() {
     try {
       if (_userLinkCache.containsKey(uid)) {
         return _userLinkCache[uid]!.stream;
       }
-      final projectsController = BehaviorSubject<List<UserModel>>.seeded([]);
-      _userLinkCache[uid] = projectsController;
+      final friendsController = BehaviorSubject<List<FriendsModel>>.seeded([]);
+      _userLinkCache[uid] = friendsController;
 
-      final StreamSubscription<List<UserModel>> subscription =
-      Repository().subscribeToRealtime<UserModel>().listen(
-      (List<UserModel> projects) {
-        projectsController.add(projects);
+      final StreamSubscription<List<FriendsModel>> subscription =
+      Repository().subscribeToRealtime<FriendsModel>().listen(
+      (List<FriendsModel> projects) {
+        friendsController.add(projects);
       }, onError: (error) {
-        projectsController.addError(error);
+        friendsController.addError(error);
       });
 
       _userLinkSubscriptions[uid] = subscription;
 
-      return projectsController.stream;
+      return friendsController.stream;
     } catch (e) {
       return Stream.error(
         MessageFailure(message: "Erreur lors de la récupération des projets: ${e.toString()}"),
@@ -103,8 +104,8 @@ class LocalMainDataSourceImpl implements MainLocalDataSource{
           query: Query(
               where: [
                 WherePhrase([
-                  Where('beneficiary_id').isExactly(uid),
-                  Where('sender_id').isExactly(uid),
+                  Where('beneficiaryId').isExactly(uid),
+                  Where('senderId').isExactly(uid),
                 ], isRequired: false)
               ]
           )

@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 )
 class UserModel extends OfflineFirstWithSupabaseModel {
   final String uid;
+  final String image;
   final String username;
   final String email;
   final double? sales;
@@ -23,6 +24,7 @@ class UserModel extends OfflineFirstWithSupabaseModel {
   UserModel({
     String? sid,
     required this.uid,
+    required this.image,
     required this.username,
     required this.email,
     required this.sales,

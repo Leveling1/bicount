@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../themes/app_colors.dart';
 import 'custom_form_date_field.dart';
 
 class CustomFormTextField extends StatefulWidget {
@@ -44,6 +43,9 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
       keyboardType: widget.inputType,
       textInputAction: TextInputAction.next,
       validator: widget.validator,
+      decoration: InputDecoration(
+        hintText: widget.hintText,
+      )
     );
   }
 

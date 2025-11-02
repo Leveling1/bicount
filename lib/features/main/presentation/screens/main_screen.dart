@@ -186,7 +186,7 @@ class _MainScreenState extends State<MainScreen> {
                     ? const CompanyHandler()
                     : TransactionHandler(
                       usersLink: state is MainLoaded
-                        ? state.startData.usersLink
+                        ? state.startData.friends
                         : [],
                   ),
                 );

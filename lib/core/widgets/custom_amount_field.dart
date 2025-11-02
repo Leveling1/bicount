@@ -20,7 +20,7 @@ class CustomAmountField extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(flex: 1, child: CurrencyField(controller: amount)),
+        Expanded(flex: 1, child: CurrencyField(controller: currency)),
         const SizedBox(width: 10),
         Expanded(
           flex: 3,

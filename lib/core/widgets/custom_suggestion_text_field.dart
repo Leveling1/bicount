@@ -121,13 +121,6 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
                   filled: true,
                   fillColor: Theme.of(context).cardColor,
                   hintText: widget.hintText,
-                  hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: AppColors.inactiveColorDark,
-                  ),
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                  ),
                   suffixIcon: widget.isVisible
                       ? IconButton(
                           icon: Icon(

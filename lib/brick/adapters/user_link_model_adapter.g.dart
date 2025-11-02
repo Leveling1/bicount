@@ -1,98 +1,98 @@
 // GENERATED CODE DO NOT EDIT
 part of '../brick.g.dart';
 
-Future<FriendsModel> _$FriendsModelFromSupabase(
+Future<UserLinkModel> _$UserLinkModelFromSupabase(
   Map<String, dynamic> data, {
   required SupabaseProvider provider,
   OfflineFirstWithSupabaseRepository? repository,
 }) async {
-  return FriendsModel(
-    uid: data['uid'] as String,
-    image: data['image'] as String,
-    username: data['username'] as String,
-    email: data['email'] as String,
-    sid: data['sid'] as String?,
+  return UserLinkModel(
+    userAId: data['user_a_id'] as String,
+    userBId: data['user_b_id'] as String,
+    linkType: data['link_type'] as String,
+    status: data['status'] as String,
+    lid: data['lid'] == null ? null : data['lid'] as String?,
   );
 }
 
-Future<Map<String, dynamic>> _$FriendsModelToSupabase(
-  FriendsModel instance, {
+Future<Map<String, dynamic>> _$UserLinkModelToSupabase(
+  UserLinkModel instance, {
   required SupabaseProvider provider,
   OfflineFirstWithSupabaseRepository? repository,
 }) async {
   return {
-    'uid': instance.uid,
-    'image': instance.image,
-    'username': instance.username,
-    'email': instance.email,
-    'sid': instance.sid,
+    'user_a_id': instance.userAId,
+    'user_b_id': instance.userBId,
+    'link_type': instance.linkType,
+    'status': instance.status,
+    'lid': instance.lid,
   };
 }
 
-Future<FriendsModel> _$FriendsModelFromSqlite(
+Future<UserLinkModel> _$UserLinkModelFromSqlite(
   Map<String, dynamic> data, {
   required SqliteProvider provider,
   OfflineFirstWithSupabaseRepository? repository,
 }) async {
-  return FriendsModel(
-    uid: data['uid'] as String,
-    image: data['image'] as String,
-    username: data['username'] as String,
-    email: data['email'] as String,
-    sid: data['sid'] as String,
+  return UserLinkModel(
+    userAId: data['user_a_id'] as String,
+    userBId: data['user_b_id'] as String,
+    linkType: data['link_type'] as String,
+    status: data['status'] as String,
+    lid: data['lid'] == null ? null : data['lid'] as String?,
   )..primaryKey = data['_brick_id'] as int;
 }
 
-Future<Map<String, dynamic>> _$FriendsModelToSqlite(
-  FriendsModel instance, {
+Future<Map<String, dynamic>> _$UserLinkModelToSqlite(
+  UserLinkModel instance, {
   required SqliteProvider provider,
   OfflineFirstWithSupabaseRepository? repository,
 }) async {
   return {
-    'uid': instance.uid,
-    'image': instance.image,
-    'username': instance.username,
-    'email': instance.email,
-    'sid': instance.sid,
+    'user_a_id': instance.userAId,
+    'user_b_id': instance.userBId,
+    'link_type': instance.linkType,
+    'status': instance.status,
+    'lid': instance.lid,
   };
 }
 
-/// Construct a [FriendsModel]
-class FriendsModelAdapter
-    extends OfflineFirstWithSupabaseAdapter<FriendsModel> {
-  FriendsModelAdapter();
+/// Construct a [UserLinkModel]
+class UserLinkModelAdapter
+    extends OfflineFirstWithSupabaseAdapter<UserLinkModel> {
+  UserLinkModelAdapter();
 
   @override
-  final supabaseTableName = 'users';
+  final supabaseTableName = 'user_links';
   @override
   final defaultToNull = true;
   @override
   final fieldsToSupabaseColumns = {
-    'uid': const RuntimeSupabaseColumnDefinition(
+    'userAId': const RuntimeSupabaseColumnDefinition(
       association: false,
-      columnName: 'uid',
+      columnName: 'user_a_id',
     ),
-    'image': const RuntimeSupabaseColumnDefinition(
+    'userBId': const RuntimeSupabaseColumnDefinition(
       association: false,
-      columnName: 'image',
+      columnName: 'user_b_id',
     ),
-    'username': const RuntimeSupabaseColumnDefinition(
+    'linkType': const RuntimeSupabaseColumnDefinition(
       association: false,
-      columnName: 'username',
+      columnName: 'link_type',
     ),
-    'email': const RuntimeSupabaseColumnDefinition(
+    'status': const RuntimeSupabaseColumnDefinition(
       association: false,
-      columnName: 'email',
+      columnName: 'status',
     ),
-    'sid': const RuntimeSupabaseColumnDefinition(
+    'lid': const RuntimeSupabaseColumnDefinition(
       association: false,
-      columnName: 'sid',
+      columnName: 'lid',
     ),
   };
   @override
   final ignoreDuplicates = false;
   @override
-  final uniqueFields = {'sid'};
+  final uniqueFields = {'lid'};
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
@@ -101,46 +101,46 @@ class FriendsModelAdapter
       iterable: false,
       type: int,
     ),
-    'uid': const RuntimeSqliteColumnDefinition(
+    'userAId': const RuntimeSqliteColumnDefinition(
       association: false,
-      columnName: 'uid',
+      columnName: 'user_a_id',
       iterable: false,
       type: String,
     ),
-    'image': const RuntimeSqliteColumnDefinition(
+    'userBId': const RuntimeSqliteColumnDefinition(
       association: false,
-      columnName: 'image',
+      columnName: 'user_b_id',
       iterable: false,
       type: String,
     ),
-    'username': const RuntimeSqliteColumnDefinition(
+    'linkType': const RuntimeSqliteColumnDefinition(
       association: false,
-      columnName: 'username',
+      columnName: 'link_type',
       iterable: false,
       type: String,
     ),
-    'email': const RuntimeSqliteColumnDefinition(
+    'status': const RuntimeSqliteColumnDefinition(
       association: false,
-      columnName: 'email',
+      columnName: 'status',
       iterable: false,
       type: String,
     ),
-    'sid': const RuntimeSqliteColumnDefinition(
+    'lid': const RuntimeSqliteColumnDefinition(
       association: false,
-      columnName: 'sid',
+      columnName: 'lid',
       iterable: false,
       type: String,
     ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(
-    FriendsModel instance,
+    UserLinkModel instance,
     DatabaseExecutor executor,
   ) async {
     final results = await executor.rawQuery(
       '''
-        SELECT * FROM `FriendsModel` WHERE sid = ? LIMIT 1''',
-      [instance.sid],
+        SELECT * FROM `UserLinkModel` WHERE lid = ? LIMIT 1''',
+      [instance.lid],
     );
 
     // SQFlite returns [{}] when no results are found
@@ -152,44 +152,44 @@ class FriendsModelAdapter
   }
 
   @override
-  final String tableName = 'FriendsModel';
+  final String tableName = 'UserLinkModel';
 
   @override
-  Future<FriendsModel> fromSupabase(
+  Future<UserLinkModel> fromSupabase(
     Map<String, dynamic> input, {
     required provider,
     covariant OfflineFirstWithSupabaseRepository? repository,
-  }) async => await _$FriendsModelFromSupabase(
+  }) async => await _$UserLinkModelFromSupabase(
     input,
     provider: provider,
     repository: repository,
   );
   @override
   Future<Map<String, dynamic>> toSupabase(
-    FriendsModel input, {
+    UserLinkModel input, {
     required provider,
     covariant OfflineFirstWithSupabaseRepository? repository,
-  }) async => await _$FriendsModelToSupabase(
+  }) async => await _$UserLinkModelToSupabase(
     input,
     provider: provider,
     repository: repository,
   );
   @override
-  Future<FriendsModel> fromSqlite(
+  Future<UserLinkModel> fromSqlite(
     Map<String, dynamic> input, {
     required provider,
     covariant OfflineFirstWithSupabaseRepository? repository,
-  }) async => await _$FriendsModelFromSqlite(
+  }) async => await _$UserLinkModelFromSqlite(
     input,
     provider: provider,
     repository: repository,
   );
   @override
   Future<Map<String, dynamic>> toSqlite(
-    FriendsModel input, {
+    UserLinkModel input, {
     required provider,
     covariant OfflineFirstWithSupabaseRepository? repository,
-  }) async => await _$FriendsModelToSqlite(
+  }) async => await _$UserLinkModelToSqlite(
     input,
     provider: provider,
     repository: repository,

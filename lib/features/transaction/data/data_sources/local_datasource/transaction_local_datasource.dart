@@ -1,5 +1,11 @@
+import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:dartz/dartz.dart';
 
-class TransactionLocalDataSource {
-  // Add your local data source implementation here
+import '../../../../../core/errors/failure.dart';
+import '../../../../authentification/data/models/user.model.dart';
+
+abstract class TransactionLocalDataSource {
+  Future<Either<Failure, UserModel>> createANewFriend (FriendsModel friend);
+  Future<Either<Failure, void>> createANewLink (UserModel friend);
+  Future<Either<Failure, void>> saveTransaction(Map<String, dynamic> transaction, String friendId);
 }

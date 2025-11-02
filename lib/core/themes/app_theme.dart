@@ -6,6 +6,7 @@ import 'app_colors.dart';
 import 'app_gradient.dart';
 
 class AppTheme {
+  ///================== Light Theme ==================///
   static ThemeData get lightTheme => ThemeData(
     brightness: Brightness.light,
     primaryColor: AppColors.primaryColorLight,
@@ -26,6 +27,7 @@ class AppTheme {
       suffixIconColor: AppColors.inactiveColorLight,
       focusColor: AppColors.primaryColorLight,
       hoverColor: AppColors.primaryColorLight,
+      contentPadding: AppDimens.paddingAllSmall,
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
         borderSide: BorderSide.none,
@@ -39,10 +41,9 @@ class AppTheme {
           fontSize: AppDimens.textSizeSmall.sp,
           fontFamily: 'Lexend'
       ),
-      contentPadding: AppDimens.paddingAllSmall,
       hintStyle: TextStyle(
-          color: AppColors.inactiveColorLight,
-          fontSize: AppDimens.textSizeSmall.sp,
+          color: AppColors.secondaryTextColorLight,
+          fontSize: AppDimens.textSizeMedium.sp,
           fontFamily: 'Lexend'
       ),
       labelStyle: TextStyle(
@@ -107,7 +108,6 @@ class AppTheme {
         fontSize: AppDimens.textSizeXXLarge.sp,
         fontWeight: FontWeight.bold,
       ),
-
       bodySmall: TextStyle(
         color: AppColors.secondaryTextColorLight,
         fontSize: AppDimens.textSizeSmall.sp,
@@ -120,7 +120,6 @@ class AppTheme {
         color: AppColors.textColorLight,
         fontSize: AppDimens.textSizeLarge.sp,
       ),
-
       headlineSmall: TextStyle(
         color: AppColors.secondaryTextColorLight,
         fontSize: AppDimens.textSizeSmall.sp,
@@ -134,7 +133,6 @@ class AppTheme {
         fontSize: AppDimens.textSizeExtraLarge.sp,
       ),
     ),
-
 
     /// Date picker theme light
     datePickerTheme: DatePickerThemeData(
@@ -322,10 +320,10 @@ class AppTheme {
     /// Color scheme light
     colorScheme: ColorScheme.light(
       primary: AppColors.primaryColorLight,
-
       surface: AppColors.surfaceColorLight,
       error: AppColors.negativeColorLight,
       secondary: AppColors.positiveColorLight,
+      tertiary: AppColors.inactiveColorLight,
     ),
 
     /// Extensions light
@@ -343,6 +341,7 @@ class AppTheme {
     ],
   );
 
+  ///================== Dark Theme ==================///
   static ThemeData get darkTheme => ThemeData(
     brightness: Brightness.dark,
     primaryColor: AppColors.primaryColorDark,
@@ -672,6 +671,7 @@ class AppTheme {
       surface: AppColors.surfaceColorDark,
       error: AppColors.negativeColorDark,
       secondary: AppColors.positiveColorDark,
+      tertiary: AppColors.secondaryTextColorDark,
     ),
 
     /// Extensions dark

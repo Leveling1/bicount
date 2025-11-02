@@ -9,8 +9,9 @@ part of 'schema.g.dart';
 
 // The migration version must **always** mirror the file name
 
-const List<MigrationCommand> _migration_20251031165942_up = [
+const List<MigrationCommand> _migration_20251102201516_up = [
   InsertTable('UserModel'),
+  InsertTable('UserLinkModel'),
   InsertTable('CompanyModel'),
   InsertTable('CompanyWithUserLinkModel'),
   InsertTable('GroupModel'),
@@ -19,6 +20,7 @@ const List<MigrationCommand> _migration_20251031165942_up = [
   InsertTable('ProjectModel'),
   InsertTable('TransactionModel'),
   InsertColumn('uid', Column.varchar, onTable: 'UserModel'),
+  InsertColumn('image', Column.varchar, onTable: 'UserModel'),
   InsertColumn('username', Column.varchar, onTable: 'UserModel'),
   InsertColumn('email', Column.varchar, onTable: 'UserModel'),
   InsertColumn('sales', Column.Double, onTable: 'UserModel'),
@@ -27,6 +29,11 @@ const List<MigrationCommand> _migration_20251031165942_up = [
   InsertColumn('company_income', Column.Double, onTable: 'UserModel'),
   InsertColumn('personal_income', Column.Double, onTable: 'UserModel'),
   InsertColumn('sid', Column.varchar, onTable: 'UserModel', unique: true),
+  InsertColumn('user_a_id', Column.varchar, onTable: 'UserLinkModel'),
+  InsertColumn('user_b_id', Column.varchar, onTable: 'UserLinkModel'),
+  InsertColumn('link_type', Column.varchar, onTable: 'UserLinkModel'),
+  InsertColumn('status', Column.varchar, onTable: 'UserLinkModel'),
+  InsertColumn('lid', Column.varchar, onTable: 'UserLinkModel', unique: true),
   InsertColumn('name', Column.varchar, onTable: 'CompanyModel'),
   InsertColumn('description', Column.varchar, onTable: 'CompanyModel'),
   InsertColumn('image', Column.varchar, onTable: 'CompanyModel'),
@@ -50,6 +57,7 @@ const List<MigrationCommand> _migration_20251031165942_up = [
   InsertColumn('created_at', Column.varchar, onTable: 'GroupModel'),
   InsertColumn('gid', Column.varchar, onTable: 'GroupModel', unique: true),
   InsertColumn('uid', Column.varchar, onTable: 'FriendsModel'),
+  InsertColumn('image', Column.varchar, onTable: 'FriendsModel'),
   InsertColumn('username', Column.varchar, onTable: 'FriendsModel'),
   InsertColumn('email', Column.varchar, onTable: 'FriendsModel'),
   InsertColumn('sid', Column.varchar, onTable: 'FriendsModel', unique: true),
@@ -84,6 +92,7 @@ const List<MigrationCommand> _migration_20251031165942_up = [
   InsertColumn('created_at', Column.varchar, onTable: 'TransactionModel'),
   InsertColumn('tid', Column.varchar, onTable: 'TransactionModel', unique: true),
   CreateIndex(columns: ['sid'], onTable: 'UserModel', unique: true),
+  CreateIndex(columns: ['lid'], onTable: 'UserLinkModel', unique: true),
   CreateIndex(columns: ['cid'], onTable: 'CompanyModel', unique: true),
   CreateIndex(columns: ['lid'], onTable: 'CompanyWithUserLinkModel', unique: true),
   CreateIndex(columns: ['gid'], onTable: 'GroupModel', unique: true),
@@ -93,8 +102,9 @@ const List<MigrationCommand> _migration_20251031165942_up = [
   CreateIndex(columns: ['tid'], onTable: 'TransactionModel', unique: true)
 ];
 
-const List<MigrationCommand> _migration_20251031165942_down = [
+const List<MigrationCommand> _migration_20251102201516_down = [
   DropTable('UserModel'),
+  DropTable('UserLinkModel'),
   DropTable('CompanyModel'),
   DropTable('CompanyWithUserLinkModel'),
   DropTable('GroupModel'),
@@ -103,6 +113,7 @@ const List<MigrationCommand> _migration_20251031165942_down = [
   DropTable('ProjectModel'),
   DropTable('TransactionModel'),
   DropColumn('uid', onTable: 'UserModel'),
+  DropColumn('image', onTable: 'UserModel'),
   DropColumn('username', onTable: 'UserModel'),
   DropColumn('email', onTable: 'UserModel'),
   DropColumn('sales', onTable: 'UserModel'),
@@ -111,6 +122,11 @@ const List<MigrationCommand> _migration_20251031165942_down = [
   DropColumn('company_income', onTable: 'UserModel'),
   DropColumn('personal_income', onTable: 'UserModel'),
   DropColumn('sid', onTable: 'UserModel'),
+  DropColumn('user_a_id', onTable: 'UserLinkModel'),
+  DropColumn('user_b_id', onTable: 'UserLinkModel'),
+  DropColumn('link_type', onTable: 'UserLinkModel'),
+  DropColumn('status', onTable: 'UserLinkModel'),
+  DropColumn('lid', onTable: 'UserLinkModel'),
   DropColumn('name', onTable: 'CompanyModel'),
   DropColumn('description', onTable: 'CompanyModel'),
   DropColumn('image', onTable: 'CompanyModel'),
@@ -134,6 +150,7 @@ const List<MigrationCommand> _migration_20251031165942_down = [
   DropColumn('created_at', onTable: 'GroupModel'),
   DropColumn('gid', onTable: 'GroupModel'),
   DropColumn('uid', onTable: 'FriendsModel'),
+  DropColumn('image', onTable: 'FriendsModel'),
   DropColumn('username', onTable: 'FriendsModel'),
   DropColumn('email', onTable: 'FriendsModel'),
   DropColumn('sid', onTable: 'FriendsModel'),
@@ -168,6 +185,7 @@ const List<MigrationCommand> _migration_20251031165942_down = [
   DropColumn('created_at', onTable: 'TransactionModel'),
   DropColumn('tid', onTable: 'TransactionModel'),
   DropIndex('index_UserModel_on_sid'),
+  DropIndex('index_UserLinkModel_on_lid'),
   DropIndex('index_CompanyModel_on_cid'),
   DropIndex('index_CompanyWithUserLinkModel_on_lid'),
   DropIndex('index_GroupModel_on_gid'),
@@ -182,15 +200,15 @@ const List<MigrationCommand> _migration_20251031165942_down = [
 //
 
 @Migratable(
-  version: '20251031165942',
-  up: _migration_20251031165942_up,
-  down: _migration_20251031165942_down,
+  version: '20251102201516',
+  up: _migration_20251102201516_up,
+  down: _migration_20251102201516_down,
 )
-class Migration20251031165942 extends Migration {
-  const Migration20251031165942()
+class Migration20251102201516 extends Migration {
+  const Migration20251102201516()
     : super(
-        version: 20251031165942,
-        up: _migration_20251031165942_up,
-        down: _migration_20251031165942_down,
+        version: 20251102201516,
+        up: _migration_20251102201516_up,
+        down: _migration_20251102201516_down,
       );
 }
