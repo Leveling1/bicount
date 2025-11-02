@@ -98,6 +98,7 @@ class AppDimens {
     vertical: 20,
     horizontal: 32,
   );
+
   static const paddingHorizontalMedium = EdgeInsets.symmetric(horizontal: 16);
 
   // Only

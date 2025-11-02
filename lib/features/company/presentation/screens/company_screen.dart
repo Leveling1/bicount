@@ -5,6 +5,7 @@ import '../../../../core/widgets/custom_search_field.dart';
 import '../bloc/list_bloc/list_bloc.dart';
 import '../widgets/company_card.dart';
 import '../widgets/company_card_skeleton.dart';
+import '../widgets/company_large_card.dart';
 
 class CompanyScreen extends StatefulWidget {
   const CompanyScreen({super.key});
@@ -77,7 +78,13 @@ class _CompanyScreenState extends State<CompanyScreen> {
                 const SizedBox(height: 20),
                 Column(
                   children:
-                  filteredCompanies.map((company) => CompanyCard(company: company)).toList(),
+                  filteredCompanies.map((company) {
+                    if (state.companies.length > 10) {
+                      return CompanyCard(company: company);
+                    } else {
+                      return CompanyLargeCard(company: company);
+                    }
+                  }).toList(),
                 )
               ]
             ),

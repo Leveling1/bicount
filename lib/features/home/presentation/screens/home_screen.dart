@@ -92,7 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         scrollDirection: Axis.horizontal,
                         children: [
                           CardTypeRevenue(
-                            onTap: () { },
+                            onTap: () {
+                              widget.onCardTap?.call(3);
+                            },
                             label: "Personnal",
                             amount: state is HomeLoading
                                 ? 0.0

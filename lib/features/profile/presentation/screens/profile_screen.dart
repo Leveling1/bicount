@@ -19,6 +19,7 @@ class ProfileScreen extends StatelessWidget {
                 image: 'assets/memoji/memoji_1.png',
                 name: data.user.username,
                 email: data.user.email,
+                onTap: () {}
               )
             ],
           );
