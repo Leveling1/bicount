@@ -61,6 +61,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       Map<String, dynamic> transaction, String gtid, String senderId, String beneficiaryId) async {
     try {
       final transactionModel = TransactionModel(
+          uid: uid,
           gtid: gtid,
           name: transaction['name'],
           type: transaction['type'],

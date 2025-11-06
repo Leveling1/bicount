@@ -11,6 +11,10 @@ class TransactionModel extends OfflineFirstWithSupabaseModel {
   @Supabase(name: 'gtid')
   final String gtid;
 
+  @Sqlite(name: 'uid')
+  @Supabase(name: 'uid')
+  final String uid;
+
   @Sqlite(name: 'name')
   @Supabase(name: 'name')
   final String name;
@@ -60,19 +64,20 @@ class TransactionModel extends OfflineFirstWithSupabaseModel {
   final String? tid;
 
   TransactionModel({
-  String? tid,
-  required this.gtid,
-  required this.name,
-  required this.type,
-  required this.beneficiaryId,
-  required this.senderId,
-  required this.date,
-  required this.note,
-  required this.amount,
-  required this.currency,
-  this.image,
-  this.frequency,
-  this.createdAt,
+    String? tid,
+    required this.uid,
+    required this.gtid,
+    required this.name,
+    required this.type,
+    required this.beneficiaryId,
+    required this.senderId,
+    required this.date,
+    required this.note,
+    required this.amount,
+    required this.currency,
+    this.image,
+    this.frequency,
+    this.createdAt,
   })  : tid = tid ?? const Uuid().v4(),
         super();
 }

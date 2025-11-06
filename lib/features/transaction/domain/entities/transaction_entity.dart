@@ -24,6 +24,7 @@ extension CurrencySymbol on Currency {
 
 class TransactionEntity {
   final String? id;
+  final String? uid;
   final String name;
   final TransactionType type;
   final DateTime date;
@@ -38,6 +39,7 @@ class TransactionEntity {
 
   const TransactionEntity({
     this.id,
+    this.uid,
     required this.name,
     required this.type,
     required this.date,
@@ -54,6 +56,7 @@ class TransactionEntity {
   factory TransactionEntity.fromJson(Map<String, dynamic> data) {
     return TransactionEntity(
       id: data["id"] ?? '',
+      uid: data["uid"] ?? '',
       name: data["name"] ?? '',
       type: TransactionType.values.firstWhere((e) => e.name == data['type']),
       date: data["date"] is DateTime
@@ -82,6 +85,7 @@ class TransactionEntity {
 
   Map<String, dynamic> toJson() {
     return {
+
       "name": name,
       "type": type.name,
       "date": date.toIso8601String(),
@@ -97,6 +101,7 @@ class TransactionEntity {
 
   factory TransactionEntity.fromTransaction(TransactionModel transaction) {
     return TransactionEntity(
+      uid: transaction.uid,
       name: transaction.name,
       type: TransactionType.values.byName(transaction.type),
       date: DateTime.tryParse(transaction.date)!,

@@ -2,8 +2,8 @@ import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/constants/constants.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/date_format_utils.dart';
@@ -28,7 +28,8 @@ class DetailTransactionScreen extends StatefulWidget {
 class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
   final double size = 20;
   late TransactionEntity data;
-
+  final supabaseInstance = Supabase.instance.client;
+  late String uid = supabaseInstance.auth.currentUser!.id;
   @override
   void initState() {
     data = widget.transaction;
@@ -47,6 +48,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
     String beneficiary = widget.friends
         .firstWhere((friend) => friend.sid == data.beneficiary)
         .username;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -70,14 +72,15 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
           ),
         ),
         actions: [
-          IconButton(
+          data.sender == uid || data.uid == uid
+            ? IconButton(
             onPressed: () {},
             icon: Icon(
               Icons.edit,
               color: Theme.of(context).iconTheme.color,
               size: size,
             ),
-          ),
+          ) : const SizedBox.shrink(),
         ],
       ),
       body: Padding(

@@ -8,6 +8,7 @@ Future<TransactionModel> _$TransactionModelFromSupabase(
 }) async {
   return TransactionModel(
     gtid: data['gtid'] as String,
+    uid: data['uid'] as String,
     name: data['name'] as String,
     type: data['type'] as String,
     beneficiaryId: data['beneficiary_id'] as String,
@@ -32,6 +33,7 @@ Future<Map<String, dynamic>> _$TransactionModelToSupabase(
 }) async {
   return {
     'gtid': instance.gtid,
+    'uid': instance.uid,
     'name': instance.name,
     'type': instance.type,
     'beneficiary_id': instance.beneficiaryId,
@@ -54,6 +56,7 @@ Future<TransactionModel> _$TransactionModelFromSqlite(
 }) async {
   return TransactionModel(
     gtid: data['gtid'] as String,
+    uid: data['uid'] as String,
     name: data['name'] as String,
     type: data['type'] as String,
     beneficiaryId: data['beneficiary_id'] as String,
@@ -78,6 +81,7 @@ Future<Map<String, dynamic>> _$TransactionModelToSqlite(
 }) async {
   return {
     'gtid': instance.gtid,
+    'uid': instance.uid,
     'name': instance.name,
     'type': instance.type,
     'beneficiary_id': instance.beneficiaryId,
@@ -107,6 +111,10 @@ class TransactionModelAdapter
     'gtid': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'gtid',
+    ),
+    'uid': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'uid',
     ),
     'name': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -172,6 +180,12 @@ class TransactionModelAdapter
     'gtid': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'gtid',
+      iterable: false,
+      type: String,
+    ),
+    'uid': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'uid',
       iterable: false,
       type: String,
     ),
