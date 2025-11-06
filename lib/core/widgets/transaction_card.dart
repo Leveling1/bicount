@@ -78,7 +78,7 @@ class TransactionCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${transaction.type}',
+                      transaction.type.name,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],

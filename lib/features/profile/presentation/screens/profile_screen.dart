@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
-import '../../../../core/widgets/user_card.dart';
 import '../widgets/detail_friend.dart';
 import '../bloc/profile_bloc.dart';
 import '../widgets/friend_card.dart';

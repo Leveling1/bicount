@@ -31,7 +31,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     });
   }
 
-  final List<TransactionModel> transactions = [];
+  late List<TransactionModel> transactions = [];
 
   Map<String, List<TransactionModel>> groupTransactionsByDate(
     List<TransactionModel> transactions,
@@ -65,6 +65,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 
   final List<String> filters = ['All', 'Income', 'expense', 'Transfer'];
+
+  @override
+  void initState() {
+    transactions = widget.transactions;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,13 +115,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
         return transactions.isNotEmpty
             ? Column(
                 children: [
-                  CustomSearchField(
+                  transactions.length > 10
+                    ? CustomSearchField(
                     onChanged: (value) {
                       setState(() {
                         _searchController.text = value;
                       });
                     },
-                  ),
+                  ) : const SizedBox.shrink(),
                   TransactionFilterChips(
                     selectedIndex: _selectedIndex,
                     onTap: _onItemTapped,
@@ -152,9 +159,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
                             ),
                           ),
                         )
-                      : const Center(
-                          child: Text('No transactions found'),
-                        ),
+                      : Expanded(
+                        child: const Center(
+                            child: Text('No transactions found'),
+                          ),
+                      ),
                 ],
               )
             : const Center(child: Text('No transactions found'));

@@ -147,7 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ) : const SizedBox.shrink(),
-                    state is HomeLoading ? Expanded(child: const TransactionSkeleton())
+                    state is HomeLoading
+                      ? Expanded(child: const TransactionSkeleton())
                       : state is HomeLoaded
                         ? Expanded(
                           child: ListView.builder(
@@ -165,11 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           ),
                         )
-                      : Column(
-                      children: [
-                        Text("No data"),
-                      ],
-                    ),
+                      : Expanded(child: const TransactionSkeleton()),
                   ],
                 );
               },

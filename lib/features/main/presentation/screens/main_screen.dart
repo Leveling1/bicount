@@ -57,10 +57,14 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   List<Widget> _buildScreens(MainEntity data) {
+    if (data.transactions.isNotEmpty && data.transactions.length > 1) {
+      data.transactions.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+    }
+
     return [
       HomeScreen(
         onCardTap: _goToPage,
-        transactions: data.transactions,
+        transactions: data.transactions, // The list is now sorted
       ),
       CompanyScreen(),
       TransactionScreen(
