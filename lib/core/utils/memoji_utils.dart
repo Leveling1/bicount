@@ -13,7 +13,7 @@ class MemojiUtils {
     Memoji(id: 3, imagePath: 'assets/memoji/memoji_3.png', name: 'Ruth'),
     Memoji(id: 4, imagePath: 'assets/memoji/memoji_4.png', name: 'Bertrand'),
     Memoji(id: 5, imagePath: 'assets/memoji/memoji_5.png', name: 'Biju'),
-    Memoji(id: 6, imagePath: 'assets/memoji/memoji_6.png', name: 'Charles'),
+    Memoji(id: 6, imagePath: 'assets/memoji/memoji_default.png', name: 'Charles'),
     Memoji(id: 7, imagePath: 'assets/memoji/memoji_7.png', name: 'John'),
   ];
 

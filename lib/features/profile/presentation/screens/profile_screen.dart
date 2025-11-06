@@ -95,6 +95,9 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 Column(
                   children: data.friends.map((friend) {
+                    if(friend.uid == data.user.uid) {
+                      return const SizedBox.shrink();
+                    }
                     return FriendCard(
                       friend: friend,
                       onTap: () {

@@ -101,14 +101,7 @@ class LocalMainDataSourceImpl implements MainLocalDataSource{
 
       final StreamSubscription<List<TransactionModel>> subscription =
       Repository().subscribeToRealtime<TransactionModel>(
-          query: Query(
-              where: [
-                WherePhrase([
-                  Where('beneficiaryId').isExactly(uid),
-                  Where('senderId').isExactly(uid),
-                ], isRequired: false)
-              ]
-          )
+          query: Query(where: [Where.exact('senderId', uid)])
       ).listen((List<TransactionModel> transactions) {
         transactionsController.add(transactions);
       }, onError: (error) {

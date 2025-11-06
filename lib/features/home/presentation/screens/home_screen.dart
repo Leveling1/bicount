@@ -12,6 +12,7 @@ import 'package:hugeicons/hugeicons.dart';
 import '../../../../core/services/notification_helper.dart';
 import '../../../transaction/data/models/transaction.model.dart';
 import '../bloc/home_bloc.dart';
+import '../widgets/transaction_skeleton.dart';
 
 typedef CardTapCallback = void Function(int index);
 
@@ -146,11 +147,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ) : const SizedBox.shrink(),
-                    state is HomeLoading ? const CircularProgressIndicator()
+                    state is HomeLoading ? Expanded(child: const TransactionSkeleton())
                       : state is HomeLoaded
                         ? Expanded(
                           child: ListView.builder(
-                            itemCount: 5,
+                            itemCount: widget.transactions.length > 5
+                              ? 5
+                              : widget.transactions.length,
                             itemBuilder: (context, index) {
                               return Column(
                                 children:

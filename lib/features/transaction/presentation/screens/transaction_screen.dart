@@ -4,6 +4,7 @@ import 'package:bicount/features/transaction/domain/entities/transaction_entity.
 import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/utils/date_format_utils.dart';
@@ -64,11 +65,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 
   final List<String> filters = ['All', 'Income', 'expense', 'Transfer'];
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +159,84 @@ class _TransactionScreenState extends State<TransactionScreen> {
               )
             : const Center(child: Text('No transactions found'));
       },
+    );
+  }
+}
+
+
+/// ============= For the loading ============= ///
+class TransactionCardSkeleton extends StatelessWidget {
+  const TransactionCardSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SkeletonItem(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            // 🟣 Avatar placeholder
+            SkeletonAvatar(
+              style: SkeletonAvatarStyle(
+                width: 40,
+                height: 40,
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            const SizedBox(width: 12),
+
+            // 🟢 Name + Date placeholder
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SkeletonLine(
+                    style: SkeletonLineStyle(
+                      height: 14,
+                      width: 120,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  SkeletonLine(
+                    style: SkeletonLineStyle(
+                      height: 12,
+                      width: 60,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // 🟠 Amount + Type placeholder
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                SkeletonLine(
+                  style: SkeletonLineStyle(
+                    height: 14,
+                    width: 50,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SkeletonLine(
+                  style: SkeletonLineStyle(
+                    height: 12,
+                    width: 40,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
