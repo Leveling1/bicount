@@ -152,20 +152,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       : state is HomeLoaded
                         ? Expanded(
                           child: ListView.builder(
-                            itemCount: widget.transactions.length > 5
-                              ? 5
-                              : widget.transactions.length,
+                            itemCount: widget.transactions.length.clamp(0, 5),
                             itemBuilder: (context, index) {
-                              return Column(
-                                children:
-                                widget.transactions.map((transaction) {
-                                  final transactionEntity = TransactionEntity.fromTransaction(transaction);
-                                  return TransactionCard(transaction: transactionEntity);
-                                }).toList(),
-                              );
+                              final t = widget.transactions[index];
+                              final entity = TransactionEntity.fromTransaction(t);
+
+                              return TransactionCard(transaction: entity);
                             },
                           ),
-                        )
+                    )
                       : Expanded(child: const TransactionSkeleton()),
                   ],
                 );

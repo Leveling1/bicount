@@ -100,9 +100,8 @@ class LocalMainDataSourceImpl implements MainLocalDataSource{
       _transactionCache[uid] = transactionsController;
 
       final StreamSubscription<List<TransactionModel>> subscription =
-      Repository().subscribeToRealtime<TransactionModel>(
-          query: Query(where: [Where.exact('senderId', uid)])
-      ).listen((List<TransactionModel> transactions) {
+      Repository().subscribeToRealtime<TransactionModel>()
+        .listen((List<TransactionModel> transactions) {
         transactionsController.add(transactions);
       }, onError: (error) {
         transactionsController.addError(error);

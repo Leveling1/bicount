@@ -8,6 +8,20 @@ enum TransactionFrequency { cyclic, fixe }
 
 enum Currency { USD, EUR, CDF }
 
+extension CurrencySymbol on Currency {
+  String get symbol {
+    switch (this) {
+      case Currency.USD:
+        return '\$';
+      case Currency.EUR:
+        return '€';
+      case Currency.CDF:
+        return 'FC';
+    }
+  }
+}
+
+
 class TransactionEntity {
   final String? id;
   final String name;
