@@ -6,13 +6,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/main/data/models/friends.model.dart';
 import '../../features/transaction/data/models/transaction.model.dart';
+import '../../features/transaction/domain/entities/transaction_detail_args.dart';
 import '../themes/app_dimens.dart';
 
 class TransactionCard extends StatelessWidget {
+  final List<FriendsModel> friends;
   final TransactionEntity transaction;
 
-  const TransactionCard({super.key, required this.transaction});
+  const TransactionCard({
+    super.key,
+    required this.transaction,
+    required this.friends
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +36,13 @@ class TransactionCard extends StatelessWidget {
           splashColor: Colors.transparent,
           highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: () {
-            context.push('/transactionDetail', extra: transaction);
+            context.push(
+              '/transactionDetail',
+              extra: TransactionDetailArgs(
+                transaction: transaction,
+                friends: friends,
+              ),
+            );
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),

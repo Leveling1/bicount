@@ -64,11 +64,11 @@ class _MainScreenState extends State<MainScreen> {
     return [
       HomeScreen(
         onCardTap: _goToPage,
-        transactions: data.transactions, // The list is now sorted
+        data: data,
       ),
       CompanyScreen(),
       TransactionScreen(
-        transactions: data.transactions,
+        data: data,
       ),
       ProfileScreen(data: data)
     ];

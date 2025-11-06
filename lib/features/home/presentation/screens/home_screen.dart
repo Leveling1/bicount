@@ -3,6 +3,7 @@ import 'package:bicount/core/utils/memoji_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/home/presentation/widgets/card_type_revenue.dart';
+import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,8 +19,8 @@ typedef CardTapCallback = void Function(int index);
 
 class HomeScreen extends StatefulWidget {
   final CardTapCallback? onCardTap;
-  final List<TransactionModel> transactions;
-  const HomeScreen({super.key, this.onCardTap, required this.transactions});
+  final MainEntity data;
+  const HomeScreen({super.key, this.onCardTap, required this.data});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -127,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    widget.transactions.isNotEmpty
+                    widget.data.transactions.isNotEmpty
                     ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -152,12 +153,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       : state is HomeLoaded
                         ? Expanded(
                           child: ListView.builder(
-                            itemCount: widget.transactions.length.clamp(0, 5),
+                            itemCount: widget.data.transactions.length.clamp(0, 5),
                             itemBuilder: (context, index) {
-                              final t = widget.transactions[index];
+                              final t = widget.data.transactions[index];
                               final entity = TransactionEntity.fromTransaction(t);
 
-                              return TransactionCard(transaction: entity);
+                              return TransactionCard(transaction: entity, friends: widget.data.friends);
                             },
                           ),
                     )

@@ -1,10 +1,10 @@
 import 'package:bicount/core/widgets/custom_search_field.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
+import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/utils/date_format_utils.dart';
@@ -12,8 +12,8 @@ import '../../data/models/transaction.model.dart';
 import '../bloc/transaction_bloc.dart';
 
 class TransactionScreen extends StatefulWidget {
-  final List<TransactionModel> transactions;
-  const TransactionScreen({super.key, required this.transactions});
+  final MainEntity data;
+  const TransactionScreen({super.key, required this.data});
 
   @override
   State<TransactionScreen> createState() => _TransactionScreenState();
@@ -77,7 +77,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         }
       },
       builder: (context, state) {
-        transactions = widget.transactions;
+        transactions = widget.data.transactions;
         List<TransactionModel> filteredTransactions =
             _selectedIndex == 0 && _searchController.text.isEmpty
             ? transactions
@@ -145,6 +145,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                       TransactionEntity transaction = TransactionEntity.fromTransaction(tx);
                                       return TransactionCard(
                                         transaction: transaction,
+                                        friends: widget.data.friends,
                                       );
                                     }),
                                     const SizedBox(height: 16),

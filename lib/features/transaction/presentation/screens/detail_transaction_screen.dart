@@ -1,3 +1,4 @@
+import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,9 +11,14 @@ import '../../domain/entities/transaction_entity.dart';
 import '../../../../core/widgets/details_card.dart';
 
 class DetailTransactionScreen extends StatefulWidget {
+  final List<FriendsModel> friends;
   final TransactionEntity transaction;
 
-  const DetailTransactionScreen({super.key, required this.transaction});
+  const DetailTransactionScreen({
+    super.key,
+    required this.transaction,
+    required this.friends
+  });
 
   @override
   State<DetailTransactionScreen> createState() =>
@@ -34,7 +40,13 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
     String formattedDate = formatedDate(data.date);
     String formattedTime = formatedTime(data.date);
     String formattedCreatedDateTime = formatedDateTime(data.createdAt!);
-    String sign = data.type == Constants.expenseType ? '-' : '+';
+    String sign = data.type == TransactionType.expense ? '-' : '+';
+    String sender = widget.friends
+        .firstWhere((friend) => friend.sid == data.sender)
+        .username;
+    String beneficiary = widget.friends
+        .firstWhere((friend) => friend.sid == data.beneficiary)
+        .username;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -73,87 +85,95 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
           left: AppDimens.paddingLarge,
           right: AppDimens.paddingLarge,
         ),
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  backgroundColor: Theme.of(context).cardColor,
-                  radius: 40,
-                  child: SizedBox(
-                    width: 50.w,
-                    height: 50.h,
-                    child: Image.asset(data.image!),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  data.name,
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                Text(
-                  data.type.name,
-                  style: TextStyle(
-                    color: sign == "+"
-                        ? AppColors.primaryColorDark
-                        : AppColors.negativeColorDark,
-                    fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
-                  ),
-                ),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Theme.of(context).cardColor,
+                        radius: 40,
+                        child: SizedBox(
+                          width: 50.w,
+                          height: 50.h,
+                          child: Image.asset(data.image!),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        data.name,
+                        style: Theme.of(context).textTheme.headlineLarge,
+                      ),
+                      Text(
+                        '$sign ${data.amount} ${data.currency.symbol}',
+                        style: TextStyle(
+                          color: sign == "+"
+                              ? AppColors.primaryColorDark
+                              : AppColors.negativeColorDark,
+                          fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
+                        ),
+                      ),
+                      Text(
+                        data.type.name,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
 
-                DetailsCard(
-                  child: Column(
-                    children: [
-                      RowDetail(title: 'Date', content: formattedDate),
-                      const SizedBox(height: 8),
-                      RowDetail(title: 'Time', content: formattedTime),
-                    ],
-                  ),
-                ),
-                DetailsCard(
-                  child: Column(
-                    children: [
-                      RowDetail(
-                        title: 'Amount',
-                        content: '$sign ${data.amount}',
+                      DetailsCard(
+                        child: Column(
+                          children: [
+                            RowDetail(title: 'Date', content: formattedDate),
+                            const SizedBox(height: 8),
+                            RowDetail(title: 'Time', content: formattedTime),
+                          ],
+                        ),
+                      ),
+                      DetailsCard(
+                        child: Column(
+                          children: [
+                            RowDetail(
+                              title: 'Sender',
+                              content: sender
+                            ),
+                            const SizedBox(height: 8),
+                            RowDetail(
+                              title: 'Beneficiary',
+                              content: beneficiary,
+                            ),
+                          ],
+                        ),
+                      ),
+                      DetailsCard(
+                        child: Column(
+                          children: [
+                            RowDetail(
+                              title: 'Frequency',
+                              content: data.frequency!.name,
+                            ),
+                            const SizedBox(height: 8),
+                            RowDetail(title: 'Note', content: data.note),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-                DetailsCard(
-                  child: Column(
-                    children: [
-                      RowDetail(title: 'Sender', content: data.sender),
-                      const SizedBox(height: 8),
-                      /*RowDetail(
-                        title: 'Beneficiary',
-                        content: data.beneficiary,
-                      ),*/
-                    ],
-                  ),
-                ),
-                DetailsCard(
-                  child: Column(
-                    children: [
-                      RowDetail(
-                        title: 'Frequency',
-                        content: data.frequency!.name,
-                      ),
-                      const SizedBox(height: 8),
-                      RowDetail(
-                        title: 'Created at',
-                        content: formattedCreatedDateTime,
-                      ),
-                      const SizedBox(height: 8),
-                      //RowDetail(title: 'Note', content: data.beneficiary),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Created at', style: Theme.of(context).textTheme.bodySmall),
+                  Text(formattedCreatedDateTime, style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -170,9 +190,16 @@ class RowDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: Theme.of(context).textTheme.bodyMedium),
-        Text(content, style: Theme.of(context).textTheme.bodyMedium),
+        Flexible(
+          flex: 1,
+          child: Text(title, style: Theme.of(context).textTheme.bodyMedium)
+        ),
+        Flexible(
+          flex: 2,
+          child: Text(content, style: Theme.of(context).textTheme.bodyMedium)
+        ),
       ],
     );
   }

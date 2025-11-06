@@ -11,9 +11,11 @@ import '../../features/company/domain/entities/company.dart';
 import '../../features/company/presentation/screens/detail_company_screen.dart';
 import '../../features/group/domain/entities/group_model.dart';
 import '../../features/group/presentation/screens/group_screen.dart';
+import '../../features/main/data/models/friends.model.dart';
 import '../../features/main/presentation/screens/main_screen.dart';
 import '../../features/project/domain/entities/project_model.dart';
 import '../../features/project/presentation/screens/project_screen.dart';
+import '../../features/transaction/domain/entities/transaction_detail_args.dart';
 import '../../features/transaction/domain/entities/transaction_entity.dart';
 import '../../features/transaction/presentation/screens/detail_transaction_screen.dart';
 import '../utils/custom_transition.dart';
@@ -32,12 +34,15 @@ class AppRouter {
       GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
       GoRoute(path: '/signUp', builder: (context, state) => SignUpScreen()),
 
-      GoRoute(
+        GoRoute(
         path: '/transactionDetail',
         pageBuilder: (context, state) {
-          final transaction = state.extra as TransactionEntity;
+          final args = state.extra as TransactionDetailArgs;
           return buildCustomTransitionPage(
-            childContain: DetailTransactionScreen(transaction: transaction),
+            childContain: DetailTransactionScreen(
+              transaction: args.transaction,
+              friends: args.friends,
+            ),
             state: state,
             model: TransactionEntity,
           );
