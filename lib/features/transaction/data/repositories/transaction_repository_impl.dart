@@ -1,5 +1,6 @@
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:dartz/dartz.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../core/errors/failure.dart';
 import '../../../authentification/data/models/user.model.dart';
@@ -14,49 +15,74 @@ class TransactionRepositoryImpl extends TransactionRepository {
   Future<void> createTransaction(Map<String, dynamic> transaction) async {
     try {
       final List<FriendsModel> beneficiaryList = transaction['beneficiaryList'];
+      final sender = transaction['sender'];
+      final gtid = Uuid().v4();
 
-      // Traiter chaque bénéficiaire séquentiellement
+      String senderId = sender.sid;
+
+      // 1. Créer l'expéditeur SI nécessaire et obtenir son ID
+      if (senderId.isEmpty) {
+        final Either<Failure, UserModel> senderResult = await localDataSource.createANewFriend(sender);
+
+        senderId = await senderResult.fold(
+              (failure) async {
+            throw failure;
+          },
+              (userModel) async {
+            // Attendre que l'utilisateur soit bien créé en base
+            await Future.delayed(Duration(milliseconds: 100)); // Petite pause pour la synchronisation
+            return userModel.sid;
+          },
+        );
+
+        // Créer le lien seulement après vérification
+        final Either<Failure, void> linkResult = await localDataSource.createANewLink(sender);
+        await linkResult.fold(
+              (failure) => throw failure,
+              (_) => null,
+        );
+      }
+
+      // 2. Traiter chaque bénéficiaire
       for (final friend in beneficiaryList) {
         String beneficiaryId = friend.sid;
+        late UserModel beneficiary;
 
-        // Si l'ID est vide, créer un nouvel ami
         if (beneficiaryId.isEmpty) {
           final Either<Failure, UserModel> friendResult = await localDataSource.createANewFriend(friend);
 
-          // Gérer le résultat avec fold au lieu de if/else
-          await friendResult.fold(
+          beneficiaryId = await friendResult.fold(
                 (failure) async {
-              throw failure; // Propager l'erreur
+              throw failure;
             },
                 (userModel) async {
-              beneficiaryId = userModel.sid;
-
-              // Créer le lien après la création de l'ami
-              final Either<Failure, void> linkResult = await localDataSource.createANewLink(userModel);
-
-              // Gérer le résultat du lien
-              linkResult.fold(
-                    (failure) => throw failure,
-                    (_) {}, // Succès - ne rien faire
-              );
+              await Future.delayed(Duration(milliseconds: 100));
+              beneficiary = userModel;
+              return userModel.sid;
             },
+          );
+
+          // Créer le lien seulement après vérification
+          final Either<Failure, void> linkResult = await localDataSource.createANewLink(beneficiary);
+          await linkResult.fold(
+                (failure) => throw failure,
+                (_) => null,
           );
         }
 
-        // Sauvegarder la transaction avec l'ID du bénéficiaire
-        final Either<Failure, void> saveResult = await localDataSource.saveTransaction(transaction, beneficiaryId);
+        // 3. Sauvegarder la transaction
+        final Either<Failure, void> saveResult = await localDataSource.saveTransaction(
+            transaction, gtid, senderId, beneficiaryId
+        );
 
-        // Gérer le résultat de la sauvegarde
-        saveResult.fold(
+        await saveResult.fold(
               (failure) => throw failure,
-              (_) {}, // Succès - ne rien faire
+              (_) => null,
         );
       }
     } on Failure catch (e) {
-      // Relancer les erreurs métier
       throw e;
     } catch (e) {
-      // Capturer les autres erreurs
       throw UnknownFailure();
     }
   }

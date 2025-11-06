@@ -7,5 +7,10 @@ import '../../../../authentification/data/models/user.model.dart';
 abstract class TransactionLocalDataSource {
   Future<Either<Failure, UserModel>> createANewFriend (FriendsModel friend);
   Future<Either<Failure, void>> createANewLink (UserModel friend);
-  Future<Either<Failure, void>> saveTransaction(Map<String, dynamic> transaction, String friendId);
+  Future<Either<Failure, void>> saveTransaction(
+    Map<String, dynamic> transaction,
+    String gtid,
+    String senderId,
+    String beneficiaryId
+  );
 }

@@ -80,159 +80,155 @@ class _TransactionHandlerState extends State<TransactionHandler> {
           friends = widget.usersLink.map((user) => user.username).toList();
         }
 
-        return Expanded(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Text(
-                  'Add transaction',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                const SizedBox(height: 16),
-                SegmentedControlWidget(controller: _segmentedType),
-                const SizedBox(height: 16),
-                CustomFormField(
-                  controller: _name,
-                  label: "Title",
-                  hint: 'Enter transaction name',
-                ),
-                const SizedBox(height: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Amount",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    CustomAmountField(amount: _amount, currency: _currency),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                CustomFormField(
-                  controller: _note,
-                  label: "Note",
-                  hint: 'Add a note (optional)',
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Text(
+                'Add transaction',
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+              const SizedBox(height: 16),
+              SegmentedControlWidget(controller: _segmentedType),
+              const SizedBox(height: 16),
+              CustomFormField(
+                controller: _name,
+                label: "Title",
+                hint: 'Enter transaction name',
+              ),
+              const SizedBox(height: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Amount",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  CustomAmountField(amount: _amount, currency: _currency),
+                ],
+              ),
+              const SizedBox(height: 16),
+              CustomFormField(
+                controller: _note,
+                label: "Note",
+                hint: 'Add a note (optional)',
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Paid by",
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          CustomSuggestionTextField(
-                            controller: _sender,
-                            hintText: 'Enter sender name',
-                            options: friends,
-                            isVisible: false,
-                          ),
-                        ],
-                      ),
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Paid by",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        CustomSuggestionTextField(
+                          controller: _sender,
+                          hintText: 'Enter sender name',
+                          options: friends,
+                          isVisible: false,
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "When",
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          CustomFormTextField(
-                            controller: _date,
-                            hintText: 'DD/MM/YYYY',
-                            inputType: TextInputType.datetime,
-                          ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomFormField(
+                          controller: _date,
+                          hint: 'DD/MM/YYYY',
+                          inputType: TextInputType.datetime,
+                          isDate: true,
+                          label: 'When',
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Beneficiary",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    CustomSuggestionTextField(
-                      controller: _beneficiary,
-                      onAdd: () {
-                        if (_beneficiary.text.trim().isEmpty) return;
-                        final beneficiarySid = widget.usersLink
-                        .firstWhere((user) => user.username.toLowerCase() == _beneficiary.text.trim().toLowerCase(),
-                          orElse: () => FriendsModel(
-                            sid: '',
-                            username: _beneficiary.text.trim(),
-                            uid: '',
-                            image: '',
-                            email: ''
-                          )
-                        );
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Beneficiary",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  CustomSuggestionTextField(
+                    controller: _beneficiary,
+                    onAdd: () {
+                      if (_beneficiary.text.trim().isEmpty) return;
+                      final beneficiarySid = widget.usersLink
+                      .firstWhere((user) => user.username.toLowerCase() == _beneficiary.text.trim().toLowerCase(),
+                        orElse: () => FriendsModel(
+                          sid: '',
+                          username: _beneficiary.text.trim(),
+                          uid: '',
+                          image: '',
+                          email: ''
+                        )
+                      );
 
-                        setState(() {
-                          _beneficiaryList.add(beneficiarySid);
-                          _beneficiary.clear();
-                        });
-                      },
-                      isVisible: _type.text != 'Transfer' ? true : false,
-                      hintText: 'Enter beneficiary name',
-                      options: friends,
-                    ),
-                  ],
-                ),
+                      setState(() {
+                        _beneficiaryList.add(beneficiarySid);
+                        _beneficiary.clear();
+                      });
+                    },
+                    isVisible: _type.text != 'Transfer' ? true : false,
+                    hintText: 'Enter beneficiary name',
+                    options: friends,
+                  ),
+                ],
+              ),
 
-                _type.text != 'Transfer'
-                  ? _beneficiaryList.isNotEmpty
-                    ? Column(
-                      children: _beneficiaryList.asMap().entries.map((
-                        entry,
-                      ) {
-                        int index = entry.key;
-                        TextEditingController controller
-                          = TextEditingController(text: entry.value.username);
+              _type.text != 'Transfer'
+                ? _beneficiaryList.isNotEmpty
+                  ? Column(
+                    children: _beneficiaryList.asMap().entries.map((
+                      entry,
+                    ) {
+                      int index = entry.key;
+                      TextEditingController controller
+                        = TextEditingController(text: entry.value.username);
 
-                          return SizedBox(
-                            width: double.infinity,
-                            child: ListTile(
-                              title: Text(
-                                controller.text.isNotEmpty
-                                  ? controller.text
-                                  : 'Aucun texte',
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                              trailing: IconButton(
-                                icon: const Icon(
-                                  Icons.close,
-                                    color: Colors.red,
-                                ),
-                                onPressed: () => _removeItem(index),
-                              ),
+                        return SizedBox(
+                          width: double.infinity,
+                          child: ListTile(
+                            title: Text(
+                              controller.text.isNotEmpty
+                                ? controller.text
+                                : 'Aucun texte',
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
-                          );
-                      }).toList(),
-                    )
-              : const SizedBox.shrink()
-              : const SizedBox.shrink(),
-                const SizedBox(height: 32),
-                CustomButton(
-                  text: 'Save',
-                  loading: state is TransactionLoading,
-                  onPressed: _submit,
-                ),
-                const SizedBox(height: 32),
-              ],
-            ),
+                            trailing: IconButton(
+                              icon: const Icon(
+                                Icons.close,
+                                  color: Colors.red,
+                              ),
+                              onPressed: () => _removeItem(index),
+                            ),
+                          ),
+                        );
+                    }).toList(),
+                  )
+            : const SizedBox.shrink()
+            : const SizedBox.shrink(),
+              const SizedBox(height: 32),
+              CustomButton(
+                text: 'Save',
+                loading: state is TransactionLoading,
+                onPressed: _submit,
+              ),
+              const SizedBox(height: 32),
+            ],
           ),
         );
       },
@@ -241,13 +237,38 @@ class _TransactionHandlerState extends State<TransactionHandler> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
+      if (_beneficiaryList.isEmpty && _beneficiary.text != '') {
+        final beneficiarySid = widget.usersLink
+          .firstWhere((user) => user.username.toLowerCase() == _beneficiary.text.trim().toLowerCase(),
+          orElse: () => FriendsModel(
+            sid: '',
+            username: _beneficiary.text.trim(),
+            uid: '',
+            image: '',
+            email: ''
+          )
+        );
+        _beneficiaryList.add(beneficiarySid);
+      }
+
+      final senderModel = widget.usersLink
+        .firstWhere((user) => user.username.toLowerCase() == _sender.text.trim().toLowerCase(),
+        orElse: () => FriendsModel(
+          sid: '',
+          username: _beneficiary.text.trim(),
+          uid: '',
+          image: '',
+          email: ''
+        )
+      );
+
       final transaction = {
         "name": _name.text,
-        "type": _segmentedType.selectedValue,
+        "type": _segmentedType.selectedValue.toLowerCase(),
         "date": DateTime.now().toIso8601String(),
         "amount": double.parse(_amount.text),
-        "currency": Currency.values.firstWhere((e) => e.name == 'EUR'),
-        "sender": _sender.text,
+        "currency": _currency.text,
+        "sender": senderModel,
         "beneficiaryList": _beneficiaryList,
         "note": _note.text,
       };

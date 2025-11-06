@@ -58,14 +58,14 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
 
   @override
   Future<Either<Failure, void>> saveTransaction(
-      Map<String, dynamic> transaction, String friendId) async {
+      Map<String, dynamic> transaction, String gtid, String senderId, String beneficiaryId) async {
     try {
       final transactionModel = TransactionModel(
-          gtid: transaction['gtid'],
+          gtid: gtid,
           name: transaction['name'],
           type: transaction['type'],
-          beneficiaryId: friendId,
-          senderId: transaction['senderId'],
+          beneficiaryId: beneficiaryId,
+          senderId: senderId,
           date: transaction['date'],
           note: transaction['note'],
           amount: transaction['amount'],

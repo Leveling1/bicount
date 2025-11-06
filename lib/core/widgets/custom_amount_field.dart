@@ -64,7 +64,7 @@ class CurrencyField extends StatelessWidget {
             showCurrencyName: true,
             showCurrencyCode: true,
             onSelect: (Currency currency) {
-              controller.text = currency.code;
+              controller.text = currency.name;
             },
           );
         },
