@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/themes/app_colors.dart';
-
 class TransactionFilterChips extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onTap;

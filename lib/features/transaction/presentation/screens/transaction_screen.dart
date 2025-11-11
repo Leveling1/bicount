@@ -8,8 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/utils/date_format_utils.dart';
+import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../data/models/transaction.model.dart';
+import '../../domain/entities/transaction_detail_args.dart';
 import '../bloc/transaction_bloc.dart';
+import 'detail_transaction_screen.dart';
 
 class TransactionScreen extends StatefulWidget {
   final MainEntity data;
@@ -145,7 +148,19 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                       TransactionEntity transaction = TransactionEntity.fromTransaction(tx);
                                       return TransactionCard(
                                         transaction: transaction,
-                                        friends: widget.data.friends,
+                                        onTap: () {
+                                          showCustomBottomSheet(
+                                            context: context,
+                                            minHeight: 0.95,
+                                            color: null,
+                                            child: DetailTransaction(
+                                              transaction: TransactionDetailArgs(
+                                                transactionDetail: transaction,
+                                                friends: widget.data.friends,
+                                              ),
+                                            ),
+                                          );
+                                        },
                                       );
                                     }),
                                     const SizedBox(height: 16),

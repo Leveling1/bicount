@@ -1,15 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/number_format_utils.dart';
 import '../../data/models/company.model.dart';
-import '../../domain/entities/company.dart';
-import '../../../../core/widgets/circle_image_skeleton.dart';
 import 'company_profil.dart';
 
 class CompanyCard extends StatelessWidget {

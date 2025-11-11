@@ -9,16 +9,18 @@ import 'package:go_router/go_router.dart';
 import '../../features/main/data/models/friends.model.dart';
 import '../../features/transaction/data/models/transaction.model.dart';
 import '../../features/transaction/domain/entities/transaction_detail_args.dart';
+import '../../features/transaction/presentation/screens/detail_transaction_screen.dart';
 import '../themes/app_dimens.dart';
+import 'custom_bottom_sheet.dart';
 
 class TransactionCard extends StatelessWidget {
-  final List<FriendsModel> friends;
   final TransactionEntity transaction;
+  final onTap;
 
   const TransactionCard({
     super.key,
     required this.transaction,
-    required this.friends
+    this.onTap,
   });
 
   @override
@@ -35,15 +37,7 @@ class TransactionCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
           splashColor: Colors.transparent,
           highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-          onTap: () {
-            context.push(
-              '/transactionDetail',
-              extra: TransactionDetailArgs(
-                transaction: transaction,
-                friends: friends,
-              ),
-            );
-          },
+          onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             child: Row(

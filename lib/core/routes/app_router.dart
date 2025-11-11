@@ -33,21 +33,6 @@ class AppRouter {
       GoRoute(path: '/transaction', builder: (context, state) => MainScreen()),
       GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
       GoRoute(path: '/signUp', builder: (context, state) => SignUpScreen()),
-
-        GoRoute(
-        path: '/transactionDetail',
-        pageBuilder: (context, state) {
-          final args = state.extra as TransactionDetailArgs;
-          return buildCustomTransitionPage(
-            childContain: DetailTransactionScreen(
-              transaction: args.transaction,
-              friends: args.friends,
-            ),
-            state: state,
-            model: TransactionEntity,
-          );
-        },
-      ),
       GoRoute(
         path: '/companyDetail',
         pageBuilder: (context, state) {

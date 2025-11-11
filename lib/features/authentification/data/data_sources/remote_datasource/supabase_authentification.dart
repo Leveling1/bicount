@@ -1,8 +1,6 @@
 import 'package:bicount/features/authentification/domain/entities/user.dart'
     as entity;
-import 'package:dartz/dartz.dart' as user;
 import 'package:supabase_flutter/supabase_flutter.dart' hide User;
-import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/authentification/data/data_sources/remote_datasource/authentification_remote_datasource.dart';
 
 class SupabaseAuthentification implements AuthenticationRemoteDataSource {

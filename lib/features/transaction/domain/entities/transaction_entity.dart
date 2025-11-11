@@ -24,6 +24,8 @@ extension CurrencySymbol on Currency {
 
 class TransactionEntity {
   final String? id;
+  final String tid;
+  final String gtid;
   final String? uid;
   final String name;
   final TransactionType type;
@@ -40,6 +42,8 @@ class TransactionEntity {
   const TransactionEntity({
     this.id,
     this.uid,
+    required this.tid,
+    required this.gtid,
     required this.name,
     required this.type,
     required this.date,
@@ -57,6 +61,8 @@ class TransactionEntity {
     return TransactionEntity(
       id: data["id"] ?? '',
       uid: data["uid"] ?? '',
+      tid: data["tid"] ?? '',
+      gtid: data["gtid"] ?? '',
       name: data["name"] ?? '',
       type: TransactionType.values.firstWhere((e) => e.name == data['type']),
       date: data["date"] is DateTime
@@ -103,6 +109,8 @@ class TransactionEntity {
     return TransactionEntity(
       uid: transaction.uid,
       name: transaction.name,
+      tid: transaction.tid!,
+      gtid: transaction.gtid,
       type: TransactionType.values.byName(transaction.type),
       date: DateTime.tryParse(transaction.date)!,
       createdAt: DateTime.tryParse(transaction.createdAt ?? ''),

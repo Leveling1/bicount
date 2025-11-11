@@ -1,10 +1,7 @@
-import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../core/themes/app_gradient.dart';
 
 class CardTypeRevenue extends StatelessWidget {
   const CardTypeRevenue({
@@ -25,7 +22,8 @@ class CardTypeRevenue extends StatelessWidget {
     return Container(
       width: 155.w,
       decoration: BoxDecoration(
-        gradient: Theme.of(context).extension<AppGradients>()!.primaryGradient,
+        color: Theme.of(context).cardColor,
+        //gradient: Theme.of(context).extension<AppGradients>()!.primaryGradient,
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
       ),
       child: Material(

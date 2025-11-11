@@ -3,11 +3,11 @@ import 'package:bicount/features/transaction/domain/entities/transaction_entity.
 import '../../../main/data/models/friends.model.dart';
 
 class TransactionDetailArgs {
-  final TransactionEntity transaction;
+  final TransactionEntity transactionDetail;
   final List<FriendsModel> friends;
 
   TransactionDetailArgs({
-    required this.transaction,
+    required this.transactionDetail,
     required this.friends,
   });
 }

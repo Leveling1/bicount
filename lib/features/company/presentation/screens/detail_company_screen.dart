@@ -11,8 +11,6 @@ import '../../../../core/utils/expandable_text.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../../core/widgets/details_card.dart';
 import '../../../project/presentation/widgets/project_card.dart';
-import '../../data/models/company.model.dart';
-import '../../domain/entities/company.dart';
 import '../bloc/detail_bloc/detail_bloc.dart';
 import '../widgets/company_card_info.dart';
 import '../widgets/company_profil.dart';

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/constants/secrets.dart';
-import '../../../../core/utils/memoji_utils.dart';
 import '../../domain/entities/group_model.dart';
 import '../../domain/entities/member_model.dart';
 import '../../domain/repositories/group_repository.dart';

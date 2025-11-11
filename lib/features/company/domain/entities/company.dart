@@ -1,8 +1,6 @@
 import 'package:bicount/features/project/data/models/project.model.dart';
-import 'package:bicount/features/project/domain/entities/project_model.dart';
 
 import '../../../group/data/models/group.model.dart';
-import '../../../group/domain/entities/group_model.dart';
 
 class CompanyEntity {
   final int? id;

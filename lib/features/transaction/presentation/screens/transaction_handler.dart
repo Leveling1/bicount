@@ -7,7 +7,6 @@ import '../../../../core/widgets/custom_amount_field.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_form_text_field.dart';
 import '../../../../core/widgets/custom_suggestion_text_field.dart';
-import '../../domain/entities/transaction_entity.dart';
 import '../bloc/transaction_bloc.dart';
 import '../widgets/segment_control.dart';
 

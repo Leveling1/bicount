@@ -1,5 +1,3 @@
-import '/core/errors/failure.dart';
-import 'package:dartz/dartz.dart';
 
 abstract class HomeRemoteDataSource {
   // Add your remote data source interface here

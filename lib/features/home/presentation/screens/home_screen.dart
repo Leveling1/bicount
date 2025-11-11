@@ -1,5 +1,4 @@
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/core/utils/memoji_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/home/presentation/widgets/card_type_revenue.dart';
@@ -11,30 +10,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/services/notification_helper.dart';
-import '../../../transaction/data/models/transaction.model.dart';
+import '../../../../core/widgets/custom_bottom_sheet.dart';
+import '../../../transaction/domain/entities/transaction_detail_args.dart';
+import '../../../transaction/presentation/screens/detail_transaction_screen.dart';
 import '../bloc/home_bloc.dart';
-import '../widgets/transaction_skeleton.dart';
 
 typedef CardTapCallback = void Function(int index);
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   final CardTapCallback? onCardTap;
   final MainEntity data;
   const HomeScreen({super.key, this.onCardTap, required this.data});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeBloc>().add(GetAllData());
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,11 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                               Text(
                                   NumberFormatUtils.formatCurrency(
-                                    state is HomeLoading
-                                      ? 0.0
-                                      : state is HomeLoaded
-                                        ? state.data.ownData.profit as num
-                                        : 0.0
+                                    data.user.profit != null
+                                      ? data.user.profit!
+                                      : 0.0
                                   ),
                                 style: Theme.of(context).textTheme.titleLarge!
                                     .copyWith(fontWeight: FontWeight.bold),
@@ -95,13 +79,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           CardTypeRevenue(
                             onTap: () {
-                              widget.onCardTap?.call(3);
+                              onCardTap?.call(3);
                             },
                             label: "Personnal",
-                            amount: state is HomeLoading
-                                ? 0.0
-                                : state is HomeLoaded
-                                ? state.data.ownData.personalIncome!
+                            amount: data.user.personalIncome != null
+                                ? data.user.personalIncome!
                                 : 0.0,
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedUser03,
@@ -111,14 +93,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(width: AppDimens.spacingMedium),
                           CardTypeRevenue(
                             onTap: () {
-                              widget.onCardTap?.call(1); // CompanyScreen
+                              onCardTap?.call(1); // CompanyScreen
                             },
                             label: "Entreprises",
-                            amount: state is HomeLoading
-                              ? 0.0
-                              : state is HomeLoaded
-                                ? state.data.ownData.companyIncome!
-                                : 0.0,
+                            amount: data.user.companyIncome != null
+                              ? data.user.companyIncome!
+                              : 0.0,
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedBuilding02,
                               color: Colors.white,
@@ -128,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    widget.data.transactions.isNotEmpty
+                    data.transactions.isNotEmpty
                     ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -138,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            widget.onCardTap?.call(2); // TransactionScreen
+                            onCardTap?.call(2); // TransactionScreen
                           },
                           style: Theme.of(context).textButtonTheme.style,
                           child: Text(
@@ -148,21 +128,33 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ) : const SizedBox.shrink(),
-                    state is HomeLoading
-                      ? Expanded(child: const TransactionSkeleton())
-                      : state is HomeLoaded
-                        ? Expanded(
-                          child: ListView.builder(
-                            itemCount: widget.data.transactions.length.clamp(0, 5),
-                            itemBuilder: (context, index) {
-                              final t = widget.data.transactions[index];
-                              final entity = TransactionEntity.fromTransaction(t);
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: data.transactions.length.clamp(0, 5),
+                        itemBuilder: (context, index) {
+                          final t = data.transactions[index];
+                          final entity = TransactionEntity.fromTransaction(t);
 
-                              return TransactionCard(transaction: entity, friends: widget.data.friends);
+                          return TransactionCard(
+                            transaction: entity,
+                            onTap: () {
+                              showCustomBottomSheet(
+                                context: context,
+                                minHeight: 0.95,
+                                color: null,
+                                child: DetailTransaction(
+                                  key: ValueKey(entity.tid),
+                                  transaction: TransactionDetailArgs(
+                                    transactionDetail: entity,
+                                    friends: data.friends,
+                                  ),
+                                ),
+                              );
                             },
-                          ),
-                    )
-                      : Expanded(child: const TransactionSkeleton()),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 );
               },
