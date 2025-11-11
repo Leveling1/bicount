@@ -31,6 +31,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         profit: 0.0,
         expenses: 0.0,
       );
+      
       await Repository().upsert<UserModel>(friendAdd);
       return Right(friendAdd);
     } catch (e) {

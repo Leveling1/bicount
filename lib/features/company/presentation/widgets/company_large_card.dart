@@ -28,6 +28,9 @@ class CompanyLargeCard extends StatelessWidget {
 
     final revenue = profit + expenses;
     final colorRevenue = Theme.of(context).textTheme.bodyLarge!.color;
+    final Color badgeColor = role == "owner"
+        ? Theme.of(context).primaryColor
+        : Colors.blueAccent;
 
     return Container(
       width: double.infinity,
@@ -56,7 +59,7 @@ class CompanyLargeCard extends StatelessWidget {
                     Container(
                       constraints: const BoxConstraints(minWidth: 70),
                       decoration: BoxDecoration(
-                        color: Colors.amber.shade800.withValues(alpha: 0.3),
+                        color: badgeColor.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(
                           AppDimens.borderRadiusFull,
                         ),
@@ -68,7 +71,7 @@ class CompanyLargeCard extends StatelessWidget {
                       child: Text(
                         role,
                         style: TextStyle(
-                          color: Colors.amber.shade800,
+                          color: badgeColor,
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
