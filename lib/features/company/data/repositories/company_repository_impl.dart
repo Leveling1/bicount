@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:bicount/features/company/data/models/company_with_user_link.model.dart';
 import 'package:bicount/features/company/domain/entities/company.dart';
+import 'package:bicount/features/company/domain/entities/company_data.dart';
 import 'package:bicount/features/company/domain/repositories/company_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -28,11 +30,12 @@ class CompanyRepositoryImpl implements CompanyRepository {
   var uuid = Uuid();
   String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
 
-  late StreamController<List<CompanyModel>> _company;
-
   /// For the creation company
   @override
-  Future<CompanyEntity> createCompany(CompanyEntity company, File? logoFile) async {
+  Future<CompanyEntity> createCompany(
+    CompanyEntity company,
+    File? logoFile,
+  ) async {
     String cid = uuid.v4();
     try {
       final uri = Uri.parse(Secrets.create_company_endpoint);
@@ -53,13 +56,13 @@ class CompanyRepositoryImpl implements CompanyRepository {
         var mimeParts = mimeType.split('/');
 
         request.files.add(
-            http.MultipartFile(
-              'logo',
-              fileStream,
-              fileLength,
-              filename: path.basename(logoFile.path),
-              contentType: MediaType(mimeParts[0], mimeParts[1]),
-            )
+          http.MultipartFile(
+            'logo',
+            fileStream,
+            fileLength,
+            filename: path.basename(logoFile.path),
+            contentType: MediaType(mimeParts[0], mimeParts[1]),
+          ),
         );
       }
 
@@ -78,26 +81,36 @@ class CompanyRepositoryImpl implements CompanyRepository {
 
             // Vérifiez si la réponse indique le succès
             if (responseData['success'] != true) {
-              final errorMessage = responseData['error'] ?? 'La création a échoué sans message d\'erreur';
+              final errorMessage =
+                  responseData['error'] ??
+                  'La création a échoué sans message d\'erreur';
               throw ValidationFailure(errorMessage);
             }
 
             // ⚠️ CORRECTION: Extraire les données de "company" et non de la racine
             final companyData = responseData['company'];
             if (companyData == null) {
-              throw DataParsingFailure('Réponse invalide: champ "company" manquant');
+              throw DataParsingFailure(
+                'Réponse invalide: champ "company" manquant',
+              );
             }
 
             // Vérifiez les champs requis dans companyData
             if (companyData['name'] == null) {
-              throw DataParsingFailure('Invalid response format: missing name field in company data');
+              throw DataParsingFailure(
+                'Invalid response format: missing name field in company data',
+              );
             }
 
-            final createdCompany = CompanyEntity.fromMap(companyData); // ← Utiliser companyData
+            final createdCompany = CompanyEntity.fromMap(
+              companyData,
+            ); // ← Utiliser companyData
 
             return createdCompany;
           } catch (parseError) {
-            throw DataParsingFailure('Error while parsing the server response: $parseError');
+            throw DataParsingFailure(
+              'Error while parsing the server response: $parseError',
+            );
           }
 
         case 400:
@@ -110,36 +123,44 @@ class CompanyRepositoryImpl implements CompanyRepository {
           }
 
         case 401:
-          throw AuthenticationFailure(message: 'Session expired. Please log in again.');
+          throw AuthenticationFailure(
+            message: 'Session expired. Please log in again.',
+          );
 
         case 403:
-          throw AuthorizationFailure('You do not have permission to create a company');
+          throw AuthorizationFailure(
+            'You do not have permission to create a company',
+          );
 
         case 413:
-          throw ValidationFailure('The logo file is too large. Maximum size: 10MB');
+          throw ValidationFailure(
+            'The logo file is too large. Maximum size: 10MB',
+          );
 
         case 415:
-          throw ValidationFailure('Unsupported logo format. Use JPG, PNG, or WebP');
+          throw ValidationFailure(
+            'Unsupported logo format. Use JPG, PNG, or WebP',
+          );
 
         case 500:
           throw ServerFailure('Internal server error. Please try again later.');
 
         case 503:
-          throw ServerFailure('Service temporarily unavailable. Please try again in a few minutes.');
+          throw ServerFailure(
+            'Service temporarily unavailable. Please try again in a few minutes.',
+          );
 
         default:
-          throw ServerFailure('Unexpected network error (${response.statusCode})');
+          throw ServerFailure(
+            'Unexpected network error (${response.statusCode})',
+          );
       }
-
     } on SocketException catch (e) {
       throw NetworkFailure('No internet connection. Check your network.');
-
     } on TimeoutException catch (e) {
       throw NetworkFailure('Response timed out. Please try again.');
-
     } on FormatException catch (e) {
       throw DataParsingFailure('Invalid data format');
-
     } catch (e) {
       if (e is ValidationFailure ||
           e is AuthenticationFailure ||
@@ -155,11 +176,15 @@ class CompanyRepositoryImpl implements CompanyRepository {
 
   /// To create a feed and have all the user's companies
   @override
-  Stream<List<CompanyModel>> getCompanyStream() {
+  Stream<CompanyData> getCompanyStream() {
     try {
-      final companies = localDataSource.getCompany();
+      Stream<List<CompanyWithUserLinkModel>> links = localDataSource
+          .getCompanyLinks();
+      Stream<List<CompanyModel>> companies = localDataSource.getCompany();
       remoteDataSource.subscribeDeleteChanges();
-      return companies;
+      return Rx.combineLatest2(links, companies, (links, companies) {
+        return CompanyData(companies: companies, links: links);
+      });
     } catch (e) {
       return Stream.error(
         MessageFailure(message: "Une erreur s'est produite : ${e.toString()}"),
@@ -172,34 +197,49 @@ class CompanyRepositoryImpl implements CompanyRepository {
   Stream<CompanyEntity> getCompanyDetailStream(String cid) {
     try {
       // Récupérer les trois streams
-      Stream<CompanyModel> companyStream = localDataSource.getCompanyDetails(cid);
-      Stream<List<ProjectModel>> projectStream = localDataSource.getCompanyProjects(cid);
-      Stream<List<GroupModel>> groupStream = localDataSource.getCompanyGroups(cid);
+      Stream<CompanyModel> companyStream = localDataSource.getCompanyDetails(
+        cid,
+      );
+      Stream<List<ProjectModel>> projectStream = localDataSource
+          .getCompanyProjects(cid);
+      Stream<List<GroupModel>> groupStream = localDataSource.getCompanyGroups(
+        cid,
+      );
 
       // CORRECTION: Combiner les trois streams en un seul
-      return Rx.combineLatest3<CompanyModel, List<ProjectModel>, List<GroupModel>, CompanyEntity>(
-        companyStream,
-        projectStream,
-        groupStream,
-        (CompanyModel company, List<ProjectModel> projects, List<GroupModel> groups) {
-          return _convertToEntity(company, projects, groups);
-        },
-      ).handleError((error) {
-        throw MessageFailure(message: "Erreur de combinaison des données: ${error.toString()}");
-      });
+      return Rx.combineLatest3<
+            CompanyModel,
+            List<ProjectModel>,
+            List<GroupModel>,
+            CompanyEntity
+          >(companyStream, projectStream, groupStream, (
+            CompanyModel company,
+            List<ProjectModel> projects,
+            List<GroupModel> groups,
+          ) {
+            return _convertToEntity(company, projects, groups);
+          })
+          .handleError((error) {
+            throw MessageFailure(
+              message: "Erreur de combinaison des données: ${error.toString()}",
+            );
+          });
     } catch (e) {
       return Stream.error(
-        MessageFailure(message: "Erreur lors de la récupération des détails: ${e.toString()}"),
+        MessageFailure(
+          message:
+              "Erreur lors de la récupération des détails: ${e.toString()}",
+        ),
       );
     }
   }
 
-// CORRECTION: La méthode prend maintenant les données directement, pas les streams
+  // CORRECTION: La méthode prend maintenant les données directement, pas les streams
   CompanyEntity _convertToEntity(
-      CompanyModel model,
-      List<ProjectModel> projects,
-      List<GroupModel> groups
-    ) {
+    CompanyModel model,
+    List<ProjectModel> projects,
+    List<GroupModel> groups,
+  ) {
     return CompanyEntity(
       cid: model.cid ?? '',
       name: model.name,

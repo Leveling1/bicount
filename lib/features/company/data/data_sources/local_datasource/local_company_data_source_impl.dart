@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bicount/features/company/data/models/company.model.dart';
+import 'package:bicount/features/company/data/models/company_with_user_link.model.dart';
 import 'package:bicount/features/project/data/models/project.model.dart';
 import 'package:brick_core/core.dart';
 import 'package:rxdart/rxdart.dart';
@@ -196,5 +197,34 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
 
     _groupCompanyCache[cid]?.close();
     _groupCompanyCache.remove(cid);
+  }
+
+  /// For the company links
+  BehaviorSubject<List<CompanyWithUserLinkModel>>? _linksController;
+
+  @override
+  Stream<List<CompanyWithUserLinkModel>> getCompanyLinks() {
+    try {
+      if (_linksController != null) {
+        return _linksController!.stream;
+      }
+
+      _linksController = BehaviorSubject<List<CompanyWithUserLinkModel>>.seeded([]);
+
+      Repository().subscribeToRealtime<CompanyWithUserLinkModel>().listen(
+        (List<CompanyWithUserLinkModel> links) {
+          _linksController?.add(links);
+        },
+        onError: (error) {
+          _linksController?.addError(error);
+        },
+      );
+
+      return _linksController!.stream;
+    } catch (e) {
+      return Stream.error(
+        MessageFailure(message: "Erreur lors de la récupération des liens: ${e.toString()}"),
+      );
+    }
   }
 }

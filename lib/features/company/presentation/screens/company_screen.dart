@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_search_field.dart';
 import '../bloc/list_bloc/list_bloc.dart';
@@ -37,7 +38,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  BlocConsumer<ListBloc, ListState>(
+    return BlocConsumer<ListBloc, ListState>(
       listener: (context, state) {
         if (state is ListError) {
           NotificationHelper.showFailureNotification(context, state.toString());
@@ -51,42 +52,51 @@ class _CompanyScreenState extends State<CompanyScreen> {
             ),
           );
         } else if (state is ListLoaded) {
-          if (state.companies.isEmpty) {
-            return const Center(child: Text("You are not linked to any company."));
+          if (state.companies.companies.isEmpty) {
+            return const Center(
+              child: Text("You are not linked to any company."),
+            );
           }
 
-          final filteredCompanies = state.companies.where((company) {
+          final filteredCompanies = state.companies.companies.where((company) {
             final query = _searchController.text.toLowerCase();
             return company.name.toLowerCase().contains(query);
           }).toList();
 
           filteredCompanies.sort(
-            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+          );
 
           return SingleChildScrollView(
             child: Column(
               children: [
-                state.companies.length > 10
-                  ? CustomSearchField(
-                      onChanged: (value){
-                        setState(() {
-                          _searchController.text = value;
-                        });
-                      },
-                    )
-                  : const SizedBox.shrink(),
+                state.companies.companies.length > 10
+                    ? CustomSearchField(
+                        onChanged: (value) {
+                          setState(() {
+                            _searchController.text = value;
+                          });
+                        },
+                      )
+                    : const SizedBox.shrink(),
                 const SizedBox(height: 20),
                 Column(
-                  children:
-                  filteredCompanies.map((company) {
-                    if (state.companies.length > 10) {
-                      return CompanyCard(company: company);
-                    } else {
-                      return CompanyLargeCard(company: company);
-                    }
-                  }).toList(),
-                )
-              ]
+                  children: [
+                    ...filteredCompanies.map((company) {
+                      if (state.companies.companies.length > 10) {
+                        return CompanyCard(company: company);
+                      } else {
+                    final roleModel = state.companies.links.where((e) => e.companyId == company.cid).isEmpty
+                        ? null
+                        : state.companies.links.firstWhere((e) => e.companyId == company.cid);
+                    final role = roleModel?.role ?? '';
+                    return CompanyLargeCard(company: company, role: role);
+                      }
+                    }),
+                    SizedBox(height: 50.h),
+                  ],
+                ),
+              ],
             ),
           );
         } else if (state is ListError) {

@@ -1,5 +1,6 @@
 // bloc/list_bloc.dart
 import 'dart:async';
+import 'package:bicount/features/company/domain/entities/company_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/errors/failure.dart';
 import '../../../data/models/company.model.dart';
@@ -20,7 +21,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     emit(ListLoading());
 
     try {
-      await emit.forEach<List<CompanyModel>>(
+      await emit.forEach<CompanyData>(
         repository.getCompanyStream(),
         onData: (companies) => ListLoaded(companies),
         onError: (error, stackTrace) => ListError(ServerFailure(error.toString())),

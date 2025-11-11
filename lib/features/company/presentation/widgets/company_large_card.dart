@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path/path.dart';
 
 import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/number_format_utils.dart';
@@ -8,7 +9,12 @@ import 'company_profil.dart';
 
 class CompanyLargeCard extends StatelessWidget {
   final CompanyModel company;
-  const CompanyLargeCard({super.key, required this.company});
+  final String role;
+  const CompanyLargeCard({
+    super.key,
+    required this.company,
+    required this.role,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +43,40 @@ class CompanyLargeCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
           splashColor: Colors.transparent,
           highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-          onTap: (){
+          onTap: () {
             context.push('/companyDetail', extra: company.cid);
           },
           child: Padding(
             padding: AppDimens.paddingVerticalLargeHorizontalExtraLarge,
             child: Column(
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      constraints: const BoxConstraints(minWidth: 70),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.shade800.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(
+                          AppDimens.borderRadiusFull,
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      child: Text(
+                        role,
+                        style: TextStyle(
+                          color: Colors.amber.shade800,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
                 CompanyProfil(
                   width: 120,
                   height: 120,
@@ -56,17 +89,21 @@ class CompanyLargeCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 company.description != null && company.description != ""
-                    ? const SizedBox(height: 4) : const SizedBox.shrink(),
+                    ? const SizedBox(height: 4)
+                    : const SizedBox.shrink(),
                 company.description != null && company.description != ""
                     ? Text(
-                  company.description!,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: TextStyle(
-                      color: Colors.grey.shade500,
-                      fontSize: Theme.of(context).textTheme.bodySmall!.fontSize!
-                  ),
-                ) : const SizedBox.shrink(),
+                        company.description!,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontSize: Theme.of(
+                            context,
+                          ).textTheme.bodySmall!.fontSize!,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
                 const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -84,55 +121,61 @@ class CompanyLargeCard extends StatelessWidget {
                             NumberFormatUtils.formatCurrency(profit),
                             style: TextStyle(
                               color: colorProfit,
-                              fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
-                              fontWeight: FontWeight.bold
+                              fontSize: Theme.of(
+                                context,
+                              ).textTheme.bodyLarge!.fontSize,
+                              fontWeight: FontWeight.bold,
                             ),
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ),
                     Flexible(
-                        flex: 1,
-                        child: Column(
-                          children: [
-                            Text(
-                              "Expenses",
-                              style: Theme.of(context).textTheme.bodySmall,
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Text(
+                            "Expenses",
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            NumberFormatUtils.formatCurrency(expenses),
+                            style: TextStyle(
+                              color: colorExpense,
+                              fontSize: Theme.of(
+                                context,
+                              ).textTheme.bodyLarge!.fontSize,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              NumberFormatUtils.formatCurrency(expenses),
-                              style: TextStyle(
-                                  color: colorExpense,
-                                  fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
-                                  fontWeight: FontWeight.bold
-                              ),
-                            )
-                          ],
-                        )
+                          ),
+                        ],
+                      ),
                     ),
                     Flexible(
-                        flex: 1,
-                        child: Column(
-                          children: [
-                            Text(
-                              "Total",
-                              style: Theme.of(context).textTheme.bodySmall,
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Text(
+                            "Total",
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            NumberFormatUtils.formatCurrency(revenue),
+                            style: TextStyle(
+                              color: colorRevenue,
+                              fontSize: Theme.of(
+                                context,
+                              ).textTheme.bodyLarge!.fontSize,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              NumberFormatUtils.formatCurrency(revenue),
-                              style: TextStyle(
-                                  color: colorRevenue,
-                                  fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
-                                  fontWeight: FontWeight.bold
-                              ),
-                            )
-                          ],
-                        )
+                          ),
+                        ],
+                      ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),

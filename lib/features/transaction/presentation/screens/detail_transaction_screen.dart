@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,10 +11,7 @@ import '../../../../core/widgets/details_card.dart';
 
 class DetailTransaction extends StatelessWidget {
   final TransactionDetailArgs transaction;
-  DetailTransaction({
-    super.key,
-    required this.transaction,
-  });
+  DetailTransaction({super.key, required this.transaction});
 
   final double size = 20;
   late TransactionEntity data;
@@ -43,14 +41,20 @@ class DetailTransaction extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 data.sender == uid || data.uid == uid
-                ? IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.edit,
-                    color: Theme.of(context).iconTheme.color,
-                    size: size,
-                  ),
-                ) : const SizedBox.shrink(),
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.edit,
+                              color: Theme.of(context).iconTheme.color,
+                              size: size,
+                            ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
                 CircleAvatar(
                   backgroundColor: Theme.of(context).cardColor,
                   radius: 40,
@@ -91,15 +95,9 @@ class DetailTransaction extends StatelessWidget {
                 DetailsCard(
                   child: Column(
                     children: [
-                      RowDetail(
-                          title: 'Sender',
-                          content: sender
-                      ),
+                      RowDetail(title: 'Sender', content: sender),
                       const SizedBox(height: 8),
-                      RowDetail(
-                        title: 'Beneficiary',
-                        content: beneficiary,
-                      ),
+                      RowDetail(title: 'Beneficiary', content: beneficiary),
                     ],
                   ),
                 ),
@@ -119,11 +117,15 @@ class DetailTransaction extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: AppDimens.paddingLarge),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('Created at', style: Theme.of(context).textTheme.bodySmall),
-            Text(formattedCreatedDateTime, style: Theme.of(context).textTheme.bodySmall),
+            Text(
+              formattedCreatedDateTime,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ],
         ),
       ],
@@ -145,11 +147,11 @@ class RowDetail extends StatelessWidget {
       children: [
         Flexible(
           flex: 1,
-          child: Text(title, style: Theme.of(context).textTheme.bodyMedium)
+          child: Text(title, style: Theme.of(context).textTheme.bodyMedium),
         ),
         Flexible(
           flex: 2,
-          child: Text(content, style: Theme.of(context).textTheme.bodyMedium)
+          child: Text(content, style: Theme.of(context).textTheme.bodyMedium),
         ),
       ],
     );

@@ -13,7 +13,7 @@ class ListCreated extends ListState {
 }
 
 class ListLoaded extends ListState {
-  final List<CompanyModel> companies;
+  final CompanyData companies;
   ListLoaded(this.companies);
 }
 class ListError extends ListState {
