@@ -1,31 +1,30 @@
-import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
-import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../features/main/data/models/friends.model.dart';
-import '../../features/transaction/data/models/transaction.model.dart';
-import '../../features/transaction/domain/entities/transaction_detail_args.dart';
-import '../../features/transaction/presentation/screens/detail_transaction_screen.dart';
 import '../themes/app_dimens.dart';
-import 'custom_bottom_sheet.dart';
 
 class TransactionCard extends StatelessWidget {
   final TransactionEntity transaction;
-  final onTap;
+  final VoidCallback? onTap;
 
-  const TransactionCard({
-    super.key,
-    required this.transaction,
-    this.onTap,
-  });
+  const TransactionCard({super.key, required this.transaction, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    String sign = transaction.type == TransactionType.expense ? '-' : '+';
+    final supabaseInstance = Supabase.instance.client;
+    late String uid = supabaseInstance.auth.currentUser!.id;
+    String sign = transaction.sender == uid
+        ? '-'
+        : transaction.beneficiary == uid
+        ? '+'
+        : transaction.type == TransactionType.expense
+        ? '-'
+        : '+';
     String time = TimeOfDay.fromDateTime(transaction.date).format(context);
     String currency = transaction.currency.symbol;
     return Container(
@@ -49,7 +48,10 @@ class TransactionCard extends StatelessWidget {
                   child: SizedBox(
                     width: 30.w,
                     height: 30.h,
-                    child: Image.asset(transaction.image!),
+                    child: CachedNetworkImage(
+                      imageUrl: transaction.image!,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -66,7 +68,10 @@ class TransactionCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         time,
-                        style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+                        style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontSize: 13,
+                        ),
                       ),
                     ],
                   ),

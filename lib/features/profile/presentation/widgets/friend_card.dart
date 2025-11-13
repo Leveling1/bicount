@@ -1,4 +1,5 @@
 import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -32,7 +33,10 @@ class FriendCard extends StatelessWidget {
                   child: SizedBox(
                     width: 30.w,
                     height: 30.h,
-                    child: Image.asset(friend.image),
+                    child: CachedNetworkImage(
+                      imageUrl: friend.image,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),

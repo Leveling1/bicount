@@ -24,7 +24,13 @@ class DetailTransaction extends StatelessWidget {
     String formattedDate = formatedDate(data.date);
     String formattedTime = formatedTime(data.date);
     String formattedCreatedDateTime = formatedDateTime(data.createdAt!);
-    String sign = data.type == TransactionType.expense ? '-' : '+';
+    String sign = data.sender == uid
+        ? '-'
+        : data.beneficiary == uid
+        ? '+'
+        : data.type == TransactionType.expense
+        ? '-'
+        : '+';
     String sender = transaction.friends
         .firstWhere((friend) => friend.sid == data.sender)
         .username;
@@ -76,6 +82,7 @@ class DetailTransaction extends StatelessWidget {
                         ? AppColors.primaryColorDark
                         : AppColors.negativeColorDark,
                     fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
+                    fontWeight: FontWeight.bold
                   ),
                 ),
                 Text(
@@ -128,6 +135,7 @@ class DetailTransaction extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: AppDimens.paddingLarge),
       ],
     );
   }

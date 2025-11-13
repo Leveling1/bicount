@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final double height = MediaQuery.sizeOf(context).height;
     return BlocConsumer<HomeBloc, HomeState>(
-      listener: (context, state){
+      listener: (context, state) {
         if (state is HomeError) {
           NotificationHelper.showFailureNotification(context, state.message);
         }
@@ -55,11 +55,11 @@ class HomeScreen extends StatelessWidget {
                               ),
 
                               Text(
-                                  NumberFormatUtils.formatCurrency(
-                                    data.user.profit != null
+                                NumberFormatUtils.formatCurrency(
+                                  data.user.profit != null
                                       ? data.user.profit!
-                                      : 0.0
-                                  ),
+                                      : 0.0,
+                                ),
                                 style: Theme.of(context).textTheme.titleLarge!
                                     .copyWith(fontWeight: FontWeight.bold),
                               ),
@@ -97,8 +97,8 @@ class HomeScreen extends StatelessWidget {
                             },
                             label: "Entreprises",
                             amount: data.user.companyIncome != null
-                              ? data.user.companyIncome!
-                              : 0.0,
+                                ? data.user.companyIncome!
+                                : 0.0,
                             icon: HugeIcon(
                               icon: HugeIcons.strokeRoundedBuilding02,
                               color: Colors.white,
@@ -109,27 +109,29 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     data.transactions.isNotEmpty
-                    ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Transactions",
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            onCardTap?.call(2); // TransactionScreen
-                          },
-                          style: Theme.of(context).textButtonTheme.style,
-                          child: Text(
-                            "show more",
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ),
-                      ],
-                    ) : const SizedBox.shrink(),
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Transactions",
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  onCardTap?.call(2); // TransactionScreen
+                                },
+                                style: Theme.of(context).textButtonTheme.style,
+                                child: Text(
+                                  "show more",
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ),
+                            ],
+                          )
+                        : const SizedBox.shrink(),
                     Expanded(
                       child: ListView.builder(
+                        padding: EdgeInsets.only(bottom: 30.h),
                         itemCount: data.transactions.length.clamp(0, 5),
                         itemBuilder: (context, index) {
                           final t = data.transactions[index];
@@ -161,6 +163,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         );
-    },);
+      },
+    );
   }
 }

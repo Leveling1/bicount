@@ -22,7 +22,7 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               children: [
                 ProfileCard(
-                  image: 'assets/memoji/memoji_1.png',
+                  image: data.user.image,
                   name: data.user.username,
                   email: data.user.email,
                   onTap: () {}

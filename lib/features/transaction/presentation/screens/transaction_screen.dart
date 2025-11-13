@@ -5,6 +5,7 @@ import 'package:bicount/features/transaction/domain/entities/transaction_entity.
 import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/utils/date_format_utils.dart';
@@ -76,7 +77,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
         if (state is TransactionCreated) {
           NotificationHelper.showSuccessNotification(context, state.toString());
         } else if (state is TransactionError) {
-          NotificationHelper.showFailureNotification(context, state.failure.message);
+          NotificationHelper.showFailureNotification(
+            context,
+            state.failure.message,
+          );
         }
       },
       builder: (context, state) {
@@ -114,13 +118,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
             ? Column(
                 children: [
                   transactions.length > 10
-                    ? CustomSearchField(
-                    onChanged: (value) {
-                      setState(() {
-                        _searchController.text = value;
-                      });
-                    },
-                  ) : const SizedBox.shrink(),
+                      ? CustomSearchField(
+                          onChanged: (value) {
+                            setState(() {
+                              _searchController.text = value;
+                            });
+                          },
+                        )
+                      : const SizedBox.shrink(),
                   TransactionFilterChips(
                     selectedIndex: _selectedIndex,
                     onTap: _onItemTapped,
@@ -133,6 +138,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               context,
                             ).copyWith(scrollbars: false),
                             child: ListView(
+                              padding: EdgeInsets.only(top: 15, bottom: 50.h),
                               children: grouped.entries.map((entry) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +151,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                     ),
                                     const SizedBox(height: 8),
                                     ...entry.value.map((tx) {
-                                      TransactionEntity transaction = TransactionEntity.fromTransaction(tx);
+                                      TransactionEntity transaction =
+                                          TransactionEntity.fromTransaction(tx);
                                       return TransactionCard(
                                         transaction: transaction,
                                         onTap: () {
@@ -154,10 +161,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                             minHeight: 0.95,
                                             color: null,
                                             child: DetailTransaction(
-                                              transaction: TransactionDetailArgs(
-                                                transactionDetail: transaction,
-                                                friends: widget.data.friends,
-                                              ),
+                                              transaction:
+                                                  TransactionDetailArgs(
+                                                    transactionDetail:
+                                                        transaction,
+                                                    friends:
+                                                        widget.data.friends,
+                                                  ),
                                             ),
                                           );
                                         },
@@ -171,10 +181,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           ),
                         )
                       : Expanded(
-                        child: const Center(
+                          child: const Center(
                             child: Text('No transactions found'),
                           ),
-                      ),
+                        ),
                 ],
               )
             : const Center(child: Text('No transactions found'));
