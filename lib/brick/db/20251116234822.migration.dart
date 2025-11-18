@@ -9,7 +9,8 @@ part of 'schema.g.dart';
 
 // The migration version must **always** mirror the file name
 
-const List<MigrationCommand> _migration_20251106162131_up = [
+const List<MigrationCommand> _migration_20251116234822_up = [
+  InsertTable('MemojiModel'),
   InsertTable('UserModel'),
   InsertTable('UserLinkModel'),
   InsertTable('CompanyModel'),
@@ -19,6 +20,10 @@ const List<MigrationCommand> _migration_20251106162131_up = [
   InsertTable('UserLinksModel'),
   InsertTable('ProjectModel'),
   InsertTable('TransactionModel'),
+  InsertColumn('name', Column.varchar, onTable: 'MemojiModel'),
+  InsertColumn('link', Column.varchar, onTable: 'MemojiModel'),
+  InsertColumn('sexe', Column.varchar, onTable: 'MemojiModel'),
+  InsertColumn('mid', Column.varchar, onTable: 'MemojiModel', unique: true),
   InsertColumn('uid', Column.varchar, onTable: 'UserModel'),
   InsertColumn('image', Column.varchar, onTable: 'UserModel'),
   InsertColumn('username', Column.varchar, onTable: 'UserModel'),
@@ -60,6 +65,8 @@ const List<MigrationCommand> _migration_20251106162131_up = [
   InsertColumn('image', Column.varchar, onTable: 'FriendsModel'),
   InsertColumn('username', Column.varchar, onTable: 'FriendsModel'),
   InsertColumn('email', Column.varchar, onTable: 'FriendsModel'),
+  InsertColumn('give', Column.Double, onTable: 'FriendsModel'),
+  InsertColumn('receive', Column.Double, onTable: 'FriendsModel'),
   InsertColumn('sid', Column.varchar, onTable: 'FriendsModel', unique: true),
   InsertColumn('user_a_id', Column.varchar, onTable: 'UserLinksModel'),
   InsertColumn('user_b_id', Column.varchar, onTable: 'UserLinksModel'),
@@ -92,6 +99,7 @@ const List<MigrationCommand> _migration_20251106162131_up = [
   InsertColumn('frequency', Column.varchar, onTable: 'TransactionModel'),
   InsertColumn('created_at', Column.varchar, onTable: 'TransactionModel'),
   InsertColumn('tid', Column.varchar, onTable: 'TransactionModel', unique: true),
+  CreateIndex(columns: ['mid'], onTable: 'MemojiModel', unique: true),
   CreateIndex(columns: ['sid'], onTable: 'UserModel', unique: true),
   CreateIndex(columns: ['lid'], onTable: 'UserLinkModel', unique: true),
   CreateIndex(columns: ['cid'], onTable: 'CompanyModel', unique: true),
@@ -103,7 +111,8 @@ const List<MigrationCommand> _migration_20251106162131_up = [
   CreateIndex(columns: ['tid'], onTable: 'TransactionModel', unique: true)
 ];
 
-const List<MigrationCommand> _migration_20251106162131_down = [
+const List<MigrationCommand> _migration_20251116234822_down = [
+  DropTable('MemojiModel'),
   DropTable('UserModel'),
   DropTable('UserLinkModel'),
   DropTable('CompanyModel'),
@@ -113,6 +122,10 @@ const List<MigrationCommand> _migration_20251106162131_down = [
   DropTable('UserLinksModel'),
   DropTable('ProjectModel'),
   DropTable('TransactionModel'),
+  DropColumn('name', onTable: 'MemojiModel'),
+  DropColumn('link', onTable: 'MemojiModel'),
+  DropColumn('sexe', onTable: 'MemojiModel'),
+  DropColumn('mid', onTable: 'MemojiModel'),
   DropColumn('uid', onTable: 'UserModel'),
   DropColumn('image', onTable: 'UserModel'),
   DropColumn('username', onTable: 'UserModel'),
@@ -154,6 +167,8 @@ const List<MigrationCommand> _migration_20251106162131_down = [
   DropColumn('image', onTable: 'FriendsModel'),
   DropColumn('username', onTable: 'FriendsModel'),
   DropColumn('email', onTable: 'FriendsModel'),
+  DropColumn('give', onTable: 'FriendsModel'),
+  DropColumn('receive', onTable: 'FriendsModel'),
   DropColumn('sid', onTable: 'FriendsModel'),
   DropColumn('user_a_id', onTable: 'UserLinksModel'),
   DropColumn('user_b_id', onTable: 'UserLinksModel'),
@@ -186,6 +201,7 @@ const List<MigrationCommand> _migration_20251106162131_down = [
   DropColumn('frequency', onTable: 'TransactionModel'),
   DropColumn('created_at', onTable: 'TransactionModel'),
   DropColumn('tid', onTable: 'TransactionModel'),
+  DropIndex('index_MemojiModel_on_mid'),
   DropIndex('index_UserModel_on_sid'),
   DropIndex('index_UserLinkModel_on_lid'),
   DropIndex('index_CompanyModel_on_cid'),
@@ -202,15 +218,15 @@ const List<MigrationCommand> _migration_20251106162131_down = [
 //
 
 @Migratable(
-  version: '20251106162131',
-  up: _migration_20251106162131_up,
-  down: _migration_20251106162131_down,
+  version: '20251116234822',
+  up: _migration_20251116234822_up,
+  down: _migration_20251116234822_down,
 )
-class Migration20251106162131 extends Migration {
-  const Migration20251106162131()
+class Migration20251116234822 extends Migration {
+  const Migration20251116234822()
     : super(
-        version: 20251106162131,
-        up: _migration_20251106162131_up,
-        down: _migration_20251106162131_down,
+        version: 20251116234822,
+        up: _migration_20251116234822_up,
+        down: _migration_20251116234822_down,
       );
 }

@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
@@ -6,7 +7,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../brick/repository.dart';
-import '../../../../authentification/data/models/user.model.dart';
 import '../../../../authentification/data/models/user_links.model.dart';
 import '../../models/transaction.model.dart';
 
@@ -15,25 +15,22 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   late String uid = supabaseInstance.auth.currentUser!.id;
 
   @override
-  Future<Either<Failure, UserModel>> createANewFriend(
+  Future<Either<Failure, FriendsModel>> createANewFriend(
     FriendsModel friend,
   ) async {
     final id = Uuid().v4();
     try {
-      final UserModel friendAdd = UserModel(
+      final FriendsModel friendAdd = FriendsModel(
         uid: id,
         sid: id,
         username: friend.username,
         email: friend.email,
-        image: 'memoji_default',
-        sales: 0.0,
-        personalIncome: 0.0,
-        companyIncome: 0.0,
-        profit: 0.0,
-        expenses: 0.0,
+        image: Constants.memojiDefault,
+        give: 0.0,
+        receive: 0.0
       );
 
-      await Repository().upsert<UserModel>(friendAdd);
+      await Repository().upsert<FriendsModel>(friendAdd);
       return Right(friendAdd);
     } catch (e) {
       return Left(
@@ -45,7 +42,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   }
 
   @override
-  Future<Either<Failure, void>> createANewLink(UserModel friend) async {
+  Future<Either<Failure, void>> createANewLink(FriendsModel friend) async {
     final lid = Uuid().v4();
     try {
       final createdNewLink = UserLinkModel(

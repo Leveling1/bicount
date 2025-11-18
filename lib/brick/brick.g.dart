@@ -19,6 +19,7 @@ import 'package:brick_offline_first/brick_offline_first.dart' show RuntimeOfflin
 // ignore: unused_import, unused_shown_name
 import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;
 
+import '../core/models/memoji.model.dart';
 import '../features/authentification/data/models/user.model.dart';
 import '../features/authentification/data/models/user_links.model.dart';
 import '../features/company/data/models/company.model.dart';
@@ -29,6 +30,7 @@ import '../features/main/data/models/user_links.model.dart';
 import '../features/project/data/models/project.model.dart';
 import '../features/transaction/data/models/transaction.model.dart';
 
+part 'adapters/memoji_model_adapter.g.dart';
 part 'adapters/user_model_adapter.g.dart';
 part 'adapters/user_link_model_adapter.g.dart';
 part 'adapters/company_model_adapter.g.dart';
@@ -41,6 +43,7 @@ part 'adapters/transaction_model_adapter.g.dart';
 
 /// Supabase mappings should only be used when initializing a [SupabaseProvider]
 final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
+  MemojiModel: MemojiModelAdapter(),
   UserModel: UserModelAdapter(),
   UserLinkModel: UserLinkModelAdapter(),
   CompanyModel: CompanyModelAdapter(),
@@ -55,6 +58,7 @@ final supabaseModelDictionary = SupabaseModelDictionary(supabaseMappings);
 
 /// Sqlite mappings should only be used when initializing a [SqliteProvider]
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
+  MemojiModel: MemojiModelAdapter(),
   UserModel: UserModelAdapter(),
   UserLinkModel: UserLinkModelAdapter(),
   CompanyModel: CompanyModelAdapter(),

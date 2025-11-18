@@ -7,19 +7,19 @@ import 'package:uuid/uuid.dart';
   supabaseConfig: SupabaseSerializable(tableName: 'user_links'),
 )
 class UserLinkModel extends OfflineFirstWithSupabaseModel {
-  @Sqlite(name: 'user_a_id')
+  @Sqlite()
   @Supabase(name: 'user_a_id')
   final String userAId;
 
-  @Sqlite(name: 'user_b_id')
+  @Sqlite()
   @Supabase(name: 'user_b_id')
   final String userBId;
 
-  @Sqlite(name: 'link_type')
+  @Sqlite()
   @Supabase(name: 'link_type')
   final String linkType;
 
-  @Sqlite(name: 'status')
+  @Sqlite()
   @Supabase(name: 'status')
   final String status;
 

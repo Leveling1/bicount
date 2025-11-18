@@ -7,10 +7,12 @@ Future<FriendsModel> _$FriendsModelFromSupabase(
   OfflineFirstWithSupabaseRepository? repository,
 }) async {
   return FriendsModel(
-    uid: data['uid'] as String,
+    uid: data['uid'] == null ? null : data['uid'] as String?,
     image: data['image'] as String,
     username: data['username'] as String,
     email: data['email'] as String,
+    give: data['give'] == null ? null : data['give'] as double?,
+    receive: data['receive'] == null ? null : data['receive'] as double?,
     sid: data['sid'] as String?,
   );
 }
@@ -25,6 +27,8 @@ Future<Map<String, dynamic>> _$FriendsModelToSupabase(
     'image': instance.image,
     'username': instance.username,
     'email': instance.email,
+    'give': instance.give,
+    'receive': instance.receive,
     'sid': instance.sid,
   };
 }
@@ -35,10 +39,12 @@ Future<FriendsModel> _$FriendsModelFromSqlite(
   OfflineFirstWithSupabaseRepository? repository,
 }) async {
   return FriendsModel(
-    uid: data['uid'] as String,
+    uid: data['uid'] == null ? null : data['uid'] as String?,
     image: data['image'] as String,
     username: data['username'] as String,
     email: data['email'] as String,
+    give: data['give'] == null ? null : data['give'] as double?,
+    receive: data['receive'] == null ? null : data['receive'] as double?,
     sid: data['sid'] as String,
   )..primaryKey = data['_brick_id'] as int;
 }
@@ -53,6 +59,8 @@ Future<Map<String, dynamic>> _$FriendsModelToSqlite(
     'image': instance.image,
     'username': instance.username,
     'email': instance.email,
+    'give': instance.give,
+    'receive': instance.receive,
     'sid': instance.sid,
   };
 }
@@ -63,7 +71,7 @@ class FriendsModelAdapter
   FriendsModelAdapter();
 
   @override
-  final supabaseTableName = 'users';
+  final supabaseTableName = 'friends';
   @override
   final defaultToNull = true;
   @override
@@ -83,6 +91,14 @@ class FriendsModelAdapter
     'email': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'email',
+    ),
+    'give': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'give',
+    ),
+    'receive': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'receive',
     ),
     'sid': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -124,6 +140,18 @@ class FriendsModelAdapter
       columnName: 'email',
       iterable: false,
       type: String,
+    ),
+    'give': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'give',
+      iterable: false,
+      type: double,
+    ),
+    'receive': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'receive',
+      iterable: false,
+      type: double,
     ),
     'sid': const RuntimeSqliteColumnDefinition(
       association: false,

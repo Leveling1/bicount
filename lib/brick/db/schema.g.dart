@@ -1,17 +1,36 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
-part '20251106162131.migration.dart';
+part '20251116234822.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
-  const Migration20251106162131(),};
+  const Migration20251116234822(),};
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
   0,
   generatorVersion: 1,
   tables: <SchemaTable>{
+    SchemaTable(
+      'MemojiModel',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('name', Column.varchar),
+        SchemaColumn('link', Column.varchar),
+        SchemaColumn('sexe', Column.varchar),
+        SchemaColumn('mid', Column.varchar, unique: true),
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(columns: ['mid'], unique: true),
+      },
+    ),
     SchemaTable(
       'UserModel',
       columns: <SchemaColumn>{
@@ -138,6 +157,8 @@ final schema = Schema(
         SchemaColumn('image', Column.varchar),
         SchemaColumn('username', Column.varchar),
         SchemaColumn('email', Column.varchar),
+        SchemaColumn('give', Column.Double),
+        SchemaColumn('receive', Column.Double),
         SchemaColumn('sid', Column.varchar, unique: true),
       },
       indices: <SchemaIndex>{

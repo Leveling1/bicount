@@ -7,16 +7,8 @@ import 'package:uuid/uuid.dart';
   supabaseConfig: SupabaseSerializable(tableName: 'memoji'),
 )
 class MemojiModel extends OfflineFirstWithSupabaseModel {
-  @Sqlite(name: 'name')
-  @Supabase(name: 'name')
   final String name;
-
-  @Sqlite(name: 'link')
-  @Supabase(name: 'link')
   final String link;
-
-  @Sqlite(name: 'sexe')
-  @Supabase(name: 'sexe')
   final String sexe;
 
   @Supabase(unique: true, name: 'mid')

@@ -102,7 +102,7 @@ class ProfileScreen extends StatelessWidget {
                       onTap: () {
                         showCustomBottomSheet(
                           context: context,
-                          minHeight: 0.95,
+                          minHeight: 0.70,
                           color: null,
                           child: DetailFriend(
                             friend: friend,

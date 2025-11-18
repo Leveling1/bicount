@@ -22,7 +22,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
       // 1. Créer l'expéditeur SI nécessaire et obtenir son ID
       if (senderId.isEmpty) {
-        final Either<Failure, UserModel> senderResult = await localDataSource.createANewFriend(sender);
+        final Either<Failure, FriendsModel> senderResult = await localDataSource.createANewFriend(sender);
 
         senderId = await senderResult.fold(
               (failure) async {
@@ -46,19 +46,19 @@ class TransactionRepositoryImpl extends TransactionRepository {
       // 2. Traiter chaque bénéficiaire
       for (final friend in beneficiaryList) {
         String beneficiaryId = friend.sid;
-        late UserModel beneficiary;
+        late FriendsModel beneficiary;
 
         if (beneficiaryId.isEmpty) {
-          final Either<Failure, UserModel> friendResult = await localDataSource.createANewFriend(friend);
+          final Either<Failure, FriendsModel> friendResult = await localDataSource.createANewFriend(friend);
 
           beneficiaryId = await friendResult.fold(
                 (failure) async {
               throw failure;
             },
-                (userModel) async {
+                (friend) async {
               await Future.delayed(Duration(milliseconds: 100));
-              beneficiary = userModel;
-              return userModel.sid;
+              beneficiary = friend;
+              return friend.sid;
             },
           );
 

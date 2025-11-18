@@ -7,14 +7,40 @@ import 'package:uuid/uuid.dart';
   supabaseConfig: SupabaseSerializable(tableName: 'users'),
 )
 class UserModel extends OfflineFirstWithSupabaseModel {
+  @Supabase(name: 'uid')
+  @Sqlite()
   final String uid;
+
+  @Supabase(name: 'image')
+  @Sqlite()
   final String image;
+
+  @Supabase(name: 'username')
+  @Sqlite()
   final String username;
+
+  @Supabase(name: 'email')
+  @Sqlite()
   final String email;
+
+  @Supabase(name: 'sales')
+  @Sqlite()
   final double? sales;
+
+  @Supabase(name: 'expenses')
+  @Sqlite()
   final double? expenses;
+
+  @Supabase(name: 'profit')
+  @Sqlite()
   final double? profit;
+
+  @Supabase(name: 'company_income')
+  @Sqlite()
   final double? companyIncome;
+
+  @Supabase(name: 'personal_income')
+  @Sqlite()
   final double? personalIncome;
 
   @Supabase(unique: true, name: 'sid')
@@ -27,11 +53,11 @@ class UserModel extends OfflineFirstWithSupabaseModel {
     required this.image,
     required this.username,
     required this.email,
-    required this.sales,
-    required this.expenses,
-    required this.profit,
-    required this.companyIncome,
-    required this.personalIncome,
-  })  : sid = sid ?? const Uuid().v4(),
-        super();
+    this.sales,
+    this.expenses,
+    this.profit,
+    this.companyIncome,
+    this.personalIncome,
+  }) : sid = sid ?? const Uuid().v4(),
+       super();
 }
