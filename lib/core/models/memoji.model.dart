@@ -10,7 +10,6 @@ class MemojiModel extends OfflineFirstWithSupabaseModel {
   final String name;
   final String link;
   final String sexe;
-  final String test;
 
   @Supabase(unique: true, name: 'mid')
   @Sqlite(index: true, unique: true, name: 'mid')
@@ -21,7 +20,6 @@ class MemojiModel extends OfflineFirstWithSupabaseModel {
     required this.name,
     required this.link,
     required this.sexe,
-    required this.test,
   })  : mid = mid ?? const Uuid().v4(),
         super();
 }

@@ -9,7 +9,7 @@ part of 'schema.g.dart';
 
 // The migration version must **always** mirror the file name
 
-const List<MigrationCommand> _migration_20251116234822_up = [
+const List<MigrationCommand> _migration_20251118230012_up = [
   InsertTable('MemojiModel'),
   InsertTable('UserModel'),
   InsertTable('UserLinkModel'),
@@ -62,6 +62,7 @@ const List<MigrationCommand> _migration_20251116234822_up = [
   InsertColumn('created_at', Column.varchar, onTable: 'GroupModel'),
   InsertColumn('gid', Column.varchar, onTable: 'GroupModel', unique: true),
   InsertColumn('uid', Column.varchar, onTable: 'FriendsModel'),
+  InsertColumn('fid', Column.varchar, onTable: 'FriendsModel'),
   InsertColumn('image', Column.varchar, onTable: 'FriendsModel'),
   InsertColumn('username', Column.varchar, onTable: 'FriendsModel'),
   InsertColumn('email', Column.varchar, onTable: 'FriendsModel'),
@@ -111,7 +112,7 @@ const List<MigrationCommand> _migration_20251116234822_up = [
   CreateIndex(columns: ['tid'], onTable: 'TransactionModel', unique: true)
 ];
 
-const List<MigrationCommand> _migration_20251116234822_down = [
+const List<MigrationCommand> _migration_20251118230012_down = [
   DropTable('MemojiModel'),
   DropTable('UserModel'),
   DropTable('UserLinkModel'),
@@ -164,6 +165,7 @@ const List<MigrationCommand> _migration_20251116234822_down = [
   DropColumn('created_at', onTable: 'GroupModel'),
   DropColumn('gid', onTable: 'GroupModel'),
   DropColumn('uid', onTable: 'FriendsModel'),
+  DropColumn('fid', onTable: 'FriendsModel'),
   DropColumn('image', onTable: 'FriendsModel'),
   DropColumn('username', onTable: 'FriendsModel'),
   DropColumn('email', onTable: 'FriendsModel'),
@@ -218,15 +220,15 @@ const List<MigrationCommand> _migration_20251116234822_down = [
 //
 
 @Migratable(
-  version: '20251116234822',
-  up: _migration_20251116234822_up,
-  down: _migration_20251116234822_down,
+  version: '20251118230012',
+  up: _migration_20251118230012_up,
+  down: _migration_20251118230012_down,
 )
-class Migration20251116234822 extends Migration {
-  const Migration20251116234822()
+class Migration20251118230012 extends Migration {
+  const Migration20251118230012()
     : super(
-        version: 20251116234822,
-        up: _migration_20251116234822_up,
-        down: _migration_20251116234822_down,
+        version: 20251118230012,
+        up: _migration_20251118230012_up,
+        down: _migration_20251118230012_down,
       );
 }

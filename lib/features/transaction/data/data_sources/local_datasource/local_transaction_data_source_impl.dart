@@ -7,7 +7,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../brick/repository.dart';
-import '../../../../authentification/data/models/user_links.model.dart';
 import '../../models/transaction.model.dart';
 
 class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
@@ -23,6 +22,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       final FriendsModel friendAdd = FriendsModel(
         uid: id,
         sid: id,
+        fid: uid,
         username: friend.username,
         email: friend.email,
         image: Constants.memojiDefault,
@@ -36,28 +36,6 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       return Left(
         MessageFailure(
           message: 'An error occurred while saving your new friend.',
-        ),
-      );
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> createANewLink(FriendsModel friend) async {
-    final lid = Uuid().v4();
-    try {
-      final createdNewLink = UserLinkModel(
-        lid: lid,
-        userAId: uid,
-        userBId: friend.sid,
-        linkType: 'friend',
-        status: 'accepted',
-      );
-      await Repository().upsert<UserLinkModel>(createdNewLink);
-      return Right(null);
-    } catch (e) {
-      return Left(
-        MessageFailure(
-          message: '(Link) An error occurred while saving your new friend.',
         ),
       );
     }
@@ -84,7 +62,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         currency: transaction['currency'],
         createdAt: DateTime.now().toIso8601String(),
       );
-      await Repository().upsert<TransactionModel>(transactionModel);
+      //await Repository().upsert<TransactionModel>(transactionModel);
       return Right(null);
     } catch (e) {
       return Left(

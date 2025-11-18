@@ -8,6 +8,7 @@ Future<FriendsModel> _$FriendsModelFromSupabase(
 }) async {
   return FriendsModel(
     uid: data['uid'] == null ? null : data['uid'] as String?,
+    fid: data['fid'] == null ? null : data['fid'] as String?,
     image: data['image'] as String,
     username: data['username'] as String,
     email: data['email'] as String,
@@ -24,6 +25,7 @@ Future<Map<String, dynamic>> _$FriendsModelToSupabase(
 }) async {
   return {
     'uid': instance.uid,
+    'fid': instance.fid,
     'image': instance.image,
     'username': instance.username,
     'email': instance.email,
@@ -40,6 +42,7 @@ Future<FriendsModel> _$FriendsModelFromSqlite(
 }) async {
   return FriendsModel(
     uid: data['uid'] == null ? null : data['uid'] as String?,
+    fid: data['fid'] == null ? null : data['fid'] as String?,
     image: data['image'] as String,
     username: data['username'] as String,
     email: data['email'] as String,
@@ -56,6 +59,7 @@ Future<Map<String, dynamic>> _$FriendsModelToSqlite(
 }) async {
   return {
     'uid': instance.uid,
+    'fid': instance.fid,
     'image': instance.image,
     'username': instance.username,
     'email': instance.email,
@@ -79,6 +83,10 @@ class FriendsModelAdapter
     'uid': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'uid',
+    ),
+    'fid': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'fid',
     ),
     'image': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -120,6 +128,12 @@ class FriendsModelAdapter
     'uid': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'uid',
+      iterable: false,
+      type: String,
+    ),
+    'fid': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'fid',
       iterable: false,
       type: String,
     ),

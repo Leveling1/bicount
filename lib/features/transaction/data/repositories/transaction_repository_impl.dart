@@ -3,7 +3,6 @@ import 'package:dartz/dartz.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/errors/failure.dart';
-import '../../../authentification/data/models/user.model.dart';
 import '../../../main/data/models/friends.model.dart';
 import '../../domain/repositories/transaction_repository.dart';
 
@@ -22,66 +21,46 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
       // 1. Créer l'expéditeur SI nécessaire et obtenir son ID
       if (senderId.isEmpty) {
-        final Either<Failure, FriendsModel> senderResult = await localDataSource.createANewFriend(sender);
+        final Either<Failure, FriendsModel> senderResult = await localDataSource
+            .createANewFriend(sender);
 
         senderId = await senderResult.fold(
-              (failure) async {
+          (failure) async {
             throw failure;
           },
-              (userModel) async {
-            // Attendre que l'utilisateur soit bien créé en base
-            await Future.delayed(Duration(milliseconds: 100)); // Petite pause pour la synchronisation
+          (userModel) async {
+            //await Future.delayed(Duration(milliseconds: 100));
             return userModel.sid;
           },
-        );
-
-        // Créer le lien seulement après vérification
-        final Either<Failure, void> linkResult = await localDataSource.createANewLink(sender);
-        await linkResult.fold(
-              (failure) => throw failure,
-              (_) => null,
         );
       }
 
       // 2. Traiter chaque bénéficiaire
       for (final friend in beneficiaryList) {
         String beneficiaryId = friend.sid;
-        late FriendsModel beneficiary;
 
         if (beneficiaryId.isEmpty) {
-          final Either<Failure, FriendsModel> friendResult = await localDataSource.createANewFriend(friend);
+          final Either<Failure, FriendsModel> friendResult =
+              await localDataSource.createANewFriend(friend);
 
           beneficiaryId = await friendResult.fold(
-                (failure) async {
+            (failure) async {
               throw failure;
             },
-                (friend) async {
-              await Future.delayed(Duration(milliseconds: 100));
-              beneficiary = friend;
+            (friend) async {
               return friend.sid;
             },
-          );
-
-          // Créer le lien seulement après vérification
-          final Either<Failure, void> linkResult = await localDataSource.createANewLink(beneficiary);
-          await linkResult.fold(
-                (failure) => throw failure,
-                (_) => null,
           );
         }
 
         // 3. Sauvegarder la transaction
-        final Either<Failure, void> saveResult = await localDataSource.saveTransaction(
-            transaction, gtid, senderId, beneficiaryId
-        );
+        final Either<Failure, void> saveResult = await localDataSource
+            .saveTransaction(transaction, gtid, senderId, beneficiaryId);
 
-        await saveResult.fold(
-              (failure) => throw failure,
-              (_) => null,
-        );
+        await saveResult.fold((failure) => throw failure, (_) => null);
       }
-    } on Failure catch (e) {
-      throw e;
+    } on Failure {
+      rethrow;
     } catch (e) {
       throw UnknownFailure();
     }
