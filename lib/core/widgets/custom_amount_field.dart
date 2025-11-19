@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,55 +54,19 @@ class CurrencyField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      child: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-          showCurrencyPicker(
-            context: context,
-            showFlag: true,
-            showCurrencyName: true,
-            showCurrencyCode: true,
-            onSelect: (Currency currency) {
-              controller.text = currency.name;
-            },
-          );
-        },
-        child: AbsorbPointer(
-          child: TextFormField(
-            controller: controller,
-            textAlign: TextAlign.start,
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Theme.of(context).cardColor,
-              hintText: hintText,
-              hintStyle: Theme.of(
-                context,
-              ).textTheme.titleSmall?.copyWith(color: Colors.grey),
-              border: const OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
-              suffixIcon: SvgPicture.asset(
-                'assets/icons/up_and_down.svg',
-                width: 15.w,
-                height: 15.w,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).iconTheme.color!,
-                  BlendMode.srcIn,
-                ),
-              ),
-              suffixIconConstraints: BoxConstraints(
-                minWidth: 20.w,
-                minHeight: 20.h,
-                maxWidth: 24.w,
-                maxHeight: 24.h,
-              ),
-            ),
-          ),
+    return Container(
+      height: 49.h,
+      alignment: Alignment.center,
+      padding: AppDimens.paddingAllSmall.w,
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+      ),
+      child: Text(
+        'USD',
+        style: TextStyle(
+          fontSize: AppDimens.textSizeMedium.sp,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

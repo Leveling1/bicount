@@ -20,7 +20,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
       String senderId = sender.sid;
 
       // 1. Créer l'expéditeur SI nécessaire et obtenir son ID
-      if (senderId.isEmpty) {
+      if (senderId.isEmpty || senderId == '') {
         final Either<Failure, FriendsModel> senderResult = await localDataSource
             .createANewFriend(sender);
 
@@ -39,7 +39,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
       for (final friend in beneficiaryList) {
         String beneficiaryId = friend.sid;
 
-        if (beneficiaryId.isEmpty) {
+        if (beneficiaryId.isEmpty || beneficiaryId == '') {
           final Either<Failure, FriendsModel> friendResult =
               await localDataSource.createANewFriend(friend);
 

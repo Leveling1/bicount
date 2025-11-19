@@ -68,6 +68,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
       listener: (context, state) {
         if (state is TransactionCreated) {
           NotificationHelper.showSuccessNotification(context, state.toString());
+          clearForm();
         } else if (state is TransactionError) {
           NotificationHelper.showFailureNotification(context, state.failure.message);
         }
@@ -266,12 +267,24 @@ class _TransactionHandlerState extends State<TransactionHandler> {
         "type": _segmentedType.selectedValue.toLowerCase(),
         "date": DateTime.now().toIso8601String(),
         "amount": double.parse(_amount.text),
-        "currency": _currency.text,
+        "currency": 'USD',
         "sender": senderModel,
         "beneficiaryList": _beneficiaryList,
         "note": _note.text,
       };
       context.read<TransactionBloc>().add(CreateTransactionEvent(transaction));
     }
+  }
+
+  void clearForm() {
+    _name.clear();
+    _type.clear();
+    _date.clear();
+    _amount.clear();
+    _currency.clear();
+    _beneficiary.clear();
+    _sender.clear();
+    _note.clear();
+    _beneficiaryList.clear();
   }
 }
