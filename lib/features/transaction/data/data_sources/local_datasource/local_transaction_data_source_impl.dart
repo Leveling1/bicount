@@ -62,7 +62,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         currency: transaction['currency'],
         createdAt: DateTime.now().toIso8601String(),
       );
-      //await Repository().upsert<TransactionModel>(transactionModel);
+      await Repository().upsert<TransactionModel>(transactionModel);
       return Right(null);
     } catch (e) {
       return Left(

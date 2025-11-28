@@ -255,7 +255,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
         .firstWhere((user) => user.username.toLowerCase() == _sender.text.trim().toLowerCase(),
         orElse: () => FriendsModel(
           sid: '',
-          username: _beneficiary.text.trim(),
+          username: _sender.text.trim(),
           uid: '',
           image: '',
           email: ''
