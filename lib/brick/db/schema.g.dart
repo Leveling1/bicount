@@ -1,16 +1,15 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
-part '20251130000355.migration.dart';
-part '20251118230012.migration.dart';
+part '20251130001532.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
-  const Migration20251130000355(),const Migration20251118230012()};
+  const Migration20251130001532(),};
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  20251118230012,
+  0,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -147,27 +146,6 @@ final schema = Schema(
       },
       indices: <SchemaIndex>{
         SchemaIndex(columns: ['sid'], unique: true),
-      },
-    ),
-    SchemaTable(
-      'UserLinksModel',
-      columns: <SchemaColumn>{
-        SchemaColumn(
-          '_brick_id',
-          Column.integer,
-          autoincrement: true,
-          nullable: false,
-          isPrimaryKey: true,
-        ),
-        SchemaColumn('user_a_id', Column.varchar),
-        SchemaColumn('user_b_id', Column.varchar),
-        SchemaColumn('link_type', Column.varchar),
-        SchemaColumn('status', Column.varchar),
-        SchemaColumn('created_at', Column.varchar),
-        SchemaColumn('lid', Column.varchar, unique: true),
-      },
-      indices: <SchemaIndex>{
-        SchemaIndex(columns: ['lid'], unique: true),
       },
     ),
     SchemaTable(

@@ -25,7 +25,6 @@ import '../features/company/data/models/company.model.dart';
 import '../features/company/data/models/company_with_user_link.model.dart';
 import '../features/group/data/models/group.model.dart';
 import '../features/main/data/models/friends.model.dart';
-import '../features/main/data/models/user_links.model.dart';
 import '../features/project/data/models/project.model.dart';
 import '../features/transaction/data/models/transaction.model.dart';
 
@@ -35,7 +34,6 @@ part 'adapters/company_model_adapter.g.dart';
 part 'adapters/company_with_user_link_model_adapter.g.dart';
 part 'adapters/group_model_adapter.g.dart';
 part 'adapters/friends_model_adapter.g.dart';
-part 'adapters/user_links_model_adapter.g.dart';
 part 'adapters/project_model_adapter.g.dart';
 part 'adapters/transaction_model_adapter.g.dart';
 
@@ -47,7 +45,6 @@ final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
   CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
   GroupModel: GroupModelAdapter(),
   FriendsModel: FriendsModelAdapter(),
-  UserLinksModel: UserLinksModelAdapter(),
   ProjectModel: ProjectModelAdapter(),
   TransactionModel: TransactionModelAdapter()
 };
@@ -61,7 +58,6 @@ final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
   GroupModel: GroupModelAdapter(),
   FriendsModel: FriendsModelAdapter(),
-  UserLinksModel: UserLinksModelAdapter(),
   ProjectModel: ProjectModelAdapter(),
   TransactionModel: TransactionModelAdapter()
 };
