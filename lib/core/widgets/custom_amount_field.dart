@@ -35,6 +35,7 @@ class CustomAmountField extends StatelessWidget {
               hintText: 'Enter amount',
               inputType: TextInputType.number,
               validator: enableValidator! ? _validator : null,
+              controller: amount,
             ),
           ),
         ],

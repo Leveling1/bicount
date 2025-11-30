@@ -146,6 +146,7 @@ class HomeScreen extends StatelessWidget {
                                 color: null,
                                 child: DetailTransaction(
                                   key: ValueKey(entity.tid),
+                                  user: data.user,
                                   transaction: TransactionDetailArgs(
                                     transactionDetail: entity,
                                     friends: data.friends,

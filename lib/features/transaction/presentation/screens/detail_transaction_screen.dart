@@ -1,4 +1,7 @@
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,8 +13,9 @@ import '../../domain/entities/transaction_entity.dart';
 import '../../../../core/widgets/details_card.dart';
 
 class DetailTransaction extends StatelessWidget {
+  final UserModel user;
   final TransactionDetailArgs transaction;
-  DetailTransaction({super.key, required this.transaction});
+  DetailTransaction({super.key, required this.transaction, required this.user});
 
   final double size = 20;
   late TransactionEntity data;
@@ -31,11 +35,25 @@ class DetailTransaction extends StatelessWidget {
         : data.type == TransactionType.expense
         ? '-'
         : '+';
+
+    final ourData = FriendsModel(
+      sid: user.sid,
+      username: user.username,
+      uid: user.uid,
+      image: user.image,
+      email: user.email,
+    );
     String sender = transaction.friends
-        .firstWhere((friend) => friend.sid == data.sender)
+        .firstWhere(
+          (friend) => friend.sid == data.sender,
+          orElse: () => ourData,
+        )
         .username;
     String beneficiary = transaction.friends
-        .firstWhere((friend) => friend.sid == data.beneficiary)
+        .firstWhere(
+          (friend) => friend.sid == data.beneficiary,
+          orElse: () => ourData,
+        )
         .username;
 
     return Column(
@@ -67,7 +85,10 @@ class DetailTransaction extends StatelessWidget {
                   child: SizedBox(
                     width: 50.w,
                     height: 50.h,
-                    child: Image.asset(data.image!),
+                    child: CachedNetworkImage(
+                      imageUrl: data.image!,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -82,7 +103,7 @@ class DetailTransaction extends StatelessWidget {
                         ? AppColors.primaryColorDark
                         : AppColors.negativeColorDark,
                     fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
