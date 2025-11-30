@@ -1,15 +1,16 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
+part '20251130000355.migration.dart';
 part '20251118230012.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
-  const Migration20251118230012(),};
+  const Migration20251130000355(),const Migration20251118230012()};
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  0,
+  20251118230012,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -45,7 +46,7 @@ final schema = Schema(
         SchemaColumn('image', Column.varchar),
         SchemaColumn('username', Column.varchar),
         SchemaColumn('email', Column.varchar),
-        SchemaColumn('sales', Column.Double),
+        SchemaColumn('incomes', Column.Double),
         SchemaColumn('expenses', Column.Double),
         SchemaColumn('profit', Column.Double),
         SchemaColumn('company_income', Column.Double),
@@ -54,26 +55,6 @@ final schema = Schema(
       },
       indices: <SchemaIndex>{
         SchemaIndex(columns: ['sid'], unique: true),
-      },
-    ),
-    SchemaTable(
-      'UserLinkModel',
-      columns: <SchemaColumn>{
-        SchemaColumn(
-          '_brick_id',
-          Column.integer,
-          autoincrement: true,
-          nullable: false,
-          isPrimaryKey: true,
-        ),
-        SchemaColumn('user_a_id', Column.varchar),
-        SchemaColumn('user_b_id', Column.varchar),
-        SchemaColumn('link_type', Column.varchar),
-        SchemaColumn('status', Column.varchar),
-        SchemaColumn('lid', Column.varchar, unique: true),
-      },
-      indices: <SchemaIndex>{
-        SchemaIndex(columns: ['lid'], unique: true),
       },
     ),
     SchemaTable(
@@ -160,6 +141,8 @@ final schema = Schema(
         SchemaColumn('email', Column.varchar),
         SchemaColumn('give', Column.Double),
         SchemaColumn('receive', Column.Double),
+        SchemaColumn('personal_income', Column.Double),
+        SchemaColumn('company_income', Column.Double),
         SchemaColumn('sid', Column.varchar, unique: true),
       },
       indices: <SchemaIndex>{
@@ -235,6 +218,7 @@ final schema = Schema(
         SchemaColumn('currency', Column.varchar),
         SchemaColumn('image', Column.varchar),
         SchemaColumn('frequency', Column.varchar),
+        SchemaColumn('category', Column.integer),
         SchemaColumn('created_at', Column.varchar),
         SchemaColumn('tid', Column.varchar, unique: true),
       },

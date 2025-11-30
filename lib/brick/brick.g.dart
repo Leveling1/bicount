@@ -21,7 +21,6 @@ import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;
 
 import '../core/models/memoji.model.dart';
 import '../features/authentification/data/models/user.model.dart';
-import '../features/authentification/data/models/user_links.model.dart';
 import '../features/company/data/models/company.model.dart';
 import '../features/company/data/models/company_with_user_link.model.dart';
 import '../features/group/data/models/group.model.dart';
@@ -32,7 +31,6 @@ import '../features/transaction/data/models/transaction.model.dart';
 
 part 'adapters/memoji_model_adapter.g.dart';
 part 'adapters/user_model_adapter.g.dart';
-part 'adapters/user_link_model_adapter.g.dart';
 part 'adapters/company_model_adapter.g.dart';
 part 'adapters/company_with_user_link_model_adapter.g.dart';
 part 'adapters/group_model_adapter.g.dart';
@@ -45,7 +43,6 @@ part 'adapters/transaction_model_adapter.g.dart';
 final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
   MemojiModel: MemojiModelAdapter(),
   UserModel: UserModelAdapter(),
-  UserLinkModel: UserLinkModelAdapter(),
   CompanyModel: CompanyModelAdapter(),
   CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
   GroupModel: GroupModelAdapter(),
@@ -60,7 +57,6 @@ final supabaseModelDictionary = SupabaseModelDictionary(supabaseMappings);
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   MemojiModel: MemojiModelAdapter(),
   UserModel: UserModelAdapter(),
-  UserLinkModel: UserLinkModelAdapter(),
   CompanyModel: CompanyModelAdapter(),
   CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
   GroupModel: GroupModelAdapter(),

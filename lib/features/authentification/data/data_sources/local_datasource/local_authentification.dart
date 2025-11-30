@@ -13,7 +13,11 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
 
   /// For the local sign up process
   @override
-  Future<Either<Failure, void>> signUp(String name, String email, String password) async {
+  Future<Either<Failure, void>> signUp(
+    String name,
+    String email,
+    String password,
+  ) async {
     try {
       final user = UserModel(
         sid: uid,
@@ -21,7 +25,7 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
         image: 'assets/memoji/memoji_1.png',
         email: email,
         username: name,
-        sales: 0.0,
+        incomes: 0.0,
         expenses: 0.0,
         profit: 0.0,
         companyIncome: 0.0,
@@ -39,14 +43,13 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
   Future<Either<Failure, void>> signIn() async {
     try {
       await Repository().get<UserModel>(
-        query: Query(where: [Where.exact('uid', uid)])
+        query: Query(where: [Where.exact('uid', uid)]),
       );
       return const Right(null);
     } catch (e) {
       return Left(AuthenticationFailure(message: e.toString()));
     }
   }
-
 
   /// For the sign out process
   @override
@@ -62,7 +65,9 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
 
       return right(null);
     } catch (e) {
-      return left(AuthenticationFailure(message: "Échec de la déconnexion locale : $e"));
+      return left(
+        AuthenticationFailure(message: "Échec de la déconnexion locale : $e"),
+      );
     }
   }
 }

@@ -11,7 +11,7 @@ Future<UserModel> _$UserModelFromSupabase(
     image: data['image'] as String,
     username: data['username'] as String,
     email: data['email'] as String,
-    sales: data['sales'] == null ? null : data['sales'] as double?,
+    incomes: data['incomes'] == null ? null : data['incomes'] as double?,
     expenses: data['expenses'] == null ? null : data['expenses'] as double?,
     profit: data['profit'] == null ? null : data['profit'] as double?,
     companyIncome: data['company_income'] == null
@@ -34,7 +34,7 @@ Future<Map<String, dynamic>> _$UserModelToSupabase(
     'image': instance.image,
     'username': instance.username,
     'email': instance.email,
-    'sales': instance.sales,
+    'incomes': instance.incomes,
     'expenses': instance.expenses,
     'profit': instance.profit,
     'company_income': instance.companyIncome,
@@ -53,7 +53,7 @@ Future<UserModel> _$UserModelFromSqlite(
     image: data['image'] as String,
     username: data['username'] as String,
     email: data['email'] as String,
-    sales: data['sales'] == null ? null : data['sales'] as double?,
+    incomes: data['incomes'] == null ? null : data['incomes'] as double?,
     expenses: data['expenses'] == null ? null : data['expenses'] as double?,
     profit: data['profit'] == null ? null : data['profit'] as double?,
     companyIncome: data['company_income'] == null
@@ -76,7 +76,7 @@ Future<Map<String, dynamic>> _$UserModelToSqlite(
     'image': instance.image,
     'username': instance.username,
     'email': instance.email,
-    'sales': instance.sales,
+    'incomes': instance.incomes,
     'expenses': instance.expenses,
     'profit': instance.profit,
     'company_income': instance.companyIncome,
@@ -111,9 +111,9 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
       association: false,
       columnName: 'email',
     ),
-    'sales': const RuntimeSupabaseColumnDefinition(
+    'incomes': const RuntimeSupabaseColumnDefinition(
       association: false,
-      columnName: 'sales',
+      columnName: 'incomes',
     ),
     'expenses': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -172,9 +172,9 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
       iterable: false,
       type: String,
     ),
-    'sales': const RuntimeSqliteColumnDefinition(
+    'incomes': const RuntimeSqliteColumnDefinition(
       association: false,
-      columnName: 'sales',
+      columnName: 'incomes',
       iterable: false,
       type: double,
     ),

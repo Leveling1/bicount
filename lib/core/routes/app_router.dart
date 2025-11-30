@@ -2,22 +2,16 @@ import 'dart:async';
 
 import 'package:bicount/features/authentification/presentation/screens/login_screen.dart';
 import 'package:bicount/features/authentification/presentation/screens/signup_screen.dart';
-import 'package:bicount/features/company/data/models/company.model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../features/company/domain/entities/company.dart';
 import '../../features/company/presentation/screens/detail_company_screen.dart';
 import '../../features/group/domain/entities/group_model.dart';
 import '../../features/group/presentation/screens/group_screen.dart';
-import '../../features/main/data/models/friends.model.dart';
 import '../../features/main/presentation/screens/main_screen.dart';
 import '../../features/project/domain/entities/project_model.dart';
 import '../../features/project/presentation/screens/project_screen.dart';
-import '../../features/transaction/domain/entities/transaction_detail_args.dart';
-import '../../features/transaction/domain/entities/transaction_entity.dart';
-import '../../features/transaction/presentation/screens/detail_transaction_screen.dart';
 import '../utils/custom_transition.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();

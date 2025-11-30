@@ -52,7 +52,7 @@ class _CustomFormDateFieldState extends State<CustomFormDateField> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _controller.text = formatDate(picked);
+        _controller.text = formatedDateTimeNumeric(picked);
       });
       widget.onChanged?.call(picked);
     }
@@ -66,18 +66,7 @@ class _CustomFormDateFieldState extends State<CustomFormDateField> {
       onTap: _pickDate,
       validator: (value) => widget.validator?.call(_selectedDate),
       decoration: InputDecoration(
-        filled: true,
-        fillColor: Theme.of(context).cardColor,
         hintText: widget.hintText,
-        hintStyle: Theme.of(context)
-            .textTheme
-            .titleSmall!
-            .copyWith(color: Colors.grey.shade500),
-        border: const OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         suffixIcon: const Icon(Icons.calendar_today),
       ),
     );

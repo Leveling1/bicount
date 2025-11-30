@@ -9,7 +9,11 @@ class MainEntity extends Equatable {
   final List<FriendsModel> friends;
   final List<TransactionModel> transactions;
 
-  const MainEntity({required this.user, required this.friends, required this.transactions});
+  const MainEntity({
+    required this.user,
+    required this.friends,
+    required this.transactions,
+  });
 
   @override
   List<Object?> get props => [user, friends, transactions];
@@ -21,14 +25,14 @@ class MainEntity extends Equatable {
         image: '',
         username: '',
         email: '',
-        sales: 0,
+        incomes: 0,
         expenses: 0,
         profit: 0,
         companyIncome: 0,
         personalIncome: 0,
       ),
       friends: [],
-      transactions: []
+      transactions: [],
     );
   }
 }

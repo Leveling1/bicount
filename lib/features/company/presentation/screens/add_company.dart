@@ -29,12 +29,15 @@ class _AddCompanyState extends State<AddCompany> {
       listener: (context, state) {
         if (state is CompanyCreated) {
           NotificationHelper.showSuccessNotification(
-              context,
-              "Company successfully established"
+            context,
+            "Company successfully established",
           );
           Navigator.of(context).pop();
         } else if (state is CompanyError) {
-          NotificationHelper.showFailureNotification(context, state.failure.message);
+          NotificationHelper.showFailureNotification(
+            context,
+            state.failure.message,
+          );
         }
       },
       builder: (context, state) {
@@ -55,7 +58,10 @@ class _AddCompanyState extends State<AddCompany> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Logo", style: Theme.of(context).textTheme.titleMedium),
+                        Text(
+                          "Logo",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                         CustomPickImage(
                           selectedImage: _selectedImage,
                           onImageSelected: (File? image) {
@@ -74,12 +80,7 @@ class _AddCompanyState extends State<AddCompany> {
                       controller: _name,
                       label: "Company name",
                       hint: 'Enter company name',
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a company name';
-                        }
-                        return null;
-                      },
+                      message: 'Please enter a company name',
                     ),
                   ),
                 ],
@@ -101,7 +102,7 @@ class _AddCompanyState extends State<AddCompany> {
             ],
           ),
         );
-      }
+      },
     );
   }
 
@@ -112,7 +113,9 @@ class _AddCompanyState extends State<AddCompany> {
         description: _description.text,
         image: "",
       );
-      context.read<CompanyBloc>().add(CreateCompanyEvent(company, logoFile: _selectedImage));
+      context.read<CompanyBloc>().add(
+        CreateCompanyEvent(company, logoFile: _selectedImage),
+      );
     }
   }
 }

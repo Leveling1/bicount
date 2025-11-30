@@ -1,37 +1,44 @@
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
 import 'custom_form_text_field.dart';
 
 class CustomAmountField extends StatelessWidget {
   final TextEditingController amount;
   final TextEditingController currency;
+  final bool? enableValidator;
 
   const CustomAmountField({
     super.key,
     required this.amount,
     required this.currency,
+    this.enableValidator = true,
   });
+
+  String? _validator(String? value) {
+    if (value == null || value.isEmpty) return 'This field is required';
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(flex: 1, child: CurrencyField(controller: currency)),
-        const SizedBox(width: 10),
-        Expanded(
-          flex: 3,
-          child: CustomFormTextField(
-            hintText: 'Enter amount',
-            inputType: TextInputType.number,
-            onChanged: (value) => amount.text = value,
+    return IntrinsicHeight(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(flex: 1, child: CurrencyField(controller: currency)),
+          const SizedBox(width: 10),
+          Expanded(
+            flex: 3,
+            child: CustomFormTextField(
+              hintText: 'Enter amount',
+              inputType: TextInputType.number,
+              validator: enableValidator! ? _validator : null,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -54,20 +61,14 @@ class CurrencyField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 49.h,
-      alignment: Alignment.center,
-      padding: AppDimens.paddingAllSmall.w,
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
-      ),
-      child: Text(
-        'USD',
-        style: TextStyle(
-          fontSize: AppDimens.textSizeMedium.sp,
-          fontWeight: FontWeight.w600,
-        ),
+    return TextFormField(
+      controller: controller,
+      readOnly: true,
+      enableInteractiveSelection: false,
+      decoration: InputDecoration(hintText: hintText),
+      style: TextStyle(
+        fontSize: AppDimens.textSizeMedium.sp,
+        fontWeight: FontWeight.w600,
       ),
     );
   }

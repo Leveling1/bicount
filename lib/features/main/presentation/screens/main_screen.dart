@@ -189,6 +189,9 @@ class _MainScreenState extends State<MainScreen> {
                   child: _selectedIndex == 1
                     ? const CompanyHandler()
                     : TransactionHandler(
+                      user: state is MainLoaded
+                          ? state.startData.user
+                          : null,
                       usersLink: state is MainLoaded
                         ? state.startData.friends
                         : [],

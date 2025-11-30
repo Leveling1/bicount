@@ -19,3 +19,7 @@ String formatedTime(DateTime date) {
 String formatedDateTime(DateTime date) {
   return DateFormat('EEEE, dd MMMM yyyy - HH:mm').format(date);
 }
+
+String formatedDateTimeNumeric(DateTime date) {
+  return DateFormat('dd/MM/yy').format(date);
+}

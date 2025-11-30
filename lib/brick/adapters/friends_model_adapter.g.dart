@@ -14,6 +14,12 @@ Future<FriendsModel> _$FriendsModelFromSupabase(
     email: data['email'] as String,
     give: data['give'] == null ? null : data['give'] as double?,
     receive: data['receive'] == null ? null : data['receive'] as double?,
+    personalIncome: data['personal_income'] == null
+        ? null
+        : data['personal_income'] as double?,
+    companyIncome: data['company_income'] == null
+        ? null
+        : data['company_income'] as double?,
     sid: data['sid'] as String?,
   );
 }
@@ -31,6 +37,8 @@ Future<Map<String, dynamic>> _$FriendsModelToSupabase(
     'email': instance.email,
     'give': instance.give,
     'receive': instance.receive,
+    'personal_income': instance.personalIncome,
+    'company_income': instance.companyIncome,
     'sid': instance.sid,
   };
 }
@@ -48,6 +56,12 @@ Future<FriendsModel> _$FriendsModelFromSqlite(
     email: data['email'] as String,
     give: data['give'] == null ? null : data['give'] as double?,
     receive: data['receive'] == null ? null : data['receive'] as double?,
+    personalIncome: data['personal_income'] == null
+        ? null
+        : data['personal_income'] as double?,
+    companyIncome: data['company_income'] == null
+        ? null
+        : data['company_income'] as double?,
     sid: data['sid'] as String,
   )..primaryKey = data['_brick_id'] as int;
 }
@@ -65,6 +79,8 @@ Future<Map<String, dynamic>> _$FriendsModelToSqlite(
     'email': instance.email,
     'give': instance.give,
     'receive': instance.receive,
+    'personal_income': instance.personalIncome,
+    'company_income': instance.companyIncome,
     'sid': instance.sid,
   };
 }
@@ -107,6 +123,14 @@ class FriendsModelAdapter
     'receive': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'receive',
+    ),
+    'personalIncome': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'personal_income',
+    ),
+    'companyIncome': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'company_income',
     ),
     'sid': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -164,6 +188,18 @@ class FriendsModelAdapter
     'receive': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'receive',
+      iterable: false,
+      type: double,
+    ),
+    'personalIncome': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'personal_income',
+      iterable: false,
+      type: double,
+    ),
+    'companyIncome': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'company_income',
       iterable: false,
       type: double,
     ),

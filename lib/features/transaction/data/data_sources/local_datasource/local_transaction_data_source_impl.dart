@@ -27,7 +27,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         email: friend.email,
         image: Constants.memojiDefault,
         give: 0.0,
-        receive: 0.0
+        receive: 0.0,
       );
 
       await Repository().upsert<FriendsModel>(friendAdd);
@@ -47,6 +47,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     String gtid,
     String senderId,
     String beneficiaryId,
+    String image,
   ) async {
     try {
       final transactionModel = TransactionModel(
@@ -60,7 +61,10 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         note: transaction['note'],
         amount: transaction['amount'],
         currency: transaction['currency'],
+        image: image,
+        frequency: 'fixe',
         createdAt: DateTime.now().toIso8601String(),
+        category: Constants.personnal,
       );
       await Repository().upsert<TransactionModel>(transactionModel);
       return Right(null);

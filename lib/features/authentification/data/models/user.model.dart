@@ -23,9 +23,9 @@ class UserModel extends OfflineFirstWithSupabaseModel {
   @Sqlite()
   final String email;
 
-  @Supabase(name: 'sales')
+  @Supabase(name: 'incomes')
   @Sqlite()
-  final double? sales;
+  final double? incomes;
 
   @Supabase(name: 'expenses')
   @Sqlite()
@@ -53,7 +53,7 @@ class UserModel extends OfflineFirstWithSupabaseModel {
     required this.image,
     required this.username,
     required this.email,
-    this.sales,
+    this.incomes,
     this.expenses,
     this.profit,
     this.companyIncome,

@@ -19,6 +19,7 @@ Future<TransactionModel> _$TransactionModelFromSupabase(
     currency: data['currency'] as String,
     image: data['image'] == null ? null : data['image'] as String?,
     frequency: data['frequency'] == null ? null : data['frequency'] as String?,
+    category: data['category'] == null ? null : data['category'] as int?,
     createdAt: data['created_at'] == null
         ? null
         : data['created_at'] as String?,
@@ -44,6 +45,7 @@ Future<Map<String, dynamic>> _$TransactionModelToSupabase(
     'currency': instance.currency,
     'image': instance.image,
     'frequency': instance.frequency,
+    'category': instance.category,
     'created_at': instance.createdAt,
     'tid': instance.tid,
   };
@@ -67,6 +69,7 @@ Future<TransactionModel> _$TransactionModelFromSqlite(
     currency: data['currency'] as String,
     image: data['image'] == null ? null : data['image'] as String?,
     frequency: data['frequency'] == null ? null : data['frequency'] as String?,
+    category: data['category'] == null ? null : data['category'] as int?,
     createdAt: data['created_at'] == null
         ? null
         : data['created_at'] as String?,
@@ -92,6 +95,7 @@ Future<Map<String, dynamic>> _$TransactionModelToSqlite(
     'currency': instance.currency,
     'image': instance.image,
     'frequency': instance.frequency,
+    'category': instance.category,
     'created_at': instance.createdAt,
     'tid': instance.tid,
   };
@@ -155,6 +159,10 @@ class TransactionModelAdapter
     'frequency': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'frequency',
+    ),
+    'category': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'category',
     ),
     'createdAt': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -248,6 +256,12 @@ class TransactionModelAdapter
       columnName: 'frequency',
       iterable: false,
       type: String,
+    ),
+    'category': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'category',
+      iterable: false,
+      type: int,
     ),
     'createdAt': const RuntimeSqliteColumnDefinition(
       association: false,

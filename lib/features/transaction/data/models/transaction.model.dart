@@ -55,6 +55,10 @@ class TransactionModel extends OfflineFirstWithSupabaseModel {
   @Supabase(name: 'frequency')
   final String? frequency;
 
+  @Sqlite(name: 'category')
+  @Supabase(name: 'category')
+  final int? category;
+
   @Sqlite(name: 'created_at')
   @Supabase(name: 'created_at')
   final String? createdAt;
@@ -75,6 +79,7 @@ class TransactionModel extends OfflineFirstWithSupabaseModel {
     required this.note,
     required this.amount,
     required this.currency,
+    this.category,
     this.image,
     this.frequency,
     this.createdAt,

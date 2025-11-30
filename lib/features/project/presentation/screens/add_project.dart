@@ -30,116 +30,104 @@ class _AddProjectState extends State<AddProject> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProjectBloc, ProjectState>(
-        listener: (context, state) {
-          if (state is ProjectCreated) {
-            NotificationHelper.showSuccessNotification(
-                context,
-                "The project is launched"
-            );
-            Navigator.of(context).pop();
-          } else if (state is ProjectError) {
-            NotificationHelper.showFailureNotification(
-                context,
-                state.failure.message
-            );
-          }
-        },
-        builder: (context, state) {
-          return Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Text(
-                  'Add Project',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Image", style: Theme.of(context).textTheme.titleMedium),
-                          CustomPickImage(
-                            selectedImage: _selectedImage,
-                            onImageSelected: (File? image) {
-                              setState(() {
-                                _selectedImage = image;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Flexible(
-                      flex: 4,
-                      child: CustomFormField(
-                        controller: _name,
-                        label: "Project name",
-                        hint: 'Enter project name',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter a project name';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                CustomFormField(
-                  controller: _initiator,
-                  label: "Initiate by",
-                  hint: 'Enter the name of the sponsor',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the name of the sponsor';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                CustomFormField(
-                  label: "Start date",
-                  hint: 'DD MMMM YYYY',
-                  controller: _startDate,
-                  isDate: true,
-                  validator: (date) {
-                    if (date == null) {
-                      return "Veuillez choisir une date";
-                    }
-                    return null;
-                  },
-                ),
-                CustomFormField(
-                  label: "End date",
-                  hint: 'DD MMMM YYYY (optional)',
-                  controller: _endDate,
-                  isDate: true,
-                ),
-                const SizedBox(height: 16),
-                CustomFormField(
-                  controller: _description,
-                  label: "Description",
-                  hint: 'Enter project description',
-                  inputType: TextInputType.multiline,
-                ),
-                const SizedBox(height: 32),
-                CustomButton(
-                  text: 'Add',
-                  loading: state is ProjectLoading,
-                  onPressed: _submit,
-                ),
-                const SizedBox(height: 16),
-              ],
-            ),
+      listener: (context, state) {
+        if (state is ProjectCreated) {
+          NotificationHelper.showSuccessNotification(
+            context,
+            "The project is launched",
+          );
+          Navigator.of(context).pop();
+        } else if (state is ProjectError) {
+          NotificationHelper.showFailureNotification(
+            context,
+            state.failure.message,
           );
         }
+      },
+      builder: (context, state) {
+        return Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Text(
+                'Add Project',
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Image",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        CustomPickImage(
+                          selectedImage: _selectedImage,
+                          onImageSelected: (File? image) {
+                            setState(() {
+                              _selectedImage = image;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Flexible(
+                    flex: 4,
+                    child: CustomFormField(
+                      controller: _name,
+                      label: "Project name",
+                      hint: 'Enter project name',
+                      message: 'Please enter a project name',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              CustomFormField(
+                controller: _initiator,
+                label: "Initiate by",
+                hint: 'Enter the name of the sponsor',
+                message: 'Please enter the name of the sponsor',
+              ),
+              const SizedBox(height: 16),
+              CustomFormField(
+                label: "Start date",
+                hint: 'DD MMMM YYYY',
+                controller: _startDate,
+                isDate: true,
+                message: "Veuillez choisir une date",
+              ),
+              CustomFormField(
+                label: "End date",
+                hint: 'DD MMMM YYYY (optional)',
+                controller: _endDate,
+                isDate: true,
+              ),
+              const SizedBox(height: 16),
+              CustomFormField(
+                controller: _description,
+                label: "Description",
+                hint: 'Enter project description',
+                inputType: TextInputType.multiline,
+              ),
+              const SizedBox(height: 32),
+              CustomButton(
+                text: 'Add',
+                loading: state is ProjectLoading,
+                onPressed: _submit,
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -150,17 +138,13 @@ class _AddProjectState extends State<AddProject> {
         cid: widget.idCompany,
         name: _name.text,
         description: _description.text,
-        startDate:  DateFormat("dd MMMM yyyy", 'en_US').parse(_startDate.text),
-        endDate:  DateFormat("dd MMMM yyyy", 'en_US').parse(_endDate.text),
+        startDate: DateFormat("dd MMMM yyyy", 'en_US').parse(_startDate.text),
+        endDate: DateFormat("dd MMMM yyyy", 'en_US').parse(_endDate.text),
         initiator: _initiator.text,
       );
       context.read<ProjectBloc>().add(
-          CreateProjectEvent(
-              project,
-              logoFile: _selectedImage
-          )
+        CreateProjectEvent(project, logoFile: _selectedImage),
       );
     }
   }
 }
-

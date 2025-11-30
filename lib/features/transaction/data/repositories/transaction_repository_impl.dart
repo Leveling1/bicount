@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:dartz/dartz.dart';
 import 'package:uuid/uuid.dart';
@@ -17,6 +18,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
       final sender = transaction['sender'];
       final gtid = Uuid().v4();
 
+      String image = Constants.memojiDefault;
       String senderId = sender.sid;
 
       // 1. Créer l'expéditeur SI nécessaire et obtenir son ID
@@ -38,6 +40,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
       // 2. Traiter chaque bénéficiaire
       for (final friend in beneficiaryList) {
         String beneficiaryId = friend.sid;
+        image = friend.image;
 
         if (beneficiaryId.isEmpty || beneficiaryId == '') {
           final Either<Failure, FriendsModel> friendResult =
@@ -51,11 +54,19 @@ class TransactionRepositoryImpl extends TransactionRepository {
               return friend.sid;
             },
           );
+          image = await friendResult.fold(
+            (failure) async {
+              throw failure;
+            },
+            (friend) async {
+              return friend.image;
+            },
+          );
         }
 
         // 3. Sauvegarder la transaction
         final Either<Failure, void> saveResult = await localDataSource
-            .saveTransaction(transaction, gtid, senderId, beneficiaryId);
+            .saveTransaction(transaction, gtid, senderId, beneficiaryId, image);
 
         await saveResult.fold((failure) => throw failure, (_) => null);
       }

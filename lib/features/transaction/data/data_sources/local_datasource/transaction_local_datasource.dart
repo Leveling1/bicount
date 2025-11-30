@@ -9,6 +9,7 @@ abstract class TransactionLocalDataSource {
     Map<String, dynamic> transaction,
     String gtid,
     String senderId,
-    String beneficiaryId
+    String beneficiaryId,
+    String image,
   );
 }

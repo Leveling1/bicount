@@ -43,9 +43,7 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
       keyboardType: widget.inputType,
       textInputAction: TextInputAction.next,
       validator: widget.validator,
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-      )
+      decoration: InputDecoration(hintText: widget.hintText),
     );
   }
 
@@ -63,7 +61,8 @@ class CustomFormField extends StatelessWidget {
   final String hint;
   final TextEditingController? controller;
   final TextInputType? inputType;
-  final validator;
+  final String? message;
+  final bool? enableValidator;
   final bool isDate;
   const CustomFormField({
     super.key,
@@ -71,9 +70,14 @@ class CustomFormField extends StatelessWidget {
     required this.label,
     required this.hint,
     this.inputType = TextInputType.text,
-    this.validator,
+    this.message,
+    this.enableValidator = true,
     this.isDate = false,
   });
+  String? _validator(String? value) {
+    if (value == null || value.isEmpty) return message ?? 'This field is required';
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,19 +86,20 @@ class CustomFormField extends StatelessWidget {
       children: [
         Text(label, style: Theme.of(context).textTheme.titleMedium),
         isDate
-        ? CustomFormDateField(
-          hintText: hint,
-          validator: validator,
-          controller: controller,
-        )
-        : CustomFormTextField(
-          controller: controller,
-          hintText: hint,
-          inputType: inputType,
-          validator: validator,
-        ),
+            ? CustomFormDateField(
+                hintText: hint,
+                validator: enableValidator!
+                    ? (value) => value == null ? 'This field is required' : null
+                    : null,
+                controller: controller,
+              )
+            : CustomFormTextField(
+                controller: controller,
+                hintText: hint,
+                inputType: inputType,
+                validator: enableValidator! ? _validator : null,
+              ),
       ],
     );
   }
 }
-

@@ -10,6 +10,7 @@ class CustomSuggestionTextField extends StatefulWidget {
   final List<String> options;
   final TextEditingController? controller;
   final bool isVisible;
+  final bool? enableValidator;
 
   const CustomSuggestionTextField({
     super.key,
@@ -20,6 +21,7 @@ class CustomSuggestionTextField extends StatefulWidget {
     this.onAdd,
     this.controller,
     this.isVisible = true,
+    this.enableValidator = true,
   });
 
   @override
@@ -38,6 +40,11 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
       widget.onChanged?.call(_controller.text);
       setState(() {});
     });
+  }
+
+  String? _validator(String? value) {
+    if (value == null || value.isEmpty) return 'This field is required';
+    return null;
   }
 
   @override
@@ -108,29 +115,25 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
                 }
               });
             }
-            return SizedBox(
-              height: 50,
-              child: TextFormField(
-                controller: widget.controller ?? textEditingController,
-                focusNode: focusNode,
-                onFieldSubmitted: (String value) => onFieldSubmitted(),
-                textAlign: TextAlign.start,
-                keyboardType: widget.inputType,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).cardColor,
-                  hintText: widget.hintText,
-                  suffixIcon: widget.isVisible
-                      ? IconButton(
-                          icon: Icon(
-                            Icons.add,
-                            color: AppColors.inactiveColorDark,
-                          ),
-                          onPressed: widget.onAdd,
-                        )
-                      : const SizedBox.shrink(),
-                ),
+            return TextFormField(
+              controller: widget.controller ?? textEditingController,
+              focusNode: focusNode,
+              onFieldSubmitted: (String value) => onFieldSubmitted(),
+              textAlign: TextAlign.start,
+              keyboardType: widget.inputType,
+              textInputAction: TextInputAction.next,
+              validator: widget.enableValidator! ? _validator : null,
+              decoration: InputDecoration(
+                hintText: widget.hintText,
+                suffixIcon: widget.isVisible
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.add,
+                          color: AppColors.inactiveColorDark,
+                        ),
+                        onPressed: widget.onAdd,
+                      )
+                    : const SizedBox.shrink(),
               ),
             );
           },
