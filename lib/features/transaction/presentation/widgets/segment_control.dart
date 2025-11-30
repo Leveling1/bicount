@@ -14,10 +14,6 @@ class SegmentedControlController extends ChangeNotifier {
         return 'Income';
       case TransactionTypes.transfer:
         return 'Transfer';
-      case TransactionTypes.personal:
-        return 'Personal';
-      case TransactionTypes.business:
-        return 'Business';
       default:
         return 'Transfer';
     }
@@ -41,12 +37,6 @@ class SegmentedControlController extends ChangeNotifier {
         break;
       case 'Transfer':
         index = TransactionTypes.transfer;
-        break;
-      case 'Personal':
-        index = TransactionTypes.personal;
-        break;
-      case 'Business':
-        index = TransactionTypes.business;
         break;
       default:
         index = TransactionTypes.transfer;
@@ -101,8 +91,6 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
           _buildSegment('Expense', TransactionTypes.expense),
           _buildSegment('Income', TransactionTypes.income),
           _buildSegment('Transfer', TransactionTypes.transfer),
-          _buildSegment('Personal', TransactionTypes.personal),
-          _buildSegment('Business', TransactionTypes.business),
         ],
       ),
     );

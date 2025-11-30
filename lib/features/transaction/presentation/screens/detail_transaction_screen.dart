@@ -1,5 +1,4 @@
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +12,8 @@ import '../../domain/entities/transaction_entity.dart';
 import '../../../../core/widgets/details_card.dart';
 
 class DetailTransaction extends StatelessWidget {
-  final UserModel user;
   final TransactionDetailArgs transaction;
-  DetailTransaction({super.key, required this.transaction, required this.user});
+  DetailTransaction({super.key, required this.transaction});
 
   final double size = 20;
   late TransactionEntity data;
@@ -37,11 +35,11 @@ class DetailTransaction extends StatelessWidget {
         : '+';
 
     final ourData = FriendsModel(
-      sid: user.sid,
-      username: user.username,
-      uid: user.uid,
-      image: user.image,
-      email: user.email,
+      sid: transaction.user.sid,
+      username: transaction.user.username,
+      uid: transaction.user.uid,
+      image: transaction.user.image,
+      email: transaction.user.email,
     );
     String sender = transaction.friends
         .firstWhere(
