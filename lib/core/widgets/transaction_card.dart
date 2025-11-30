@@ -38,7 +38,7 @@ class TransactionCard extends StatelessWidget {
           highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            padding: AppDimens.paddingSmallCard,
             child: Row(
               children: [
                 // Avatar

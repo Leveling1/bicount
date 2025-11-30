@@ -15,7 +15,7 @@ class InfoCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.value,
-    required this.color
+    required this.color,
   });
 
   @override
@@ -34,8 +34,8 @@ class InfoCard extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 18.sp, // Adjust size to fit within the avatar
-                  color: Theme.of(context).cardColor,
-                )
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(width: 10),
               Text(
@@ -51,11 +51,11 @@ class InfoCard extends StatelessWidget {
             NumberFormatUtils.formatCurrency(value as num),
             style: TextStyle(
               fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
-              fontWeight: FontWeight.bold
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
-      )
+      ),
     );
   }
 }

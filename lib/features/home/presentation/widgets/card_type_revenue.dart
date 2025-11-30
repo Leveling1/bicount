@@ -20,7 +20,6 @@ class CardTypeRevenue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 155.w,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         //gradient: Theme.of(context).extension<AppGradients>()!.primaryGradient,
@@ -41,7 +40,10 @@ class CardTypeRevenue extends StatelessWidget {
               children: [
                 Container(
                   padding: AppDimens.paddingAllSmall,
-                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                  ),
                   child: icon,
                 ),
                 SizedBox(height: 4.5.h),

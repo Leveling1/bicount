@@ -1,4 +1,5 @@
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/other_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -337,6 +338,12 @@ class AppTheme {
         secondaryGradient: LinearGradient(
           colors: [Colors.orange, Colors.red],
         ),
+      ),
+      OtherTheme(
+        profit: Color(0xFF4CAF50),
+        expense: Color(0xFFF44336),
+        personnalIncome: Color(0xFF2196F3),
+        companyIncome: Colors.purple,
       ),
     ],
   );
@@ -685,6 +692,12 @@ class AppTheme {
         secondaryGradient: LinearGradient(
           colors: [Colors.orange, Colors.red],
         ),
+      ),
+      OtherTheme(
+        profit: Color(0xFF4CAF50),
+        expense: Color(0xFFF44336),
+        personnalIncome: Color(0xFF2196F3),
+        companyIncome: Colors.purple,
       ),
     ],
   );

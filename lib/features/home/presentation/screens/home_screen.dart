@@ -1,4 +1,5 @@
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/home/presentation/widgets/card_type_revenue.dart';
@@ -75,12 +76,11 @@ class HomeScreen extends StatelessWidget {
                       "Accounts",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    SizedBox(
-                      height: 155.h,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          CardTypeRevenue(
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: CardTypeRevenue(
                             onTap: () {
                               onCardTap?.call(3);
                             },
@@ -92,9 +92,15 @@ class HomeScreen extends StatelessWidget {
                               icon: HugeIcons.strokeRoundedUser03,
                               color: Colors.white,
                             ),
+                            color: Theme.of(
+                              context,
+                            ).extension<OtherTheme>()!.personnalIncome!,
                           ),
-                          SizedBox(width: AppDimens.spacingMedium),
-                          CardTypeRevenue(
+                        ),
+                        const SizedBox(width: AppDimens.marginMedium),
+                        Expanded(
+                          flex: 1,
+                          child: CardTypeRevenue(
                             onTap: () {
                               onCardTap?.call(1); // CompanyScreen
                             },
@@ -106,10 +112,12 @@ class HomeScreen extends StatelessWidget {
                               icon: HugeIcons.strokeRoundedBuilding02,
                               color: Colors.white,
                             ),
-                            color: Colors.purple,
+                            color: Theme.of(
+                              context,
+                            ).extension<OtherTheme>()!.companyIncome!,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     data.transactions.isNotEmpty
                         ? Row(

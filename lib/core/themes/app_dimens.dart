@@ -98,8 +98,7 @@ class AppDimens {
     vertical: 20,
     horizontal: 32,
   );
-
-  static const paddingHorizontalMedium = EdgeInsets.symmetric(horizontal: 16);
+  static const paddingSmallCard = EdgeInsets.symmetric(vertical: 12, horizontal: 8);
 
   // Only
   static const paddingTopExtraSmallBottomSmall = EdgeInsets.only(

@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
@@ -47,7 +48,9 @@ class ProfileScreen extends StatelessWidget {
                           icon: Icons.person,
                           title: 'Profit',
                           value: data.user.profit!,
-                          color: Colors.blue,
+                          color: Theme.of(
+                            context,
+                          ).extension<OtherTheme>()!.profit!,
                         ),
                       ),
                       const SizedBox(width: AppDimens.marginMedium),
@@ -57,7 +60,9 @@ class ProfileScreen extends StatelessWidget {
                           icon: Icons.person,
                           title: 'Expense',
                           value: data.user.expenses!,
-                          color: Colors.blue,
+                          color: Theme.of(
+                            context,
+                          ).extension<OtherTheme>()!.expense!,
                         ),
                       ),
                     ],
@@ -70,7 +75,9 @@ class ProfileScreen extends StatelessWidget {
                           icon: Icons.person,
                           title: 'Personal',
                           value: data.user.personalIncome!,
-                          color: Colors.blue,
+                          color: Theme.of(
+                            context,
+                          ).extension<OtherTheme>()!.personnalIncome!,
                         ),
                       ),
                       const SizedBox(width: AppDimens.marginMedium),
@@ -80,7 +87,9 @@ class ProfileScreen extends StatelessWidget {
                           icon: Icons.person,
                           title: 'Company',
                           value: data.user.companyIncome!,
-                          color: Colors.blue,
+                          color: Theme.of(
+                            context,
+                          ).extension<OtherTheme>()!.companyIncome!,
                         ),
                       ),
                     ],
