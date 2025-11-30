@@ -38,19 +38,19 @@ class AppTheme {
         borderSide: BorderSide.none,
       ),
       floatingLabelStyle: TextStyle(
-          color: AppColors.primaryColorLight,
-          fontSize: AppDimens.textSizeSmall.sp,
-          fontFamily: 'Lexend'
+        color: AppColors.primaryColorLight,
+        fontSize: AppDimens.textSizeSmall.sp,
+        fontFamily: 'Lexend',
       ),
       hintStyle: TextStyle(
-          color: AppColors.secondaryTextColorLight,
-          fontSize: AppDimens.textSizeMedium.sp,
-          fontFamily: 'Lexend'
+        color: AppColors.secondaryTextColorLight,
+        fontSize: AppDimens.textSizeMedium.sp,
+        fontFamily: 'Lexend',
       ),
       labelStyle: TextStyle(
-          color: AppColors.textColorLight,
-          fontSize: AppDimens.textSizeMedium.sp,
-          fontFamily: 'Lexend'
+        color: AppColors.textColorLight,
+        fontSize: AppDimens.textSizeMedium.sp,
+        fontFamily: 'Lexend',
       ),
     ),
 
@@ -270,9 +270,7 @@ class AppTheme {
           const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
         shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
       cancelButtonStyle: ButtonStyle(
@@ -288,9 +286,7 @@ class AppTheme {
           AppColors.primaryColorLight.withValues(alpha: 0.1),
         ),
         shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
 
@@ -311,10 +307,15 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.primaryColorLight, width: 2),
+          borderSide: const BorderSide(
+            color: AppColors.primaryColorLight,
+            width: 2,
+          ),
         ),
         labelStyle: const TextStyle(color: AppColors.textColorLight),
-        hintStyle: TextStyle(color: AppColors.textColorLight.withValues(alpha: 0.6)),
+        hintStyle: TextStyle(
+          color: AppColors.textColorLight.withValues(alpha: 0.6),
+        ),
       ),
     ),
 
@@ -335,15 +336,16 @@ class AppTheme {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        secondaryGradient: LinearGradient(
-          colors: [Colors.orange, Colors.red],
-        ),
+        secondaryGradient: LinearGradient(colors: [Colors.orange, Colors.red]),
       ),
       OtherTheme(
-        profit: Color(0xFF4CAF50),
-        expense: Color(0xFFF44336),
+        profit: AppColors.profitColorLight,
+        expense: AppColors.expensesColorLight,
         personnalIncome: Color(0xFF2196F3),
         companyIncome: Colors.purple,
+        salary: AppColors.salaryColorLight,
+        equipment: AppColors.equipmentColorLight,
+        service: AppColors.serviceColorLight,
       ),
     ],
   );
@@ -378,20 +380,20 @@ class AppTheme {
         borderSide: BorderSide.none,
       ),
       floatingLabelStyle: TextStyle(
-          color: AppColors.primaryColorDark,
-          fontSize: AppDimens.textSizeMedium.sp,
-          fontFamily: 'Lexend'
+        color: AppColors.primaryColorDark,
+        fontSize: AppDimens.textSizeMedium.sp,
+        fontFamily: 'Lexend',
       ),
       contentPadding: AppDimens.paddingAllSmall,
       hintStyle: TextStyle(
-          color: AppColors.inactiveColorDark,
-          fontSize: AppDimens.textSizeMedium.sp,
-          fontFamily: 'Lexend'
+        color: AppColors.inactiveColorDark,
+        fontSize: AppDimens.textSizeMedium.sp,
+        fontFamily: 'Lexend',
       ),
       labelStyle: TextStyle(
-          color: AppColors.textColorDark,
-          fontSize: AppDimens.textSizeMedium.sp,
-          fontFamily: 'Lexend'
+        color: AppColors.textColorDark,
+        fontSize: AppDimens.textSizeMedium.sp,
+        fontFamily: 'Lexend',
       ),
     ),
 
@@ -612,26 +614,20 @@ class AppTheme {
         backgroundColor: WidgetStateProperty.all(AppColors.primaryColorDark),
         foregroundColor: WidgetStateProperty.all(Colors.white),
         textStyle: WidgetStateProperty.all(
-          const TextStyle(
-            fontWeight: FontWeight.w500,
-          ),
+          const TextStyle(fontWeight: FontWeight.w500),
         ),
         padding: WidgetStateProperty.all(
           const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
         shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
       cancelButtonStyle: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(Colors.transparent),
         foregroundColor: WidgetStateProperty.all(AppColors.primaryColorDark),
         textStyle: WidgetStateProperty.all(
-          const TextStyle(
-            fontWeight: FontWeight.w500,
-          ),
+          const TextStyle(fontWeight: FontWeight.w500),
         ),
         padding: WidgetStateProperty.all(
           const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -640,19 +636,13 @@ class AppTheme {
           AppColors.primaryColorDark.withValues(alpha: 0.1),
         ),
         shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
 
       // Forme générale des éléments
-      dayShape: WidgetStateProperty.all(
-        CircleBorder(),
-      ),
-      yearShape: WidgetStateProperty.all(
-        CircleBorder(),
-      ),
+      dayShape: WidgetStateProperty.all(CircleBorder()),
+      yearShape: WidgetStateProperty.all(CircleBorder()),
 
       // Localisation et format
       locale: const Locale('en', 'EN'),
@@ -661,14 +651,21 @@ class AppTheme {
         fillColor: AppColors.cardColorDark,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: AppColors.primaryColorDark.withValues(alpha: 0.3)),
+          borderSide: BorderSide(
+            color: AppColors.primaryColorDark.withValues(alpha: 0.3),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.primaryColorDark, width: 2),
+          borderSide: const BorderSide(
+            color: AppColors.primaryColorDark,
+            width: 2,
+          ),
         ),
         labelStyle: const TextStyle(color: AppColors.textColorDark),
-        hintStyle: TextStyle(color: AppColors.textColorDark.withValues(alpha: 0.6)),
+        hintStyle: TextStyle(
+          color: AppColors.textColorDark.withValues(alpha: 0.6),
+        ),
       ),
     ),
 
@@ -689,15 +686,16 @@ class AppTheme {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        secondaryGradient: LinearGradient(
-          colors: [Colors.orange, Colors.red],
-        ),
+        secondaryGradient: LinearGradient(colors: [Colors.orange, Colors.red]),
       ),
       OtherTheme(
-        profit: Color(0xFF4CAF50),
-        expense: Color(0xFFF44336),
+        profit: AppColors.profitColorDark,
+        expense: AppColors.expensesColorDark,
         personnalIncome: Color(0xFF2196F3),
         companyIncome: Colors.purple,
+        salary: AppColors.salaryColorDark,
+        equipment: AppColors.equipmentColorDark,
+        service: AppColors.serviceColorDark,
       ),
     ],
   );

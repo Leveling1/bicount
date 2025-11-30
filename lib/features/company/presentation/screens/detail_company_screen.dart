@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/features/company/presentation/screens/share_company.dart';
 import 'package:bicount/features/project/presentation/screens/add_project.dart';
 import 'package:flutter/material.dart';
@@ -149,7 +150,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                                 title: "Profit",
                                 value: state.company.profit!,
                                 percent: _percent(value: state.company.profit!, total: state.company.sales!),
-                                color: AppColors.profitColor,
+                                color: Theme.of(context).extension<OtherTheme>()!.profit!,
                               ),
                             ),
                             _spacerWidth(),
@@ -159,7 +160,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                                 title: "Salary",
                                 value:  state.company.salary!,
                                 percent: _percent(value: state.company.salary!, total: state.company.sales!),
-                                color: AppColors.salaryColor,
+                                color: Theme.of(context).extension<OtherTheme>()!.salary!,
                               ),
                             ),
                           ],
@@ -172,7 +173,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                                 title: "Equipment",
                                 value: state.company.equipment!,
                                 percent: _percent(value: state.company.equipment!, total: state.company.sales!),
-                                color: AppColors.equipmentColor,
+                                color: Theme.of(context).extension<OtherTheme>()!.equipment!,
                               ),
                             ),
                             _spacerWidth(),
@@ -182,7 +183,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                                 title: "Third-party service",
                                 value: state.company.service!,
                                 percent: _percent(value: state.company.service!, total: state.company.sales!),
-                                color: AppColors.serviceColor,
+                                color: Theme.of(context).extension<OtherTheme>()!.service!,
                               ),
                             ),
                           ],

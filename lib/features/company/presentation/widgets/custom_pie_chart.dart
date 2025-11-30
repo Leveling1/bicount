@@ -13,24 +13,19 @@ class CustomPieChart extends StatelessWidget {
     required this.profit,
     required this.salary,
     required this.equipment,
-    required this.service
+    required this.service,
   });
 
   @override
   Widget build(BuildContext context) {
     List<Color>? colors = [
-      AppColors.profitColor,
-      AppColors.salaryColor,
-      AppColors.equipmentColor,
-      AppColors.serviceColor,
+      AppColors.profitColorLight,
+      AppColors.salaryColorDark,
+      AppColors.equipmentColorDark,
+      AppColors.serviceColorDark,
     ];
 
-    List<double>? values = [
-      profit,
-      salary,
-      equipment,
-      service,
-    ];
+    List<double>? values = [profit, salary, equipment, service];
 
     final total = values.reduce((a, b) => a + b);
 

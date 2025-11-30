@@ -14,7 +14,7 @@ class CompanyCardInfo extends StatelessWidget {
     required this.color,
     required this.title,
     required this.value,
-    required this.percent
+    required this.percent,
   });
 
   @override
@@ -44,15 +44,15 @@ class CompanyCardInfo extends StatelessWidget {
               Text(
                 NumberFormatUtils.formatCurrency(value as num),
                 style: TextStyle(
-                    fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
-                    fontWeight: FontWeight.bold
+                  fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
                 "$percent%",
                 style: TextStyle(
                   fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -60,7 +60,7 @@ class CompanyCardInfo extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-                fontSize: Theme.of(context).textTheme.bodySmall!.fontSize,
+              fontSize: Theme.of(context).textTheme.bodySmall!.fontSize,
             ),
           ),
           const SizedBox(height: 20),
@@ -70,11 +70,11 @@ class CompanyCardInfo extends StatelessWidget {
             child: Icon(
               iconPath,
               size: 24.sp, // Adjust size to fit within the avatar
-              color: Theme.of(context).cardColor,
-            )
-          )
+              color: Colors.white,
+            ),
+          ),
         ],
-      )
+      ),
     );
   }
 }

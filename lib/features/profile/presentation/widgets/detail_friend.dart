@@ -1,4 +1,5 @@
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class DetailFriend extends StatelessWidget {
                 icon: Icons.gif,
                 title: 'Given',
                 value: friend.give!,
-                color: Colors.blue,
+                color: Theme.of(context).extension<OtherTheme>()!.expense!,
               ),
             ),
             const SizedBox(width: AppDimens.marginMedium),
@@ -50,7 +51,7 @@ class DetailFriend extends StatelessWidget {
                 icon: Icons.receipt,
                 title: 'Received',
                 value: friend.receive!,
-                color: Colors.blue,
+                color: Theme.of(context).extension<OtherTheme>()!.profit!,
               ),
             ),
           ],
@@ -63,7 +64,7 @@ class DetailFriend extends StatelessWidget {
                 icon: Icons.gif,
                 title: 'Personal',
                 value: friend.personalIncome!,
-                color: Colors.blue,
+                color: Theme.of(context).extension<OtherTheme>()!.personnalIncome!,
               ),
             ),
             const SizedBox(width: AppDimens.marginMedium),
@@ -73,7 +74,7 @@ class DetailFriend extends StatelessWidget {
                 icon: Icons.receipt,
                 title: 'Company',
                 value: friend.companyIncome!,
-                color: Colors.blue,
+                color: Theme.of(context).extension<OtherTheme>()!.companyIncome!,
               ),
             ),
           ],
