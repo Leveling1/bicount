@@ -1,3 +1,4 @@
+import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,8 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<FriendsModel> friends = data.friends;
+    friends.sort((a, b) => ((b.give ?? 0) - (b.receive ?? 0)).compareTo((a.give ?? 0) - (a.receive ?? 0)));
     return Scaffold(
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
@@ -25,7 +28,7 @@ class ProfileScreen extends StatelessWidget {
                   image: data.user.image,
                   name: data.user.username,
                   email: data.user.email,
-                  onTap: () {}
+                  onTap: () {},
                 ),
                 //const SizedBox(height: 20),
                 Row(
@@ -48,7 +51,7 @@ class ProfileScreen extends StatelessWidget {
                         value: data.user.profit!,
                         color: Colors.blue,
                       ),
-                    )
+                    ),
                   ],
                 ),
                 Row(
@@ -71,7 +74,7 @@ class ProfileScreen extends StatelessWidget {
                         value: data.user.profit!,
                         color: Colors.blue,
                       ),
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: AppDimens.marginMedium),
@@ -93,8 +96,8 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 Column(
-                  children: data.friends.map((friend) {
-                    if(friend.uid == data.user.uid) {
+                  children: friends.take(3).map((friend) {
+                    if (friend.uid == data.user.uid) {
                       return const SizedBox.shrink();
                     }
                     return FriendCard(
@@ -104,9 +107,7 @@ class ProfileScreen extends StatelessWidget {
                           context: context,
                           minHeight: 0.70,
                           color: null,
-                          child: DetailFriend(
-                            friend: friend,
-                          ),
+                          child: DetailFriend(friend: friend),
                         );
                       },
                     );

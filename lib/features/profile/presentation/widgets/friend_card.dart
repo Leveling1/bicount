@@ -1,3 +1,4 @@
+import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,8 @@ class FriendCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String give = NumberFormatUtils.formatCurrency(friend.give! as num);
+    String receive = NumberFormatUtils.formatCurrency(friend.receive! as num);
     return Container(
       decoration: BoxDecoration(color: Colors.transparent),
       child: Material(
@@ -23,7 +26,7 @@ class FriendCard extends StatelessWidget {
           highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12,),
+            padding: const EdgeInsets.symmetric(vertical: 12),
             child: Row(
               children: [
                 // Avatar
@@ -41,19 +44,36 @@ class FriendCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
 
-                // Name and date
+                // Name
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         friend.username,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        friend.email,
-                        style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Given: $give',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 13,
+                            ),
+                          ),
+
+                          Text(
+                            'Received: $receive',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

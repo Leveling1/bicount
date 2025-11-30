@@ -1,5 +1,6 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -19,7 +20,10 @@ class DetailFriend extends StatelessWidget {
           child: SizedBox(
             width: 50.w,
             height: 50.h,
-            child: Image.asset(friend.image),
+            child: CachedNetworkImage(
+              imageUrl: friend.image,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         const SizedBox(height: 12),
@@ -34,7 +38,7 @@ class DetailFriend extends StatelessWidget {
               flex: 1,
               child: InfoCard(
                 icon: Icons.gif,
-                title: 'Amounts you have given',
+                title: 'Given',
                 value: friend.give!,
                 color: Colors.blue,
               ),
@@ -44,13 +48,37 @@ class DetailFriend extends StatelessWidget {
               flex: 1,
               child: InfoCard(
                 icon: Icons.receipt,
-                title: 'Amounts you have received',
+                title: 'Received',
                 value: friend.receive!,
                 color: Colors.blue,
               ),
             ),
           ],
         ),
+        Row(
+          children: [
+            Flexible(
+              flex: 1,
+              child: InfoCard(
+                icon: Icons.gif,
+                title: 'Personal',
+                value: friend.personalIncome!,
+                color: Colors.blue,
+              ),
+            ),
+            const SizedBox(width: AppDimens.marginMedium),
+            Flexible(
+              flex: 1,
+              child: InfoCard(
+                icon: Icons.receipt,
+                title: 'Company',
+                value: friend.companyIncome!,
+                color: Colors.blue,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppDimens.marginLarge),
       ],
     );
   }
