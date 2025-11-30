@@ -33,7 +33,10 @@ class HomeScreen extends StatelessWidget {
       },
       builder: (context, state) {
         return SingleChildScrollView(
-          child: SizedBox(
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimens.paddingMedium,
+            ),
             height: height - AppDimens.bottomBarHeight.h,
             child: BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {

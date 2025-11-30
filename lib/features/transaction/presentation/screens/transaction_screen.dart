@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_search_field.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
@@ -115,78 +116,86 @@ class _TransactionScreenState extends State<TransactionScreen> {
         final grouped = groupTransactionsByDate(filteredTransactions);
 
         return transactions.isNotEmpty
-            ? Column(
-                children: [
-                  transactions.length > 10
-                      ? CustomSearchField(
-                          onChanged: (value) {
-                            setState(() {
-                              _searchController.text = value;
-                            });
-                          },
-                        )
-                      : const SizedBox.shrink(),
-                  TransactionFilterChips(
-                    selectedIndex: _selectedIndex,
-                    onTap: _onItemTapped,
-                    filters: filters,
-                  ),
-                  filteredTransactions.isNotEmpty
-                      ? Expanded(
-                          child: ScrollConfiguration(
-                            behavior: ScrollConfiguration.of(
-                              context,
-                            ).copyWith(scrollbars: false),
-                            child: ListView(
-                              padding: EdgeInsets.only(top: 15, bottom: 50.h),
-                              children: grouped.entries.map((entry) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      entry.key,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleMedium,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    ...entry.value.map((tx) {
-                                      TransactionEntity transaction =
-                                          TransactionEntity.fromTransaction(tx);
-                                      return TransactionCard(
-                                        transaction: transaction,
-                                        onTap: () {
-                                          showCustomBottomSheet(
-                                            context: context,
-                                            minHeight: 0.95,
-                                            color: null,
-                                            child: DetailTransaction(
-                                              user: widget.data.user,
-                                              transaction:
-                                                  TransactionDetailArgs(
-                                                    transactionDetail:
-                                                        transaction,
-                                                    friends:
-                                                        widget.data.friends,
-                                                  ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    }),
-                                    const SizedBox(height: 16),
-                                  ],
-                                );
-                              }).toList(),
+            ? Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimens.paddingMedium,
+                ),
+                child: Column(
+                  children: [
+                    transactions.length > 10
+                        ? CustomSearchField(
+                            onChanged: (value) {
+                              setState(() {
+                                _searchController.text = value;
+                              });
+                            },
+                          )
+                        : const SizedBox.shrink(),
+                    TransactionFilterChips(
+                      selectedIndex: _selectedIndex,
+                      onTap: _onItemTapped,
+                      filters: filters,
+                    ),
+                    filteredTransactions.isNotEmpty
+                        ? Expanded(
+                            child: ScrollConfiguration(
+                              behavior: ScrollConfiguration.of(
+                                context,
+                              ).copyWith(scrollbars: false),
+                              child: ListView(
+                                padding: EdgeInsets.only(top: 15, bottom: 50.h),
+                                children: grouped.entries.map((entry) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        entry.key,
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.titleMedium,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      ...entry.value.map((tx) {
+                                        TransactionEntity transaction =
+                                            TransactionEntity.fromTransaction(
+                                              tx,
+                                            );
+                                        return TransactionCard(
+                                          transaction: transaction,
+                                          onTap: () {
+                                            showCustomBottomSheet(
+                                              context: context,
+                                              minHeight: 0.95,
+                                              color: null,
+                                              child: DetailTransaction(
+                                                user: widget.data.user,
+                                                transaction:
+                                                    TransactionDetailArgs(
+                                                      transactionDetail:
+                                                          transaction,
+                                                      friends:
+                                                          widget.data.friends,
+                                                    ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      }),
+                                      const SizedBox(height: 16),
+                                    ],
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          )
+                        : Expanded(
+                            child: const Center(
+                              child: Text('No transactions found'),
                             ),
                           ),
-                        )
-                      : Expanded(
-                          child: const Center(
-                            child: Text('No transactions found'),
-                          ),
-                        ),
-                ],
+                  ],
+                ),
               )
             : const Center(child: Text('No transactions found'));
       },

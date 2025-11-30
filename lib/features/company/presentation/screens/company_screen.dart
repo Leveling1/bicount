@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -68,35 +69,40 @@ class _CompanyScreenState extends State<CompanyScreen> {
           );
 
           return SingleChildScrollView(
-            child: Column(
-              children: [
-                state.companies.companies.length > 10
-                    ? CustomSearchField(
-                        onChanged: (value) {
-                          setState(() {
-                            _searchController.text = value;
-                          });
-                        },
-                      )
-                    : const SizedBox.shrink(),
-                const SizedBox(height: 20),
-                Column(
-                  children: [
-                    ...filteredCompanies.map((company) {
-                      if (state.companies.companies.length > 10) {
-                        return CompanyCard(company: company);
-                      } else {
-                    final roleModel = state.companies.links.where((e) => e.companyId == company.cid).isEmpty
-                        ? null
-                        : state.companies.links.firstWhere((e) => e.companyId == company.cid);
-                    final role = roleModel?.role ?? '';
-                    return CompanyLargeCard(company: company, role: role);
-                      }
-                    }),
-                    SizedBox(height: 50.h),
-                  ],
-                ),
-              ],
+            child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimens.paddingMedium,
+            ),
+              child: Column(
+                children: [
+                  state.companies.companies.length > 10
+                      ? CustomSearchField(
+                          onChanged: (value) {
+                            setState(() {
+                              _searchController.text = value;
+                            });
+                          },
+                        )
+                      : const SizedBox.shrink(),
+                  const SizedBox(height: 20),
+                  Column(
+                    children: [
+                      ...filteredCompanies.map((company) {
+                        if (state.companies.companies.length > 10) {
+                          return CompanyCard(company: company);
+                        } else {
+                      final roleModel = state.companies.links.where((e) => e.companyId == company.cid).isEmpty
+                          ? null
+                          : state.companies.links.firstWhere((e) => e.companyId == company.cid);
+                      final role = roleModel?.role ?? '';
+                      return CompanyLargeCard(company: company, role: role);
+                        }
+                      }),
+                      SizedBox(height: 50.h),
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         } else if (state is ListError) {
