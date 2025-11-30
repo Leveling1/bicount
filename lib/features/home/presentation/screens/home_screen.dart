@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
@@ -8,6 +9,7 @@ import 'package:bicount/features/transaction/domain/entities/transaction_entity.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/services/notification_helper.dart';
@@ -88,9 +90,14 @@ class HomeScreen extends StatelessWidget {
                             amount: data.user.personalIncome != null
                                 ? data.user.personalIncome!
                                 : 0.0,
-                            icon: HugeIcon(
-                              icon: HugeIcons.strokeRoundedUser03,
-                              color: Colors.white,
+                            icon: SvgPicture.asset(
+                              IconLinks.user,
+                              width: AppDimens.iconSizeSmall,
+                              height: AppDimens.iconSizeSmall,
+                              colorFilter: ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
+                              ),
                             ),
                             color: Theme.of(
                               context,
@@ -108,9 +115,14 @@ class HomeScreen extends StatelessWidget {
                             amount: data.user.companyIncome != null
                                 ? data.user.companyIncome!
                                 : 0.0,
-                            icon: HugeIcon(
-                              icon: HugeIcons.strokeRoundedBuilding02,
-                              color: Colors.white,
+                            icon: SvgPicture.asset(
+                              IconLinks.company,
+                              width: AppDimens.iconSizeSmall,
+                              height: AppDimens.iconSizeSmall,
+                              colorFilter: ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
+                              ),
                             ),
                             color: Theme.of(
                               context,

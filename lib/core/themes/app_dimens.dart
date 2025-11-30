@@ -118,4 +118,9 @@ class AppDimens {
   static final borderRadiusTopExtraLarge = BorderRadius.vertical(
     top: Radius.circular(25),
   );
+
+  // Icon Sizes
+  static const double iconSizeSmall = 16.0;
+  static const double iconSizeMedium = 24.0;
+  static const double iconSizeLarge = 32.0;
 }

@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +18,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> icons = const [
-      'assets/icons/home.svg',
-      'assets/icons/company.svg',
-      'assets/icons/transaction.svg',
-      'assets/icons/custom_user_icon.svg',
+      IconLinks.home,
+      IconLinks.company,
+      IconLinks.transaction,
+      IconLinks.user,
     ];
     List<String> titles = const ['Home', 'Company', 'Transaction', 'Profile'];
 

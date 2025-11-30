@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:flutter/material.dart';
 
 class SegmentedControlController extends ChangeNotifier {
@@ -7,12 +8,16 @@ class SegmentedControlController extends ChangeNotifier {
 
   String get selectedValue {
     switch (_selectedIndex) {
-      case 0:
+      case TransactionTypes.expense:
         return 'Expense';
-      case 1:
+      case TransactionTypes.income:
         return 'Income';
-      case 2:
+      case TransactionTypes.transfer:
         return 'Transfer';
+      case TransactionTypes.personal:
+        return 'Personal';
+      case TransactionTypes.business:
+        return 'Business';
       default:
         return 'Transfer';
     }
@@ -29,16 +34,22 @@ class SegmentedControlController extends ChangeNotifier {
     int index;
     switch (value) {
       case 'Expense':
-        index = 0;
+        index = TransactionTypes.expense;
         break;
       case 'Income':
-        index = 1;
+        index = TransactionTypes.income;
         break;
       case 'Transfer':
-        index = 2;
+        index = TransactionTypes.transfer;
+        break;
+      case 'Personal':
+        index = TransactionTypes.personal;
+        break;
+      case 'Business':
+        index = TransactionTypes.business;
         break;
       default:
-        index = 2;
+        index = TransactionTypes.transfer;
     }
     setSelectedIndex(index);
   }
@@ -87,9 +98,11 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildSegment('Expense', 0),
-          _buildSegment('Income', 1),
-          _buildSegment('Transfer', 2),
+          _buildSegment('Expense', TransactionTypes.expense),
+          _buildSegment('Income', TransactionTypes.income),
+          _buildSegment('Transfer', TransactionTypes.transfer),
+          _buildSegment('Personal', TransactionTypes.personal),
+          _buildSegment('Business', TransactionTypes.business),
         ],
       ),
     );

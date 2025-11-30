@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 
 class TransactionFilterChips extends StatelessWidget {
@@ -16,12 +17,16 @@ class TransactionFilterChips extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: List.generate(filters.length, (index) {
           final isSelected = index == selectedIndex;
+          final isFirst = index == 0;
+          final isLast = index == filters.length - 1;
           return Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: EdgeInsets.only(
+              left: isFirst ? AppDimens.paddingMedium : 0.0,
+              right: isLast ? AppDimens.paddingMedium : 8.0,
+            ),
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
               onTap: () => onTap(index),

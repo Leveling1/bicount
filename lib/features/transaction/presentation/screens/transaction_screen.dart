@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_search_field.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
@@ -69,8 +70,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
-  final List<String> filters = ['All', 'Income', 'expense', 'Transfer'];
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TransactionBloc, TransactionState>(
@@ -104,40 +103,54 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         tx.name.toLowerCase().contains(
                           _searchController.text.toLowerCase(),
                         ) &&
-                        tx.type == filters[_selectedIndex].toLowerCase(),
+                        tx.type ==
+                            TransactionTypes.allTypes[_selectedIndex]
+                                .toLowerCase(),
                   )
+                  .toList()
+            : TransactionTypes.allTypes[_selectedIndex] ==
+                  TransactionTypes.allTypes[4]
+            ? transactions
+                  .where((tx) => tx.category == TransactionTypes.personalIncome)
+                  .toList()
+            : TransactionTypes.allTypes[_selectedIndex] ==
+                  TransactionTypes.allTypes[5]
+            ? transactions
+                  .where((tx) => tx.category == TransactionTypes.companyIncome)
                   .toList()
             : transactions
                   .where(
-                    (tx) => tx.type == filters[_selectedIndex].toLowerCase(),
+                    (tx) =>
+                        tx.type ==
+                        TransactionTypes.allTypes[_selectedIndex].toLowerCase(),
                   )
                   .toList();
 
         final grouped = groupTransactionsByDate(filteredTransactions);
 
         return transactions.isNotEmpty
-            ? Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDimens.paddingMedium,
-                ),
-                child: Column(
-                  children: [
-                    transactions.length > 10
-                        ? CustomSearchField(
-                            onChanged: (value) {
-                              setState(() {
-                                _searchController.text = value;
-                              });
-                            },
-                          )
-                        : const SizedBox.shrink(),
-                    TransactionFilterChips(
-                      selectedIndex: _selectedIndex,
-                      onTap: _onItemTapped,
-                      filters: filters,
-                    ),
-                    filteredTransactions.isNotEmpty
-                        ? Expanded(
+            ? Column(
+                children: [
+                  transactions.length > 10
+                      ? CustomSearchField(
+                          onChanged: (value) {
+                            setState(() {
+                              _searchController.text = value;
+                            });
+                          },
+                        )
+                      : const SizedBox.shrink(),
+                  TransactionFilterChips(
+                    selectedIndex: _selectedIndex,
+                    onTap: _onItemTapped,
+                    filters: TransactionTypes.allTypes,
+                  ),
+                  filteredTransactions.isNotEmpty
+                      ? Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppDimens.paddingMedium,
+                            ),
                             child: ScrollConfiguration(
                               behavior: ScrollConfiguration.of(
                                 context,
@@ -188,14 +201,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                 }).toList(),
                               ),
                             ),
-                          )
-                        : Expanded(
-                            child: const Center(
-                              child: Text('No transactions found'),
-                            ),
                           ),
-                  ],
-                ),
+                        )
+                      : Expanded(
+                          child: const Center(
+                            child: Text('No transactions found'),
+                          ),
+                        ),
+                ],
               )
             : const Center(child: Text('No transactions found'));
       },

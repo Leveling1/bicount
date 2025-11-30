@@ -8,4 +8,7 @@ class Constants{
   /// Transaction categories
   static const personnal = 0;
   static const company = 1;
+
+  /// Transaction types
+  
 }

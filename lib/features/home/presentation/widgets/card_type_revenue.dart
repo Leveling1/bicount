@@ -40,13 +40,15 @@ class CardTypeRevenue extends StatelessWidget {
               children: [
                 Container(
                   padding: AppDimens.paddingAllSmall,
+                  width: AppDimens.iconSizeLarge,
+                  height: AppDimens.iconSizeLarge,
                   decoration: BoxDecoration(
                     color: color,
                     shape: BoxShape.circle,
                   ),
                   child: icon,
                 ),
-                SizedBox(height: 4.5.h),
+                SizedBox(height: 5.h),
                 Text(
                   NumberFormatUtils.formatCurrency(amount),
                   style: Theme.of(
