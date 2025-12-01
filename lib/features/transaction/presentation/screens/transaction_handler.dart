@@ -1,9 +1,12 @@
 import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/services/smooth_insert.dart';
+import 'package:bicount/core/services/smooth_switcher.dart';
+import 'package:bicount/core/services/title_animated_switcher.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
-import 'package:bicount/features/profile/presentation/screens/account_funding_handler.dart';
 import 'package:bicount/features/profile/presentation/widgets/account_funding_fields.dart';
-import 'package:bicount/features/transaction/presentation/widgets/transfer_fields.dart';
+import 'package:bicount/features/transaction/presentation/widgets/subscription_form.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/segment_control.dart';
@@ -49,24 +52,31 @@ class _TransactionHandlerState extends State<TransactionHandler> {
 
   @override
   Widget build(BuildContext context) {
+    final title = _type.text == TransactionTypes.transferText
+        ? 'Add transaction'
+        : _type.text == TransactionTypes.subscriptionText
+        ? 'New subscription'
+        : 'Add funds to your account';
+
     return Column(
       children: [
-        Text(
-          _type.text == TransactionTypes.transferText
-              ? 'Add transaction'
-              : _type.text == TransactionTypes.subscriptionText
-              ? 'New subscription'
-              : 'Add funds to your account',
-          style: Theme.of(context).textTheme.headlineLarge,
+        TitleAnimatedSwitcher(
+          child: Text(
+            title,
+            key: ValueKey(_type.text),
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
         ),
         const SizedBox(height: 16),
         SegmentedControlWidget(controller: _segmentedType),
         const SizedBox(height: 16),
-        _type.text == TransactionTypes.transferText
-            ? TransferForm(user: widget.user, friends: widget.friends)
-            : _type.text == TransactionTypes.subscriptionText
-            ? Text('Subscription Fields')
-            : AccountFundingForm(),
+        SmoothSwitcher(
+          child: _type.text == TransactionTypes.transferText
+              ? TransferForm(user: widget.user, friends: widget.friends)
+              : _type.text == TransactionTypes.subscriptionText
+              ? SubscriptionForm()
+              : AccountFundingForm(),
+        ),
       ],
     );
   }

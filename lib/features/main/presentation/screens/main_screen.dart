@@ -1,3 +1,4 @@
+import 'package:bicount/core/services/title_animated_switcher.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
@@ -132,11 +133,7 @@ class _MainScreenState extends State<MainScreen> {
             elevation: 0,
             scrolledUnderElevation: 0,
             surfaceTintColor: Colors.transparent,
-            title: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return FadeTransition(opacity: animation, child: child);
-              },
+            title: TitleAnimatedSwitcher(
               child: Text(
                 _buildTitle()[_selectedIndex],
                 key: ValueKey(_selectedIndex),
