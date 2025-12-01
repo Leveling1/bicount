@@ -31,9 +31,9 @@ class UserModel extends OfflineFirstWithSupabaseModel {
   @Sqlite()
   final double? expenses;
 
-  @Supabase(name: 'profit')
+  @Supabase(name: 'balance')
   @Sqlite()
-  final double? profit;
+  final double? balance;
 
   @Supabase(name: 'company_income')
   @Sqlite()
@@ -53,9 +53,9 @@ class UserModel extends OfflineFirstWithSupabaseModel {
     required this.image,
     required this.username,
     required this.email,
+    this.balance,
     this.incomes,
     this.expenses,
-    this.profit,
     this.companyIncome,
     this.personalIncome,
   }) : sid = sid ?? const Uuid().v4(),

@@ -27,7 +27,7 @@ class MainEntity extends Equatable {
         email: '',
         incomes: 0,
         expenses: 0,
-        profit: 0,
+        balance: 0,
         companyIncome: 0,
         personalIncome: 0,
       ),

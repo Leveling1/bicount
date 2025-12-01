@@ -27,7 +27,7 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
         username: name,
         incomes: 0.0,
         expenses: 0.0,
-        profit: 0.0,
+        balance: 0.0,
         companyIncome: 0.0,
         personalIncome: 0.0,
       );

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../../../core/utils/number_format_utils.dart';
 import '../../../../core/widgets/details_card.dart';
 
 class InfoCard extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String title;
   final double value;
   final Color color;
@@ -31,10 +32,11 @@ class InfoCard extends StatelessWidget {
               CircleAvatar(
                 backgroundColor: color,
                 radius: 14.r, // Using .r for radius to scale consistently
-                child: Icon(
+                child: SvgPicture.asset(
                   icon,
-                  size: 18.sp, // Adjust size to fit within the avatar
-                  color: Colors.white,
+                  width: 18.sp,
+                  height: 18.sp,
+                  colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
                 ),
               ),
               const SizedBox(width: 10),

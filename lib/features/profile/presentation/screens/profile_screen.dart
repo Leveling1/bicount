@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
@@ -37,6 +38,7 @@ class ProfileScreen extends StatelessWidget {
                     image: data.user.image,
                     name: data.user.username,
                     email: data.user.email,
+                    balance: data.user.balance,
                     onTap: () {},
                   ),
                   //const SizedBox(height: 20),
@@ -45,19 +47,19 @@ class ProfileScreen extends StatelessWidget {
                       Flexible(
                         flex: 1,
                         child: InfoCard(
-                          icon: Icons.person,
-                          title: 'Profit',
-                          value: data.user.profit!,
+                          icon: IconLinks.user,
+                          title: 'Income',
+                          value: data.user.incomes!,
                           color: Theme.of(
                             context,
-                          ).extension<OtherTheme>()!.profit!,
+                          ).extension<OtherTheme>()!.balance!,
                         ),
                       ),
                       const SizedBox(width: AppDimens.marginMedium),
                       Flexible(
                         flex: 1,
                         child: InfoCard(
-                          icon: Icons.person,
+                          icon: IconLinks.user,
                           title: 'Expense',
                           value: data.user.expenses!,
                           color: Theme.of(
@@ -72,7 +74,7 @@ class ProfileScreen extends StatelessWidget {
                       Flexible(
                         flex: 1,
                         child: InfoCard(
-                          icon: Icons.person,
+                          icon: IconLinks.user,
                           title: 'Personal',
                           value: data.user.personalIncome!,
                           color: Theme.of(
@@ -84,7 +86,7 @@ class ProfileScreen extends StatelessWidget {
                       Flexible(
                         flex: 1,
                         child: InfoCard(
-                          icon: Icons.person,
+                          icon: IconLinks.company,
                           title: 'Company',
                           value: data.user.companyIncome!,
                           color: Theme.of(

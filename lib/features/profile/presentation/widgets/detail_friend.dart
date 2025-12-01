@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
@@ -38,7 +39,7 @@ class DetailFriend extends StatelessWidget {
             Flexible(
               flex: 1,
               child: InfoCard(
-                icon: Icons.gif,
+                icon: IconLinks.user,
                 title: 'Given',
                 value: friend.give!,
                 color: Theme.of(context).extension<OtherTheme>()!.expense!,
@@ -48,10 +49,10 @@ class DetailFriend extends StatelessWidget {
             Flexible(
               flex: 1,
               child: InfoCard(
-                icon: Icons.receipt,
+                icon: IconLinks.user,
                 title: 'Received',
                 value: friend.receive!,
-                color: Theme.of(context).extension<OtherTheme>()!.profit!,
+                color: Theme.of(context).extension<OtherTheme>()!.balance!,
               ),
             ),
           ],
@@ -61,20 +62,24 @@ class DetailFriend extends StatelessWidget {
             Flexible(
               flex: 1,
               child: InfoCard(
-                icon: Icons.gif,
+                icon: IconLinks.user,
                 title: 'Personal',
                 value: friend.personalIncome!,
-                color: Theme.of(context).extension<OtherTheme>()!.personnalIncome!,
+                color: Theme.of(
+                  context,
+                ).extension<OtherTheme>()!.personnalIncome!,
               ),
             ),
             const SizedBox(width: AppDimens.marginMedium),
             Flexible(
               flex: 1,
               child: InfoCard(
-                icon: Icons.receipt,
+                icon: IconLinks.company,
                 title: 'Company',
                 value: friend.companyIncome!,
-                color: Theme.of(context).extension<OtherTheme>()!.companyIncome!,
+                color: Theme.of(
+                  context,
+                ).extension<OtherTheme>()!.companyIncome!,
               ),
             ),
           ],

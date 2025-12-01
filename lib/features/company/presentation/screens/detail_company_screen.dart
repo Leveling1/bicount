@@ -43,13 +43,15 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<DetailBloc, DetailState>(
       listener: (context, state) {
         if (state is DetailError) {
-          NotificationHelper.showFailureNotification(context, state.failure.message.toString());
+          NotificationHelper.showFailureNotification(
+            context,
+            state.failure.message.toString(),
+          );
         }
       },
       builder: (context, state) {
@@ -86,9 +88,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                     context: context,
                     minHeight: 0.95,
                     color: null,
-                    child: ShareCompany(
-                      cid: widget.cid,
-                    ),
+                    child: ShareCompany(cid: widget.cid),
                   );
                 },
                 icon: Icon(
@@ -108,189 +108,224 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
             ],
           ),
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppDimens.paddingLarge,),
+            padding: EdgeInsets.symmetric(horizontal: AppDimens.paddingLarge),
             child: SingleChildScrollView(
               child: Center(
                 child: Column(
                   children: [
                     state is DetailLoading
-                    ? SkeletonBox()
-                    : state is DetailLoaded
-                    ? Column(
-                      children: [
-                        CompanyProfil(
-                          width: 100,
-                          height: 100,
-                          radius: 40,
-                          image: state.company.image,
-                        ),
-                        _spacerHeight(),
-                        Text(
-                          state.company.name,
-                          style: Theme.of(context).textTheme.headlineLarge,
-                        ),
-                        state.company.description != null && state.company.description != ""
-                            ? DetailsCard(
-                          child: ExpandableText(
-                            state.company.description!,
-                          ),
-                        ) : const SizedBox.shrink(),
-                        _spacerHeight(),
-                        CustomPieChart(
-                          profit: state.company.profit!,
-                          salary: state.company.salary!,
-                          equipment: state.company.equipment!,
-                          service: state.company.service!,
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              child: CompanyCardInfo(
-                                title: "Profit",
-                                value: state.company.profit!,
-                                percent: _percent(value: state.company.profit!, total: state.company.sales!),
-                                color: Theme.of(context).extension<OtherTheme>()!.profit!,
+                        ? SkeletonBox()
+                        : state is DetailLoaded
+                        ? Column(
+                            children: [
+                              CompanyProfil(
+                                width: 100,
+                                height: 100,
+                                radius: 40,
+                                image: state.company.image,
                               ),
-                            ),
-                            _spacerWidth(),
-                            Flexible(
-                              flex: 1,
-                              child: CompanyCardInfo(
-                                title: "Salary",
-                                value:  state.company.salary!,
-                                percent: _percent(value: state.company.salary!, total: state.company.sales!),
-                                color: Theme.of(context).extension<OtherTheme>()!.salary!,
+                              _spacerHeight(),
+                              Text(
+                                state.company.name,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.headlineLarge,
                               ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              child: CompanyCardInfo(
-                                title: "Equipment",
-                                value: state.company.equipment!,
-                                percent: _percent(value: state.company.equipment!, total: state.company.sales!),
-                                color: Theme.of(context).extension<OtherTheme>()!.equipment!,
+                              state.company.description != null &&
+                                      state.company.description != ""
+                                  ? DetailsCard(
+                                      child: ExpandableText(
+                                        state.company.description!,
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
+                              _spacerHeight(),
+                              CustomPieChart(
+                                profit: state.company.profit!,
+                                salary: state.company.salary!,
+                                equipment: state.company.equipment!,
+                                service: state.company.service!,
                               ),
-                            ),
-                            _spacerWidth(),
-                            Flexible(
-                              flex: 1,
-                              child: CompanyCardInfo(
-                                title: "Third-party service",
-                                value: state.company.service!,
-                                percent: _percent(value: state.company.service!, total: state.company.sales!),
-                                color: Theme.of(context).extension<OtherTheme>()!.service!,
+                              Row(
+                                children: [
+                                  Flexible(
+                                    flex: 1,
+                                    child: CompanyCardInfo(
+                                      title: "Profit",
+                                      value: state.company.profit!,
+                                      percent: _percent(
+                                        value: state.company.profit!,
+                                        total: state.company.sales!,
+                                      ),
+                                      color: Theme.of(
+                                        context,
+                                      ).extension<OtherTheme>()!.balance!,
+                                    ),
+                                  ),
+                                  _spacerWidth(),
+                                  Flexible(
+                                    flex: 1,
+                                    child: CompanyCardInfo(
+                                      title: "Salary",
+                                      value: state.company.salary!,
+                                      percent: _percent(
+                                        value: state.company.salary!,
+                                        total: state.company.sales!,
+                                      ),
+                                      color: Theme.of(
+                                        context,
+                                      ).extension<OtherTheme>()!.salary!,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ) : SkeletonBox(),
+                              Row(
+                                children: [
+                                  Flexible(
+                                    flex: 1,
+                                    child: CompanyCardInfo(
+                                      title: "Equipment",
+                                      value: state.company.equipment!,
+                                      percent: _percent(
+                                        value: state.company.equipment!,
+                                        total: state.company.sales!,
+                                      ),
+                                      color: Theme.of(
+                                        context,
+                                      ).extension<OtherTheme>()!.equipment!,
+                                    ),
+                                  ),
+                                  _spacerWidth(),
+                                  Flexible(
+                                    flex: 1,
+                                    child: CompanyCardInfo(
+                                      title: "Third-party service",
+                                      value: state.company.service!,
+                                      percent: _percent(
+                                        value: state.company.service!,
+                                        total: state.company.sales!,
+                                      ),
+                                      color: Theme.of(
+                                        context,
+                                      ).extension<OtherTheme>()!.service!,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        : SkeletonBox(),
                     _spacerHeight(),
                     TitleIconButtomRow(
                       title: 'Group',
                       icon: Icons.add,
-                      onPressed: (){
+                      onPressed: () {
                         showCustomBottomSheet(
                           context: context,
                           minHeight: 0.95,
                           color: null,
-                          child: AddGroup(
-                            idCompany: widget.cid,
-                          ),
+                          child: AddGroup(idCompany: widget.cid),
                         );
                       },
                     ),
                     _spacerHeight(),
                     state is DetailLoading
-                    ? SizedBox(
-                      height: 170,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(right: 16),
-                        itemCount: 10, // Skeleton : 10 items
-                        separatorBuilder: (_, __) => const SizedBox(width: 12),
-                        itemBuilder: (context, index) {
-                          return const GroupCardSkeleton();
-                        },
-                      ),
-                    )
-                    : state is DetailLoaded
-                      ? state.company.groups!.isNotEmpty ? SizedBox(
-                        height: 170, // hauteur fixe
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.only(right: 16),
-                          itemCount: state.company.groups!.length,
-                          separatorBuilder: (_, __) => const SizedBox(width: 12), // espace entre les items
-                          itemBuilder: (context, index) {
-                            return GroupCard(
-                              group: state.company.groups![index],
-                              onTap: (){
-                                context.push('/group', extra: state.company.groups![index]);
-                              }
-                            );
-                          },
-                        ),
-                      ) : const Text("You haven't opened any teams.")
-                    : SizedBox(
-                      height: 170,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(right: 16),
-                        itemCount: 10, // Skeleton : 10 items
-                        separatorBuilder: (_, __) => const SizedBox(width: 12),
-                        itemBuilder: (context, index) {
-                          return const GroupCardSkeleton();
-                        },
-                      ),
-                    ),
+                        ? SizedBox(
+                            height: 170,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.only(right: 16),
+                              itemCount: 10, // Skeleton : 10 items
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(width: 12),
+                              itemBuilder: (context, index) {
+                                return const GroupCardSkeleton();
+                              },
+                            ),
+                          )
+                        : state is DetailLoaded
+                        ? state.company.groups!.isNotEmpty
+                              ? SizedBox(
+                                  height: 170, // hauteur fixe
+                                  child: ListView.separated(
+                                    scrollDirection: Axis.horizontal,
+                                    padding: const EdgeInsets.only(right: 16),
+                                    itemCount: state.company.groups!.length,
+                                    separatorBuilder: (_, __) => const SizedBox(
+                                      width: 12,
+                                    ), // espace entre les items
+                                    itemBuilder: (context, index) {
+                                      return GroupCard(
+                                        group: state.company.groups![index],
+                                        onTap: () {
+                                          context.push(
+                                            '/group',
+                                            extra: state.company.groups![index],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                )
+                              : const Text("You haven't opened any teams.")
+                        : SizedBox(
+                            height: 170,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.only(right: 16),
+                              itemCount: 10, // Skeleton : 10 items
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(width: 12),
+                              itemBuilder: (context, index) {
+                                return const GroupCardSkeleton();
+                              },
+                            ),
+                          ),
                     _spacerHeight(),
                     TitleIconButtomRow(
                       title: 'Project',
                       icon: Icons.add,
-                      onPressed: (){
+                      onPressed: () {
                         showCustomBottomSheet(
                           context: context,
                           minHeight: 0.95,
                           color: null,
-                          child: AddProject(
-                            idCompany: widget.cid,
-                          ),
+                          child: AddProject(idCompany: widget.cid),
                         );
                       },
                     ),
                     _spacerHeight(),
                     state is DetailLoading
                         ? const SizedBox()
-                        : state is DetailLoaded && state.company.projects != null && state.company.projects!.isNotEmpty
+                        : state is DetailLoaded &&
+                              state.company.projects != null &&
+                              state.company.projects!.isNotEmpty
                         ? Column(
-                      children: state.company.projects!.map((projectData) {
-                        return ProjectCard(project: projectData,);
-                      }).toList(),
-                    ) : Column(
-                      children: [
-                        const Text("No projects have been launched."),
-                        _spacerHeight(),
-                      ],
-                    ),
+                            children: state.company.projects!.map((
+                              projectData,
+                            ) {
+                              return ProjectCard(project: projectData);
+                            }).toList(),
+                          )
+                        : Column(
+                            children: [
+                              const Text("No projects have been launched."),
+                              _spacerHeight(),
+                            ],
+                          ),
                   ],
                 ),
               ),
             ),
           ),
         );
-      }
+      },
     );
   }
 
-  double _percent({required double value, required double total}){
+  double _percent({required double value, required double total}) {
     return value != 0
-        ? double.parse(((value * 100)/total).toStringAsFixed(1))
+        ? double.parse(((value * 100) / total).toStringAsFixed(1))
         : 0.0;
   }
 }

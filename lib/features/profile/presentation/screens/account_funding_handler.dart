@@ -45,6 +45,11 @@ class _AccountFundingHandlerState extends State<AccountFundingHandler> {
                 'Add funds to your account',
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
+              const SizedBox(height: 12),
+              Text(
+                'Add money to your account securely by recording a new deposit or credit to increase your available balance.',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const SizedBox(height: 16),
               CustomFormField(
                 controller: _source,
