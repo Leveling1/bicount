@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/features/company/presentation/screens/company_screen.dart';
@@ -16,7 +17,6 @@ import '../../domain/entities/main_entity.dart';
 import '../bloc/main_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -28,6 +28,7 @@ class _MainScreenState extends State<MainScreen> {
   late List<MainEntity> startData;
   PageController pageController = PageController();
   ValueNotifier<double> scrollXPosition = ValueNotifier(0.0);
+  bool showSearchBar = false;
 
   int _selectedIndex = 0;
 
@@ -62,15 +63,10 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     return [
-      HomeScreen(
-        onCardTap: _goToPage,
-        data: data,
-      ),
-      CompanyScreen(),
-      TransactionScreen(
-        data: data,
-      ),
-      ProfileScreen(data: data)
+      HomeScreen(onCardTap: _goToPage, data: data),
+      CompanyScreen(showSearchBar: showSearchBar),
+      TransactionScreen(data: data, showSearchBar: showSearchBar),
+      ProfileScreen(data: data),
     ];
   }
 
@@ -112,13 +108,13 @@ class _MainScreenState extends State<MainScreen> {
         if (state is MainStateConnexion) {
           if (state.networkStatus == NetworkStatus.disconnected) {
             NotificationHelper.showFailureNotification(
-                context,
-                "Internet connection lost: you are in offline mode"
+              context,
+              "Internet connection lost: you are in offline mode",
             );
           } else if (state.networkStatus == NetworkStatus.unstable) {
             NotificationHelper.showFailureNotification(
-                context,
-                "Unstable internet connection"
+              context,
+              "Unstable internet connection",
             );
           }
         }
@@ -145,6 +141,27 @@ class _MainScreenState extends State<MainScreen> {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
+            actions: [
+              if (_selectedIndex == 1 || _selectedIndex == 2)
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      showSearchBar = !showSearchBar;
+                    });
+                  },
+                  icon: !showSearchBar
+                      ? Icon(
+                          Icons.search,
+                          color: Theme.of(context).textTheme.titleSmall!.color!,
+                          size: AppDimens.iconSizeMedium,
+                        )
+                      : Icon(
+                          Icons.close,
+                          color: Theme.of(context).textTheme.titleSmall!.color!,
+                          size: AppDimens.iconSizeMedium,
+                        ),
+                ),
+            ],
           ),
           body: ContainerBody(
             child: PageView(
@@ -155,9 +172,7 @@ class _MainScreenState extends State<MainScreen> {
                 });
               },
               children: _buildScreens(
-                state is MainLoaded
-                  ? state.startData
-                  : MainEntity.fromEmpty()
+                state is MainLoaded ? state.startData : MainEntity.fromEmpty(),
               ),
             ),
           ),
@@ -170,44 +185,40 @@ class _MainScreenState extends State<MainScreen> {
             transitionBuilder: (Widget child, Animation<double> animation) {
               return ScaleTransition(
                 scale: animation,
-                child: FadeTransition(
-                  opacity: animation,
-                  child: child,
-                ),
+                child: FadeTransition(opacity: animation, child: child),
               );
             },
             child: _selectedIndex != 0 && _selectedIndex != 3
                 ? FloatingActionButton(
-              key: const ValueKey('fab'),
-              onPressed: () {
-                showCustomBottomSheet(
-                  context: context,
-                  minHeight: _selectedIndex == 1
-                      ? 0.5
-                      : 0.95,
-                  color: null,
-                  child: _selectedIndex == 1
-                    ? const CompanyHandler()
-                    : TransactionHandler(
-                      user: state is MainLoaded
-                          ? state.startData.user
-                          : null,
-                      usersLink: state is MainLoaded
-                        ? state.startData.friends
-                        : [],
-                  ),
-                );
-              },
-              child: Icon(
-                Icons.add,
-                color: Theme.of(context).scaffoldBackgroundColor,
-              ),
-            )
+                    key: const ValueKey('fab'),
+                    onPressed: () {
+                      showCustomBottomSheet(
+                        context: context,
+                        minHeight: _selectedIndex == 1 ? 0.5 : 0.95,
+                        color: null,
+                        child: _selectedIndex == 1
+                            ? const CompanyHandler()
+                            : TransactionHandler(
+                                user: state is MainLoaded
+                                    ? state.startData.user
+                                    : null,
+                                usersLink: state is MainLoaded
+                                    ? state.startData.friends
+                                    : [],
+                              ),
+                      );
+                    },
+                    child: Icon(
+                      Icons.add,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                  )
                 : const SizedBox.shrink(key: ValueKey('sizedBox')),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
         );
-      }
+      },
     );
   }
 }

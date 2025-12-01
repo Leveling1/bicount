@@ -38,8 +38,6 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          filled: true,
-          fillColor: Theme.of(context).cardColor,
           hintText: "Search",
           hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
                 color: AppColors.inactiveColorDark,
@@ -54,10 +52,6 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
                   onPressed: _clearText,
                 )
               : null,
-          border: const OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-          ),
         ),
       ),
     );

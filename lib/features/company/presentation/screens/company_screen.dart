@@ -1,3 +1,4 @@
+import 'package:bicount/core/services/smooth_insert.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +11,9 @@ import '../widgets/company_card_skeleton.dart';
 import '../widgets/company_large_card.dart';
 
 class CompanyScreen extends StatefulWidget {
-  const CompanyScreen({super.key});
+  final bool showSearchBar;
+
+  const CompanyScreen({super.key, this.showSearchBar = false});
 
   @override
   State<CompanyScreen> createState() => _CompanyScreenState();
@@ -39,6 +42,9 @@ class _CompanyScreenState extends State<CompanyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.showSearchBar) {
+      _searchController.clear();
+    }
     return BlocConsumer<ListBloc, ListState>(
       listener: (context, state) {
         if (state is ListError) {
@@ -68,42 +74,55 @@ class _CompanyScreenState extends State<CompanyScreen> {
             (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
           );
 
-          return SingleChildScrollView(
-            child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDimens.paddingMedium,
-            ),
-              child: Column(
-                children: [
-                  state.companies.companies.length > 10
-                      ? CustomSearchField(
-                          onChanged: (value) {
-                            setState(() {
-                              _searchController.text = value;
-                            });
-                          },
-                        )
-                      : const SizedBox.shrink(),
-                  const SizedBox(height: 20),
-                  Column(
-                    children: [
-                      ...filteredCompanies.map((company) {
-                        if (state.companies.companies.length > 10) {
-                          return CompanyCard(company: company);
-                        } else {
-                      final roleModel = state.companies.links.where((e) => e.companyId == company.cid).isEmpty
-                          ? null
-                          : state.companies.links.firstWhere((e) => e.companyId == company.cid);
-                      final role = roleModel?.role ?? '';
-                      return CompanyLargeCard(company: company, role: role);
-                        }
-                      }),
-                      SizedBox(height: 50.h),
-                    ],
+          return Column(
+            children: [
+              SmoothInsert(
+                visible: widget.showSearchBar,
+                verticalMargin: AppDimens.paddingSmall,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimens.paddingMedium,
                   ),
-                ],
+                  child: CustomSearchField(
+                    onChanged: (value) {
+                      setState(() {
+                        _searchController.text = value;
+                      });
+                    },
+                  ),
+                ),
               ),
-            ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimens.paddingMedium,
+                    ),
+                    child: Column(
+                      children: [
+                        ...filteredCompanies.map((company) {
+                          if (state.companies.companies.length > 10) {
+                            return CompanyCard(company: company);
+                          } else {
+                            final roleModel =
+                                state.companies.links
+                                    .where((e) => e.companyId == company.cid)
+                                    .isEmpty
+                                ? null
+                                : state.companies.links.firstWhere(
+                                    (e) => e.companyId == company.cid,
+                                  );
+                            final role = roleModel?.role ?? '';
+                            return CompanyLargeCard(company: company, role: role);
+                          }
+                        }),
+                        SizedBox(height: 50.h),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           );
         } else if (state is ListError) {
           return Center(child: Text("Error: ${state.failure.message}"));

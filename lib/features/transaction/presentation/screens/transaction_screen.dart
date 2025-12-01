@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/services/smooth_insert.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_search_field.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
@@ -19,7 +20,13 @@ import 'detail_transaction_screen.dart';
 
 class TransactionScreen extends StatefulWidget {
   final MainEntity data;
-  const TransactionScreen({super.key, required this.data});
+  final bool showSearchBar;
+
+  const TransactionScreen({
+    super.key,
+    required this.data,
+    this.showSearchBar = false,
+  });
 
   @override
   State<TransactionScreen> createState() => _TransactionScreenState();
@@ -72,6 +79,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.showSearchBar) {
+      _searchController.clear();
+    }
     return BlocConsumer<TransactionBloc, TransactionState>(
       listener: (context, state) {
         if (state is TransactionCreated) {
@@ -131,15 +141,22 @@ class _TransactionScreenState extends State<TransactionScreen> {
         return transactions.isNotEmpty
             ? Column(
                 children: [
-                  transactions.length > 10
-                      ? CustomSearchField(
-                          onChanged: (value) {
-                            setState(() {
-                              _searchController.text = value;
-                            });
-                          },
-                        )
-                      : const SizedBox.shrink(),
+                  SmoothInsert(
+                    visible: widget.showSearchBar,
+                    verticalMargin: AppDimens.paddingSmall,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimens.paddingMedium,
+                      ),
+                      child: CustomSearchField(
+                        onChanged: (value) {
+                          setState(() {
+                            _searchController.text = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
                   TransactionFilterChips(
                     selectedIndex: _selectedIndex,
                     onTap: _onItemTapped,
