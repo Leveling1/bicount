@@ -42,14 +42,14 @@ class _AccountFundingHandlerState extends State<AccountFundingHandler> {
           child: Column(
             children: [
               Text(
-                'Add transaction',
+                'Add funds to your account',
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
               const SizedBox(height: 16),
               CustomFormField(
                 controller: _source,
-                label: "Title",
-                hint: 'Enter transaction name',
+                label: "Source",
+                hint: 'Enter source of funds',
               ),
               const SizedBox(height: 16),
               Column(
@@ -100,6 +100,7 @@ class _AccountFundingHandlerState extends State<AccountFundingHandler> {
             amount: double.parse(_amount.text),
             currency: _currency.text,
             note: _note.text,
+            date: _date.text,
           ),
         ),
       );

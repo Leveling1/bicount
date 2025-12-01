@@ -1,8 +1,10 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
+import 'package:bicount/core/widgets/header_button.dart';
 import 'package:bicount/features/company/presentation/screens/company_screen.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
+import 'package:bicount/features/profile/presentation/screens/account_funding_handler.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -162,6 +164,18 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                 ),
               if (_selectedIndex == 3) ...[
+                HeaderButton(
+                  text: 'Add funds',
+                  icon: Icons.add,
+                  onTap: () {
+                    showCustomBottomSheet(
+                      context: context,
+                      minHeight: 0.95,
+                      color: null,
+                      child: AccountFundingHandler(),
+                    );
+                  },
+                ),
                 IconButton(
                   onPressed: () {
                     //context.go('/settings');
@@ -172,17 +186,7 @@ class _MainScreenState extends State<MainScreen> {
                     size: AppDimens.iconSizeMedium,
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    //context.go('/settings');
-                  },
-                  icon: Icon(
-                    Icons.add,
-                    color: Theme.of(context).textTheme.titleSmall!.color!,
-                    size: AppDimens.iconSizeMedium,
-                  ),
-                ),
-              ]
+              ],
             ],
           ),
           body: ContainerBody(

@@ -1,4 +1,6 @@
 
+import 'package:bicount/features/profile/domain/entities/add_account_funding_entity.dart';
+
 abstract class ProfileRepository {
-  // Add your repository interface here
+  Future<void> addAccountFunding(AddAccountFundingEntity data);
 }

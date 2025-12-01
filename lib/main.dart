@@ -7,6 +7,7 @@ import 'package:bicount/features/company/data/repositories/company_repository_im
 import 'package:bicount/features/company/presentation/bloc/company_bloc.dart';
 import 'package:bicount/features/home/data/repositories/home_repository_impl.dart';
 import 'package:bicount/features/home/presentation/bloc/home_bloc.dart';
+import 'package:bicount/features/profile/data/data_sources/local_datasource/profile_local_data_source_impl.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/local_transaction_data_source_impl.dart';
 import 'package:bicount/features/transaction/data/repositories/transaction_repository_impl.dart';
 import 'package:bicount/features/transaction/presentation/bloc/transaction_bloc.dart';
@@ -59,9 +60,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         RepositoryProvider<MainRepositoryImpl>(
-          create: (_) => MainRepositoryImpl(
-            LocalMainDataSourceImpl(),
-          ),
+          create: (_) => MainRepositoryImpl(LocalMainDataSourceImpl()),
         ),
         RepositoryProvider<HomeRepositoryImpl>(
           create: (_) => HomeRepositoryImpl(
@@ -76,9 +75,8 @@ class MyApp extends StatelessWidget {
           ),
         ),
         RepositoryProvider<TransactionRepositoryImpl>(
-          create: (_) => TransactionRepositoryImpl(
-            LocalTransactionDataSourceImpl(),
-          ),
+          create: (_) =>
+              TransactionRepositoryImpl(LocalTransactionDataSourceImpl()),
         ),
         RepositoryProvider<GroupRepositoryImpl>(
           create: (_) => GroupRepositoryImpl(),
@@ -87,7 +85,9 @@ class MyApp extends StatelessWidget {
           create: (_) => ProjectRepositoryImpl(),
         ),
         RepositoryProvider<ProfileRepositoryImpl>(
-          create: (_) => ProfileRepositoryImpl(),
+          create: (_) => ProfileRepositoryImpl(
+            localDataSource: ProfileLocalDataSourceImpl(),
+          ),
         ),
       ],
       child: MultiBlocProvider(
@@ -99,49 +99,56 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider<MainBloc>(
-            create: (context) => MainBloc(MainRepositoryImpl(
-              LocalMainDataSourceImpl(),
-            )),
+            create: (context) =>
+                MainBloc(MainRepositoryImpl(LocalMainDataSourceImpl())),
           ),
           BlocProvider<HomeBloc>(
-            create: (context) => HomeBloc(HomeRepositoryImpl(
-              RemoteHomeDataSourceImpl(),
-              LocalHomeDataSourceImpl(),
-            ))
+            create: (context) => HomeBloc(
+              HomeRepositoryImpl(
+                RemoteHomeDataSourceImpl(),
+                LocalHomeDataSourceImpl(),
+              ),
+            ),
           ),
           BlocProvider<CompanyBloc>(
-            create: (context) => CompanyBloc(CompanyRepositoryImpl(
-              CompanyRemoteDataSourceImpl(),
-              LocalCompanyDataSourceImpl()),
-            )
+            create: (context) => CompanyBloc(
+              CompanyRepositoryImpl(
+                CompanyRemoteDataSourceImpl(),
+                LocalCompanyDataSourceImpl(),
+              ),
+            ),
           ),
           BlocProvider<ListBloc>(
-              create: (context) => ListBloc(CompanyRepositoryImpl(
-                  CompanyRemoteDataSourceImpl(),
-                  LocalCompanyDataSourceImpl()),
-              )
+            create: (context) => ListBloc(
+              CompanyRepositoryImpl(
+                CompanyRemoteDataSourceImpl(),
+                LocalCompanyDataSourceImpl(),
+              ),
+            ),
           ),
           BlocProvider<DetailBloc>(
-              create: (context) => DetailBloc(CompanyRepositoryImpl(
-                  CompanyRemoteDataSourceImpl(),
-                  LocalCompanyDataSourceImpl()),
-              )
+            create: (context) => DetailBloc(
+              CompanyRepositoryImpl(
+                CompanyRemoteDataSourceImpl(),
+                LocalCompanyDataSourceImpl(),
+              ),
+            ),
           ),
           BlocProvider<TransactionBloc>(
             create: (context) =>
-              TransactionBloc(context.read<TransactionRepositoryImpl>()),
+                TransactionBloc(context.read<TransactionRepositoryImpl>()),
           ),
           BlocProvider<GroupBloc>(
-            create: (context) =>
-            GroupBloc(context.read<GroupRepositoryImpl>()),
+            create: (context) => GroupBloc(context.read<GroupRepositoryImpl>()),
           ),
           BlocProvider<ProjectBloc>(
             create: (context) =>
                 ProjectBloc(context.read<ProjectRepositoryImpl>()),
           ),
           BlocProvider<ProfileBloc>(
-            create: (context) =>
-                ProfileBloc(context.read<ProfileRepositoryImpl>()),
+            create: (context) => ProfileBloc(
+              context.read<ProfileRepositoryImpl>(),
+            ),
           ),
         ],
         child: ToastificationWrapper(

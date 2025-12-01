@@ -1,4 +1,5 @@
+import 'package:bicount/features/profile/domain/entities/add_account_funding_entity.dart';
 
-class ProfileLocalDataSource {
-  // Add your local data source implementation here
+abstract class ProfileLocalDataSource {
+  Future<void> addAccountFunding(AddAccountFundingEntity data);
 }
