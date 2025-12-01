@@ -76,10 +76,10 @@ class _TransactionHandlerState extends State<TransactionHandler> {
       listener: (context, state) {
         if (state is TransactionCreated) {
           NotificationHelper.showSuccessNotification(context, state.toString());
-          
+
           WidgetsBinding.instance.addPostFrameCallback((_) {
-    clearForm();
-  });
+            clearForm();
+          });
         } else if (state is TransactionError) {
           NotificationHelper.showFailureNotification(
             context,

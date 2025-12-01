@@ -62,12 +62,13 @@ class HomeScreen extends StatelessWidget {
 
                               Text(
                                 NumberFormatUtils.formatCurrency(
-                                  data.user.profit != null
-                                      ? data.user.profit!
-                                      : 0.0,
+                                  data.user.profit ?? 0.0,
                                 ),
-                                style: Theme.of(context).textTheme.titleLarge!
-                                    .copyWith(fontWeight: FontWeight.bold),
+                                style: (data.user.profit ?? 0.0) >= 0
+                                    ? Theme.of(context).textTheme.titleLarge!
+                                        .copyWith(fontWeight: FontWeight.bold)
+                                    : Theme.of(context).textTheme.titleLarge!
+                                        .copyWith(fontWeight: FontWeight.bold, color: Colors.red),
                               ),
                             ],
                           ),

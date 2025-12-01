@@ -161,6 +161,28 @@ class _MainScreenState extends State<MainScreen> {
                           size: AppDimens.iconSizeMedium,
                         ),
                 ),
+              if (_selectedIndex == 3) ...[
+                IconButton(
+                  onPressed: () {
+                    //context.go('/settings');
+                  },
+                  icon: Icon(
+                    Icons.settings,
+                    color: Theme.of(context).textTheme.titleSmall!.color!,
+                    size: AppDimens.iconSizeMedium,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    //context.go('/settings');
+                  },
+                  icon: Icon(
+                    Icons.add,
+                    color: Theme.of(context).textTheme.titleSmall!.color!,
+                    size: AppDimens.iconSizeMedium,
+                  ),
+                ),
+              ]
             ],
           ),
           body: ContainerBody(
