@@ -64,7 +64,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         image: image,
         frequency: 'fixe',
         createdAt: DateTime.now().toIso8601String(),
-        category: Constants.personnal,
+        category: Constants.personal,
       );
       await Repository().upsert<TransactionModel>(transactionModel);
       return Right(null);

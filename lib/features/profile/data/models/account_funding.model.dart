@@ -29,11 +29,15 @@ class AccountFundingModel extends OfflineFirstWithSupabaseModel {
   
   @Supabase(name: 'source')
   @Sqlite()
-  final String? source;
+  final String source;
 
   @Supabase(name: 'note')
   @Sqlite()
   final String? note;
+
+  @Supabase(name: 'date')
+  @Sqlite()
+  final String date;
 
   @Supabase(name: 'created_at')
   @Sqlite()
@@ -45,7 +49,8 @@ class AccountFundingModel extends OfflineFirstWithSupabaseModel {
     required this.amount,
     required this.currency,
     required this.category,
-    this.source,
+    required this.source,
+    required this.date,
     this.note,
     this.createdAt,
   })  : fundingId = fundingId ?? const Uuid().v4(),

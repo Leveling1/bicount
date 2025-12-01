@@ -144,49 +144,68 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
             actions: [
-              if (_selectedIndex == 1 || _selectedIndex == 2)
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      showSearchBar = !showSearchBar;
-                    });
-                  },
-                  icon: !showSearchBar
-                      ? Icon(
-                          Icons.search,
-                          color: Theme.of(context).textTheme.titleSmall!.color!,
-                          size: AppDimens.iconSizeMedium,
-                        )
-                      : Icon(
-                          Icons.close,
-                          color: Theme.of(context).textTheme.titleSmall!.color!,
-                          size: AppDimens.iconSizeMedium,
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+                child: (_selectedIndex == 1 || _selectedIndex == 2)
+                    ? IconButton(
+                        key: ValueKey('search_$_selectedIndex$showSearchBar'),
+                        onPressed: () {
+                          setState(() {
+                            showSearchBar = !showSearchBar;
+                          });
+                        },
+                        icon: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          transitionBuilder:
+                              (Widget child, Animation<double> animation) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                          child: !showSearchBar
+                              ? Icon(
+                                  Icons.search,
+                                  key: const ValueKey('icon_search'),
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.titleSmall!.color!,
+                                  size: AppDimens.iconSizeMedium,
+                                )
+                              : Icon(
+                                  Icons.close,
+                                  key: const ValueKey('icon_close'),
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.titleSmall!.color!,
+                                  size: AppDimens.iconSizeMedium,
+                                ),
                         ),
-                ),
-              if (_selectedIndex == 3) ...[
-                HeaderButton(
-                  text: 'Add funds',
-                  icon: Icons.add,
-                  onTap: () {
-                    showCustomBottomSheet(
-                      context: context,
-                      minHeight: 0.95,
-                      color: null,
-                      child: AccountFundingHandler(),
-                    );
-                  },
-                ),
-                IconButton(
-                  onPressed: () {
-                    //context.go('/settings');
-                  },
-                  icon: Icon(
-                    Icons.settings,
-                    color: Theme.of(context).textTheme.titleSmall!.color!,
-                    size: AppDimens.iconSizeMedium,
-                  ),
-                ),
-              ],
+                      )
+                    : (_selectedIndex == 3)
+                    ? Row(
+                        key: ValueKey('profile_actions_$_selectedIndex'),
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          HeaderButton(
+                            text: 'Add funds',
+                            icon: Icons.add,
+                            onTap: () {
+                              showCustomBottomSheet(
+                                context: context,
+                                minHeight: 0.95,
+                                color: null,
+                                child: AccountFundingHandler(),
+                              );
+                            },
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(key: ValueKey('no_action')),
+              ),
             ],
           ),
           body: ContainerBody(

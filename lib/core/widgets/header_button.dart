@@ -20,6 +20,7 @@ class HeaderButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        margin: const EdgeInsets.only(right: AppDimens.marginMedium),
         constraints: const BoxConstraints(minWidth: 70),
         decoration: BoxDecoration(
           color: buttonColor.withValues(alpha: 0.3),

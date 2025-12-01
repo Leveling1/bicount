@@ -1,15 +1,16 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
+part '20251201154524.migration.dart';
 part '20251130001532.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
-  const Migration20251130001532(),};
+  const Migration20251201154524(),const Migration20251130001532()};
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  0,
+  20251130001532,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -146,6 +147,30 @@ final schema = Schema(
       },
       indices: <SchemaIndex>{
         SchemaIndex(columns: ['sid'], unique: true),
+      },
+    ),
+    SchemaTable(
+      'AccountFundingModel',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('funding_id', Column.varchar, unique: true),
+        SchemaColumn('sid', Column.varchar),
+        SchemaColumn('amount', Column.Double),
+        SchemaColumn('currency', Column.varchar),
+        SchemaColumn('category', Column.integer),
+        SchemaColumn('source', Column.varchar),
+        SchemaColumn('note', Column.varchar),
+        SchemaColumn('date', Column.varchar),
+        SchemaColumn('created_at', Column.varchar),
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(columns: ['funding_id'], unique: true),
       },
     ),
     SchemaTable(
