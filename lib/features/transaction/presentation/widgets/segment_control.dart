@@ -8,14 +8,14 @@ class SegmentedControlController extends ChangeNotifier {
 
   String get selectedValue {
     switch (_selectedIndex) {
-      case TransactionTypes.expense:
-        return 'Expense';
-      case TransactionTypes.income:
-        return 'Income';
       case TransactionTypes.transfer:
-        return 'Transfer';
+        return TransactionTypes.transferText;
+      case TransactionTypes.subscription:
+        return TransactionTypes.subscriptionText;
+      case TransactionTypes.addFund:
+        return TransactionTypes.addFundText;
       default:
-        return 'Transfer';
+        return TransactionTypes.transferText;
     }
   }
 
@@ -29,14 +29,14 @@ class SegmentedControlController extends ChangeNotifier {
   void setSelectedValue(String value) {
     int index;
     switch (value) {
-      case 'Expense':
-        index = TransactionTypes.expense;
-        break;
-      case 'Income':
-        index = TransactionTypes.income;
-        break;
-      case 'Transfer':
+      case TransactionTypes.transferText:
         index = TransactionTypes.transfer;
+        break;
+      case TransactionTypes.subscriptionText:
+        index = TransactionTypes.subscription;
+        break;
+      case TransactionTypes.addFundText:
+        index = TransactionTypes.addFund;
         break;
       default:
         index = TransactionTypes.transfer;
@@ -48,17 +48,13 @@ class SegmentedControlController extends ChangeNotifier {
 class SegmentedControlWidget extends StatefulWidget {
   final SegmentedControlController controller;
 
-  const SegmentedControlWidget({
-    super.key,
-    required this.controller,
-  });
+  const SegmentedControlWidget({super.key, required this.controller});
 
   @override
   _SegmentedControlWidgetState createState() => _SegmentedControlWidgetState();
 }
 
 class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
-
   @override
   void initState() {
     super.initState();
@@ -88,9 +84,15 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildSegment('Expense', TransactionTypes.expense),
-          _buildSegment('Income', TransactionTypes.income),
-          _buildSegment('Transfer', TransactionTypes.transfer),
+          _buildSegment(
+            TransactionTypes.transferText,
+            TransactionTypes.transfer,
+          ),
+          _buildSegment(
+            TransactionTypes.subscriptionText,
+            TransactionTypes.subscription,
+          ),
+          _buildSegment(TransactionTypes.addFundText, TransactionTypes.addFund),
         ],
       ),
     );
@@ -104,17 +106,19 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
         widget.controller.setSelectedIndex(index);
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 5),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         decoration: BoxDecoration(
           color: isSelected ? Color(0xFF6C6C6C) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
           text,
-          style: isSelected ? TextStyle(
-            color: Theme.of(context).colorScheme.tertiary,
-            fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
-          ): Theme.of(context).textTheme.titleSmall,
+          style: isSelected
+              ? TextStyle(
+                  color: Theme.of(context).colorScheme.tertiary,
+                  fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
+                )
+              : Theme.of(context).textTheme.titleSmall,
         ),
       ),
     );

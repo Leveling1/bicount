@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import '../../data/models/transaction.model.dart';
 
-enum TransactionType { income, expense, transfer }
-
 enum TransactionFrequency { cyclic, fixe }
 
 enum Currency { USD, EUR, CDF }
@@ -28,7 +26,7 @@ class TransactionEntity {
   final String gtid;
   final String? uid;
   final String name;
-  final TransactionType type;
+  final String type;
   final DateTime date;
   final DateTime? createdAt;
   final double amount;
@@ -64,7 +62,7 @@ class TransactionEntity {
       tid: data["tid"] ?? '',
       gtid: data["gtid"] ?? '',
       name: data["name"] ?? '',
-      type: TransactionType.values.firstWhere((e) => e.name == data['type']),
+      type: data['type'],
       date: data["date"] is DateTime
           ? data["date"]
           : DateTime.tryParse(data["date"] ?? '') ?? DateTime.now(),
@@ -93,7 +91,7 @@ class TransactionEntity {
     return {
 
       "name": name,
-      "type": type.name,
+      "type": type,
       "date": date.toIso8601String(),
       "amount": amount,
       "currency": currency.name,
@@ -111,7 +109,7 @@ class TransactionEntity {
       name: transaction.name,
       tid: transaction.tid!,
       gtid: transaction.gtid,
-      type: TransactionType.values.byName(transaction.type),
+      type: transaction.type,
       date: DateTime.tryParse(transaction.date)!,
       createdAt: DateTime.tryParse(transaction.createdAt ?? ''),
       amount: transaction.amount,

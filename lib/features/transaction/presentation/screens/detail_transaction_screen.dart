@@ -30,7 +30,7 @@ class DetailTransaction extends StatelessWidget {
         ? '-'
         : data.beneficiary == uid
         ? '+'
-        : data.type == TransactionType.expense
+        : data.type == "expense"
         ? '-'
         : '+';
 
@@ -105,7 +105,7 @@ class DetailTransaction extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  data.type.name,
+                  data.type,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
 

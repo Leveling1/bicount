@@ -22,7 +22,7 @@ class TransactionCard extends StatelessWidget {
         ? '-'
         : transaction.beneficiary == uid
         ? '+'
-        : transaction.type == TransactionType.expense
+        : transaction.type == "expense"
         ? '-'
         : '+';
     String time = TimeOfDay.fromDateTime(transaction.date).format(context);
@@ -92,7 +92,7 @@ class TransactionCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      transaction.type.name,
+                      transaction.type,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],

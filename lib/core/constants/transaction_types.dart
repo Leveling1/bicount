@@ -1,8 +1,13 @@
 class TransactionTypes {
   /// Transaction types
-  static const expense = 0;
-  static const income = 1;
-  static const transfer = 2;
+  static const transfer = 0;
+  static const subscription = 1;
+  static const addFund = 2;
+
+  static const String transferText = 'Transfer';
+  static const String subscriptionText = 'Subscription';
+  static const String addFundText = 'Add a fund';
+
   static const personal = 3;
   static const business = 4;
 

@@ -247,7 +247,7 @@ class _MainScreenState extends State<MainScreen> {
                                 user: state is MainLoaded
                                     ? state.startData.user
                                     : null,
-                                usersLink: state is MainLoaded
+                                friends: state is MainLoaded
                                     ? state.startData.friends
                                     : [],
                               ),
