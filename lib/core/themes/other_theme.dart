@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class OtherTheme extends ThemeExtension<OtherTheme> {
-  final Color? balance;
+  final Color? income;
   final Color? expense;
   final Color? personnalIncome;
   final Color? companyIncome;
@@ -10,7 +10,7 @@ class OtherTheme extends ThemeExtension<OtherTheme> {
   final Color? service;
 
   const OtherTheme({
-    this.balance,
+    this.income,
     this.expense,
     this.personnalIncome,
     this.companyIncome,
@@ -25,7 +25,7 @@ class OtherTheme extends ThemeExtension<OtherTheme> {
     LinearGradient? secondaryGradient,
   }) {
     return OtherTheme(
-      balance: balance ?? balance,
+      income: income ?? income,
       expense: expense ?? expense,
       personnalIncome: personnalIncome ?? personnalIncome,
       companyIncome: companyIncome ?? companyIncome,
@@ -42,7 +42,7 @@ class OtherTheme extends ThemeExtension<OtherTheme> {
   ) {
     if (other is! OtherTheme) return this;
     return OtherTheme(
-      balance: Color.lerp(balance, other.balance, t),
+      income: Color.lerp(income, other.income, t),
       expense: Color.lerp(expense, other.expense, t),
       personnalIncome: Color.lerp(personnalIncome, other.personnalIncome, t),
       companyIncome: Color.lerp(companyIncome, other.companyIncome, t),

@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -34,8 +35,8 @@ class InfoCard extends StatelessWidget {
                 radius: 14.r, // Using .r for radius to scale consistently
                 child: SvgPicture.asset(
                   icon,
-                  width: 18.sp,
-                  height: 18.sp,
+                  width: AppDimens.iconSizeSmall,
+                  height: AppDimens.iconSizeSmall,
                   colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
                 ),
               ),

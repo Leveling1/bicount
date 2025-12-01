@@ -159,7 +159,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                                       ),
                                       color: Theme.of(
                                         context,
-                                      ).extension<OtherTheme>()!.balance!,
+                                      ).extension<OtherTheme>()!.income!,
                                     ),
                                   ),
                                   _spacerWidth(),

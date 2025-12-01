@@ -19,7 +19,7 @@ class CustomPieChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Color>? colors = [
-      AppColors.profitColorLight,
+      AppColors.balanceColorLight,
       AppColors.salaryColorDark,
       AppColors.equipmentColorDark,
       AppColors.serviceColorDark,

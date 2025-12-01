@@ -39,7 +39,7 @@ class DetailFriend extends StatelessWidget {
             Flexible(
               flex: 1,
               child: InfoCard(
-                icon: IconLinks.user,
+                icon: IconLinks.expense,
                 title: 'Given',
                 value: friend.give!,
                 color: Theme.of(context).extension<OtherTheme>()!.expense!,
@@ -49,10 +49,10 @@ class DetailFriend extends StatelessWidget {
             Flexible(
               flex: 1,
               child: InfoCard(
-                icon: IconLinks.user,
+                icon: IconLinks.income,
                 title: 'Received',
                 value: friend.receive!,
-                color: Theme.of(context).extension<OtherTheme>()!.balance!,
+                color: Theme.of(context).extension<OtherTheme>()!.income!,
               ),
             ),
           ],

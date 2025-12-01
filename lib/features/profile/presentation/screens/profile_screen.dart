@@ -47,19 +47,19 @@ class ProfileScreen extends StatelessWidget {
                       Flexible(
                         flex: 1,
                         child: InfoCard(
-                          icon: IconLinks.user,
+                          icon: IconLinks.income,
                           title: 'Income',
                           value: data.user.incomes!,
                           color: Theme.of(
                             context,
-                          ).extension<OtherTheme>()!.balance!,
+                          ).extension<OtherTheme>()!.income!,
                         ),
                       ),
                       const SizedBox(width: AppDimens.marginMedium),
                       Flexible(
                         flex: 1,
                         child: InfoCard(
-                          icon: IconLinks.user,
+                          icon: IconLinks.expense,
                           title: 'Expense',
                           value: data.user.expenses!,
                           color: Theme.of(
