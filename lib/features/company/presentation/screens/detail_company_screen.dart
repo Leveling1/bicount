@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/services/notification_helper.dart';
-import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/utils/expandable_text.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';

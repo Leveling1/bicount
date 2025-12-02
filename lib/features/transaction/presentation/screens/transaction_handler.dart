@@ -1,5 +1,4 @@
 import 'package:bicount/core/constants/transaction_types.dart';
-import 'package:bicount/core/services/smooth_insert.dart';
 import 'package:bicount/core/services/smooth_switcher.dart';
 import 'package:bicount/core/services/title_animated_switcher.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';

@@ -60,16 +60,13 @@ class GroupRepositoryImpl implements GroupRepository {
           try {
             final Map<String, dynamic> responseData = jsonDecode(responseBody);
 
-            print("Je suis venue");
             // Vérifiez si la réponse contient une erreur
             if (responseData.containsKey('error')) {
-              print("Vérifiez si la réponse contient une erreur");
               throw ValidationFailure(responseData['error']);
             }
 
             // Vérifiez les champs requis
             if (responseData['name'] == null) {
-              print("Vérifiez les champs requis");
               throw DataParsingFailure('Invalid response format: missing name field');
             }
 
@@ -111,13 +108,13 @@ class GroupRepositoryImpl implements GroupRepository {
           throw ServerFailure('Unexpected network error (${response.statusCode})');
       }
 
-    } on SocketException catch (e) {
+    } on SocketException {
       throw NetworkFailure('No internet connection. Check your network.');
 
-    } on TimeoutException catch (e) {
+    } on TimeoutException {
       throw NetworkFailure('Response timed out. Please try again.');
 
-    } on FormatException catch (e) {
+    } on FormatException  {
       throw DataParsingFailure('Invalid data format');
 
     } catch (e) {
@@ -129,8 +126,7 @@ class GroupRepositoryImpl implements GroupRepository {
           e is DataParsingFailure) {
         rethrow;
       }
-      print(e);
-      throw UnknownFailure();
+      rethrow;
     }
   }
 
@@ -143,7 +139,7 @@ class GroupRepositoryImpl implements GroupRepository {
           .eq('id_company', group.cid)
           .eq('id_group', group.id as Object);
 
-      if (response == null || response.isEmpty) {
+      if (response.isEmpty) {
         return [];
       }
 
@@ -156,6 +152,4 @@ class GroupRepositoryImpl implements GroupRepository {
       throw ServerFailure('Failed to fetch group members.');
     }
   }
-
-
 }

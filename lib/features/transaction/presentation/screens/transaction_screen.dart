@@ -198,7 +198,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                               context: context,
                                               minHeight: 0.95,
                                               color: null,
-                                              child: DetailTransaction(
+                                              child: DetailTransactionScreen(
                                                 transaction:
                                                     TransactionDetailArgs(
                                                       user: widget.data.user,

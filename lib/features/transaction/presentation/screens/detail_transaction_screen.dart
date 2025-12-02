@@ -11,9 +11,9 @@ import '../../domain/entities/transaction_detail_args.dart';
 import '../../domain/entities/transaction_entity.dart';
 import '../../../../core/widgets/details_card.dart';
 
-class DetailTransaction extends StatelessWidget {
+class DetailTransactionScreen extends StatelessWidget {
   final TransactionDetailArgs transaction;
-  DetailTransaction({super.key, required this.transaction});
+  DetailTransactionScreen({super.key, required this.transaction});
 
   final double size = 20;
   late TransactionEntity data;
@@ -97,16 +97,14 @@ class DetailTransaction extends StatelessWidget {
                   style: TextStyle(
                     color: sign == "+"
                         ? AppColors.primaryColorDark
-                        : sign == "-" ? AppColors.negativeColorDark 
+                        : sign == "-"
+                        ? AppColors.negativeColorDark
                         : Theme.of(context).textTheme.titleLarge?.color,
                     fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  data.type,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text(data.type, style: Theme.of(context).textTheme.titleSmall),
 
                 DetailsCard(
                   child: Column(

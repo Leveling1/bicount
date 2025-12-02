@@ -61,8 +61,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     } on MessageFailure catch (e) {
       emit(SubscriptionError(e.message));
-    } on Failure catch (e) {
-      emit(SubscriptionError('An error occurred while adding the subscription.'));
     } catch (e) {
       emit(SubscriptionError('An unexpected error occurred.'));
     }

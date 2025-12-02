@@ -3,7 +3,6 @@ class SubscriptionEntity {
   final double amount;
   final String currency;
   final int frequency; // monthly, weekly, yearly, custom
-  final int? customIntervalDays; // only used for custom frequency
 
   final String startDate;
   final String nextBillingDate;
@@ -18,7 +17,6 @@ class SubscriptionEntity {
     required this.amount,
     required this.currency,
     required this.frequency,
-    this.customIntervalDays,
     required this.startDate,
     required this.nextBillingDate,
     this.note,

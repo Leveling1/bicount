@@ -42,6 +42,10 @@ class SubscriptionModel extends OfflineFirstWithSupabaseModel {
   @Supabase(name: 'start_date')
   final String startDate;
 
+  @Sqlite(name: 'next_billing_date')
+  @Supabase(name: 'next_billing_date')
+  final String nextBillingDate;
+
   // End date (optional)
   @Sqlite(name: 'end_date')
   @Supabase(name: 'end_date')
@@ -70,6 +74,7 @@ class SubscriptionModel extends OfflineFirstWithSupabaseModel {
     required this.currency,
     required this.frequency,
     required this.startDate,
+    required this.nextBillingDate,
     this.endDate,
     this.notes,
     this.createdAt,

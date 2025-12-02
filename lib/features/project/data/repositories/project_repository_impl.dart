@@ -113,13 +113,13 @@ class ProjectRepositoryImpl implements ProjectRepository {
           throw ServerFailure('Unexpected network error (${response.statusCode})');
       }
 
-    } on SocketException catch (e) {
+    } on SocketException {
       throw NetworkFailure('No internet connection. Check your network.');
 
-    } on TimeoutException catch (e) {
+    } on TimeoutException {
       throw NetworkFailure('Response timed out. Please try again.');
 
-    } on FormatException catch (e) {
+    } on FormatException {
       throw DataParsingFailure('Invalid data format');
 
     } catch (e) {
@@ -131,8 +131,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
           e is DataParsingFailure) {
         rethrow;
       }
-      print(e);
-      throw UnknownFailure();
+      rethrow;
     }
   }
 }

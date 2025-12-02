@@ -101,6 +101,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         currency: subscription.currency,
         frequency: subscription.frequency,
         startDate: subscription.startDate,
+        nextBillingDate: subscription.nextBillingDate,
         notes: subscription.note,
         status: subscription.status,
         createdAt: subscription.createdAt,
@@ -111,7 +112,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     } catch (e) {
       return Left(
         MessageFailure(
-          message: 'An error occurred while saving your subscription.',
+          message: 'An error occurred while saving your subscription. $e',
         ),
       );
     }

@@ -328,6 +328,65 @@ class AppTheme {
       tertiary: AppColors.inactiveColorLight,
     ),
 
+    /// Dropdown menu theme light
+    dropdownMenuTheme: DropdownMenuThemeData(
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.cardColorLight,
+        prefixIconColor: AppColors.inactiveColorLight,
+        suffixIconColor: AppColors.inactiveColorLight,
+        focusColor: AppColors.primaryColorLight,
+        hoverColor: AppColors.primaryColorLight,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppDimens.radiusLarge),
+          borderSide: BorderSide.none,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppDimens.radiusLarge),
+          borderSide: BorderSide.none,
+        ),
+        floatingLabelStyle: TextStyle(
+          color: AppColors.textColorLight,
+          fontSize: AppDimens.textSizeMedium.sp,
+          fontFamily: 'Poppins',
+        ),
+        contentPadding: AppDimens.paddingAllSmall,
+        hintStyle: TextStyle(
+          color: AppColors.inactiveColorLight,
+          fontSize: AppDimens.textSizeMedium.sp,
+          fontFamily: 'Poppins',
+        ),
+        labelStyle: TextStyle(
+          color: AppColors.textColorLight,
+          fontSize: AppDimens.textSizeMedium.sp,
+          fontFamily: 'Poppins',
+        ),
+      ),
+      menuStyle: MenuStyle(
+        backgroundColor: WidgetStatePropertyAll(AppColors.cardColorLight),
+        elevation: WidgetStatePropertyAll(0),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(AppDimens.radiusLarge),
+            ),
+          ),
+        ),
+        padding: WidgetStatePropertyAll(AppDimens.paddingAllSmall),
+      ),
+      textStyle: TextStyle(
+        color: AppColors.textColorLight,
+        fontSize: AppDimens.textSizeMedium.sp,
+        fontFamily: 'Poppins',
+      ),
+    ),
+
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: AppColors.primaryColorLight,
+      selectionColor: AppColors.primaryColorLight,
+      selectionHandleColor: AppColors.primaryColorLight,
+    ),
+
     /// Extensions light
     extensions: <ThemeExtension<dynamic>>[
       AppGradients(
@@ -676,6 +735,54 @@ class AppTheme {
       error: AppColors.negativeColorDark,
       secondary: AppColors.positiveColorDark,
       tertiary: AppColors.secondaryTextColorDark,
+    ),
+
+    /// Dropdown menu theme dark
+    dropdownMenuTheme: DropdownMenuThemeData(
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.cardColorDark,
+        prefixIconColor: AppColors.inactiveColorDark,
+        suffixIconColor: AppColors.inactiveColorDark,
+        focusColor: AppColors.primaryColorDark,
+        hoverColor: AppColors.primaryColorDark,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppDimens.radiusLarge),
+          borderSide: BorderSide.none,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppDimens.radiusLarge),
+          borderSide: BorderSide.none,
+        ),
+        floatingLabelStyle: TextStyle(
+          color: AppColors.textColorDark,
+          fontSize: AppDimens.textSizeMedium.sp,
+          fontFamily: 'Poppins',
+        ),
+        contentPadding: AppDimens.paddingAllSmall,
+        hintStyle: TextStyle(
+          color: AppColors.inactiveColorDark,
+          fontSize: AppDimens.textSizeMedium.sp,
+          fontFamily: 'Poppins',
+        ),
+      ),
+      menuStyle: MenuStyle(
+        backgroundColor: WidgetStatePropertyAll(AppColors.cardColorDark),
+        elevation: WidgetStatePropertyAll(0),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(AppDimens.radiusLarge),
+            ),
+          ),
+        ),
+        padding: WidgetStatePropertyAll(AppDimens.paddingAllSmall),
+      ),
+      textStyle: TextStyle(
+        color: AppColors.textColorDark,
+        fontSize: AppDimens.textSizeMedium.sp,
+        fontFamily: 'Poppins',
+      ),
     ),
 
     /// Extensions dark

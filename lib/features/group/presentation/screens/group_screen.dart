@@ -27,7 +27,6 @@ class _GroupScreenState extends State<GroupScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _isAtAppBar = false;
 
-  final GlobalKey _headerKey = GlobalKey();
   double _headerHeight = 130.0;
 
 

@@ -1,7 +1,10 @@
+import 'package:bicount/core/constants/dropdown_menu_entry.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/services/smooth_insert.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
+import 'package:bicount/core/widgets/custom_dropdown_menu.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';
 import 'package:bicount/features/transaction/domain/entities/subscription_entity.dart';
 import 'package:bicount/features/transaction/presentation/bloc/transaction_bloc.dart';
@@ -23,9 +26,10 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
   final TextEditingController _currency = TextEditingController();
   final TextEditingController _frequency = TextEditingController();
   final TextEditingController _startDate = TextEditingController();
+  final TextEditingController _nextBillingDate = TextEditingController();
   final TextEditingController _note = TextEditingController();
 
-  bool _notificationsEnabled = true;
+  bool isDifferentDate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +79,17 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
               const SizedBox(height: 16),
 
               // Frequency
-              CustomFormField(
-                controller: _frequency,
-                label: "Frequency",
-                hint: "Monthly, Weekly, Yearly...",
+              CustomDropdownMenu(
+                title: 'Frequency',
+                hintText: 'Specify the level',
+                onChanged: (value) {
+                  setState(() {
+                    _frequency.text = value.toString();
+                  });
+                },
+                menuEntries: DropdownMenuEntryConstants.frequencyEntries(
+                  context,
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -90,7 +101,39 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                 isDate: true,
                 inputType: TextInputType.datetime,
               ),
-              const SizedBox(height: 16),
+              CheckboxListTile(
+                value: isDifferentDate,
+                onChanged: (checked) {
+                  setState(() {
+                    isDifferentDate = checked ?? false;
+                  });
+                },
+                title: Text(
+                  "The next payment will be on a different date.",
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                controlAffinity: ListTileControlAffinity.leading,
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 0,
+                ), // Reduced padding
+              ),
+              // Next billing date
+              SmoothInsert(
+                visible: isDifferentDate,
+                child: Column(
+                  children: [
+                    CustomFormField(
+                      controller: _nextBillingDate,
+                      label: "Next billing date",
+                      hint: "DD/MM/YYYY",
+                      isDate: true,
+                      inputType: TextInputType.datetime,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
 
               // Notes
               CustomFormField(
@@ -119,6 +162,7 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       final now = DateTime.now();
+      final nextBillingDate = isDifferentDate ? _nextBillingDate.text : _startDate.text;  
       BlocProvider.of<TransactionBloc>(context).add(
         AddSubscriptionEvent(
           SubscriptionEntity(
@@ -126,9 +170,8 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
             amount: double.parse(_amount.text),
             currency: _currency.text,
             frequency: int.parse(_frequency.text),
-            customIntervalDays: null, // gérer plus tard si besoin
             startDate: _startDate.text,
-            nextBillingDate: _startDate.text,
+            nextBillingDate: nextBillingDate,
             note: _note.text,
             status: SubscriptionConst.active,
             createdAt: now.toIso8601String(),

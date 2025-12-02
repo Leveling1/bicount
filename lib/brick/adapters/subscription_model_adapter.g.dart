@@ -16,6 +16,7 @@ Future<SubscriptionModel> _$SubscriptionModelFromSupabase(
     currency: data['currency'] as String,
     frequency: data['frequency'] as int,
     startDate: data['start_date'] as String,
+    nextBillingDate: data['next_billing_date'] as String,
     endDate: data['end_date'] == null ? null : data['end_date'] as String?,
     notes: data['notes'] == null ? null : data['notes'] as String?,
     createdAt: data['created_at'] == null
@@ -38,6 +39,7 @@ Future<Map<String, dynamic>> _$SubscriptionModelToSupabase(
     'currency': instance.currency,
     'frequency': instance.frequency,
     'start_date': instance.startDate,
+    'next_billing_date': instance.nextBillingDate,
     'end_date': instance.endDate,
     'notes': instance.notes,
     'created_at': instance.createdAt,
@@ -60,6 +62,7 @@ Future<SubscriptionModel> _$SubscriptionModelFromSqlite(
     currency: data['currency'] as String,
     frequency: data['frequency'] as int,
     startDate: data['start_date'] as String,
+    nextBillingDate: data['next_billing_date'] as String,
     endDate: data['end_date'] == null ? null : data['end_date'] as String?,
     notes: data['notes'] == null ? null : data['notes'] as String?,
     createdAt: data['created_at'] == null
@@ -82,6 +85,7 @@ Future<Map<String, dynamic>> _$SubscriptionModelToSqlite(
     'currency': instance.currency,
     'frequency': instance.frequency,
     'start_date': instance.startDate,
+    'next_billing_date': instance.nextBillingDate,
     'end_date': instance.endDate,
     'notes': instance.notes,
     'created_at': instance.createdAt,
@@ -127,6 +131,10 @@ class SubscriptionModelAdapter
     'startDate': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'start_date',
+    ),
+    'nextBillingDate': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'next_billing_date',
     ),
     'endDate': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -196,6 +204,12 @@ class SubscriptionModelAdapter
     'startDate': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'start_date',
+      iterable: false,
+      type: String,
+    ),
+    'nextBillingDate': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'next_billing_date',
       iterable: false,
       type: String,
     ),
