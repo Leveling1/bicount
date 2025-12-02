@@ -27,6 +27,7 @@ import '../features/group/data/models/group.model.dart';
 import '../features/main/data/models/friends.model.dart';
 import '../features/profile/data/models/account_funding.model.dart';
 import '../features/project/data/models/project.model.dart';
+import '../features/transaction/data/models/subscription.model.dart';
 import '../features/transaction/data/models/transaction.model.dart';
 
 part 'adapters/memoji_model_adapter.g.dart';
@@ -37,6 +38,7 @@ part 'adapters/group_model_adapter.g.dart';
 part 'adapters/friends_model_adapter.g.dart';
 part 'adapters/account_funding_model_adapter.g.dart';
 part 'adapters/project_model_adapter.g.dart';
+part 'adapters/subscription_model_adapter.g.dart';
 part 'adapters/transaction_model_adapter.g.dart';
 
 /// Supabase mappings should only be used when initializing a [SupabaseProvider]
@@ -49,6 +51,7 @@ final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
   FriendsModel: FriendsModelAdapter(),
   AccountFundingModel: AccountFundingModelAdapter(),
   ProjectModel: ProjectModelAdapter(),
+  SubscriptionModel: SubscriptionModelAdapter(),
   TransactionModel: TransactionModelAdapter()
 };
 final supabaseModelDictionary = SupabaseModelDictionary(supabaseMappings);
@@ -63,6 +66,7 @@ final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   FriendsModel: FriendsModelAdapter(),
   AccountFundingModel: AccountFundingModelAdapter(),
   ProjectModel: ProjectModelAdapter(),
+  SubscriptionModel: SubscriptionModelAdapter(),
   TransactionModel: TransactionModelAdapter()
 };
 final sqliteModelDictionary = SqliteModelDictionary(sqliteMappings);

@@ -1,20 +1,22 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
-part '20251201172247.migration.dart';
+part '20251202023307.migration.dart';
 part '20251130001532.migration.dart';
 part '20251201154524.migration.dart';
+part '20251201172247.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
-  const Migration20251201172247(),
+  const Migration20251202023307(),
   const Migration20251130001532(),
   const Migration20251201154524(),
+  const Migration20251201172247(),
 };
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  20251201154524,
+  20251201172247,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -201,6 +203,32 @@ final schema = Schema(
       },
       indices: <SchemaIndex>{
         SchemaIndex(columns: ['pid'], unique: true),
+      },
+    ),
+    SchemaTable(
+      'SubscriptionModel',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('subscription_id', Column.varchar, unique: true),
+        SchemaColumn('sid', Column.varchar),
+        SchemaColumn('title', Column.varchar),
+        SchemaColumn('amount', Column.Double),
+        SchemaColumn('currency', Column.varchar),
+        SchemaColumn('frequency', Column.integer),
+        SchemaColumn('start_date', Column.varchar),
+        SchemaColumn('end_date', Column.varchar),
+        SchemaColumn('notes', Column.varchar),
+        SchemaColumn('created_at', Column.varchar),
+        SchemaColumn('status', Column.integer),
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(columns: ['subscription_id'], unique: true),
       },
     ),
     SchemaTable(

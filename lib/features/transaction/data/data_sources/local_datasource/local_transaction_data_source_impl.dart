@@ -1,7 +1,10 @@
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
+import 'package:bicount/features/transaction/data/models/subscription.model.dart';
+import 'package:bicount/features/transaction/domain/entities/subscription_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -50,11 +53,19 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     String image,
   ) async {
     try {
+      String type = TransactionTypes.others;
+      if (senderId == uid) {
+        type = TransactionTypes.expense;
+      } else if (beneficiaryId == uid) {
+        type = TransactionTypes.income;
+      } else {
+        type = TransactionTypes.others;
+      }
       final transactionModel = TransactionModel(
         uid: uid,
         gtid: gtid,
         name: transaction['name'],
-        type: transaction['type'],
+        type: type,
         beneficiaryId: beneficiaryId,
         senderId: senderId,
         date: transaction['date'],
@@ -71,6 +82,37 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     } catch (e) {
       return Left(
         MessageFailure(message: 'The transaction could not be saved.'),
+      );
+    }
+  }
+
+  // Add subscription
+  @override
+  Future<Either<Failure, void>> addSubscription(
+    SubscriptionEntity subscription,
+  ) async {
+    try {
+      final id = Uuid().v4();
+      final SubscriptionModel subscriptionAdd = SubscriptionModel(
+        subscriptionId: id,
+        sid: uid,
+        title: subscription.title,
+        amount: subscription.amount,
+        currency: subscription.currency,
+        frequency: subscription.frequency,
+        startDate: subscription.startDate,
+        notes: subscription.note,
+        status: subscription.status,
+        createdAt: subscription.createdAt,
+      );
+
+      await Repository().upsert<SubscriptionModel>(subscriptionAdd);
+      return Right(null);
+    } catch (e) {
+      return Left(
+        MessageFailure(
+          message: 'An error occurred while saving your subscription.',
+        ),
       );
     }
   }

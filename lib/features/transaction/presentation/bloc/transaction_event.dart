@@ -7,4 +7,7 @@ class CreateTransactionEvent extends TransactionEvent {
   CreateTransactionEvent(this.transaction);
 }
 
-class GetLinkedUsersRequested extends TransactionEvent {}
+class AddSubscriptionEvent extends TransactionEvent {
+  final SubscriptionEntity subscription;
+  AddSubscriptionEvent(this.subscription);
+}

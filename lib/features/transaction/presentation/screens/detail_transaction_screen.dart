@@ -30,9 +30,7 @@ class DetailTransaction extends StatelessWidget {
         ? '-'
         : data.beneficiary == uid
         ? '+'
-        : data.type == "expense"
-        ? '-'
-        : '+';
+        : '';
 
     final ourData = FriendsModel(
       sid: transaction.user.sid,
@@ -99,7 +97,8 @@ class DetailTransaction extends StatelessWidget {
                   style: TextStyle(
                     color: sign == "+"
                         ? AppColors.primaryColorDark
-                        : AppColors.negativeColorDark,
+                        : sign == "-" ? AppColors.negativeColorDark 
+                        : Theme.of(context).textTheme.titleLarge?.color,
                     fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
                     fontWeight: FontWeight.bold,
                   ),

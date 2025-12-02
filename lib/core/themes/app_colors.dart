@@ -19,7 +19,7 @@ class AppColors {
   static const Color negativeColorDark = Color(0xFFF44336);
   static const Color inactiveColorDark = Color(0xFF808080);
   // Specific colors for company details
-  static const Color balanceColorDark = Color(0xFF76A646);
+  static const Color incomeColorDark = Color(0xFF76A646);
   static const Color salaryColorDark = Color(0xFF00509d);
   static const Color equipmentColorDark = Color(0xFFffd60a);
   static const Color serviceColorDark = Color(0xFFfb8500);
@@ -37,7 +37,7 @@ class AppColors {
   static const Color negativeColorLight = Color(0xFFF44336);
   static const Color inactiveColorLight = Color(0xFFCCCCCC);
   // Specific colors for company details
-  static const Color balanceColorLight = Color(0xFF70e000);
+  static const Color incomeColorLight = Color(0xFF76A646);
   static const Color salaryColorLight = Color(0xFF00509d);
   static const Color equipmentColorLight = Color(0xFFffd60a);
   static const Color serviceColorLight = Color(0xFFfb8500);

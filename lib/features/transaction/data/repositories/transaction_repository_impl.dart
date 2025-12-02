@@ -1,5 +1,6 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
+import 'package:bicount/features/transaction/domain/entities/subscription_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:uuid/uuid.dart';
 
@@ -11,6 +12,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
   final TransactionLocalDataSource localDataSource;
   TransactionRepositoryImpl(this.localDataSource);
 
+  // Add transaction
   @override
   Future<void> createTransaction(Map<String, dynamic> transaction) async {
     try {
@@ -70,6 +72,21 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
         await saveResult.fold((failure) => throw failure, (_) => null);
       }
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw UnknownFailure();
+    }
+  }
+
+  // Add subscription
+  @override
+  Future<void> addSubscription(SubscriptionEntity subscription) async {
+    try {
+      final Either<Failure, void> result =
+          await localDataSource.addSubscription(subscription);
+
+      await result.fold((failure) => throw failure, (_) => null);
     } on Failure {
       rethrow;
     } catch (e) {

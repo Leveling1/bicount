@@ -141,6 +141,7 @@ class _TransferFormState extends State<TransferForm> {
                   setState(() {
                     if (checked == true) {
                       _sender.text = 'Me';
+
                     } else {
                       _sender.clear();
                     }
@@ -168,27 +169,45 @@ class _TransferFormState extends State<TransferForm> {
                     controller: _beneficiary,
                     onAdd: () {
                       if (_beneficiary.text.trim().isEmpty) return;
-                      final beneficiarySid = widget.friends.firstWhere(
-                        (user) =>
-                            user.username.toLowerCase() ==
-                            _beneficiary.text.trim().toLowerCase(),
-                        orElse: () => FriendsModel(
-                          sid: '',
-                          username: _beneficiary.text.trim(),
-                          uid: '',
-                          image: '',
-                          email: '',
-                        ),
-                      );
+                      final beneficiarySid =
+                          _beneficiary.text.trim().toLowerCase() == 'me'
+                          ? FriendsModel(
+                              sid: widget.user!.sid,
+                              username: widget.user!.username,
+                              uid: widget.user!.uid,
+                              image: widget.user!.image,
+                              email: widget.user!.email,
+                            )
+                          : widget.friends.firstWhere(
+                              (user) =>
+                                  user.username.toLowerCase() ==
+                                  _beneficiary.text.trim().toLowerCase(),
+                              orElse: () => FriendsModel(
+                                sid: '',
+                                username: _beneficiary.text.trim(),
+                                uid: '',
+                                image: '',
+                                email: '',
+                              ),
+                            );
 
                       setState(() {
                         _beneficiaryList.add(beneficiarySid);
                         _beneficiary.clear();
                       });
                     },
-                    isVisible: _type.text != 'Transfer' ? true : false,
+                    isVisible: true,
                     hintText: 'Enter beneficiary name',
                     options: friends,
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'If your are a beneficiary, please add "me".',
+                      style: Theme.of(context).textTheme.bodySmall,
+                      textAlign: TextAlign.start,
+                    ),
                   ),
                 ],
               ),
@@ -204,9 +223,9 @@ class _TransferFormState extends State<TransferForm> {
                           width: double.infinity,
                           child: ListTile(
                             title: Text(
-                              controller.text.isNotEmpty
+                                controller.text.isNotEmpty
                                   ? controller.text
-                                  : 'Aucun texte',
+                                  : 'No text',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                             trailing: IconButton(
@@ -234,23 +253,34 @@ class _TransferFormState extends State<TransferForm> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
+      bool senderIsMe = _sender.text.trim().toLowerCase() == 'me' ? true : false;
       if (_beneficiaryList.isEmpty && _beneficiary.text != '') {
-        final beneficiarySid = widget.friends.firstWhere(
-          (user) =>
-              user.username.toLowerCase() ==
-              _beneficiary.text.trim().toLowerCase(),
-          orElse: () => FriendsModel(
-            sid: '',
-            username: _beneficiary.text.trim(),
-            uid: '',
-            image: Constants.memojiDefault,
-            email: '',
-          ),
-        );
+      bool beneficiaryIsMe = _beneficiary.text.trim().toLowerCase() == 'me' ? true : false;
+      _type.text = TransactionTypes.income;
+        final beneficiarySid = beneficiaryIsMe
+            ? FriendsModel(
+                sid: widget.user!.sid,
+                username: widget.user!.username,
+                uid: widget.user!.uid,
+                image: widget.user!.image,
+                email: widget.user!.email,
+              )
+            : widget.friends.firstWhere(
+                (user) =>
+                    user.username.toLowerCase() ==
+                    _beneficiary.text.trim().toLowerCase(),
+                orElse: () => FriendsModel(
+                  sid: '',
+                  username: _beneficiary.text.trim(),
+                  uid: '',
+                  image: Constants.memojiDefault,
+                  email: '',
+                ),
+              );
         _beneficiaryList.add(beneficiarySid);
       }
 
-      final senderModel = _sender.text.trim().toLowerCase() == 'me'
+      final senderModel = senderIsMe
           ? FriendsModel(
               sid: widget.user!.sid,
               username: widget.user!.username,
@@ -273,7 +303,7 @@ class _TransferFormState extends State<TransferForm> {
 
       final transaction = {
         "name": _name.text,
-        "type": TransactionTypes.transferText,
+        "type": _type.text,
         "date": DateTime.now().toIso8601String(),
         "amount": double.parse(_amount.text),
         "currency": 'USD',

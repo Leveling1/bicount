@@ -22,9 +22,7 @@ class TransactionCard extends StatelessWidget {
         ? '-'
         : transaction.beneficiary == uid
         ? '+'
-        : transaction.type == "expense"
-        ? '-'
-        : '+';
+        : '';
     String time = TimeOfDay.fromDateTime(transaction.date).format(context);
     String currency = transaction.currency.symbol;
     return Container(
@@ -86,7 +84,9 @@ class TransactionCard extends StatelessWidget {
                       style: TextStyle(
                         color: sign == "+"
                             ? AppColors.primaryColorDark
-                            : AppColors.negativeColorDark,
+                            : sign == "-"
+                            ? AppColors.negativeColorDark
+                            : Theme.of(context).textTheme.bodyMedium!.color,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),

@@ -7,11 +7,14 @@ class NumberFormatUtils {
     String locale = 'en_US',
     String currencyCode = 'USD',
   }) {
-    final format = NumberFormat.currency(
+    final symbol = currencyCode == 'USD' ? '\$' : 'Fc';
+    final formatter = NumberFormat.currency(
       locale: locale,
-      symbol: currencyCode == "USD" ? "\$" : "Fc",
+      name: currencyCode,
+      symbol: '',
     );
-    return format.format(value);
+    final formattedNumber = formatter.format(value);
+    return '$formattedNumber $symbol';
   }
 
   /// Formats a transaction amount with + or - sign, and currency formatting.

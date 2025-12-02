@@ -339,7 +339,7 @@ class AppTheme {
         secondaryGradient: LinearGradient(colors: [Colors.orange, Colors.red]),
       ),
       OtherTheme(
-        income: AppColors.balanceColorLight,
+        income: AppColors.incomeColorLight,
         expense: AppColors.expensesColorLight,
         personnalIncome: Color(0xFF2196F3),
         companyIncome: Colors.purple,
@@ -689,7 +689,7 @@ class AppTheme {
         secondaryGradient: LinearGradient(colors: [Colors.orange, Colors.red]),
       ),
       OtherTheme(
-        income: AppColors.balanceColorDark,
+        income: AppColors.incomeColorDark,
         expense: AppColors.expensesColorDark,
         personnalIncome: Color(0xFF2196F3),
         companyIncome: Colors.purple,

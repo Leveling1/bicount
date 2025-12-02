@@ -16,10 +16,14 @@ class TransactionTypes {
     'All',
     'Income',
     'Expense',
-    'Transfer',
+    'Other',
     'Personal',
     'Business',
   ];
+
+  static const String income = "income";
+  static const String expense = "expanse";
+  static const String others = "other";
 
   static const int personalIncome = 0;
   static const int companyIncome = 1;
