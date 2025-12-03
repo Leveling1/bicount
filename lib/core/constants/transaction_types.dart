@@ -18,6 +18,7 @@ class TransactionTypes {
     'All',
     'Income',
     'Expense',
+    'Subscription',
     'Other',
     'Personal',
     'Business',
