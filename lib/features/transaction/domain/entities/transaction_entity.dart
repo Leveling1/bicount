@@ -26,13 +26,13 @@ class TransactionEntity {
   final String gtid;
   final String? uid;
   final String name;
-  final String type;
+  final int type;
   final DateTime date;
   final DateTime? createdAt;
   final double amount;
   final Currency currency;
   final String? image;
-  final TransactionFrequency? frequency;
+  final int? frequency;
   final String sender;
   final String beneficiary;
   final String note;
@@ -74,11 +74,7 @@ class TransactionEntity {
           : double.tryParse(data["amount"].toString()) ?? 0.0,
       currency: Currency.values.firstWhere((e) => e.name == data['currency']),
       image: data["image"],
-      frequency: data["frequency"] != null
-          ? TransactionFrequency.values.firstWhere(
-              (e) => e.name == data['frequency'],
-            )
-          : null,
+      frequency: data["frequency"],
       sender: data["sender"]?['name'] ?? '',
       beneficiary: data["beneficiary"] is Map<String, dynamic>
           ? data["beneficiary"]
@@ -96,7 +92,7 @@ class TransactionEntity {
       "amount": amount,
       "currency": currency.name,
       "image": image,
-      "frequency": frequency?.name,
+      "frequency": frequency,
       "sender": sender,
       "beneficiary": jsonEncode(beneficiary),
       "note": note,
@@ -115,7 +111,7 @@ class TransactionEntity {
       amount: transaction.amount,
       currency: Currency.values.byName(transaction.currency),
       image: transaction.image,
-      frequency: transaction.frequency != null ? TransactionFrequency.values.byName(transaction.frequency!) : null,
+      frequency: transaction.frequency,
       sender: transaction.senderId,
       beneficiary: transaction.beneficiaryId,
       note: transaction.note,

@@ -15,6 +15,10 @@ class FriendsModel extends OfflineFirstWithSupabaseModel {
   final double? give;
   final double? receive;
 
+  @Supabase(name: 'relation_type')
+  @Sqlite()
+  final int relationType;
+
   @Supabase(name: 'personal_income')
   @Sqlite()
   final double? personalIncome;
@@ -36,6 +40,7 @@ class FriendsModel extends OfflineFirstWithSupabaseModel {
     required this.email,
     this.give, 
     this.receive,
+    required this.relationType,
     this.personalIncome,
     this.companyIncome,
   })  : sid = sid ?? const Uuid().v4(),

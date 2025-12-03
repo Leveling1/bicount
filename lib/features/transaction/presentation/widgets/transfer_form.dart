@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
@@ -177,6 +178,7 @@ class _TransferFormState extends State<TransferForm> {
                               uid: widget.user!.uid,
                               image: widget.user!.image,
                               email: widget.user!.email,
+                              relationType: FriendConst.friend,
                             )
                           : widget.friends.firstWhere(
                               (user) =>
@@ -188,6 +190,7 @@ class _TransferFormState extends State<TransferForm> {
                                 uid: '',
                                 image: '',
                                 email: '',
+                                relationType: FriendConst.friend,
                               ),
                             );
 
@@ -264,6 +267,7 @@ class _TransferFormState extends State<TransferForm> {
                 uid: widget.user!.uid,
                 image: widget.user!.image,
                 email: widget.user!.email,
+                relationType: FriendConst.friend,
               )
             : widget.friends.firstWhere(
                 (user) =>
@@ -275,6 +279,7 @@ class _TransferFormState extends State<TransferForm> {
                   uid: '',
                   image: Constants.memojiDefault,
                   email: '',
+                  relationType: FriendConst.friend,
                 ),
               );
         _beneficiaryList.add(beneficiarySid);
@@ -287,6 +292,7 @@ class _TransferFormState extends State<TransferForm> {
               uid: widget.user!.uid,
               image: widget.user!.image,
               email: widget.user!.email,
+              relationType: FriendConst.friend,
             )
           : widget.friends.firstWhere(
               (user) =>
@@ -298,6 +304,7 @@ class _TransferFormState extends State<TransferForm> {
                 uid: '',
                 image: Constants.memojiDefault,
                 email: '',
+                relationType: FriendConst.friend,
               ),
             );
 

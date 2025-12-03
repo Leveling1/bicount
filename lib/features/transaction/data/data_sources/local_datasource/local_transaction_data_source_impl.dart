@@ -1,4 +1,6 @@
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
@@ -31,6 +33,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         image: Constants.memojiDefault,
         give: 0.0,
         receive: 0.0,
+        relationType: FriendConst.friend,
       );
 
       await Repository().upsert<FriendsModel>(friendAdd);
@@ -53,13 +56,13 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     String image,
   ) async {
     try {
-      String type = TransactionTypes.others;
+      int type = TransactionTypes.othersCode;
       if (senderId == uid) {
-        type = TransactionTypes.expense;
+        type = TransactionTypes.expenseCode;
       } else if (beneficiaryId == uid) {
-        type = TransactionTypes.income;
+        type = TransactionTypes.incomeCode;
       } else {
-        type = TransactionTypes.others;
+        type = TransactionTypes.othersCode;
       }
       final transactionModel = TransactionModel(
         uid: uid,
@@ -73,7 +76,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         amount: transaction['amount'],
         currency: transaction['currency'],
         image: image,
-        frequency: 'fixe',
+        frequency: Frequency.oneTime,
         createdAt: DateTime.now().toIso8601String(),
         category: Constants.personal,
       );

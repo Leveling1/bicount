@@ -14,6 +14,7 @@ Future<FriendsModel> _$FriendsModelFromSupabase(
     email: data['email'] as String,
     give: data['give'] == null ? null : data['give'] as double?,
     receive: data['receive'] == null ? null : data['receive'] as double?,
+    relationType: data['relation_type'] as int,
     personalIncome: data['personal_income'] == null
         ? null
         : data['personal_income'] as double?,
@@ -37,6 +38,7 @@ Future<Map<String, dynamic>> _$FriendsModelToSupabase(
     'email': instance.email,
     'give': instance.give,
     'receive': instance.receive,
+    'relation_type': instance.relationType,
     'personal_income': instance.personalIncome,
     'company_income': instance.companyIncome,
     'sid': instance.sid,
@@ -56,6 +58,7 @@ Future<FriendsModel> _$FriendsModelFromSqlite(
     email: data['email'] as String,
     give: data['give'] == null ? null : data['give'] as double?,
     receive: data['receive'] == null ? null : data['receive'] as double?,
+    relationType: data['relation_type'] as int,
     personalIncome: data['personal_income'] == null
         ? null
         : data['personal_income'] as double?,
@@ -79,6 +82,7 @@ Future<Map<String, dynamic>> _$FriendsModelToSqlite(
     'email': instance.email,
     'give': instance.give,
     'receive': instance.receive,
+    'relation_type': instance.relationType,
     'personal_income': instance.personalIncome,
     'company_income': instance.companyIncome,
     'sid': instance.sid,
@@ -123,6 +127,10 @@ class FriendsModelAdapter
     'receive': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'receive',
+    ),
+    'relationType': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'relation_type',
     ),
     'personalIncome': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -190,6 +198,12 @@ class FriendsModelAdapter
       columnName: 'receive',
       iterable: false,
       type: double,
+    ),
+    'relationType': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'relation_type',
+      iterable: false,
+      type: int,
     ),
     'personalIncome': const RuntimeSqliteColumnDefinition(
       association: false,

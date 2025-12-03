@@ -61,6 +61,10 @@ class SubscriptionModel extends OfflineFirstWithSupabaseModel {
   @Supabase(name: 'created_at')
   final String? createdAt;
 
+  @Sqlite(name: 'category')
+  @Supabase(name: 'category')
+  final int? category;
+
   // Status of the subscription (active, paused, cancelled)
   @Sqlite(name: 'status')
   @Supabase(name: 'status')
@@ -78,6 +82,7 @@ class SubscriptionModel extends OfflineFirstWithSupabaseModel {
     this.endDate,
     this.notes,
     this.createdAt,
+    this.category,
     this.status,
   }) : subscriptionId = subscriptionId ?? const Uuid().v4(),
        super();

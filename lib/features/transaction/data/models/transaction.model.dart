@@ -21,7 +21,7 @@ class TransactionModel extends OfflineFirstWithSupabaseModel {
 
   @Sqlite(name: 'type')
   @Supabase(name: 'type')
-  final String type;
+  final int type;
 
   @Sqlite(name: 'beneficiary_id')
   @Supabase(name: 'beneficiary_id')
@@ -53,7 +53,7 @@ class TransactionModel extends OfflineFirstWithSupabaseModel {
 
   @Sqlite(name: 'frequency')
   @Supabase(name: 'frequency')
-  final String? frequency;
+  final int? frequency;
 
   @Sqlite(name: 'category')
   @Supabase(name: 'category')

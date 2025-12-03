@@ -1,3 +1,5 @@
+import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -38,6 +40,7 @@ class DetailTransactionScreen extends StatelessWidget {
       uid: transaction.user.uid,
       image: transaction.user.image,
       email: transaction.user.email,
+      relationType: FriendConst.friend,
     );
     String sender = transaction.friends
         .firstWhere(
@@ -104,7 +107,7 @@ class DetailTransactionScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(data.type, style: Theme.of(context).textTheme.titleSmall),
+                Text(TransactionTypes.getTypeText(data.type), style: Theme.of(context).textTheme.titleSmall),
 
                 DetailsCard(
                   child: Column(
@@ -129,7 +132,7 @@ class DetailTransactionScreen extends StatelessWidget {
                     children: [
                       RowDetail(
                         title: 'Frequency',
-                        content: data.frequency!.name,
+                        content: TransactionTypes.frequencyToString(data.frequency!),
                       ),
                       const SizedBox(height: 8),
                       RowDetail(title: 'Note', content: data.note),

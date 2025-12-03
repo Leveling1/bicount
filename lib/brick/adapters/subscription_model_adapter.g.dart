@@ -22,6 +22,7 @@ Future<SubscriptionModel> _$SubscriptionModelFromSupabase(
     createdAt: data['created_at'] == null
         ? null
         : data['created_at'] as String?,
+    category: data['category'] == null ? null : data['category'] as int?,
     status: data['status'] == null ? null : data['status'] as int?,
   );
 }
@@ -43,6 +44,7 @@ Future<Map<String, dynamic>> _$SubscriptionModelToSupabase(
     'end_date': instance.endDate,
     'notes': instance.notes,
     'created_at': instance.createdAt,
+    'category': instance.category,
     'status': instance.status,
   };
 }
@@ -68,6 +70,7 @@ Future<SubscriptionModel> _$SubscriptionModelFromSqlite(
     createdAt: data['created_at'] == null
         ? null
         : data['created_at'] as String?,
+    category: data['category'] == null ? null : data['category'] as int?,
     status: data['status'] == null ? null : data['status'] as int?,
   )..primaryKey = data['_brick_id'] as int;
 }
@@ -89,6 +92,7 @@ Future<Map<String, dynamic>> _$SubscriptionModelToSqlite(
     'end_date': instance.endDate,
     'notes': instance.notes,
     'created_at': instance.createdAt,
+    'category': instance.category,
     'status': instance.status,
   };
 }
@@ -147,6 +151,10 @@ class SubscriptionModelAdapter
     'createdAt': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'created_at',
+    ),
+    'category': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'category',
     ),
     'status': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -230,6 +238,12 @@ class SubscriptionModelAdapter
       columnName: 'created_at',
       iterable: false,
       type: String,
+    ),
+    'category': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'category',
+      iterable: false,
+      type: int,
     ),
     'status': const RuntimeSqliteColumnDefinition(
       association: false,

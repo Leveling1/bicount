@@ -10,7 +10,7 @@ Future<TransactionModel> _$TransactionModelFromSupabase(
     gtid: data['gtid'] as String,
     uid: data['uid'] as String,
     name: data['name'] as String,
-    type: data['type'] as String,
+    type: data['type'] as int,
     beneficiaryId: data['beneficiary_id'] as String,
     senderId: data['sender_id'] as String,
     date: data['date'] as String,
@@ -18,7 +18,7 @@ Future<TransactionModel> _$TransactionModelFromSupabase(
     amount: data['amount'] as double,
     currency: data['currency'] as String,
     image: data['image'] == null ? null : data['image'] as String?,
-    frequency: data['frequency'] == null ? null : data['frequency'] as String?,
+    frequency: data['frequency'] == null ? null : data['frequency'] as int?,
     category: data['category'] == null ? null : data['category'] as int?,
     createdAt: data['created_at'] == null
         ? null
@@ -60,7 +60,7 @@ Future<TransactionModel> _$TransactionModelFromSqlite(
     gtid: data['gtid'] as String,
     uid: data['uid'] as String,
     name: data['name'] as String,
-    type: data['type'] as String,
+    type: data['type'] as int,
     beneficiaryId: data['beneficiary_id'] as String,
     senderId: data['sender_id'] as String,
     date: data['date'] as String,
@@ -68,7 +68,7 @@ Future<TransactionModel> _$TransactionModelFromSqlite(
     amount: data['amount'] as double,
     currency: data['currency'] as String,
     image: data['image'] == null ? null : data['image'] as String?,
-    frequency: data['frequency'] == null ? null : data['frequency'] as String?,
+    frequency: data['frequency'] == null ? null : data['frequency'] as int?,
     category: data['category'] == null ? null : data['category'] as int?,
     createdAt: data['created_at'] == null
         ? null
@@ -207,7 +207,7 @@ class TransactionModelAdapter
       association: false,
       columnName: 'type',
       iterable: false,
-      type: String,
+      type: int,
     ),
     'beneficiaryId': const RuntimeSqliteColumnDefinition(
       association: false,
@@ -255,7 +255,7 @@ class TransactionModelAdapter
       association: false,
       columnName: 'frequency',
       iterable: false,
-      type: String,
+      type: int,
     ),
     'category': const RuntimeSqliteColumnDefinition(
       association: false,

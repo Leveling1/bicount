@@ -1,24 +1,26 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
-part '20251202215424.migration.dart';
+part '20251203002105.migration.dart';
 part '20251130001532.migration.dart';
 part '20251201154524.migration.dart';
 part '20251201172247.migration.dart';
 part '20251202023307.migration.dart';
+part '20251202215424.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
-  const Migration20251202215424(),
+  const Migration20251203002105(),
   const Migration20251130001532(),
   const Migration20251201154524(),
   const Migration20251201172247(),
   const Migration20251202023307(),
+  const Migration20251202215424(),
 };
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  20251202023307,
+  20251202215424,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -149,6 +151,7 @@ final schema = Schema(
         SchemaColumn('email', Column.varchar),
         SchemaColumn('give', Column.Double),
         SchemaColumn('receive', Column.Double),
+        SchemaColumn('relation_type', Column.integer),
         SchemaColumn('personal_income', Column.Double),
         SchemaColumn('company_income', Column.Double),
         SchemaColumn('sid', Column.varchar, unique: true),
@@ -228,6 +231,7 @@ final schema = Schema(
         SchemaColumn('end_date', Column.varchar),
         SchemaColumn('notes', Column.varchar),
         SchemaColumn('created_at', Column.varchar),
+        SchemaColumn('category', Column.integer),
         SchemaColumn('status', Column.integer),
       },
       indices: <SchemaIndex>{
@@ -247,7 +251,7 @@ final schema = Schema(
         SchemaColumn('gtid', Column.varchar),
         SchemaColumn('uid', Column.varchar),
         SchemaColumn('name', Column.varchar),
-        SchemaColumn('type', Column.varchar),
+        SchemaColumn('type', Column.integer),
         SchemaColumn('beneficiary_id', Column.varchar),
         SchemaColumn('sender_id', Column.varchar),
         SchemaColumn('date', Column.varchar),
@@ -255,7 +259,7 @@ final schema = Schema(
         SchemaColumn('amount', Column.Double),
         SchemaColumn('currency', Column.varchar),
         SchemaColumn('image', Column.varchar),
-        SchemaColumn('frequency', Column.varchar),
+        SchemaColumn('frequency', Column.integer),
         SchemaColumn('category', Column.integer),
         SchemaColumn('created_at', Column.varchar),
         SchemaColumn('tid', Column.varchar, unique: true),

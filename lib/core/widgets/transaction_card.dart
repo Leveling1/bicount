@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -92,7 +93,7 @@ class TransactionCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      transaction.type,
+                      TransactionTypes.getTypeText(transaction.type),
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
