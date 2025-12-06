@@ -11,10 +11,26 @@ class Frequency {
   static const int yearly = 3;
   static const int oneTime = 4;
 
-
   static const String weeklyString = "Weekly";
   static const String monthlyString = "Monthly";
   static const String quarterlyString = "Quarterly";
   static const String yearlyString = "Yearly";
   static const String oneTimeString = "One Time";
+
+  static String getFrequencyString(int frequency) {
+    switch (frequency) {
+      case weekly:
+        return weeklyString;
+      case monthly:
+        return monthlyString;
+      case quarterly:
+        return quarterlyString;
+      case yearly:
+        return yearlyString;
+      case oneTime:
+        return oneTimeString;
+      default:
+        return "";
+    }
+  }
 }

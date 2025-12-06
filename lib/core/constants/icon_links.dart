@@ -9,4 +9,5 @@ class IconLinks {
   static const String moneyIcon = 'assets/icons/money_icon.svg';
   static const String calendar = 'assets/icons/calendar.svg';
   static const String note = 'assets/icons/note.svg';
+  static const String frequency = 'assets/icons/frequency_icon.svg';
 }

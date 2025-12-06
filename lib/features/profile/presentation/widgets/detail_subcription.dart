@@ -1,15 +1,14 @@
 import 'package:bicount/core/constants/icon_links.dart';
+import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
-import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
 import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
 class DetailSubscription extends StatelessWidget {
   final FriendsModel friend;
@@ -43,14 +42,6 @@ class DetailSubscription extends StatelessWidget {
             ? Text(friend.email, style: Theme.of(context).textTheme.titleSmall)
             : const SizedBox.shrink(),
 
-        subscription.notes == "" || subscription.notes == null
-            ? const SizedBox.shrink()
-            : InfoCardNote(
-                icon: IconLinks.note,
-                title: 'Note',
-                content: subscription.notes!,
-                color: Theme.of(context).primaryColor,
-              ),
         Row(
           children: [
             Flexible(
@@ -69,8 +60,8 @@ class DetailSubscription extends StatelessWidget {
               flex: 1,
               child: InfoCard(
                 icon: IconLinks.calendar,
-                title: 'Start date',
-                content: subscription.startDate,
+                title: 'Next billing date',
+                content: subscription.nextBillingDate,
                 color: Theme.of(
                   context,
                 ).extension<OtherTheme>()!.companyIncome!,
@@ -78,45 +69,36 @@ class DetailSubscription extends StatelessWidget {
             ),
           ],
         ),
-        DetailsCard(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Theme.of(
-                      context,
-                    ).extension<OtherTheme>()!.expense!,
-                    radius: 10.r, // Using .r for radius to scale consistently
-                    child: SvgPicture.asset(
-                      IconLinks.expense,
-                      width: AppDimens.iconSizeExtraSmall,
-                      height: AppDimens.iconSizeExtraSmall,
-                      colorFilter: ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppDimens.marginSmall),
-                  Text(
-                    'Cumulative expenses',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                ],
+        LinearInfoCard(
+          icon: IconLinks.frequency,
+          title: 'Frequency',
+          content: Frequency.getFrequencyString(subscription.frequency),
+          color: Theme.of(context).extension<OtherTheme>()!.personnalIncome!,
+        ),
+        LinearInfoCard(
+          icon: IconLinks.expense,
+          title: 'Cumulative expenses',
+          content: NumberFormatUtils.formatCurrency(friend.receive! as num),
+          color: Theme.of(context).extension<OtherTheme>()!.expense!,
+        ),
+        subscription.notes == "" || subscription.notes == null
+            ? const SizedBox.shrink()
+            : InfoCardNote(
+                icon: IconLinks.note,
+                title: 'Note',
+                content: subscription.notes!,
+                color: Theme.of(context).primaryColor,
               ),
-              const SizedBox(width: AppDimens.marginSmall),
-              Text(
-                NumberFormatUtils.formatCurrency(friend.receive! as num),
-                style: TextStyle(
-                  fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
+        const SizedBox(height: AppDimens.paddingSmall),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Subscribed on', style: Theme.of(context).textTheme.bodySmall),
+            Text(
+              subscription.startDate,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
         ),
         const SizedBox(height: AppDimens.marginMedium),
         CustomButton(text: 'unsubscribe', loading: false, onPressed: () {}),
