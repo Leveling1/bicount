@@ -84,10 +84,15 @@ class DetailTransactionScreen extends StatelessWidget {
                   child: SizedBox(
                     width: 50.w,
                     height: 50.h,
-                    child: CachedNetworkImage(
-                      imageUrl: data.image!,
-                      fit: BoxFit.cover,
-                    ),
+                    child: data.type == TransactionTypes.subscriptionCode
+                        ? Icon(
+                            Icons.subscriptions,
+                            color: Theme.of(context).primaryColor,
+                          )
+                        : CachedNetworkImage(
+                            imageUrl: data.image!,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -107,7 +112,10 @@ class DetailTransactionScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(TransactionTypes.getTypeText(data.type), style: Theme.of(context).textTheme.titleSmall),
+                Text(
+                  TransactionTypes.getTypeText(data.type),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
 
                 DetailsCard(
                   child: Column(
@@ -132,10 +140,16 @@ class DetailTransactionScreen extends StatelessWidget {
                     children: [
                       RowDetail(
                         title: 'Frequency',
-                        content: TransactionTypes.frequencyToString(data.frequency!),
+                        content: TransactionTypes.frequencyToString(
+                          data.frequency!,
+                        ),
                       ),
-                      const SizedBox(height: 8),
-                      RowDetail(title: 'Note', content: data.note),
+                      data.note.isNotEmpty && data.note != ""
+                          ?  const SizedBox(height: 8)
+                          : const SizedBox.shrink(),
+                      data.note.isNotEmpty && data.note != ""
+                          ? RowDetail(title: 'Note', content: data.note)
+                          : const SizedBox.shrink(),
                     ],
                   ),
                 ),
