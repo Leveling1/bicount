@@ -41,7 +41,7 @@ class FriendCard extends StatelessWidget {
                     child: friend.relationType == FriendConst.subscription
                         ? Icon(
                             Icons.subscriptions,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: Theme.of(context).primaryColor,
                           )
                         : CachedNetworkImage(
                             imageUrl: friend.image,
@@ -55,7 +55,9 @@ class FriendCard extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: friend.relationType == FriendConst.subscription
+                              ? MainAxisAlignment.start
+                              : MainAxisAlignment.center,
                     children: [
                       Text(
                         friend.username,

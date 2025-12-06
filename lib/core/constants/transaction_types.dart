@@ -24,7 +24,7 @@ class TransactionTypes {
     'Business',
   ];
 
-  static const String income = "iIncome";
+  static const String income = "Income";
   static const String expense = "Expense";
   static const String others = "Other";
   static const String subscriptionTitle = "Subscription";

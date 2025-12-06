@@ -1,7 +1,9 @@
+import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
+import 'package:bicount/features/profile/presentation/widgets/detail_subcription.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,7 +48,7 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Flexible(
                         flex: 1,
-                        child: InfoCard(
+                        child: InfoCardAmount(
                           icon: IconLinks.income,
                           title: 'Income',
                           value: data.user.incomes!,
@@ -58,7 +60,7 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(width: AppDimens.marginMedium),
                       Flexible(
                         flex: 1,
-                        child: InfoCard(
+                        child: InfoCardAmount(
                           icon: IconLinks.expense,
                           title: 'Expense',
                           value: data.user.expenses!,
@@ -73,7 +75,7 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Flexible(
                         flex: 1,
-                        child: InfoCard(
+                        child: InfoCardAmount(
                           icon: IconLinks.user,
                           title: 'Personal',
                           value: data.user.personalIncome!,
@@ -85,7 +87,7 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(width: AppDimens.marginMedium),
                       Flexible(
                         flex: 1,
-                        child: InfoCard(
+                        child: InfoCardAmount(
                           icon: IconLinks.company,
                           title: 'Company',
                           value: data.user.companyIncome!,
@@ -126,7 +128,15 @@ class ProfileScreen extends StatelessWidget {
                             context: context,
                             minHeight: 0.70,
                             color: null,
-                            child: DetailFriend(friend: friend),
+                            child:
+                                friend.relationType == FriendConst.subscription
+                                ? DetailSubscription(
+                                    friend: friend,
+                                    subscription: data.subscriptions.firstWhere(
+                                      (sub) => sub.subscriptionId == friend.sid,
+                                    ),
+                                  )
+                                : DetailFriend(friend: friend),
                           );
                         },
                       );

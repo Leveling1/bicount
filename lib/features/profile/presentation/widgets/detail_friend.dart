@@ -38,7 +38,7 @@ class DetailFriend extends StatelessWidget {
           children: [
             Flexible(
               flex: 1,
-              child: InfoCard(
+              child: InfoCardAmount(
                 icon: IconLinks.expense,
                 title: 'Given',
                 value: friend.give!,
@@ -48,7 +48,7 @@ class DetailFriend extends StatelessWidget {
             const SizedBox(width: AppDimens.marginMedium),
             Flexible(
               flex: 1,
-              child: InfoCard(
+              child: InfoCardAmount(
                 icon: IconLinks.income,
                 title: 'Received',
                 value: friend.receive!,
@@ -61,7 +61,7 @@ class DetailFriend extends StatelessWidget {
           children: [
             Flexible(
               flex: 1,
-              child: InfoCard(
+              child: InfoCardAmount(
                 icon: IconLinks.user,
                 title: 'Personal',
                 value: friend.personalIncome!,
@@ -73,7 +73,7 @@ class DetailFriend extends StatelessWidget {
             const SizedBox(width: AppDimens.marginMedium),
             Flexible(
               flex: 1,
-              child: InfoCard(
+              child: InfoCardAmount(
                 icon: IconLinks.company,
                 title: 'Company',
                 value: friend.companyIncome!,

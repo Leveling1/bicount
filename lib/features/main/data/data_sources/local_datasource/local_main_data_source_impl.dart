@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bicount/features/main/data/data_sources/local_datasource/main_local_datasource.dart';
+import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -85,6 +86,30 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     } catch (e) {
       return Stream.error(
         MessageFailure(message: "Error fetching transactions: ${e.toString()}"),
+      );
+    }
+  }
+
+  /// For the List of subscription
+  @override
+  Stream<List<SubscriptionModel>> getSubscriptions() {
+    try {
+      final subscriptionsController =
+          BehaviorSubject<List<SubscriptionModel>>.seeded([]);
+
+      Repository().subscribeToRealtime<SubscriptionModel>().listen(
+        (List<SubscriptionModel> subscriptions) {
+          subscriptionsController.add(subscriptions);
+        },
+        onError: (error) {
+          subscriptionsController.addError(error);
+        },
+      );
+
+      return subscriptionsController.stream;
+    } catch (e) {
+      return Stream.error(
+        MessageFailure(message: "Error fetching subscriptions: ${e.toString()}"),
       );
     }
   }

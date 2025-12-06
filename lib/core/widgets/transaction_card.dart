@@ -47,10 +47,15 @@ class TransactionCard extends StatelessWidget {
                   child: SizedBox(
                     width: 30.w,
                     height: 30.h,
-                    child: CachedNetworkImage(
-                      imageUrl: transaction.image!,
-                      fit: BoxFit.cover,
-                    ),
+                    child: transaction.type == TransactionTypes.subscriptionCode
+                        ? Icon(
+                            Icons.subscriptions,
+                            color: Theme.of(context).primaryColor,
+                          )
+                        : CachedNetworkImage(
+                            imageUrl: transaction.image!,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
                 const SizedBox(width: 12),

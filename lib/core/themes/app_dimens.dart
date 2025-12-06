@@ -120,6 +120,7 @@ class AppDimens {
   );
 
   // Icon Sizes
+  static const double iconSizeExtraSmall = 10.0;
   static const double iconSizeSmall = 16.0;
   static const double iconSizeMedium = 24.0;
   static const double iconSizeLarge = 32.0;

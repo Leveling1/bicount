@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
+import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../../../core/errors/failure.dart';
@@ -19,16 +20,19 @@ class MainRepositoryImpl implements MainRepository {
     try {
       Stream<UserModel> userStream = localDataSource.getUserDetails();
       Stream<List<FriendsModel>> userLinkStream = localDataSource.getFriends();
+      Stream<List<SubscriptionModel>> subscriptionStream = localDataSource.getSubscriptions();
       Stream<List<TransactionModel>> transactionStream = localDataSource.getTransaction();
       // Abonnement au flux temps réel des utilisateurs
-      return Rx.combineLatest3<UserModel, List<FriendsModel>, List<TransactionModel>, MainEntity>(
+      return Rx.combineLatest4<UserModel, List<FriendsModel>, List<SubscriptionModel>, List<TransactionModel>, MainEntity>(
         userStream,
         userLinkStream,
+        subscriptionStream,
         transactionStream,
-        (UserModel user, List<FriendsModel> usersLink, List<TransactionModel> transactions) {
+        (UserModel user, List<FriendsModel> friends, List<SubscriptionModel> subscriptions, List<TransactionModel> transactions) {
           return _convertToEntity(
             user,
-            usersLink,
+            friends,
+            subscriptions,
             transactions
           );
         },
@@ -44,11 +48,13 @@ class MainRepositoryImpl implements MainRepository {
   MainEntity _convertToEntity(
       UserModel user,
       List<FriendsModel> friends,
+      List<SubscriptionModel> subscriptions,
       List<TransactionModel> transactions,
       ) {
     return MainEntity(
       user: user,
       friends: friends,
+      subscriptions: subscriptions,
       transactions: transactions
     );
   }
