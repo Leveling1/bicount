@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
@@ -37,10 +38,15 @@ class FriendCard extends StatelessWidget {
                   child: SizedBox(
                     width: 30.w,
                     height: 30.h,
-                    child: CachedNetworkImage(
-                      imageUrl: friend.image,
-                      fit: BoxFit.cover,
-                    ),
+                    child: friend.relationType == FriendConst.subscription
+                        ? Icon(
+                            Icons.subscriptions,
+                            color: Theme.of(context).colorScheme.primary,
+                          )
+                        : CachedNetworkImage(
+                            imageUrl: friend.image,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -59,35 +65,45 @@ class FriendCard extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Given: ',
-                                style: TextStyle(
-                                  color: Theme.of(context).textTheme.bodySmall!.color,
-                                  fontSize: 13,
-                                ),
-                              ),
-                              Text(
-                                give,
-                                style: TextStyle(
-                                  color: give == "0.00"
-                                      ? Theme.of(context).textTheme.bodySmall!.color
-                                      : Theme.of(
+                          friend.relationType == FriendConst.subscription
+                              ? SizedBox.shrink()
+                              : Row(
+                                  children: [
+                                    Text(
+                                      'Given: ',
+                                      style: TextStyle(
+                                        color: Theme.of(
                                           context,
-                                        ).extension<OtherTheme>()!.expense!,
-                                  fontSize: 13,
+                                        ).textTheme.bodySmall!.color,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                    Text(
+                                      give,
+                                      style: TextStyle(
+                                        color: give == "0.00"
+                                            ? Theme.of(
+                                                context,
+                                              ).textTheme.bodySmall!.color
+                                            : Theme.of(context)
+                                                  .extension<OtherTheme>()!
+                                                  .expense!,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
 
                           Row(
                             children: [
                               Text(
-                                'Received: ',
+                                friend.relationType == FriendConst.subscription
+                                    ? 'Cumulative expenses: '
+                                    : 'Received: ',
                                 style: TextStyle(
-                                  color: Theme.of(context).textTheme.bodySmall!.color,
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.bodySmall!.color,
                                   fontSize: 13,
                                 ),
                               ),
@@ -95,7 +111,9 @@ class FriendCard extends StatelessWidget {
                                 receive,
                                 style: TextStyle(
                                   color: receive == "0.00"
-                                      ? Theme.of(context).textTheme.bodySmall!.color
+                                      ? Theme.of(
+                                          context,
+                                        ).textTheme.bodySmall!.color
                                       : Theme.of(
                                           context,
                                         ).extension<OtherTheme>()!.income!,
