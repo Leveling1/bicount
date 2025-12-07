@@ -1,5 +1,7 @@
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
+import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/domain/entities/subscription_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:uuid/uuid.dart';
@@ -83,8 +85,39 @@ class TransactionRepositoryImpl extends TransactionRepository {
   @override
   Future<void> addSubscription(SubscriptionEntity subscription) async {
     try {
-      final Either<Failure, void> result =
-          await localDataSource.addSubscription(subscription);
+      final Either<Failure, void> result = await localDataSource
+          .addSubscription(subscription);
+
+      await result.fold((failure) => throw failure, (_) => null);
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw UnknownFailure();
+    }
+  }
+
+  // Unsubscribe
+  @override
+  Future<void> unsubscribe(SubscriptionModel subscription) async {
+    try {
+      final SubscriptionModel subscriptionModel = SubscriptionModel(
+        subscriptionId: subscription.subscriptionId,
+        title: subscription.title,
+        amount: subscription.amount,
+        currency: subscription.currency,
+        frequency: subscription.frequency,
+        nextBillingDate: subscription.nextBillingDate,
+        category: subscription.category,
+        createdAt: subscription.createdAt,
+        sid: subscription.sid,
+        startDate: subscription.startDate,
+        notes: subscription.notes,
+        // Unsubscribe by changing the status
+        status: SubscriptionConst.unsubscribed,
+      );
+      final Either<Failure, void> result = await localDataSource.unsubscribe(
+        subscriptionModel,
+      );
 
       await result.fold((failure) => throw failure, (_) => null);
     } on Failure {

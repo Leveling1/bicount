@@ -23,3 +23,7 @@ String formatedDateTime(DateTime date) {
 String formatedDateTimeNumeric(DateTime date) {
   return DateFormat('dd/MM/yy').format(date);
 }
+
+String formatDateWithoutYear(DateTime date) {
+  return DateFormat("dd MMMM", 'en_EN').format(date);
+}

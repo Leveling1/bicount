@@ -1,7 +1,39 @@
+import 'package:flutter/material.dart';
+
 class SubscriptionConst {
   static const int active = 0;
   static const int paused = 1;
-  static const int cancelled = 2;
+  static const int unsubscribed = 2;
+
+  static const String activeString = "Active";
+  static const String pausedString = "Paused";
+  static const String unsubscribedString = "Unsubscribed";
+
+  static String getStatusString(int status) {
+    switch (status) {
+      case active:
+        return activeString;
+      case paused:
+        return pausedString;
+      case unsubscribed:
+        return unsubscribedString;
+      default:
+        return "";
+    }
+  }
+
+  static Color getStatusColor(int status, BuildContext context) {
+    switch (status) {
+      case active:
+        return Theme.of(context).primaryColor;
+      case paused:
+        return Colors.orange;
+      case unsubscribed:
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
 }
 
 class Frequency {

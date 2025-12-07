@@ -120,4 +120,21 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       );
     }
   }
+
+  // Unsubscribe
+  @override
+  Future<Either<Failure, void>> unsubscribe(
+    SubscriptionModel subscription,
+  ) async {
+    try {
+      await Repository().upsert<SubscriptionModel>(subscription);
+      return Right(null);
+    } catch (e) {
+      return Left(
+        MessageFailure(
+          message: 'An error occurred while unsubscribing from the subscription.',
+        ),
+      );
+    }
+  }
 }
