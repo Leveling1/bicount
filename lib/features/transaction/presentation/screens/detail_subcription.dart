@@ -59,12 +59,12 @@ class DetailSubscription extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppDimens.paddingSmallMedium),
             Text(
               friend.username,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppDimens.paddingExtraSmall),
             Container(
               constraints: const BoxConstraints(minWidth: 70),
               decoration: BoxDecoration(

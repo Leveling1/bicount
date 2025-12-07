@@ -169,6 +169,7 @@ class InfoCardNote extends StatelessWidget {
           Text(
             content,
             style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.justify,
           ),
         ],
       ),
