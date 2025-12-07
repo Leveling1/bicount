@@ -74,11 +74,7 @@ class DetailSubscription extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Text(
                 SubscriptionConst.getStatusString(subscription.status!),
-                style: TextStyle(
-                  color: badgeColor,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: badgeColor, fontSize: 11),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -101,8 +97,14 @@ class DetailSubscription extends StatelessWidget {
                   flex: 1,
                   child: InfoCard(
                     icon: IconLinks.calendar,
-                    title: 'Next billing',
-                    content: getNextMonthSameDay(subscription.nextBillingDate),
+                    title: subscription.status == SubscriptionConst.active
+                        ? 'Next billing'
+                        : 'Billing stop',
+                    content: subscription.status == SubscriptionConst.active
+                        ? getNextMonthSameDay(subscription.nextBillingDate)
+                        : formatedDateTimeNumericFullYear(
+                            DateTime.parse(subscription.endDate!),
+                          ),
                     color: Theme.of(
                       context,
                     ).extension<OtherTheme>()!.companyIncome!,
@@ -160,16 +162,22 @@ class DetailSubscription extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppDimens.marginMedium),
-            CustomButton(
-              text: 'unsubscribe',
-              loading: state is UnsubscriptionLoading,
-              onPressed: () {
-                context.read<TransactionBloc>().add(
-                  UnsubscribeEvent(subscription),
-                );
-              },
-            ),
+            subscription.status == SubscriptionConst.active
+                ? Column(
+                    children: [
+                      const SizedBox(height: AppDimens.marginMedium),
+                      CustomButton(
+                        text: 'unsubscribe',
+                        loading: state is UnsubscriptionLoading,
+                        onPressed: () {
+                          context.read<TransactionBloc>().add(
+                            UnsubscribeEvent(subscription),
+                          );
+                        },
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
             const SizedBox(height: AppDimens.marginLarge),
           ],
         );

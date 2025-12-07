@@ -24,6 +24,10 @@ String formatedDateTimeNumeric(DateTime date) {
   return DateFormat('dd/MM/yy').format(date);
 }
 
+String formatedDateTimeNumericFullYear(DateTime date) {
+  return DateFormat('dd/MM/yyyy').format(date);
+}
+
 String formatDateWithoutYear(DateTime date) {
   return DateFormat("dd MMMM", 'en_EN').format(date);
 }

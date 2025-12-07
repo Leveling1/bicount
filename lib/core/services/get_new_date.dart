@@ -13,7 +13,10 @@ String getNextMonthSameDay(String dateString) {
     final nextMonth = currentMonth == 12 ? 1 : currentMonth + 1;
     final nextYear = currentMonth == 12 ? currentYear + 1 : currentYear;
 
-    return DateTime(nextYear, nextMonth, day).toIso8601String();
+    String formattedNextDateTime = formatDateWithoutYear(
+      DateTime(nextYear, nextMonth, day),
+    );
+    return formattedNextDateTime;
   }
 
   // Return same day this month

@@ -112,6 +112,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
         sid: subscription.sid,
         startDate: subscription.startDate,
         notes: subscription.notes,
+        endDate: DateTime.now().toIso8601String(),
         // Unsubscribe by changing the status
         status: SubscriptionConst.unsubscribed,
       );
