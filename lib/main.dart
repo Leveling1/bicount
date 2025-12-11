@@ -7,6 +7,7 @@ import 'package:bicount/features/company/data/repositories/company_repository_im
 import 'package:bicount/features/company/presentation/bloc/company_bloc.dart';
 import 'package:bicount/features/home/data/repositories/home_repository_impl.dart';
 import 'package:bicount/features/home/presentation/bloc/home_bloc.dart';
+import 'package:bicount/features/main/data/data_sources/remote_datasource/main_remote_data_source_impl.dart';
 import 'package:bicount/features/profile/data/data_sources/local_datasource/profile_local_data_source_impl.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/local_transaction_data_source_impl.dart';
 import 'package:bicount/features/transaction/data/repositories/transaction_repository_impl.dart';
@@ -60,7 +61,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
         RepositoryProvider<MainRepositoryImpl>(
-          create: (_) => MainRepositoryImpl(LocalMainDataSourceImpl()),
+          create: (_) => MainRepositoryImpl(
+            LocalMainDataSourceImpl(),
+            MainRemoteDataSourceImpl(),
+          ),
         ),
         RepositoryProvider<HomeRepositoryImpl>(
           create: (_) => HomeRepositoryImpl(
@@ -99,8 +103,12 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider<MainBloc>(
-            create: (context) =>
-                MainBloc(MainRepositoryImpl(LocalMainDataSourceImpl())),
+            create: (context) => MainBloc(
+              MainRepositoryImpl(
+                LocalMainDataSourceImpl(),
+                MainRemoteDataSourceImpl(),
+              ),
+            ),
           ),
           BlocProvider<HomeBloc>(
             create: (context) => HomeBloc(
@@ -146,9 +154,8 @@ class MyApp extends StatelessWidget {
                 ProjectBloc(context.read<ProjectRepositoryImpl>()),
           ),
           BlocProvider<ProfileBloc>(
-            create: (context) => ProfileBloc(
-              context.read<ProfileRepositoryImpl>(),
-            ),
+            create: (context) =>
+                ProfileBloc(context.read<ProfileRepositoryImpl>()),
           ),
         ],
         child: ToastificationWrapper(

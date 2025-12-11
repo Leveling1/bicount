@@ -1,6 +1,8 @@
+import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/services/smooth_insert.dart';
 import 'package:bicount/core/services/title_animated_switcher.dart';
+import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/main/presentation/widgets/app_bar_animation.dart';
 import 'package:bicount/core/widgets/container_body.dart';
@@ -14,6 +16,7 @@ import 'package:bicount/features/transaction/presentation/screens/transaction_sc
 import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../../../core/constants/network_status.dart';
 import '../../../../core/services/notification_helper.dart';
@@ -160,6 +163,56 @@ class _MainScreenState extends State<MainScreen> {
             elevation: 0,
             scrolledUnderElevation: 0,
             surfaceTintColor: Colors.transparent,
+            leadingWidth:
+                state is MainLoaded &&
+                    state.startData.connectionState == Constants.disconnected
+                ? 110.0
+                : null,
+            leading: state is MainLoaded
+                ? state.startData.connectionState == Constants.disconnected
+                      ? Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                            top: 15,
+                            bottom: 15,
+                          ),
+                          child: Container(
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: AppColors.errorColorBasic.withValues(
+                                alpha: 0.3,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                AppDimens.borderRadiusFull,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                LoadingAnimationWidget.hexagonDots(
+                                  color: AppColors.errorColorBasic,
+                                  size: 11,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  "Connexion",
+                                  style: TextStyle(
+                                    color: AppColors.errorColorBasic,
+                                    fontSize: 11,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : null
+                : null,
             title: TitleAnimatedSwitcher(
               child: Text(
                 _buildTitle()[_selectedIndex],

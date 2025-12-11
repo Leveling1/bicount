@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bicount/features/main/data/data_sources/remote_datasource/main_remote_datasource.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/data/models/subscription.model.dart';
@@ -13,7 +14,8 @@ import '../data_sources/local_datasource/main_local_datasource.dart';
 
 class MainRepositoryImpl implements MainRepository {
   final MainLocalDataSource localDataSource;
-  MainRepositoryImpl(this.localDataSource);
+  final MainRemoteDataSource remoteDataSource;
+  MainRepositoryImpl(this.localDataSource, this.remoteDataSource);
 
   @override
   Stream<MainEntity> getStartDataStream() {
@@ -22,18 +24,22 @@ class MainRepositoryImpl implements MainRepository {
       Stream<List<FriendsModel>> userLinkStream = localDataSource.getFriends();
       Stream<List<SubscriptionModel>> subscriptionStream = localDataSource.getSubscriptions();
       Stream<List<TransactionModel>> transactionStream = localDataSource.getTransaction();
+
+      Stream<int> connectionStateStream = remoteDataSource.connectionState();
       // Abonnement au flux temps réel des utilisateurs
-      return Rx.combineLatest4<UserModel, List<FriendsModel>, List<SubscriptionModel>, List<TransactionModel>, MainEntity>(
+      return Rx.combineLatest5<UserModel, List<FriendsModel>, List<SubscriptionModel>, List<TransactionModel>, int, MainEntity>(
         userStream,
         userLinkStream,
         subscriptionStream,
         transactionStream,
-        (UserModel user, List<FriendsModel> friends, List<SubscriptionModel> subscriptions, List<TransactionModel> transactions) {
+        connectionStateStream,
+        (UserModel user, List<FriendsModel> friends, List<SubscriptionModel> subscriptions, List<TransactionModel> transactions, int connectionState) {
           return _convertToEntity(
             user,
             friends,
             subscriptions,
-            transactions
+            transactions,
+            connectionState
           );
         },
       ).handleError((error, stackTrace) {
@@ -50,9 +56,11 @@ class MainRepositoryImpl implements MainRepository {
       List<FriendsModel> friends,
       List<SubscriptionModel> subscriptions,
       List<TransactionModel> transactions,
+      int connectionState
       ) {
     return MainEntity(
       user: user,
+      connectionState: connectionState,
       friends: friends,
       subscriptions: subscriptions,
       transactions: transactions

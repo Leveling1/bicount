@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
@@ -7,12 +8,14 @@ import '../../../authentification/data/models/user.model.dart';
 
 class MainEntity extends Equatable {
   final UserModel user;
+  final int connectionState;
   final List<FriendsModel> friends;
   final List<SubscriptionModel> subscriptions;
   final List<TransactionModel> transactions;
 
   const MainEntity({
     required this.user,
+    required this.connectionState,
     required this.friends,
     required this.subscriptions,
     required this.transactions,
@@ -34,6 +37,7 @@ class MainEntity extends Equatable {
         companyIncome: 0,
         personalIncome: 0,
       ),
+      connectionState: Constants.disconnected,
       friends: [],
       subscriptions: [],
       transactions: [],

@@ -10,5 +10,8 @@ class Constants {
   static const personal = 0;
   static const company = 1;
 
-  /// Transaction types
+  /// Connectivity states
+  static const int connected = 0;
+  static const int disconnected = 1;
+  
 }

@@ -7,6 +7,7 @@ class AppColors {
   static const Color tertiaryColorBasic = Color(0xFF052608);
   static const Color quaternaryColorBasic = Color(0xFF0554F2);
   static const Color backgroundColorBasic = Color(0xFFEFF2EB);
+  static const Color errorColorBasic = Color(0xFFd00000);
 
   /// Dark Theme
   static const Color primaryColorDark = Color(0xFF76A646);
