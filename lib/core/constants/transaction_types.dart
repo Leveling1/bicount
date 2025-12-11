@@ -24,15 +24,25 @@ class TransactionTypes {
     'Business',
   ];
 
+  static const List<int> allTypesInt = [
+    0,
+    incomeCode,
+    expenseCode,
+    subscriptionCode,
+    othersCode,
+    personal,
+    business,
+  ];
+
   static const String income = "Income";
   static const String expense = "Expense";
   static const String others = "Other";
   static const String subscriptionTitle = "Subscription";
 
-  static const int incomeCode = 0;
-  static const int expenseCode = 1;
-  static const int othersCode = 2;
-  static const int subscriptionCode = 3;
+  static const int incomeCode = 1;
+  static const int expenseCode = 2;
+  static const int othersCode = 3;
+  static const int subscriptionCode = 4;
 
   static const int personalIncome = 0;
   static const int companyIncome = 1;

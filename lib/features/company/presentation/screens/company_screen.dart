@@ -12,16 +12,19 @@ import '../widgets/company_large_card.dart';
 
 class CompanyScreen extends StatefulWidget {
   final bool showSearchBar;
+  final TextEditingController searchController;
 
-  const CompanyScreen({super.key, this.showSearchBar = false});
+  const CompanyScreen({
+    super.key,
+    this.showSearchBar = false,
+    required this.searchController,
+  });
 
   @override
   State<CompanyScreen> createState() => _CompanyScreenState();
 }
 
 class _CompanyScreenState extends State<CompanyScreen> {
-  final TextEditingController _searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -29,21 +32,12 @@ class _CompanyScreenState extends State<CompanyScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ListBloc>().add(GetAllCompany());
     });
-    _searchController.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     if (!widget.showSearchBar) {
-      _searchController.clear();
+      widget.searchController.clear();
     }
     return BlocConsumer<ListBloc, ListState>(
       listener: (context, state) {
@@ -66,7 +60,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
           }
 
           final filteredCompanies = state.companies.companies.where((company) {
-            final query = _searchController.text.toLowerCase();
+            final query = widget.searchController.text.toLowerCase();
             return company.name.toLowerCase().contains(query);
           }).toList();
 
@@ -74,55 +68,33 @@ class _CompanyScreenState extends State<CompanyScreen> {
             (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
           );
 
-          return Column(
-            children: [
-              SmoothInsert(
-                visible: widget.showSearchBar,
-                verticalMargin: AppDimens.paddingSmall,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimens.paddingMedium,
-                  ),
-                  child: CustomSearchField(
-                    onChanged: (value) {
-                      setState(() {
-                        _searchController.text = value;
-                      });
-                    },
-                  ),
-                ),
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimens.paddingMedium,
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimens.paddingMedium,
-                    ),
-                    child: Column(
-                      children: [
-                        ...filteredCompanies.map((company) {
-                          if (state.companies.companies.length > 10) {
-                            return CompanyCard(company: company);
-                          } else {
-                            final roleModel =
-                                state.companies.links
-                                    .where((e) => e.companyId == company.cid)
-                                    .isEmpty
-                                ? null
-                                : state.companies.links.firstWhere(
-                                    (e) => e.companyId == company.cid,
-                                  );
-                            final role = roleModel?.role ?? '';
-                            return CompanyLargeCard(company: company, role: role);
-                          }
-                        }),
-                        SizedBox(height: 50.h),
-                      ],
-                    ),
-                  ),
-                ),
+              child: Column(
+                children: [
+                  ...filteredCompanies.map((company) {
+                    if (state.companies.companies.length > 10) {
+                      return CompanyCard(company: company);
+                    } else {
+                      final roleModel =
+                          state.companies.links
+                              .where((e) => e.companyId == company.cid)
+                              .isEmpty
+                          ? null
+                          : state.companies.links.firstWhere(
+                              (e) => e.companyId == company.cid,
+                            );
+                      final role = roleModel?.role ?? '';
+                      return CompanyLargeCard(company: company, role: role);
+                    }
+                  }),
+                  SizedBox(height: 50.h),
+                ],
               ),
-            ],
+            ),
           );
         } else if (state is ListError) {
           return Center(child: Text("Error: ${state.failure.message}"));

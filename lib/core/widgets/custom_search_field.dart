@@ -2,30 +2,31 @@ import 'package:bicount/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomSearchField extends StatefulWidget {
+  final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
 
-  const CustomSearchField({super.key, this.onChanged});
+  const CustomSearchField({super.key, required this.controller, this.onChanged});
 
   @override
   _CustomSearchFieldState createState() => _CustomSearchFieldState();
 }
 
 class _CustomSearchFieldState extends State<CustomSearchField> {
-  final TextEditingController _controller = TextEditingController();
-
   void _clearText() {
-    _controller.clear();
+    widget.controller?.clear();
     widget.onChanged?.call('');
     setState(() {});
+  }
+
+  void _onTextChanged() {
+    setState(() {});
+    widget.onChanged?.call(widget.controller!.text);
   }
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() {
-      setState(() {});
-      widget.onChanged?.call(_controller.text);
-    });
+    widget.controller?.addListener(_onTextChanged);
   }
 
   @override
@@ -33,7 +34,7 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
     return SizedBox(
       height: 50,
       child: TextFormField(
-        controller: _controller,
+        controller: widget.controller,
         textAlign: TextAlign.start,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.next,
@@ -46,7 +47,7 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
             Icons.search,
             color: Theme.of(context).iconTheme.color,
           ),
-          suffixIcon: _controller.text.isNotEmpty
+          suffixIcon: widget.controller!.text.isNotEmpty
               ? IconButton(
                   icon: const Icon(Icons.clear),
                   onPressed: _clearText,
@@ -59,7 +60,7 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    widget.controller?.removeListener(_onTextChanged);
     super.dispose();
   }
 }

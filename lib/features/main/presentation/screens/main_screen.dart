@@ -1,12 +1,17 @@
+import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/services/smooth_insert.dart';
 import 'package:bicount/core/services/title_animated_switcher.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/features/main/presentation/widgets/app_bar_animation.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
+import 'package:bicount/core/widgets/custom_search_field.dart';
 import 'package:bicount/core/widgets/header_button.dart';
 import 'package:bicount/features/company/presentation/screens/company_screen.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
 import 'package:bicount/features/profile/presentation/screens/account_funding_handler.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,6 +39,18 @@ class _MainScreenState extends State<MainScreen> {
   bool showSearchBar = false;
 
   int _selectedIndex = 0;
+
+  final searchCompany = TextEditingController();
+  final searchTransaction = TextEditingController();
+  int _selectedIndexTransaction = 0;
+
+  void _onItemTappedTransaction(int index) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _selectedIndexTransaction = index;
+      });
+    });
+  }
 
   void _onItemTapped(int index) {
     final distance = (_selectedIndex - index).abs();
@@ -67,8 +84,16 @@ class _MainScreenState extends State<MainScreen> {
 
     return [
       HomeScreen(onCardTap: _goToPage, data: data),
-      CompanyScreen(showSearchBar: showSearchBar),
-      TransactionScreen(data: data, showSearchBar: showSearchBar),
+      CompanyScreen(
+        showSearchBar: showSearchBar,
+        searchController: searchCompany,
+      ),
+      TransactionScreen(
+        data: data,
+        showSearchBar: showSearchBar,
+        searchController: searchTransaction,
+        selectedIndexTransaction: _selectedIndexTransaction,
+      ),
       ProfileScreen(data: data),
     ];
   }
@@ -101,6 +126,8 @@ class _MainScreenState extends State<MainScreen> {
   void dispose() {
     pageController.dispose();
     scrollXPosition.dispose();
+    searchCompany.dispose();
+    searchTransaction.dispose();
     super.dispose();
   }
 
@@ -206,16 +233,52 @@ class _MainScreenState extends State<MainScreen> {
             ],
           ),
           body: ContainerBody(
-            child: PageView(
-              controller: pageController,
-              onPageChanged: (int index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-              children: _buildScreens(
-                state is MainLoaded ? state.startData : MainEntity.fromEmpty(),
-              ),
+            child: Column(
+              children: [
+                AppBarAnimation(
+                  child: (_selectedIndex == 1 || _selectedIndex == 2)
+                      ? SmoothInsert(
+                          visible: showSearchBar,
+                          verticalMargin: AppDimens.paddingSmall,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppDimens.paddingMedium,
+                            ),
+                            child: CustomSearchField(
+                              controller: (_selectedIndex == 1)
+                                  ? searchCompany
+                                  : searchTransaction,
+                              onChanged: (value) {},
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+                AppBarAnimation(
+                  child: (_selectedIndex == 2)
+                      ? TransactionFilterChips(
+                          selectedIndex: _selectedIndexTransaction,
+                          onTap: _onItemTappedTransaction,
+                          filters: TransactionTypes.allTypes,
+                        )
+                      : const SizedBox.shrink(),
+                ),
+                Expanded(
+                  child: PageView(
+                    controller: pageController,
+                    onPageChanged: (int index) {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
+                    },
+                    children: _buildScreens(
+                      state is MainLoaded
+                          ? state.startData
+                          : MainEntity.fromEmpty(),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           bottomNavigationBar: CustomBottomNavigationBar(
