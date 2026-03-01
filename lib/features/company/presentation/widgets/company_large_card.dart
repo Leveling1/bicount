@@ -159,7 +159,7 @@ class CompanyLargeCard extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            "Total",
+                            "Net Revenue",
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           const SizedBox(height: 4),
