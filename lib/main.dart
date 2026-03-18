@@ -37,10 +37,15 @@ import 'features/profile/data/repositories/profile_repository_impl.dart';
 import 'features/profile/presentation/bloc/profile_bloc.dart';
 import 'features/project/data/repositories/project_repository_impl.dart';
 import 'features/project/presentation/bloc/project_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'core/constants/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+  );
   await Repository.configure(databaseFactory);
   await Repository().initialize();
 

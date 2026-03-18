@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "631534863385",
+    "project_id": "bicount-youngsolver",
+    "storage_bucket": "bicount-youngsolver.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631534863385:android:f55078b51a6b91dd25d688",
+        "android_client_info": {
+          "package_name": "com.youngsolver.bicount"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBmRUtQf37o969Uqe6u5_rDRk1QFgLeOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -44,6 +44,7 @@ dependencies:
   brick_core: ^2.0.0
   flutter_native_splash: ^2.4.7
   rxdart: ^0.28.0
+  firebase_core: ^4.5.0
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +53,7 @@ dev_dependencies:
   icons_launcher: ^3.0.1
   brick_offline_first_with_supabase_build: ^2.0.0
   build_runner: ^2.4.15
+  change_app_package_name: ^1.4.0
 
 flutter:
   uses-material-design: true
