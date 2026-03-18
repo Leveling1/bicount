@@ -15,10 +15,7 @@ class TitleIconButtomRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        Text(title, style: Theme.of(context).textTheme.titleMedium),
         const Spacer(),
         Container(
           decoration: BoxDecoration(
@@ -31,8 +28,9 @@ class TitleIconButtomRow extends StatelessWidget {
               hoverColor: Theme.of(context).colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(5),
               splashColor: Colors.transparent,
-              highlightColor:
-              Theme.of(context).primaryColor.withValues(alpha: 0.2),
+              highlightColor: Theme.of(
+                context,
+              ).primaryColor.withValues(alpha: 0.2),
               onTap: onPressed,
               child: Padding(
                 padding: const EdgeInsets.all(8.0), // 👈 espace cliquable

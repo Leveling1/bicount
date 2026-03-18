@@ -34,6 +34,6 @@ class CompanyModel extends OfflineFirstWithSupabaseModel {
     this.equipment,
     this.service,
     required this.createdAt,
-  })  : cid = cid ?? const Uuid().v4(),
-        super();
+  }) : cid = cid ?? const Uuid().v4(),
+       super();
 }

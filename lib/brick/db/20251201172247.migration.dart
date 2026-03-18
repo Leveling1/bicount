@@ -11,11 +11,11 @@ part of 'schema.g.dart';
 
 const List<MigrationCommand> _migration_20251201172247_up = [
   DropColumn('profit', onTable: 'UserModel'),
-  InsertColumn('balance', Column.Double, onTable: 'UserModel')
+  InsertColumn('balance', Column.Double, onTable: 'UserModel'),
 ];
 
 const List<MigrationCommand> _migration_20251201172247_down = [
-  DropColumn('balance', onTable: 'UserModel')
+  DropColumn('balance', onTable: 'UserModel'),
 ];
 
 //

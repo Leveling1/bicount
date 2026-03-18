@@ -4,7 +4,6 @@ abstract class ListEvent {}
 
 class ExampleCompanyEvent extends ListEvent {}
 
-
 // For stream app with screen
 class GetAllCompany extends ListEvent {}
 

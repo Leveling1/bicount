@@ -63,7 +63,6 @@ class InfoCardAmount extends StatelessWidget {
   }
 }
 
-
 class InfoCard extends StatelessWidget {
   final String icon;
   final String title;
@@ -121,7 +120,6 @@ class InfoCard extends StatelessWidget {
   }
 }
 
-
 class InfoCardNote extends StatelessWidget {
   final String icon;
   final String title;
@@ -177,7 +175,6 @@ class InfoCardNote extends StatelessWidget {
   }
 }
 
-
 class LinearInfoCard extends StatelessWidget {
   final String icon;
   final String title;
@@ -194,43 +191,37 @@ class LinearInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return         DetailsCard(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return DetailsCard(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: color,
-                    radius: 10.r, // Using .r for radius to scale consistently
-                    child: SvgPicture.asset(
-                      icon,
-                      width: AppDimens.iconSizeExtraSmall,
-                      height: AppDimens.iconSizeExtraSmall,
-                      colorFilter: ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppDimens.marginSmall),
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                ],
-              ),
-              const SizedBox(width: AppDimens.marginSmall),
-              Text(
-                content,
-                style: TextStyle(
-                  fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
-                  fontWeight: FontWeight.bold,
+              CircleAvatar(
+                backgroundColor: color,
+                radius: 10.r, // Using .r for radius to scale consistently
+                child: SvgPicture.asset(
+                  icon,
+                  width: AppDimens.iconSizeExtraSmall,
+                  height: AppDimens.iconSizeExtraSmall,
+                  colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
                 ),
               ),
+              const SizedBox(width: AppDimens.marginSmall),
+              Text(title, style: Theme.of(context).textTheme.titleSmall),
             ],
           ),
-        );
+          const SizedBox(width: AppDimens.marginSmall),
+          Text(
+            content,
+            style: TextStyle(
+              fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

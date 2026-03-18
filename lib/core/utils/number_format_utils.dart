@@ -31,4 +31,18 @@ class NumberFormatUtils {
     final sign = value < 0 ? '-' : '+';
     return '$sign $formatted';
   }
+
+  static String compactCurrency(
+    num value, {
+    String locale = 'en_US',
+    String currencyCode = 'USD',
+  }) {
+    final symbol = currencyCode == 'USD' ? '\$' : 'Fc';
+    final formatter = NumberFormat.compactCurrency(
+      locale: locale,
+      symbol: '',
+      decimalDigits: 0,
+    );
+    return '${formatter.format(value)}$symbol';
+  }
 }

@@ -15,4 +15,3 @@ class ProjectError extends ProjectState {
   final Failure failure;
   ProjectError(this.failure);
 }
-

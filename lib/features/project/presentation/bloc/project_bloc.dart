@@ -14,11 +14,16 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     on<CreateProjectEvent>(_onCreateGroup);
   }
 
-  Future<void> _onCreateGroup(CreateProjectEvent event, Emitter<ProjectState> emit) async {
+  Future<void> _onCreateGroup(
+    CreateProjectEvent event,
+    Emitter<ProjectState> emit,
+  ) async {
     emit(ProjectLoading());
     try {
-      final createdGroup =
-      await repository.createProject(event.project, event.logoFile);
+      final createdGroup = await repository.createProject(
+        event.project,
+        event.logoFile,
+      );
       emit(ProjectCreated(createdGroup));
     } catch (e) {
       emit(ProjectError(e is Failure ? e : UnknownFailure()));

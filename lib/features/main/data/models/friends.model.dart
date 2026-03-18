@@ -38,11 +38,11 @@ class FriendsModel extends OfflineFirstWithSupabaseModel {
     required this.image,
     required this.username,
     required this.email,
-    this.give, 
+    this.give,
     this.receive,
     required this.relationType,
     this.personalIncome,
     this.companyIncome,
-  })  : sid = sid ?? const Uuid().v4(),
-        super();
+  }) : sid = sid ?? const Uuid().v4(),
+       super();
 }

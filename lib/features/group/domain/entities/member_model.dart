@@ -15,13 +15,7 @@ class MemberModel {
 
   /// Convertir en Map (utile pour Firebase, Supabase, etc.)
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'UID': UID,
-      'name': name,
-      'logoUrl': image,
-      'role': role,
-    };
+    return {'id': id, 'UID': UID, 'name': name, 'logoUrl': image, 'role': role};
   }
 
   /// Créer une instance depuis un Map

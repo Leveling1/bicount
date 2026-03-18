@@ -7,7 +7,11 @@ abstract class AuthentificationRepository {
     String email,
     String password,
   );
-  Future<Either<Failure, UserEntity>> signUp(String username, String email, String password);
+  Future<Either<Failure, UserEntity>> signUp(
+    String username,
+    String email,
+    String password,
+  );
   Future<Either<Failure, void>> signOut();
   Future<Either<Failure, void>> sendPasswordResetEmail(String email);
 

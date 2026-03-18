@@ -27,13 +27,13 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
         if (state is AccountFundingAdded) {
-          NotificationHelper.showSuccessNotification(context, 'Account funding transaction added successfully');
+          NotificationHelper.showSuccessNotification(
+            context,
+            'Account funding transaction added successfully',
+          );
           Navigator.pop(context);
         } else if (state is AccountFundingError) {
-          NotificationHelper.showFailureNotification(
-            context,
-            state.message,
-          );
+          NotificationHelper.showFailureNotification(context, state.message);
         }
       },
       builder: (context, state) {

@@ -27,7 +27,11 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
       final localSignIn = await localDataSource.signIn();
       if (localSignIn.isLeft()) {
         await remoteDataSource.signOut();
-        return Left(AuthenticationFailure(message: "An error occurred during the sign in."));
+        return Left(
+          AuthenticationFailure(
+            message: "An error occurred during the sign in.",
+          ),
+        );
       }
       return Right(user);
     } catch (e) {
@@ -50,7 +54,11 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
 
       if (localUser.isLeft()) {
         await remoteDataSource.signOut();
-        return Left(AuthenticationFailure(message: "An error occurred during registration."));
+        return Left(
+          AuthenticationFailure(
+            message: "An error occurred during registration.",
+          ),
+        );
       }
 
       return Right(user);
@@ -64,7 +72,9 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
     try {
       final localSignOut = await localDataSource.signOut();
       if (localSignOut.isLeft()) {
-        return Left(AuthenticationFailure(message: "An error occurred during sign out."));
+        return Left(
+          AuthenticationFailure(message: "An error occurred during sign out."),
+        );
       }
       await remoteDataSource.signOut();
       return const Right(null);

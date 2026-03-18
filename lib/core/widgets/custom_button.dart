@@ -19,10 +19,12 @@ class CustomButton extends StatelessWidget {
       height: 50,
       child: ElevatedButton(
         onPressed: loading ? null : onPressed,
-        child: loading ? LoadingAnimationWidget.horizontalRotatingDots(
-          color: Theme.of(context).cardColor,
-          size: 50,
-        ) : Text(text),
+        child: loading
+            ? LoadingAnimationWidget.horizontalRotatingDots(
+                color: Theme.of(context).cardColor,
+                size: 50,
+              )
+            : Text(text),
       ),
     );
   }

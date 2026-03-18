@@ -22,10 +22,7 @@ class CustomBorderButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: AppDimens.spacingSmall,
-          children: [
-            Image.asset(logoPath, width: 20, height: 20),
-            Text(text),
-          ],
+          children: [Image.asset(logoPath, width: 20, height: 20), Text(text)],
         ),
       ),
     );

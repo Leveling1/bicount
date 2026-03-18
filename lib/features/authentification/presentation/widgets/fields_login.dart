@@ -1,6 +1,4 @@
-import 'package:bicount/core/constants/path.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/core/widgets/custom_border_button.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_text_field.dart';
 import 'package:bicount/features/authentification/presentation/bloc/authentification_bloc.dart';
@@ -72,12 +70,6 @@ class _FieldsLoginState extends State<FieldsLogin> {
             text: "Log in",
             loading: widget.loading,
             onPressed: _submit,
-          ),
-          Text("OR"),
-          CustomBorderButton(
-            text: "Login with Google",
-            logoPath: AssetPaths.google_logo,
-            onPressed: () {},
           ),
         ],
       ),

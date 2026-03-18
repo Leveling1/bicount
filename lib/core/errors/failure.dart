@@ -20,7 +20,6 @@ class ServerFailure extends Failure {
   List<Object?> get props => throw UnimplementedError();
 }
 
-
 //for not found failure status code is 404
 class NotFoundFailure extends Failure {
   const NotFoundFailure();
@@ -113,7 +112,6 @@ class AuthenticationFailure extends Failure {
   List<Object?> get props => [message];
 }
 
-
 class ValidationFailure implements Exception {
   final String message;
   ValidationFailure(this.message);
@@ -121,8 +119,6 @@ class ValidationFailure implements Exception {
   @override
   String toString() => 'ValidationFailure: $message';
 }
-
-
 
 class NetworkFailure implements Exception {
   final String message;
@@ -148,4 +144,3 @@ class MessageFailure extends Failure {
   @override
   List<Object?> get props => [message];
 }
-

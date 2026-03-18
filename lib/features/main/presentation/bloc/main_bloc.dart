@@ -1,31 +1,32 @@
+import 'package:bicount/core/constants/network_status.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/main_entity.dart';
 import '../../domain/repositories/main_repository.dart';
+
 part 'main_event.dart';
 part 'main_state.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
-  final MainRepository repository;
-
   MainBloc(this.repository) : super(MainInitial()) {
     on<GetAllStartData>(_onGetAllStartData);
   }
 
-  void _onGetAllStartData(
-      GetAllStartData event, Emitter<MainState> emit) async {
+  final MainRepository repository;
+
+  Future<void> _onGetAllStartData(
+    GetAllStartData event,
+    Emitter<MainState> emit,
+  ) async {
     try {
-      // Écoute le stream Realtime
+      await repository.reconcileDeletedRecords();
       await emit.forEach<MainEntity>(
         repository.getStartDataStream(),
-        onData: (data) {
-          return MainLoaded(data);
-        },
-        onError: (error, stackTrace) =>
-            MainError(error.toString()),
+        onData: MainLoaded.new,
+        onError: (error, stackTrace) => MainError(error.toString()),
       );
-    } catch (e) {
-      emit(MainError(e.toString()));
+    } catch (error) {
+      emit(MainError(error.toString()));
     }
   }
 }

@@ -19,7 +19,6 @@ extension CurrencySymbol on Currency {
   }
 }
 
-
 class TransactionEntity {
   final String? id;
   final String tid;
@@ -85,7 +84,6 @@ class TransactionEntity {
 
   Map<String, dynamic> toJson() {
     return {
-
       "name": name,
       "type": type,
       "date": date.toIso8601String(),

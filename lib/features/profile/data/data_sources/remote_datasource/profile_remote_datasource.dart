@@ -1,4 +1,3 @@
-
 abstract class ProfileRemoteDataSource {
   // Add your remote data source interface here
 }

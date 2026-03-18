@@ -1,4 +1,3 @@
-
 class UserEntity {
   final String? sid;
   final String uid;

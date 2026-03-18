@@ -26,6 +26,6 @@ class GroupModel extends OfflineFirstWithSupabaseModel {
     this.number,
     this.image,
     required this.createdAt,
-  })  : gid = gid ?? const Uuid().v4(),
-        super();
+  }) : gid = gid ?? const Uuid().v4(),
+       super();
 }

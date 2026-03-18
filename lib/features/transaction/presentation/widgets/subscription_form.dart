@@ -162,7 +162,9 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       final now = DateTime.now();
-      final nextBillingDate = isDifferentDate ? _nextBillingDate.text : _startDate.text;  
+      final nextBillingDate = isDifferentDate
+          ? _nextBillingDate.text
+          : _startDate.text;
       BlocProvider.of<TransactionBloc>(context).add(
         AddSubscriptionEvent(
           SubscriptionEntity(

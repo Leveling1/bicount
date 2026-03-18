@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/app_config.dart';
 import 'package:bicount/core/routes/app_router.dart';
 import 'package:bicount/core/themes/app_theme.dart';
 import 'package:bicount/features/authentification/data/data_sources/remote_datasource/supabase_authentification.dart';
@@ -5,9 +6,20 @@ import 'package:bicount/features/authentification/data/repositories/authentifica
 import 'package:bicount/features/authentification/presentation/bloc/authentification_bloc.dart';
 import 'package:bicount/features/company/data/repositories/company_repository_impl.dart';
 import 'package:bicount/features/company/presentation/bloc/company_bloc.dart';
+import 'package:bicount/features/friend/data/data_sources/local_datasource/local_friend_data_source_impl.dart';
+import 'package:bicount/features/friend/data/data_sources/remote_datasource/supabase_friend_remote_data_source.dart';
+import 'package:bicount/features/friend/data/repositories/friend_repository_impl.dart';
+import 'package:bicount/features/friend/presentation/bloc/friend_bloc.dart';
+import 'package:bicount/features/graph/data/data_sources/local_datasource/local_graph_data_source_impl.dart';
+import 'package:bicount/features/graph/data/repositories/graph_repository_impl.dart';
+import 'package:bicount/features/graph/presentation/bloc/graph_bloc.dart';
 import 'package:bicount/features/home/data/repositories/home_repository_impl.dart';
 import 'package:bicount/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bicount/features/main/data/data_sources/remote_datasource/main_remote_data_source_impl.dart';
+import 'package:bicount/features/notification/data/data_sources/local_datasource/local_notification_data_source_impl.dart';
+import 'package:bicount/features/notification/data/data_sources/remote_datasource/firebase_notification_remote_data_source.dart';
+import 'package:bicount/features/notification/data/repositories/notification_repository_impl.dart';
+import 'package:bicount/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:bicount/features/profile/data/data_sources/local_datasource/profile_local_data_source_impl.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/local_transaction_data_source_impl.dart';
 import 'package:bicount/features/transaction/data/repositories/transaction_repository_impl.dart';
@@ -15,10 +27,13 @@ import 'package:bicount/features/transaction/presentation/bloc/transaction_bloc.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:app_links/app_links.dart';
 import 'package:sqflite/sqflite.dart' show databaseFactory;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:toastification/toastification.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'brick/repository.dart';
 import 'features/authentification/data/data_sources/local_datasource/local_authentification.dart';
@@ -43,9 +58,7 @@ import 'core/constants/firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Repository.configure(databaseFactory);
   await Repository().initialize();
 
@@ -57,6 +70,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final enableCompanySurface = AppConfig.exposeCompanySurface;
+
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthentificationRepositoryImpl>(
@@ -77,27 +92,53 @@ class MyApp extends StatelessWidget {
             LocalHomeDataSourceImpl(),
           ),
         ),
-        RepositoryProvider<CompanyRepositoryImpl>(
-          create: (_) => CompanyRepositoryImpl(
-            CompanyRemoteDataSourceImpl(),
-            LocalCompanyDataSourceImpl(),
-          ),
-        ),
         RepositoryProvider<TransactionRepositoryImpl>(
           create: (_) =>
               TransactionRepositoryImpl(LocalTransactionDataSourceImpl()),
-        ),
-        RepositoryProvider<GroupRepositoryImpl>(
-          create: (_) => GroupRepositoryImpl(),
-        ),
-        RepositoryProvider<ProjectRepositoryImpl>(
-          create: (_) => ProjectRepositoryImpl(),
         ),
         RepositoryProvider<ProfileRepositoryImpl>(
           create: (_) => ProfileRepositoryImpl(
             localDataSource: ProfileLocalDataSourceImpl(),
           ),
         ),
+        RepositoryProvider<GraphRepositoryImpl>(
+          create: (_) => GraphRepositoryImpl(LocalGraphDataSourceImpl()),
+        ),
+        RepositoryProvider<FriendRepositoryImpl>(
+          create: (_) => FriendRepositoryImpl(
+            localDataSource: LocalFriendDataSourceImpl(),
+            remoteDataSource: SupabaseFriendRemoteDataSource(
+              Supabase.instance.client,
+            ),
+          ),
+        ),
+        RepositoryProvider<NotificationRepositoryImpl>(
+          create: (_) => NotificationRepositoryImpl(
+            localDataSource: LocalNotificationDataSourceImpl(
+              FlutterLocalNotificationsPlugin(),
+            ),
+            remoteDataSource: FirebaseNotificationRemoteDataSource(
+              messaging: FirebaseMessaging.instance,
+              supabase: Supabase.instance.client,
+              appLinks: AppLinks(),
+            ),
+          ),
+        ),
+        if (enableCompanySurface)
+          RepositoryProvider<CompanyRepositoryImpl>(
+            create: (_) => CompanyRepositoryImpl(
+              CompanyRemoteDataSourceImpl(),
+              LocalCompanyDataSourceImpl(),
+            ),
+          ),
+        if (enableCompanySurface)
+          RepositoryProvider<GroupRepositoryImpl>(
+            create: (_) => GroupRepositoryImpl(),
+          ),
+        if (enableCompanySurface)
+          RepositoryProvider<ProjectRepositoryImpl>(
+            create: (_) => ProjectRepositoryImpl(),
+          ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -108,60 +149,59 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider<MainBloc>(
-            create: (context) => MainBloc(
-              MainRepositoryImpl(
-                LocalMainDataSourceImpl(),
-                MainRemoteDataSourceImpl(),
-              ),
-            ),
+            create: (context) => MainBloc(context.read<MainRepositoryImpl>()),
           ),
           BlocProvider<HomeBloc>(
-            create: (context) => HomeBloc(
-              HomeRepositoryImpl(
-                RemoteHomeDataSourceImpl(),
-                LocalHomeDataSourceImpl(),
-              ),
-            ),
-          ),
-          BlocProvider<CompanyBloc>(
-            create: (context) => CompanyBloc(
-              CompanyRepositoryImpl(
-                CompanyRemoteDataSourceImpl(),
-                LocalCompanyDataSourceImpl(),
-              ),
-            ),
-          ),
-          BlocProvider<ListBloc>(
-            create: (context) => ListBloc(
-              CompanyRepositoryImpl(
-                CompanyRemoteDataSourceImpl(),
-                LocalCompanyDataSourceImpl(),
-              ),
-            ),
-          ),
-          BlocProvider<DetailBloc>(
-            create: (context) => DetailBloc(
-              CompanyRepositoryImpl(
-                CompanyRemoteDataSourceImpl(),
-                LocalCompanyDataSourceImpl(),
-              ),
-            ),
+            create: (context) => HomeBloc(context.read<HomeRepositoryImpl>()),
           ),
           BlocProvider<TransactionBloc>(
             create: (context) =>
                 TransactionBloc(context.read<TransactionRepositoryImpl>()),
           ),
-          BlocProvider<GroupBloc>(
-            create: (context) => GroupBloc(context.read<GroupRepositoryImpl>()),
-          ),
-          BlocProvider<ProjectBloc>(
-            create: (context) =>
-                ProjectBloc(context.read<ProjectRepositoryImpl>()),
-          ),
           BlocProvider<ProfileBloc>(
             create: (context) =>
                 ProfileBloc(context.read<ProfileRepositoryImpl>()),
           ),
+          BlocProvider<GraphBloc>(
+            create: (context) =>
+                GraphBloc(context.read<GraphRepositoryImpl>())
+                  ..add(const GraphStarted()),
+          ),
+          BlocProvider<FriendBloc>(
+            create: (context) =>
+                FriendBloc(context.read<FriendRepositoryImpl>())
+                  ..add(const FriendStarted()),
+          ),
+          BlocProvider<NotificationBloc>(
+            create: (context) =>
+                NotificationBloc(context.read<NotificationRepositoryImpl>())
+                  ..add(const NotificationBootstrapRequested()),
+          ),
+          if (enableCompanySurface)
+            BlocProvider<CompanyBloc>(
+              create: (context) =>
+                  CompanyBloc(context.read<CompanyRepositoryImpl>()),
+            ),
+          if (enableCompanySurface)
+            BlocProvider<ListBloc>(
+              create: (context) =>
+                  ListBloc(context.read<CompanyRepositoryImpl>()),
+            ),
+          if (enableCompanySurface)
+            BlocProvider<DetailBloc>(
+              create: (context) =>
+                  DetailBloc(context.read<CompanyRepositoryImpl>()),
+            ),
+          if (enableCompanySurface)
+            BlocProvider<GroupBloc>(
+              create: (context) =>
+                  GroupBloc(context.read<GroupRepositoryImpl>()),
+            ),
+          if (enableCompanySurface)
+            BlocProvider<ProjectBloc>(
+              create: (context) =>
+                  ProjectBloc(context.read<ProjectRepositoryImpl>()),
+            ),
         ],
         child: ToastificationWrapper(
           child: ScreenUtilInit(

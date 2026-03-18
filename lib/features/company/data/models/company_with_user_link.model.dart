@@ -28,6 +28,6 @@ class CompanyWithUserLinkModel extends OfflineFirstWithSupabaseModel {
     required this.companyId,
     required this.userId,
     required this.role,
-  })  : lid = lid ?? const Uuid().v4(),
-        super();
+  }) : lid = lid ?? const Uuid().v4(),
+       super();
 }

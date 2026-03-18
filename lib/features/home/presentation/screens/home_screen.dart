@@ -27,6 +27,10 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.sizeOf(context).height;
+    final recurringSpend = data.subscriptions.fold<double>(
+      0,
+      (sum, subscription) => sum + subscription.amount,
+    );
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeError) {
@@ -90,7 +94,7 @@ class HomeScreen extends StatelessWidget {
                             onTap: () {
                               onCardTap?.call(3);
                             },
-                            label: "Personnal",
+                            label: "Personal",
                             amount: data.user.personalIncome != null
                                 ? data.user.personalIncome!
                                 : 0.0,
@@ -113,14 +117,12 @@ class HomeScreen extends StatelessWidget {
                           flex: 1,
                           child: CardTypeRevenue(
                             onTap: () {
-                              onCardTap?.call(1); // CompanyScreen
+                              onCardTap?.call(1);
                             },
-                            label: "Entreprises",
-                            amount: data.user.companyIncome != null
-                                ? data.user.companyIncome!
-                                : 0.0,
+                            label: "Recurring",
+                            amount: recurringSpend,
                             icon: SvgPicture.asset(
-                              IconLinks.company,
+                              IconLinks.graph,
                               width: AppDimens.iconSizeSmall,
                               height: AppDimens.iconSizeSmall,
                               colorFilter: ColorFilter.mode(
@@ -128,9 +130,7 @@ class HomeScreen extends StatelessWidget {
                                 BlendMode.srcIn,
                               ),
                             ),
-                            color: Theme.of(
-                              context,
-                            ).extension<OtherTheme>()!.companyIncome!,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                       ],

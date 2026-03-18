@@ -13,5 +13,4 @@ class Constants {
   /// Connectivity states
   static const int connected = 0;
   static const int disconnected = 1;
-  
 }

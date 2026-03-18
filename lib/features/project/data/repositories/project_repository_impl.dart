@@ -23,7 +23,10 @@ class ProjectRepositoryImpl implements ProjectRepository {
   String? get accessToken => supabaseInstance.auth.currentSession?.accessToken;
   var uuid = Uuid();
   @override
-  Future<ProjectEntity> createProject(ProjectEntity project, File? logoFile) async {
+  Future<ProjectEntity> createProject(
+    ProjectEntity project,
+    File? logoFile,
+  ) async {
     try {
       final uri = Uri.parse(Secrets.create_project_endpoint);
 
@@ -44,13 +47,13 @@ class ProjectRepositoryImpl implements ProjectRepository {
         var mimeParts = mimeType.split('/');
 
         request.files.add(
-            http.MultipartFile(
-              'logo',
-              fileStream,
-              fileLength,
-              filename: path.basename(logoFile.path),
-              contentType: MediaType(mimeParts[0], mimeParts[1]),
-            )
+          http.MultipartFile(
+            'logo',
+            fileStream,
+            fileLength,
+            filename: path.basename(logoFile.path),
+            contentType: MediaType(mimeParts[0], mimeParts[1]),
+          ),
         );
       }
 
@@ -72,14 +75,18 @@ class ProjectRepositoryImpl implements ProjectRepository {
             // Vérifiez les champs requis
             if (responseData['name'] == null) {
               print("Vérifiez les champs requis");
-              throw DataParsingFailure('Invalid response format: missing name field');
+              throw DataParsingFailure(
+                'Invalid response format: missing name field',
+              );
             }
 
             final createdGroup = ProjectEntity.fromMap(responseData);
 
             return createdGroup;
           } catch (parseError) {
-            throw DataParsingFailure('Error while parsing the server response: $parseError');
+            throw DataParsingFailure(
+              'Error while parsing the server response: $parseError',
+            );
           }
 
         case 400:
@@ -92,36 +99,44 @@ class ProjectRepositoryImpl implements ProjectRepository {
           }
 
         case 401:
-          throw AuthenticationFailure(message: 'Session expired. Please log in again.');
+          throw AuthenticationFailure(
+            message: 'Session expired. Please log in again.',
+          );
 
         case 403:
-          throw AuthorizationFailure('You do not have permission to create a company');
+          throw AuthorizationFailure(
+            'You do not have permission to create a company',
+          );
 
         case 413:
-          throw ValidationFailure('The logo file is too large. Maximum size: 10MB');
+          throw ValidationFailure(
+            'The logo file is too large. Maximum size: 10MB',
+          );
 
         case 415:
-          throw ValidationFailure('Unsupported logo format. Use JPG, PNG, or WebP');
+          throw ValidationFailure(
+            'Unsupported logo format. Use JPG, PNG, or WebP',
+          );
 
         case 500:
           throw ServerFailure('Internal server error. Please try again later.');
 
         case 503:
-          throw ServerFailure('Service temporarily unavailable. Please try again in a few minutes.');
+          throw ServerFailure(
+            'Service temporarily unavailable. Please try again in a few minutes.',
+          );
 
         default:
-          throw ServerFailure('Unexpected network error (${response.statusCode})');
+          throw ServerFailure(
+            'Unexpected network error (${response.statusCode})',
+          );
       }
-
     } on SocketException {
       throw NetworkFailure('No internet connection. Check your network.');
-
     } on TimeoutException {
       throw NetworkFailure('Response timed out. Please try again.');
-
     } on FormatException {
       throw DataParsingFailure('Invalid data format');
-
     } catch (e) {
       if (e is ValidationFailure ||
           e is AuthenticationFailure ||

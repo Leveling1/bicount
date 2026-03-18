@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 class TimeFormatUtils {
   /// Format only the hour, e.g. 10:30 AM or 10:30 (24h, depending on locale)
   static String formatHour(DateTime date, {String locale = 'en_US'}) {
-    final format = DateFormat.jm(locale); // jm = hour:minute with AM/PM if needed
+    final format = DateFormat.jm(
+      locale,
+    ); // jm = hour:minute with AM/PM if needed
     return format.format(date);
   }
 
@@ -24,4 +26,3 @@ class TimeFormatUtils {
     }
   }
 }
-

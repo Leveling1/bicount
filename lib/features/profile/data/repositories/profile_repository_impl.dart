@@ -15,5 +15,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
       throw '.';
     }
   }
+
   // Add your repository implementation here
 }

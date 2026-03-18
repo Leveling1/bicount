@@ -1,4 +1,3 @@
-
 abstract class HomeRemoteDataSource {
   // Add your remote data source interface here
 }

@@ -3,7 +3,11 @@ import 'package:dartz/dartz.dart';
 
 abstract class AuthentificationLocalDataSource {
   // For the sign up process
-  Future<Either<Failure, void>> signUp(String name, String email, String password);
+  Future<Either<Failure, void>> signUp(
+    String name,
+    String email,
+    String password,
+  );
 
   // For the sign in process
   Future<Either<Failure, void>> signIn();

@@ -16,8 +16,10 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
   }
 
   // For the company details
-  Future<void> _getCompanyDetail(GetCompanyDetail event, Emitter<DetailState> emit) async {
-
+  Future<void> _getCompanyDetail(
+    GetCompanyDetail event,
+    Emitter<DetailState> emit,
+  ) async {
     emit(DetailLoading());
     try {
       // Écoute le stream Realtime

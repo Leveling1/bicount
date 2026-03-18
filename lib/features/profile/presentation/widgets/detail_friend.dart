@@ -14,6 +14,7 @@ class DetailFriend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final netBalance = (friend.receive ?? 0) - (friend.give ?? 0);
     return Column(
       children: [
         CircleAvatar(
@@ -74,12 +75,12 @@ class DetailFriend extends StatelessWidget {
             Flexible(
               flex: 1,
               child: InfoCardAmount(
-                icon: IconLinks.company,
-                title: 'Company',
-                value: friend.companyIncome!,
-                color: Theme.of(
-                  context,
-                ).extension<OtherTheme>()!.companyIncome!,
+                icon: IconLinks.wallet,
+                title: 'Net',
+                value: netBalance,
+                color: netBalance >= 0
+                    ? Theme.of(context).extension<OtherTheme>()!.income!
+                    : Theme.of(context).extension<OtherTheme>()!.expense!,
               ),
             ),
           ],

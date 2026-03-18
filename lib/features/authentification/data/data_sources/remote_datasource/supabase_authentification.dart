@@ -9,7 +9,10 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
   SupabaseAuthentification(this.supabaseClient);
 
   @override
-  Future<entity.UserEntity> signInWithEmailAndPassword(String email, String password,) async {
+  Future<entity.UserEntity> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
     final AuthResponse response = await supabaseClient.auth.signInWithPassword(
       email: email,
       password: password,

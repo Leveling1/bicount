@@ -3,6 +3,7 @@ import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
+import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
 import 'package:bicount/features/transaction/presentation/screens/detail_subcription.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,11 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<FriendsModel> friends = data.friends;
+    final List<FriendsModel> friends = List.of(data.friends);
+    final recurringSpend = data.subscriptions.fold<double>(
+      0,
+      (sum, subscription) => sum + subscription.amount,
+    );
     friends.sort(
       (a, b) => ((b.give ?? 0) - (b.receive ?? 0)).compareTo(
         (a.give ?? 0) - (a.receive ?? 0),
@@ -88,12 +93,10 @@ class ProfileScreen extends StatelessWidget {
                       Flexible(
                         flex: 1,
                         child: InfoCardAmount(
-                          icon: IconLinks.company,
-                          title: 'Company',
-                          value: data.user.companyIncome!,
-                          color: Theme.of(
-                            context,
-                          ).extension<OtherTheme>()!.companyIncome!,
+                          icon: IconLinks.graph,
+                          title: 'Recurring',
+                          value: recurringSpend,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ],
@@ -107,10 +110,20 @@ class ProfileScreen extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          showCustomBottomSheet(
+                            context: context,
+                            minHeight: 0.88,
+                            color: null,
+                            child: FriendScreen(
+                              user: data.user,
+                              friends: friends,
+                            ),
+                          );
+                        },
                         style: Theme.of(context).textButtonTheme.style,
                         child: Text(
-                          "show more",
+                          "Invite",
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),

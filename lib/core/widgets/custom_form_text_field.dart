@@ -75,7 +75,8 @@ class CustomFormField extends StatelessWidget {
     this.isDate = false,
   });
   String? _validator(String? value) {
-    if (value == null || value.isEmpty) return message ?? 'This field is required';
+    if (value == null || value.isEmpty)
+      return message ?? 'This field is required';
     return null;
   }
 

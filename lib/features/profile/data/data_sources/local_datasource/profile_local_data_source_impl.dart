@@ -16,11 +16,11 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
       final accountFundingData = AccountFundingModel(
         fundingId: Uuid().v4(),
         sid: uid,
-        source: data.source, 
+        source: data.source,
         note: data.note,
         amount: data.amount,
         currency: data.currency,
-        category: Constants.personal, 
+        category: Constants.personal,
         date: data.date,
       );
       await Repository().upsert<AccountFundingModel>(accountFundingData);

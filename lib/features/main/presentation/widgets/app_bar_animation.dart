@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppBarAnimation extends StatelessWidget {
   final Widget child;
-  const AppBarAnimation({
-    super.key,
-    required this.child,
-  });
+  const AppBarAnimation({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {

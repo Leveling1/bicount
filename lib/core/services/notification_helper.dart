@@ -13,10 +13,7 @@ class NotificationHelper {
           fontWeight: FontWeight.bold,
         ),
       ),
-      description: Text(
-        message,
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
+      description: Text(message, style: Theme.of(context).textTheme.bodySmall),
       type: ToastificationType.success,
       alignment: Alignment.topCenter,
       direction: TextDirection.ltr,
@@ -35,10 +32,7 @@ class NotificationHelper {
           fontWeight: FontWeight.bold,
         ),
       ),
-      description: Text(
-        message,
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
+      description: Text(message, style: Theme.of(context).textTheme.bodySmall),
       type: ToastificationType.error,
       alignment: Alignment.topCenter,
       direction: TextDirection.ltr,

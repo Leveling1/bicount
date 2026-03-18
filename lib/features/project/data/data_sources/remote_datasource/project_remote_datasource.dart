@@ -1,4 +1,3 @@
-
 abstract class ProjectRemoteDataSource {
   // Add your remote data source interface here
 }

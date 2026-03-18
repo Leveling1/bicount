@@ -8,12 +8,16 @@ import '../../../../../core/errors/failure.dart';
 abstract class TransactionLocalDataSource {
   Future<Either<Failure, FriendsModel>> createANewFriend(FriendsModel friend);
   Future<Either<Failure, void>> saveTransaction(
-    Map<String, dynamic> transaction,
-    String gtid,
-    String senderId,
-    String beneficiaryId,
-    String image,
-  );
+    String gtid, {
+    required String title,
+    required String date,
+    required double amount,
+    required String currency,
+    required String note,
+    required String senderId,
+    required String beneficiaryId,
+    required String image,
+  });
   Future<Either<Failure, void>> addSubscription(
     SubscriptionEntity subscription,
   );

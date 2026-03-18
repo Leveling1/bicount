@@ -37,8 +37,7 @@ class MyNavigationObserver implements NavigatorObserver {
 
   @override
   NavigatorState? get navigator => navigatorState;
-  
+
   @override
-  void didChangeTop(Route topRoute, Route? previousTopRoute) {
-  }
+  void didChangeTop(Route topRoute, Route? previousTopRoute) {}
 }

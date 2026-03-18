@@ -21,7 +21,10 @@ class AuthentificationBloc
 
   /// For the sign in process
   // With email and password
-  Future<void> _signUp(SignUpEvent event, Emitter<AuthentificationState> emit) async {
+  Future<void> _signUp(
+    SignUpEvent event,
+    Emitter<AuthentificationState> emit,
+  ) async {
     emit(SignUpLoading());
     final result = await authentificationRepository.signUp(
       event.username,
@@ -36,11 +39,14 @@ class AuthentificationBloc
 
   /// For the login process
   // With email and password
-  Future<void> _signIn(SignInEvent event, Emitter<AuthentificationState> emit) async {
+  Future<void> _signIn(
+    SignInEvent event,
+    Emitter<AuthentificationState> emit,
+  ) async {
     emit(SignInLoading());
     final result = await authentificationRepository.signInWithEmailAndPassword(
       event.email,
-      event.password
+      event.password,
     );
     result.fold(
       (failure) => emit(SignInFailure(error: failure.message)),
@@ -50,7 +56,10 @@ class AuthentificationBloc
 
   /// For the authentification process
   // With Google
-  Future<void> _authWithGoogle(AuthWithGoogleEvent event, Emitter<AuthentificationState> emit) async {
+  Future<void> _authWithGoogle(
+    AuthWithGoogleEvent event,
+    Emitter<AuthentificationState> emit,
+  ) async {
     emit(AuthWithGoogleLoading());
     final result = await authentificationRepository.authWithGoogle();
     result.fold(
@@ -58,5 +67,4 @@ class AuthentificationBloc
       (user) => emit(AuthWithGoogleSuccess()),
     );
   }
-
 }

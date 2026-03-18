@@ -145,7 +145,7 @@ class DetailTransactionScreen extends StatelessWidget {
                         ),
                       ),
                       data.note.isNotEmpty && data.note != ""
-                          ?  const SizedBox(height: 8)
+                          ? const SizedBox(height: 8)
                           : const SizedBox.shrink(),
                       data.note.isNotEmpty && data.note != ""
                           ? RowDetail(title: 'Note', content: data.note)

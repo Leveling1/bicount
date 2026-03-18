@@ -29,7 +29,6 @@ class _GroupScreenState extends State<GroupScreen> {
 
   double _headerHeight = 130.0;
 
-
   @override
   void initState() {
     super.initState();
@@ -57,7 +56,9 @@ class _GroupScreenState extends State<GroupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+      backgroundColor: Theme.of(
+        context,
+      ).bottomNavigationBarTheme.backgroundColor,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -135,10 +136,13 @@ class _GroupScreenState extends State<GroupScreen> {
                 SliverToBoxAdapter(
                   child: Container(
                     constraints: BoxConstraints(
-                      minHeight: MediaQuery.sizeOf(context).height - _headerHeight,
+                      minHeight:
+                          MediaQuery.sizeOf(context).height - _headerHeight,
                     ),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor, // Couleur normale
+                      color: Theme.of(
+                        context,
+                      ).scaffoldBackgroundColor, // Couleur normale
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(AppDimens.borderRadiusUltraLarge),
                       ),
@@ -174,27 +178,31 @@ class _GroupScreenState extends State<GroupScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+            backgroundColor: Theme.of(
+              context,
+            ).bottomNavigationBarTheme.backgroundColor,
             radius: radius,
             child: ClipOval(
-              child: widget.groupData.image != null && widget.groupData.image != ""
+              child:
+                  widget.groupData.image != null && widget.groupData.image != ""
                   ? CachedNetworkImage(
-                imageUrl: widget.groupData.image!,
-                width: width.w,
-                height: height.h,
-                placeholder: (context, url) => CircleImageSkeleton(
-                    width: width.w, height: height.h),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                fit: BoxFit.cover,
-              )
+                      imageUrl: widget.groupData.image!,
+                      width: width.w,
+                      height: height.h,
+                      placeholder: (context, url) =>
+                          CircleImageSkeleton(width: width.w, height: height.h),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                      fit: BoxFit.cover,
+                    )
                   : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.people,
-                  size: width,
-                  color: AppColors.inactiveColorDark,
-                ),
-              ),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.people,
+                        size: width,
+                        color: AppColors.inactiveColorDark,
+                      ),
+                    ),
             ),
           ),
           const SizedBox(width: 10),
@@ -205,8 +213,10 @@ class _GroupScreenState extends State<GroupScreen> {
                 Text(
                   widget.groupData.name,
                   style: TextStyle(
-                    fontSize: Theme.of(context).textTheme.headlineLarge!.fontSize,
-                    color: AppColors.textColorDark
+                    fontSize: Theme.of(
+                      context,
+                    ).textTheme.headlineLarge!.fontSize,
+                    color: AppColors.textColorDark,
                   ),
                 ),
                 Text(
@@ -214,33 +224,36 @@ class _GroupScreenState extends State<GroupScreen> {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 5),
-                widget.groupData.description != null && widget.groupData.description != ""
+                widget.groupData.description != null &&
+                        widget.groupData.description != ""
                     ? ExpandableText(
-                      widget.groupData.description!,
-                      textStyle: TextStyle(
-                        fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
-                        color: AppColors.textColorDark
-                      ),
-                      onHeightChanged: (newHeight, isExpanded) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (mounted) {
-                            if (isExpanded) {
-                              setState(() {
-                                _headerHeight = 80.h + newHeight;
-                              });
-                            } else {
-                              setState(() {
-                                _headerHeight = 130;
-                              });
+                        widget.groupData.description!,
+                        textStyle: TextStyle(
+                          fontSize: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium!.fontSize,
+                          color: AppColors.textColorDark,
+                        ),
+                        onHeightChanged: (newHeight, isExpanded) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (mounted) {
+                              if (isExpanded) {
+                                setState(() {
+                                  _headerHeight = 80.h + newHeight;
+                                });
+                              } else {
+                                setState(() {
+                                  _headerHeight = 130;
+                                });
+                              }
                             }
-                          }
-                        });
-                      },
-                    )
+                          });
+                        },
+                      )
                     : const SizedBox.shrink(),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -251,9 +264,9 @@ class _GroupScreenState extends State<GroupScreen> {
     if (members.isEmpty) {
       return Center(
         child: Text(
-            "No members yet.",
+          "No members yet.",
           style: Theme.of(context).textTheme.bodyMedium,
-        )
+        ),
       );
     }
 

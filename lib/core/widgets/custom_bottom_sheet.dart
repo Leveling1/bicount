@@ -19,7 +19,9 @@ Future<T?> showCustomBottomSheet<T>({
     isScrollControlled: true,
     backgroundColor: bgColor,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(AppDimens.radiusExtraLarge)),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(AppDimens.radiusExtraLarge),
+      ),
     ),
     constraints: BoxConstraints(
       minWidth: screenWidth,
@@ -38,7 +40,11 @@ Future<T?> showCustomBottomSheet<T>({
             builder: (context, constraints) {
               final handleHeight = 5.h;
               const spacing = 25.0;
-              final scrollMaxHeight = (constraints.maxHeight - handleHeight - spacing).clamp(0.0, double.infinity);
+              final scrollMaxHeight =
+                  (constraints.maxHeight - handleHeight - spacing).clamp(
+                    0.0,
+                    double.infinity,
+                  );
 
               return Column(
                 mainAxisSize: MainAxisSize.min,
@@ -49,7 +55,9 @@ Future<T?> showCustomBottomSheet<T>({
                     height: handleHeight,
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
+                      borderRadius: BorderRadius.circular(
+                        AppDimens.borderRadiusFull,
+                      ),
                     ),
                   ),
                   const SizedBox(height: spacing),
@@ -66,5 +74,3 @@ Future<T?> showCustomBottomSheet<T>({
     },
   );
 }
-
-

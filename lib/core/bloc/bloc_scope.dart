@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class BlocScope extends StatelessWidget {
   final Widget child;
 
@@ -11,8 +10,8 @@ class BlocScope extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-		//TODO: ADD here BlocProvider
-	  ],
+        //TODO: ADD here BlocProvider
+      ],
       child: child,
     );
   }

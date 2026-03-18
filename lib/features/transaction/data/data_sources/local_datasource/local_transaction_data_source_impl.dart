@@ -22,9 +22,9 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   Future<Either<Failure, FriendsModel>> createANewFriend(
     FriendsModel friend,
   ) async {
-    final id = Uuid().v4();
+    final id = const Uuid().v4();
     try {
-      final FriendsModel friendAdd = FriendsModel(
+      final friendAdd = FriendsModel(
         uid: id,
         sid: id,
         fid: uid,
@@ -38,8 +38,8 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
 
       await Repository().upsert<FriendsModel>(friendAdd);
       return Right(friendAdd);
-    } catch (e) {
-      return Left(
+    } catch (_) {
+      return const Left(
         MessageFailure(
           message: 'An error occurred while saving your new friend.',
         ),
@@ -49,54 +49,57 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
 
   @override
   Future<Either<Failure, void>> saveTransaction(
-    Map<String, dynamic> transaction,
-    String gtid,
-    String senderId,
-    String beneficiaryId,
-    String image,
-  ) async {
+    String gtid, {
+    required String title,
+    required String date,
+    required double amount,
+    required String currency,
+    required String note,
+    required String senderId,
+    required String beneficiaryId,
+    required String image,
+  }) async {
     try {
-      int type = TransactionTypes.othersCode;
+      var type = TransactionTypes.othersCode;
       if (senderId == uid) {
         type = TransactionTypes.expenseCode;
       } else if (beneficiaryId == uid) {
         type = TransactionTypes.incomeCode;
-      } else {
-        type = TransactionTypes.othersCode;
       }
+
       final transactionModel = TransactionModel(
         uid: uid,
         gtid: gtid,
-        name: transaction['name'],
+        name: title,
         type: type,
         beneficiaryId: beneficiaryId,
         senderId: senderId,
-        date: transaction['date'],
-        note: transaction['note'],
-        amount: transaction['amount'],
-        currency: transaction['currency'],
+        date: date,
+        note: note,
+        amount: amount,
+        currency: currency,
         image: image,
         frequency: Frequency.oneTime,
         createdAt: DateTime.now().toIso8601String(),
         category: Constants.personal,
       );
+
       await Repository().upsert<TransactionModel>(transactionModel);
-      return Right(null);
-    } catch (e) {
-      return Left(
+      return const Right(null);
+    } catch (_) {
+      return const Left(
         MessageFailure(message: 'The transaction could not be saved.'),
       );
     }
   }
 
-  // Add subscription
   @override
   Future<Either<Failure, void>> addSubscription(
     SubscriptionEntity subscription,
   ) async {
     try {
-      final id = Uuid().v4();
-      final SubscriptionModel subscriptionAdd = SubscriptionModel(
+      final id = const Uuid().v4();
+      final subscriptionAdd = SubscriptionModel(
         subscriptionId: id,
         sid: uid,
         title: subscription.title,
@@ -111,28 +114,28 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       );
 
       await Repository().upsert<SubscriptionModel>(subscriptionAdd);
-      return Right(null);
-    } catch (e) {
+      return const Right(null);
+    } catch (error) {
       return Left(
         MessageFailure(
-          message: 'An error occurred while saving your subscription. $e',
+          message: 'An error occurred while saving your subscription. $error',
         ),
       );
     }
   }
 
-  // Unsubscribe
   @override
   Future<Either<Failure, void>> unsubscribe(
     SubscriptionModel subscription,
   ) async {
     try {
       await Repository().upsert<SubscriptionModel>(subscription);
-      return Right(null);
-    } catch (e) {
-      return Left(
+      return const Right(null);
+    } catch (_) {
+      return const Left(
         MessageFailure(
-          message: 'An error occurred while unsubscribing from the subscription.',
+          message:
+              'An error occurred while unsubscribing from the subscription.',
         ),
       );
     }

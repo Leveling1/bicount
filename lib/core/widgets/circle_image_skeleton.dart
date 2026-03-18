@@ -5,7 +5,11 @@ class CircleImageSkeleton extends StatelessWidget {
   final double width;
   final double height;
 
-  const CircleImageSkeleton({super.key, required this.width, required this.height});
+  const CircleImageSkeleton({
+    super.key,
+    required this.width,
+    required this.height,
+  });
 
   @override
   Widget build(BuildContext context) {

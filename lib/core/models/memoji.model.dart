@@ -20,6 +20,6 @@ class MemojiModel extends OfflineFirstWithSupabaseModel {
     required this.name,
     required this.link,
     required this.sexe,
-  })  : mid = mid ?? const Uuid().v4(),
-        super();
+  }) : mid = mid ?? const Uuid().v4(),
+       super();
 }

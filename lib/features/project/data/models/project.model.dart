@@ -34,6 +34,6 @@ class ProjectModel extends OfflineFirstWithSupabaseModel {
     this.profit,
     this.endDate,
     this.createdAt,
-  })  : pid = pid ?? const Uuid().v4(),
-        super();
+  }) : pid = pid ?? const Uuid().v4(),
+       super();
 }

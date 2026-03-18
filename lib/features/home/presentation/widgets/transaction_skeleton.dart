@@ -10,9 +10,8 @@ class TransactionSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: 5,
-      itemBuilder: (_, __) => SkeletonItem(
-        child: const TransactionCardSkeleton(),
-      ),
+      itemBuilder: (_, __) =>
+          SkeletonItem(child: const TransactionCardSkeleton()),
     );
   }
 }

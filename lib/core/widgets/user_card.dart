@@ -14,7 +14,7 @@ class UserCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge)
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
       ),
       child: Material(
         color: Colors.transparent,
@@ -28,7 +28,8 @@ class UserCard extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Center(
               child: Column(
-                mainAxisSize: MainAxisSize.min,      // pour éviter de prendre tout l’espace vertical
+                mainAxisSize: MainAxisSize
+                    .min, // pour éviter de prendre tout l’espace vertical
                 mainAxisAlignment: MainAxisAlignment.center, // centre vertical
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -72,11 +73,10 @@ class UserCardSkeleton extends StatelessWidget {
     return SkeletonItem(
       child: Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge)
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
         ),
       ),
     );
   }
 }
-

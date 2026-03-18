@@ -45,24 +45,18 @@ class CompanyChoiceHandler extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   padding: AppDimens.paddingAllMedium,
-                  child: Icon(
-                    icon,
-                    color: color,
-                  ),
+                  child: Icon(icon, color: color),
                 ),
                 SizedBox(width: AppDimens.marginLarge),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        title,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
+                      Text(title, style: Theme.of(context).textTheme.bodyLarge),
                       Text(
                         content,
                         style: Theme.of(context).textTheme.bodySmall,
-                      )
+                      ),
                     ],
                   ),
                 ),

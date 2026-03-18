@@ -83,6 +83,6 @@ class TransactionModel extends OfflineFirstWithSupabaseModel {
     this.image,
     this.frequency,
     this.createdAt,
-  })  : tid = tid ?? const Uuid().v4(),
-        super();
+  }) : tid = tid ?? const Uuid().v4(),
+       super();
 }

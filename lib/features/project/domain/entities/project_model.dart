@@ -1,4 +1,3 @@
-
 class ProjectEntity {
   final int? id;
   final String pid;
@@ -12,7 +11,6 @@ class ProjectEntity {
   final DateTime createdAt;
   final DateTime startDate;
   final DateTime? endDate;
-
 
   ProjectEntity({
     this.id,

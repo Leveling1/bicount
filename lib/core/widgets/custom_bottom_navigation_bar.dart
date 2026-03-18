@@ -19,11 +19,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> icons = const [
       IconLinks.home,
-      IconLinks.company,
+      IconLinks.graph,
       IconLinks.transaction,
       IconLinks.user,
     ];
-    List<String> titles = const ['Home', 'Company', 'Transaction', 'Profile'];
+    List<String> titles = const ['Home', 'Graphs', 'Transaction', 'Profile'];
 
     return Theme(
       data: Theme.of(context).copyWith(splashColor: Colors.transparent),

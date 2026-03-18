@@ -1,32 +1,31 @@
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/constants/network_status.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/services/smooth_insert.dart';
 import 'package:bicount/core/services/title_animated_switcher.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/features/main/presentation/widgets/app_bar_animation.dart';
 import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
+import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/custom_search_field.dart';
 import 'package:bicount/core/widgets/header_button.dart';
-import 'package:bicount/features/company/presentation/screens/company_screen.dart';
+import 'package:bicount/features/graph/presentation/screens/graph_screen.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
+import 'package:bicount/features/main/domain/entities/main_entity.dart';
+import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
+import 'package:bicount/features/main/presentation/widgets/app_bar_animation.dart';
+import 'package:bicount/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:bicount/features/profile/presentation/screens/account_funding_handler.dart';
+import 'package:bicount/features/profile/presentation/screens/profile_screen.dart';
+import 'package:bicount/features/transaction/presentation/screens/transaction_handler.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
-import '../../../../core/constants/network_status.dart';
-import '../../../../core/services/notification_helper.dart';
-import '../../../../core/widgets/custom_bottom_sheet.dart';
-import '../../../company/presentation/screens/company_handler.dart';
-import '../../../profile/presentation/screens/profile_screen.dart';
-import '../../../transaction/presentation/screens/transaction_handler.dart';
-import '../../domain/entities/main_entity.dart';
-import '../bloc/main_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -37,14 +36,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   late List<MainEntity> startData;
-  PageController pageController = PageController();
-  ValueNotifier<double> scrollXPosition = ValueNotifier(0.0);
+  final PageController pageController = PageController();
+  final ValueNotifier<double> scrollXPosition = ValueNotifier(0.0);
+  final TextEditingController searchTransaction = TextEditingController();
+
   bool showSearchBar = false;
-
   int _selectedIndex = 0;
-
-  final searchCompany = TextEditingController();
-  final searchTransaction = TextEditingController();
   int _selectedIndexTransaction = 0;
 
   void _onItemTappedTransaction(int index) {
@@ -57,7 +54,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onItemTapped(int index) {
     final distance = (_selectedIndex - index).abs();
-    Duration duration = const Duration(milliseconds: 500);
+    const duration = Duration(milliseconds: 500);
 
     if (distance == 1) {
       pageController.animateToPage(
@@ -81,36 +78,41 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   List<Widget> _buildScreens(MainEntity data) {
-    if (data.transactions.isNotEmpty && data.transactions.length > 1) {
-      data.transactions.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+    final sortedTransactions = List.of(data.transactions);
+    if (sortedTransactions.length > 1) {
+      sortedTransactions.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
     }
 
+    final preparedData = MainEntity(
+      user: data.user,
+      connectionState: data.connectionState,
+      friends: data.friends,
+      subscriptions: data.subscriptions,
+      transactions: sortedTransactions,
+    );
+
     return [
-      HomeScreen(onCardTap: _goToPage, data: data),
-      CompanyScreen(
-        showSearchBar: showSearchBar,
-        searchController: searchCompany,
-      ),
+      HomeScreen(onCardTap: _goToPage, data: preparedData),
+      const GraphScreen(),
       TransactionScreen(
-        data: data,
+        data: preparedData,
         showSearchBar: showSearchBar,
         searchController: searchTransaction,
         selectedIndexTransaction: _selectedIndexTransaction,
       ),
-      ProfileScreen(data: data),
+      ProfileScreen(data: preparedData),
     ];
   }
 
   List<String> _buildTitle() {
-    return ['', 'Company', 'Transaction', 'Profile'];
+    return ['Home', 'Graphs', 'Transaction', 'Profile'];
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Handle deep link navigation
     final location = GoRouter.of(context).state.uri.toString();
-    if (location == '/company') {
+    if (location == '/graphs') {
       _goToPage(1);
     } else if (location == '/transaction') {
       _goToPage(2);
@@ -129,7 +131,6 @@ class _MainScreenState extends State<MainScreen> {
   void dispose() {
     pageController.dispose();
     scrollXPosition.dispose();
-    searchCompany.dispose();
     searchTransaction.dispose();
     super.dispose();
   }
@@ -138,7 +139,11 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<MainBloc, MainState>(
       listener: (context, state) {
-        if (state is MainStateConnexion) {
+        if (state is MainLoaded) {
+          context.read<NotificationBloc>().add(
+            NotificationSubscriptionsSynced(state.startData.subscriptions),
+          );
+        } else if (state is MainStateConnexion) {
           if (state.networkStatus == NetworkStatus.disconnected) {
             NotificationHelper.showFailureNotification(
               context,
@@ -226,7 +231,7 @@ class _MainScreenState extends State<MainScreen> {
                 transitionBuilder: (Widget child, Animation<double> animation) {
                   return FadeTransition(opacity: animation, child: child);
                 },
-                child: (_selectedIndex == 1 || _selectedIndex == 2)
+                child: (_selectedIndex == 2)
                     ? IconButton(
                         key: ValueKey('search_$_selectedIndex$showSearchBar'),
                         onPressed: () {
@@ -289,7 +294,7 @@ class _MainScreenState extends State<MainScreen> {
             child: Column(
               children: [
                 AppBarAnimation(
-                  child: (_selectedIndex == 1 || _selectedIndex == 2)
+                  child: (_selectedIndex == 2)
                       ? SmoothInsert(
                           visible: showSearchBar,
                           verticalMargin: AppDimens.paddingSmall,
@@ -298,9 +303,7 @@ class _MainScreenState extends State<MainScreen> {
                               horizontal: AppDimens.paddingMedium,
                             ),
                             child: CustomSearchField(
-                              controller: (_selectedIndex == 1)
-                                  ? searchCompany
-                                  : searchTransaction,
+                              controller: searchTransaction,
                               onChanged: (value) {},
                             ),
                           ),
@@ -346,24 +349,22 @@ class _MainScreenState extends State<MainScreen> {
                 child: FadeTransition(opacity: animation, child: child),
               );
             },
-            child: _selectedIndex != 0 && _selectedIndex != 3
+            child: _selectedIndex == 2
                 ? FloatingActionButton(
                     key: const ValueKey('fab'),
                     onPressed: () {
                       showCustomBottomSheet(
                         context: context,
-                        minHeight: _selectedIndex == 1 ? 0.5 : 0.95,
+                        minHeight: 0.95,
                         color: null,
-                        child: _selectedIndex == 1
-                            ? const CompanyHandler()
-                            : TransactionHandler(
-                                user: state is MainLoaded
-                                    ? state.startData.user
-                                    : null,
-                                friends: state is MainLoaded
-                                    ? state.startData.friends
-                                    : [],
-                              ),
+                        child: TransactionHandler(
+                          user: state is MainLoaded
+                              ? state.startData.user
+                              : null,
+                          friends: state is MainLoaded
+                              ? state.startData.friends
+                              : [],
+                        ),
                       );
                     },
                     child: Icon(

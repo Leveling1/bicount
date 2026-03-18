@@ -1,4 +1,3 @@
-
 // FontWeight.w100: Thin
 // FontWeight.w200: Extra Light
 // FontWeight.w300: Light
@@ -10,5 +9,5 @@
 // FontWeight.w900: Ultra Bold
 
 class AppFonts {
-	//TODO: add fonts here
+  //TODO: add fonts here
 }

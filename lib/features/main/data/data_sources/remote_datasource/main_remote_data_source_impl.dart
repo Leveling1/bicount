@@ -7,9 +7,9 @@ class MainRemoteDataSourceImpl implements MainRemoteDataSource {
   @override
   Stream<int> connectionState() {
     // On écoute le flux de connectivité
-    return Connectivity()
-        .onConnectivityChanged
-        .asyncMap((List<ConnectivityResult> results) async {
+    return Connectivity().onConnectivityChanged.asyncMap((
+      List<ConnectivityResult> results,
+    ) async {
       // Vérifie d'abord s'il y a une connectivité autre que none
       final isConnectedType = results.any((r) => r != ConnectivityResult.none);
       if (!isConnectedType) {

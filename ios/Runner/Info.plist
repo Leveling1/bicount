@@ -43,8 +43,17 @@
 		</array>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
+		<key>NSCameraUsageDescription</key>
+		<string>Bicount uses the camera to scan friend invitation QR codes.</string>
+		<key>NSUserNotificationsUsageDescription</key>
+		<string>Bicount sends reminders for subscriptions and important account events.</string>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>fetch</string>
+			<string>remote-notification</string>
+		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>

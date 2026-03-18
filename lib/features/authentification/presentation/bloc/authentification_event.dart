@@ -10,7 +10,7 @@ class SignUpEvent extends AuthentificationEvent {
   SignUpEvent({
     required this.username,
     required this.email,
-    required this.password
+    required this.password,
   });
 }
 
@@ -30,4 +30,3 @@ class SendPasswordResetEmailEvent extends AuthentificationEvent {
 
 // Authentification with google
 class AuthWithGoogleEvent extends AuthentificationEvent {}
-

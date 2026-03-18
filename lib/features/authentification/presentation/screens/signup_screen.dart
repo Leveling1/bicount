@@ -59,9 +59,7 @@ class SignUpScreen extends StatelessWidget {
                           },
                           child: Text(
                             "Log in",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
+                            style: Theme.of(context).textTheme.bodyMedium!
                                 .copyWith(fontWeight: FontWeight.bold),
                           ),
                         ),

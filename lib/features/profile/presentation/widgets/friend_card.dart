@@ -55,9 +55,10 @@ class FriendCard extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: friend.relationType == FriendConst.subscription
-                              ? MainAxisAlignment.start
-                              : MainAxisAlignment.center,
+                    mainAxisAlignment:
+                        friend.relationType == FriendConst.subscription
+                        ? MainAxisAlignment.start
+                        : MainAxisAlignment.center,
                     children: [
                       Text(
                         friend.username,

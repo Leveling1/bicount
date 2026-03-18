@@ -34,7 +34,6 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
-
   late List<TransactionModel> transactions = [];
 
   Map<String, List<TransactionModel>> groupTransactionsByDate(
@@ -68,6 +67,30 @@ class _TransactionScreenState extends State<TransactionScreen> {
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
+  List<TransactionModel> _filterTransactions(List<TransactionModel> source) {
+    final query = widget.searchController.text.trim().toLowerCase();
+    final selectedCode =
+        TransactionTypes.allTypesInt[widget.selectedIndexTransaction];
+
+    return source.where((transaction) {
+      final matchesSearch =
+          query.isEmpty || transaction.name.toLowerCase().contains(query);
+      if (!matchesSearch) {
+        return false;
+      }
+
+      if (widget.selectedIndexTransaction == 0) {
+        return true;
+      }
+
+      if (selectedCode == TransactionTypes.personal) {
+        return transaction.category == TransactionTypes.personalIncome;
+      }
+
+      return transaction.type == selectedCode;
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!widget.showSearchBar) {
@@ -86,52 +109,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
       },
       builder: (context, state) {
         transactions = widget.data.transactions;
-        List<TransactionModel> filteredTransactions =
-            widget.selectedIndexTransaction == 0 && widget.searchController.text.isEmpty
-            ? transactions
-            : widget.selectedIndexTransaction == 0 && widget.searchController.text.isNotEmpty
-            ? transactions
-                  .where(
-                    (tx) => tx.name.toLowerCase().contains(
-                      widget.searchController.text.toLowerCase(),
-                    ),
-                  )
-                  .toList()
-            : widget.selectedIndexTransaction != 0 && widget.searchController.text.isNotEmpty
-            ? transactions
-                  .where(
-                    (tx) =>
-                        tx.name.toLowerCase().contains(
-                          widget.searchController.text.toLowerCase(),
-                        ) &&
-                        tx.type ==
-                            TransactionTypes.allTypesInt[widget.selectedIndexTransaction],
-                  )
-                  .toList()
-            : TransactionTypes.allTypes[widget.selectedIndexTransaction] ==
-                  TransactionTypes.allTypes[5]
-            ? transactions
-                  .where((tx) => tx.category == TransactionTypes.personalIncome)
-                  .toList()
-            : TransactionTypes.allTypes[widget.selectedIndexTransaction] ==
-                  TransactionTypes.allTypes[6]
-            ? transactions
-                  .where((tx) => tx.category == TransactionTypes.companyIncome)
-                  .toList()
-            : transactions
-                  .where(
-                    (tx) =>
-                        tx.type ==
-                        TransactionTypes.allTypesInt[widget.selectedIndexTransaction],
-                  )
-                  .toList();
+        final filteredTransactions = _filterTransactions(transactions);
 
         final grouped = groupTransactionsByDate(filteredTransactions);
 
         return transactions.isNotEmpty
             ? Column(
                 children: [
-                
                   filteredTransactions.isNotEmpty
                       ? Expanded(
                           child: Padding(

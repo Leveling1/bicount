@@ -1,30 +1,51 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:bicount/main.dart';
-
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  TestWidgetsFlutterBinding.ensureInitialized();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUpAll(() async {
+    final binding = TestDefaultBinaryMessengerBinding.instance;
+    binding.defaultBinaryMessenger.setMockMessageHandler('flutter/assets', (
+      message,
+    ) async {
+      final key = utf8.decode(message!.buffer.asUint8List());
+      if (key.endsWith('.svg')) {
+        return ByteData.view(
+          Uint8List.fromList(
+            utf8.encode(
+              '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"></svg>',
+            ),
+          ).buffer,
+        );
+      }
+      return null;
+    });
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('bottom navigation shows Graphs and hides Company', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          bottomNavigationBar: CustomBottomNavigationBar(
+            selectedIndex: 1,
+            onTap: (_) {},
+          ),
+        ),
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Graphs'), findsOneWidget);
+    expect(find.text('Company'), findsNothing);
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Transaction'), findsOneWidget);
+    expect(find.text('Profile'), findsOneWidget);
   });
 }

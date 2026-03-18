@@ -11,7 +11,12 @@ part of 'schema.g.dart';
 
 const List<MigrationCommand> _migration_20251201154524_up = [
   InsertTable('AccountFundingModel'),
-  InsertColumn('funding_id', Column.varchar, onTable: 'AccountFundingModel', unique: true),
+  InsertColumn(
+    'funding_id',
+    Column.varchar,
+    onTable: 'AccountFundingModel',
+    unique: true,
+  ),
   InsertColumn('sid', Column.varchar, onTable: 'AccountFundingModel'),
   InsertColumn('amount', Column.Double, onTable: 'AccountFundingModel'),
   InsertColumn('currency', Column.varchar, onTable: 'AccountFundingModel'),
@@ -20,7 +25,11 @@ const List<MigrationCommand> _migration_20251201154524_up = [
   InsertColumn('note', Column.varchar, onTable: 'AccountFundingModel'),
   InsertColumn('date', Column.varchar, onTable: 'AccountFundingModel'),
   InsertColumn('created_at', Column.varchar, onTable: 'AccountFundingModel'),
-  CreateIndex(columns: ['funding_id'], onTable: 'AccountFundingModel', unique: true)
+  CreateIndex(
+    columns: ['funding_id'],
+    onTable: 'AccountFundingModel',
+    unique: true,
+  ),
 ];
 
 const List<MigrationCommand> _migration_20251201154524_down = [
@@ -34,7 +43,7 @@ const List<MigrationCommand> _migration_20251201154524_down = [
   DropColumn('note', onTable: 'AccountFundingModel'),
   DropColumn('date', onTable: 'AccountFundingModel'),
   DropColumn('created_at', onTable: 'AccountFundingModel'),
-  DropIndex('index_AccountFundingModel_on_funding_id')
+  DropIndex('index_AccountFundingModel_on_funding_id'),
 ];
 
 //

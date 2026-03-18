@@ -10,7 +10,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<AddAccountFundingEvent>(_addAccountFunding);
   }
   Future<void> _addAccountFunding(
-      AddAccountFundingEvent event, Emitter<ProfileState> emit) async {
+    AddAccountFundingEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
     emit(AccountFundingLoading());
     try {
       await repository.addAccountFunding(event.data);

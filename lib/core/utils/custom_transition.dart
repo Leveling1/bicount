@@ -15,11 +15,7 @@ CustomTransitionPage<void> buildCustomTransitionPage({
         end: Offset.zero,
       ).chain(CurveTween(curve: Curves.easeInOut));
 
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
+      return SlideTransition(position: animation.drive(tween), child: child);
     },
   );
 }
-
