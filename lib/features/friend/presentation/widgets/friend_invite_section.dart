@@ -28,12 +28,22 @@ class FriendInviteSection extends StatelessWidget {
               ? Text(emptyLabel, style: Theme.of(context).textTheme.bodySmall)
               : Column(
                   children: invites.map((invite) {
+                    final title = invite.isFriendProfileInvite
+                        ? invite.linkedProfileName
+                        : invite.senderName;
+                    final subtitle = invite.isFriendProfileInvite
+                        ? '${invite.status.label} • shared by ${invite.senderName}'
+                        : invite.status.label;
+                    final avatar = invite.isFriendProfileInvite
+                        ? invite.sourceFriendImage
+                        : invite.senderImage;
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: Row(
                         children: [
                           AppAvatar(
-                            image: invite.senderImage.isEmpty ? null : invite.senderImage,
+                            image: (avatar ?? '').isEmpty ? null : avatar,
                             radius: 18,
                             fallbackIcon: Icons.person_outline,
                           ),
@@ -43,21 +53,22 @@ class FriendInviteSection extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  invite.senderName,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  title,
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(fontWeight: FontWeight.w600),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  invite.status.label,
+                                  subtitle,
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ],
                             ),
                           ),
                           Text(
-                            MaterialLocalizations.of(context).formatMediumDate(invite.createdAt),
+                            MaterialLocalizations.of(
+                              context,
+                            ).formatMediumDate(invite.createdAt),
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],

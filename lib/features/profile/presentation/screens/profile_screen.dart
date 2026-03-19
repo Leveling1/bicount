@@ -1,36 +1,37 @@
-import 'package:bicount/core/constants/friend_const.dart';
-import 'package:bicount/core/constants/icon_links.dart';
+﻿import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/themes/other_theme.dart';
-import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
+import 'package:bicount/features/friend/presentation/screens/detail_friend.dart';
+import 'package:bicount/features/friend/presentation/screens/friends_directory_screen.dart';
+import 'package:bicount/features/friend/presentation/widgets/friend_card.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
-import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
-import 'package:bicount/features/transaction/presentation/screens/detail_subcription.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../core/themes/app_dimens.dart';
-import '../../../../core/widgets/custom_bottom_sheet.dart';
-import '../widgets/detail_friend.dart';
+import '../../../../core/widgets/details_card.dart';
 import '../bloc/profile_bloc.dart';
-import '../widgets/friend_card.dart';
 import '../widgets/profile_card.dart';
 
 class ProfileScreen extends StatelessWidget {
   final MainEntity data;
   const ProfileScreen({super.key, required this.data});
 
+  static const _friendViewService = FriendViewService();
+
   @override
   Widget build(BuildContext context) {
-    final List<FriendsModel> friends = List.of(data.friends);
     final recurringSpend = data.subscriptions.fold<double>(
       0,
       (sum, subscription) => sum + subscription.amount,
     );
-    friends.sort(
-      (a, b) => ((b.give ?? 0) - (b.receive ?? 0)).compareTo(
-        (a.give ?? 0) - (a.receive ?? 0),
-      ),
+    final visibleFriends = _friendViewService.visibleFriends(
+      data.friends,
+      currentUserUid: data.user.uid,
+      currentUserSid: data.user.sid,
     );
+
     return Scaffold(
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
@@ -48,11 +49,9 @@ class ProfileScreen extends StatelessWidget {
                     balance: data.user.balance,
                     onTap: () {},
                   ),
-                  //const SizedBox(height: 20),
                   Row(
                     children: [
                       Flexible(
-                        flex: 1,
                         child: InfoCardAmount(
                           icon: IconLinks.income,
                           title: 'Income',
@@ -64,7 +63,6 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: AppDimens.marginMedium),
                       Flexible(
-                        flex: 1,
                         child: InfoCardAmount(
                           icon: IconLinks.expense,
                           title: 'Expense',
@@ -79,7 +77,6 @@ class ProfileScreen extends StatelessWidget {
                   Row(
                     children: [
                       Flexible(
-                        flex: 1,
                         child: InfoCardAmount(
                           icon: IconLinks.user,
                           title: 'Personal',
@@ -91,7 +88,6 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: AppDimens.marginMedium),
                       Flexible(
-                        flex: 1,
                         child: InfoCardAmount(
                           icon: IconLinks.graph,
                           title: 'Recurring',
@@ -106,55 +102,47 @@ class ProfileScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Friends",
+                        'Friends',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       TextButton(
                         onPressed: () {
-                          showCustomBottomSheet(
-                            context: context,
-                            minHeight: 0.88,
-                            color: null,
-                            child: FriendScreen(
-                              user: data.user,
-                              friends: friends,
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const FriendsDirectoryScreen(),
                             ),
                           );
                         },
                         style: Theme.of(context).textButtonTheme.style,
                         child: Text(
-                          "Invite",
+                          'See all',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                     ],
                   ),
-                  Column(
-                    children: friends.take(3).map((friend) {
-                      if (friend.uid == data.user.uid) {
-                        return const SizedBox.shrink();
-                      }
-                      return FriendCard(
-                        friend: friend,
-                        onTap: () {
-                          showCustomBottomSheet(
-                            context: context,
-                            minHeight: 0.70,
-                            color: null,
-                            child:
-                                friend.relationType == FriendConst.subscription
-                                ? DetailSubscription(
-                                    friend: friend,
-                                    subscription: data.subscriptions.firstWhere(
-                                      (sub) => sub.subscriptionId == friend.sid,
-                                    ),
-                                  )
-                                : DetailFriend(friend: friend),
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
+                  if (visibleFriends.isEmpty)
+                    DetailsCard(
+                      child: Text(
+                        'Create a transaction with someone to add your first friend. Their profile can be linked later when they join Bicount.',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    )
+                  else
+                    Column(
+                      children: visibleFriends.take(3).map((friend) {
+                        return FriendCard(
+                          friend: friend,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => DetailFriend(friend: friend),
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
                 ],
               ),
             ),

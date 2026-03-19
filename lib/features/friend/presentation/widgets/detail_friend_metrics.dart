@@ -1,58 +1,35 @@
-import 'package:bicount/core/constants/icon_links.dart';
+﻿import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
+import 'package:bicount/features/friend/domain/entities/friend_detail_entity.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../main/data/models/friends.model.dart';
+class DetailFriendMetrics extends StatelessWidget {
+  const DetailFriendMetrics({super.key, required this.detail});
 
-class DetailFriend extends StatelessWidget {
-  final FriendsModel friend;
-  const DetailFriend({super.key, required this.friend});
+  final FriendDetailEntity detail;
 
   @override
   Widget build(BuildContext context) {
-    final netBalance = (friend.receive ?? 0) - (friend.give ?? 0);
     return Column(
       children: [
-        CircleAvatar(
-          backgroundColor: Theme.of(context).cardColor,
-          radius: 40,
-          child: SizedBox(
-            width: 50.w,
-            height: 50.h,
-            child: CachedNetworkImage(
-              imageUrl: friend.image,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Text(friend.username, style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 4),
-        friend.email.isNotEmpty
-            ? Text(friend.email, style: Theme.of(context).textTheme.titleSmall)
-            : const SizedBox.shrink(),
         Row(
           children: [
             Flexible(
-              flex: 1,
               child: InfoCardAmount(
                 icon: IconLinks.expense,
                 title: 'Given',
-                value: friend.give!,
+                value: detail.totalGiven,
                 color: Theme.of(context).extension<OtherTheme>()!.expense!,
               ),
             ),
             const SizedBox(width: AppDimens.marginMedium),
             Flexible(
-              flex: 1,
               child: InfoCardAmount(
                 icon: IconLinks.income,
                 title: 'Received',
-                value: friend.receive!,
+                value: detail.totalReceived,
                 color: Theme.of(context).extension<OtherTheme>()!.income!,
               ),
             ),
@@ -61,11 +38,10 @@ class DetailFriend extends StatelessWidget {
         Row(
           children: [
             Flexible(
-              flex: 1,
               child: InfoCardAmount(
                 icon: IconLinks.user,
                 title: 'Personal',
-                value: friend.personalIncome!,
+                value: detail.friend.personalIncome ?? 0,
                 color: Theme.of(
                   context,
                 ).extension<OtherTheme>()!.personnalIncome!,
@@ -73,19 +49,17 @@ class DetailFriend extends StatelessWidget {
             ),
             const SizedBox(width: AppDimens.marginMedium),
             Flexible(
-              flex: 1,
               child: InfoCardAmount(
                 icon: IconLinks.wallet,
                 title: 'Net',
-                value: netBalance,
-                color: netBalance >= 0
+                value: detail.netBalance,
+                color: detail.netBalance >= 0
                     ? Theme.of(context).extension<OtherTheme>()!.income!
                     : Theme.of(context).extension<OtherTheme>()!.expense!,
               ),
             ),
           ],
         ),
-        const SizedBox(height: AppDimens.marginLarge),
       ],
     );
   }

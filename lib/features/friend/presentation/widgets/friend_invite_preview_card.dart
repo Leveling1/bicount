@@ -68,6 +68,22 @@ class FriendInvitePreviewCard extends StatelessWidget {
               ),
             ],
           ),
+          if (invite.isFriendProfileInvite) ...[
+            const SizedBox(height: AppDimens.marginMedium),
+            Text(
+              'Profile to link: ${invite.linkedProfileName}',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            if ((invite.sourceFriendEmail ?? '').isNotEmpty)
+              const SizedBox(height: 4),
+            if ((invite.sourceFriendEmail ?? '').isNotEmpty)
+              Text(
+                invite.sourceFriendEmail!,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+          ],
           const SizedBox(height: AppDimens.marginMedium),
           Text(
             'This invite expires on ${MaterialLocalizations.of(context).formatMediumDate(invite.expiresAt)}.',

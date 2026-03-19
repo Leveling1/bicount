@@ -284,3 +284,50 @@ If the final domain changes, update the Flutter environment variable:
 - Acceptance and remote invite sync require the backend pieces above.
 - Notification reminders for subscriptions are already handled locally on device.
 - `company`, `group`, and `project` backend resources are intentionally unchanged for this V1 release.
+
+## 2026-03-19 update - linking a local friend to a real Bicount account
+
+The invite flow is now friend-specific.
+
+New product behavior:
+
+- a `friend` can be created locally and used in transactions before that person owns a Bicount account
+- newly created placeholder friends are now stored with `uid = null`
+- for backward compatibility, the mobile app also treats `uid = sid` with `fid = owner uid` as an unlinked local friend
+- the share action only appears for unlinked friends from the friend detail screen
+
+Required backend delta:
+
+- `friend_invites` must now target an exact row in `public.friends`
+- add the following columns to `friend_invites`:
+  - `source_friend_sid text not null`
+  - `source_friend_name text`
+  - `source_friend_email text`
+  - `source_friend_image text`
+
+When an invite is accepted, the backend must:
+
+1. resolve the invite from `invite_code`
+2. validate that it is still pending and not expired
+3. fill `receiver_uid`
+4. mark the invite as `accepted`
+5. update `public.friends.uid` for the row identified by `source_friend_sid` with the real account `uid` of the accepting user
+
+The new dedicated friend list screen is `lib/features/friend/presentation/screens/friends_directory_screen.dart`, and realtime friend detail is derived through `lib/features/friend/domain/services/friend_view_service.dart`.
+
+### Device token uniqueness update
+
+The mobile app now maintains a single active row per `user_uid` in `device_tokens`.
+
+Recommended hardening on Supabase:
+
+```sql
+create unique index if not exists device_tokens_user_uid_unique
+on public.device_tokens(user_uid);
+```
+
+Behavior expected by the app:
+
+- if `user_uid` already exists: update the existing row
+- if `user_uid` does not exist: insert a new row
+- if duplicates already exist for the same `user_uid`: keep one row and remove the others

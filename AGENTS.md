@@ -570,3 +570,39 @@ Recent structural refactors already applied:
 - profile info cards were factorized with a shared base widget
 
 When continuing this cleanup, prioritize visible V1 files first, then dormant company or group files, and only then broad theme or infrastructure refactors.
+
+## Friend Linking Update (2026-03-19)
+
+This release adds a true local-friend-to-real-account linking flow.
+
+Important behavior:
+
+- a friend can exist locally before the person has a Bicount account
+- new locally created placeholder friends are now stored with `uid = null`
+- for backward compatibility, the app also treats `uid == sid` and `fid == owner uid` as an unlinked local friend
+- only unlinked friends expose the share action from `lib/features/friend/presentation/screens/detail_friend.dart`
+- the dedicated full list screen is `lib/features/friend/presentation/screens/friends_directory_screen.dart`
+- friend detail is now realtime and derived from `MainBloc` through `lib/features/friend/domain/services/friend_view_service.dart`
+
+Backend contract delta:
+
+- `friend_invites` must now identify the exact local friend row being shared
+- required additional columns are `source_friend_sid`, `source_friend_name`, `source_friend_email`, and `source_friend_image`
+- when an invite is accepted, the backend must update `public.friends.uid` for the row identified by `source_friend_sid`
+- the visible share flow is no longer a generic profile invite; it is a targeted invite for a specific friend record
+
+## Device Token Policy Update (2026-03-19)
+
+The notification layer now treats `device_tokens` as one active row per `user_uid`.
+
+Behavior:
+
+- if a row already exists for the authenticated user, the app updates it
+- if no row exists, the app inserts one
+- if duplicate rows already exist for the same `user_uid`, the app keeps one and deletes the extras during the next token sync
+- the FCM refresh listener is registered only once per app lifecycle to avoid accidental duplicate writes
+
+Backend note:
+
+- if you want database-level enforcement, add a unique constraint on `device_tokens.user_uid`
+- this current mobile behavior matches the requested product rule of one token row per user

@@ -1,3 +1,5 @@
+﻿import 'dart:async';
+
 import 'package:app_links/app_links.dart';
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/notification_remote_datasource.dart';
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
@@ -16,6 +18,7 @@ class FirebaseNotificationRemoteDataSource
   final FirebaseMessaging messaging;
   final SupabaseClient supabase;
   final AppLinks appLinks;
+  StreamSubscription<String>? _tokenRefreshSubscription;
 
   @override
   Stream<AppNotificationEntity> deepLinks() {
@@ -70,27 +73,56 @@ class FirebaseNotificationRemoteDataSource
       return;
     }
 
+    await _persistDeviceToken(userId, token);
+
+    _tokenRefreshSubscription ??= messaging.onTokenRefresh.listen((freshToken) async {
+      final currentUserId = supabase.auth.currentUser?.id;
+      if (currentUserId == null) {
+        return;
+      }
+
+      await _persistDeviceToken(currentUserId, freshToken);
+    });
+  }
+
+  Future<void> _persistDeviceToken(String userId, String token) async {
+    final payload = {
+      'user_uid': userId,
+      'token': token,
+      'platform': defaultTargetPlatform.name,
+      'updated_at': DateTime.now().toUtc().toIso8601String(),
+    };
+
     try {
-      await supabase.from('device_tokens').upsert({
-        'user_uid': userId,
-        'token': token,
-        'platform': defaultTargetPlatform.name,
-        'updated_at': DateTime.now().toUtc().toIso8601String(),
-      });
+      final existingRows = List<Map<String, dynamic>>.from(
+        await supabase.from('device_tokens').select('token_id').eq('user_uid', userId),
+      );
+
+      if (existingRows.isNotEmpty) {
+        final primaryTokenId = existingRows.first['token_id'] as String?;
+
+        if (primaryTokenId != null && primaryTokenId.isNotEmpty) {
+          await supabase
+              .from('device_tokens')
+              .update(payload)
+              .eq('token_id', primaryTokenId);
+
+          await supabase
+              .from('device_tokens')
+              .delete()
+              .eq('user_uid', userId)
+              .neq('token_id', primaryTokenId);
+          return;
+        }
+
+        await supabase.from('device_tokens').update(payload).eq('user_uid', userId);
+        return;
+      }
+
+      await supabase.from('device_tokens').insert(payload);
     } catch (_) {
       // The handoff document describes the required Supabase table.
     }
-
-    messaging.onTokenRefresh.listen((freshToken) async {
-      try {
-        await supabase.from('device_tokens').upsert({
-          'user_uid': userId,
-          'token': freshToken,
-          'platform': defaultTargetPlatform.name,
-          'updated_at': DateTime.now().toUtc().toIso8601String(),
-        });
-      } catch (_) {}
-    });
   }
 
   AppNotificationEntity _mapRemoteMessage(

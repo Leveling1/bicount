@@ -1,4 +1,4 @@
-import 'package:bicount/core/constants/app_config.dart';
+﻿import 'package:bicount/core/constants/app_config.dart';
 import 'package:bicount/features/friend/data/data_sources/local_datasource/friend_local_datasource.dart';
 import 'package:bicount/features/friend/data/data_sources/remote_datasource/friend_remote_datasource.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
@@ -32,15 +32,23 @@ class FriendRepositoryImpl implements FriendRepository {
     required String senderName,
     required String senderEmail,
     required String senderImage,
+    required String sourceFriendSid,
+    required String sourceFriendName,
+    required String sourceFriendEmail,
+    required String sourceFriendImage,
   }) async {
-    final inviteId = const Uuid().v4();
     final inviteCode = const Uuid().v4();
+    final now = DateTime.now();
     final share = FriendShareEntity(
-      inviteId: inviteId,
+      inviteId: const Uuid().v4(),
       inviteCode: inviteCode,
       inviteUrl: AppConfig.buildInviteUrl(inviteCode),
-      createdAt: DateTime.now(),
-      expiresAt: DateTime.now().add(const Duration(days: 7)),
+      createdAt: now,
+      expiresAt: now.add(const Duration(days: 7)),
+      sourceFriendSid: sourceFriendSid,
+      sourceFriendName: sourceFriendName,
+      sourceFriendEmail: sourceFriendEmail,
+      sourceFriendImage: sourceFriendImage,
     );
 
     await localDataSource.cacheActiveShare(share);
@@ -87,9 +95,7 @@ class FriendRepositoryImpl implements FriendRepository {
         final cachedInvites = await localDataSource.getCachedInvites();
         final mergedInvites = [
           invite,
-          ...cachedInvites.where(
-            (item) => item.inviteCode != invite.inviteCode,
-          ),
+          ...cachedInvites.where((item) => item.inviteCode != invite.inviteCode),
         ];
         await localDataSource.cacheInvites(mergedInvites);
       }
@@ -131,9 +137,7 @@ class FriendRepositoryImpl implements FriendRepository {
       return;
     }
 
-    yield* remoteDataSource.watchInvites(currentUserId).asyncMap((
-      invites,
-    ) async {
+    yield* remoteDataSource.watchInvites(currentUserId).asyncMap((invites) async {
       await localDataSource.cacheInvites(invites);
       final refreshedShare = await localDataSource.getActiveShare();
       return _buildHub(

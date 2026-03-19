@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:bicount/features/friend/data/data_sources/local_datasource/friend_local_datasource.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
@@ -19,6 +19,10 @@ class LocalFriendDataSourceImpl implements FriendLocalDataSource {
         'invite_url': share.inviteUrl,
         'created_at': share.createdAt.toIso8601String(),
         'expires_at': share.expiresAt.toIso8601String(),
+        'source_friend_sid': share.sourceFriendSid,
+        'source_friend_name': share.sourceFriendName,
+        'source_friend_email': share.sourceFriendEmail,
+        'source_friend_image': share.sourceFriendImage,
       }),
     );
   }
@@ -40,6 +44,10 @@ class LocalFriendDataSourceImpl implements FriendLocalDataSource {
             'status': invite.status.value,
             'created_at': invite.createdAt.toIso8601String(),
             'expires_at': invite.expiresAt.toIso8601String(),
+            'source_friend_sid': invite.sourceFriendSid,
+            'source_friend_name': invite.sourceFriendName,
+            'source_friend_email': invite.sourceFriendEmail,
+            'source_friend_image': invite.sourceFriendImage,
           },
         )
         .toList();
@@ -61,6 +69,10 @@ class LocalFriendDataSourceImpl implements FriendLocalDataSource {
       inviteUrl: map['invite_url'] as String,
       createdAt: DateTime.parse(map['created_at'] as String).toLocal(),
       expiresAt: DateTime.parse(map['expires_at'] as String).toLocal(),
+      sourceFriendSid: map['source_friend_sid'] as String?,
+      sourceFriendName: map['source_friend_name'] as String?,
+      sourceFriendEmail: map['source_friend_email'] as String?,
+      sourceFriendImage: map['source_friend_image'] as String?,
     );
   }
 
@@ -88,6 +100,10 @@ class LocalFriendDataSourceImpl implements FriendLocalDataSource {
             status: FriendInviteStatusX.fromValue(map['status'] as String?),
             createdAt: DateTime.parse(map['created_at'] as String).toLocal(),
             expiresAt: DateTime.parse(map['expires_at'] as String).toLocal(),
+            sourceFriendSid: map['source_friend_sid'] as String?,
+            sourceFriendName: map['source_friend_name'] as String?,
+            sourceFriendEmail: map['source_friend_email'] as String?,
+            sourceFriendImage: map['source_friend_image'] as String?,
           ),
         )
         .toList();

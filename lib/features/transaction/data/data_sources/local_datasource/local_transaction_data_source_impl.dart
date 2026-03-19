@@ -1,4 +1,4 @@
-import 'package:bicount/core/constants/constants.dart';
+﻿import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
@@ -25,12 +25,12 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     final id = const Uuid().v4();
     try {
       final friendAdd = FriendsModel(
-        uid: id,
+        uid: null,
         sid: id,
         fid: uid,
         username: friend.username,
         email: friend.email,
-        image: Constants.memojiDefault,
+        image: friend.image.isEmpty ? Constants.memojiDefault : friend.image,
         give: 0.0,
         receive: 0.0,
         relationType: FriendConst.friend,

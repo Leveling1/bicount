@@ -33,7 +33,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   int _selectedIndexTransaction = 0;
 
-  static const _titles = ['Home', 'Graphs', 'Transaction', 'Profile'];
+  static const _titles = ['', 'Graphs', 'Transaction', 'Profile'];
 
   @override
   void initState() {
@@ -66,17 +66,22 @@ class _MainScreenState extends State<MainScreen> {
     return BlocConsumer<MainBloc, MainState>(
       listener: _onStateChanged,
       builder: (context, state) {
-        final data = state is MainLoaded ? state.startData : MainEntity.fromEmpty();
+        final data = state is MainLoaded
+            ? state.startData
+            : MainEntity.fromEmpty();
         final preparedData = _prepareData(data);
 
         return Scaffold(
-          backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+          backgroundColor: Theme.of(
+            context,
+          ).bottomNavigationBarTheme.backgroundColor,
           appBar: MainShellAppBar(
             connectionState: preparedData.connectionState,
             title: _titles[_selectedIndex],
             selectedIndex: _selectedIndex,
             showSearchBar: showSearchBar,
-            onToggleSearch: () => setState(() => showSearchBar = !showSearchBar),
+            onToggleSearch: () =>
+                setState(() => showSearchBar = !showSearchBar),
             onAddFunds: _openAddFundsSheet,
           ),
           body: MainShellBody(
@@ -97,7 +102,8 @@ class _MainScreenState extends State<MainScreen> {
             selectedIndex: _selectedIndex,
             onPressed: () => _openTransactionSheet(preparedData),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
         );
       },
     );
@@ -166,7 +172,11 @@ class _MainScreenState extends State<MainScreen> {
     const duration = Duration(milliseconds: 500);
 
     if (distance == 1) {
-      pageController.animateToPage(index, duration: duration, curve: Curves.linear);
+      pageController.animateToPage(
+        index,
+        duration: duration,
+        curve: Curves.linear,
+      );
     } else {
       pageController.jumpToPage(index);
     }

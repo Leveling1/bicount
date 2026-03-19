@@ -1,4 +1,4 @@
-part of 'friend_bloc.dart';
+﻿part of 'friend_bloc.dart';
 
 sealed class FriendEvent {
   const FriendEvent();
@@ -13,11 +13,19 @@ final class FriendCreateInviteRequested extends FriendEvent {
     required this.senderName,
     required this.senderEmail,
     required this.senderImage,
+    required this.sourceFriendSid,
+    required this.sourceFriendName,
+    required this.sourceFriendEmail,
+    required this.sourceFriendImage,
   });
 
   final String senderName;
   final String senderEmail;
   final String senderImage;
+  final String sourceFriendSid;
+  final String sourceFriendName;
+  final String sourceFriendEmail;
+  final String sourceFriendImage;
 }
 
 final class FriendInviteCodeReceived extends FriendEvent {

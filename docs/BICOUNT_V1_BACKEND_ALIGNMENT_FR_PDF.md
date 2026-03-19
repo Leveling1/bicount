@@ -453,3 +453,23 @@ Sans ces Ã©lÃ©ments:
 - le partage de profil restera partiellement local
 - l'acceptation distante ne sera pas complÃ¨te
 - les notifications push ne partiront pas
+
+## Mise à jour 2026-03-19 - liaison d'un friend local vers un vrai compte
+
+Le partage vise maintenant une ligne précise de `public.friends`.
+
+A ajouter dans `friend_invites` :
+
+- `source_friend_sid text not null`
+- `source_friend_name text`
+- `source_friend_email text`
+- `source_friend_image text`
+
+A l'acceptation :
+
+1. retrouver l'invitation par `invite_code`
+2. remplir `receiver_uid`
+3. mettre le statut à `accepted`
+4. mettre à jour `public.friends.uid` sur la ligne identifiée par `source_friend_sid`
+
+Les nouveaux friends locaux créés par l'app arrivent maintenant avec `uid = null` tant qu'ils ne sont pas liés.

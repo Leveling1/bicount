@@ -1,19 +1,18 @@
-﻿import 'package:bicount/core/services/notification_helper.dart';
-import 'package:bicount/core/themes/app_dimens.dart';
+﻿import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
+import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
 import 'package:bicount/features/friend/presentation/bloc/friend_bloc.dart';
+import 'package:bicount/features/friend/presentation/helpers/friend_screen_actions.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_invite_preview_card.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_invite_section.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_list_card.dart';
-import 'package:bicount/features/friend/presentation/widgets/friend_qr_scanner_sheet.dart';
+import 'package:bicount/features/friend/presentation/widgets/friend_screen_intro.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_share_card.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:share_plus/share_plus.dart';
 
 class FriendScreen extends StatefulWidget {
   const FriendScreen({
@@ -21,26 +20,28 @@ class FriendScreen extends StatefulWidget {
     this.user,
     this.friends = const [],
     this.initialInviteCode,
+    this.selectedFriend,
   });
 
   final UserModel? user;
   final List<FriendsModel> friends;
   final String? initialInviteCode;
+  final FriendsModel? selectedFriend;
 
   @override
   State<FriendScreen> createState() => _FriendScreenState();
 }
 
 class _FriendScreenState extends State<FriendScreen> {
+  static const _viewService = FriendViewService();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.initialInviteCode != null &&
-          widget.initialInviteCode!.isNotEmpty) {
-        context.read<FriendBloc>().add(
-          FriendInviteCodeReceived(widget.initialInviteCode!),
-        );
+      final inviteCode = widget.initialInviteCode;
+      if (inviteCode != null && inviteCode.isNotEmpty) {
+        context.read<FriendBloc>().add(FriendInviteCodeReceived(inviteCode));
       }
     });
   }
@@ -57,39 +58,55 @@ class _FriendScreenState extends State<FriendScreen> {
       return widget.friends;
     });
 
-    final visibleFriends =
-        realtimeFriends
-            .where(
-              (friend) => widget.user == null || friend.uid != widget.user!.uid,
-            )
-            .toList()
-          ..sort(
-            (left, right) => ((right.give ?? 0) - (right.receive ?? 0))
-                .compareTo((left.give ?? 0) - (left.receive ?? 0)),
-          );
+    final visibleFriends = _viewService.visibleFriends(
+      realtimeFriends,
+      currentUserUid: widget.user?.uid,
+      currentUserSid: widget.user?.sid,
+    );
 
     return BlocConsumer<FriendBloc, FriendState>(
-      listener: _onStateChanged,
+      listener: handleFriendStateFeedback,
       builder: (context, state) {
+        final activeShare = _resolveActiveShare(state.hub.activeShare);
         return SafeArea(
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Friends', style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: AppDimens.marginSmall),
-                Text(
-                  'Share your Bicount profile, scan a QR code, or accept an invitation link.',
-                  style: Theme.of(context).textTheme.bodySmall,
+                FriendScreenIntro(
+                  title: widget.selectedFriend == null
+                      ? 'Friend invitations'
+                      : 'Link ${widget.selectedFriend!.username}',
+                  description: widget.selectedFriend == null
+                      ? 'Scan an invite, review pending links, and track shared profiles in real time.'
+                      : 'Share this local friend profile when the person has created a Bicount account so the backend can link both profiles together.',
                 ),
                 const SizedBox(height: AppDimens.marginLarge),
-                if (widget.user != null) ...[
+                if (widget.user != null && widget.selectedFriend != null) ...[
                   FriendShareCard(
-                    state: state,
+                    title: 'Share ${widget.selectedFriend!.username} profile',
+                    description:
+                        'Generate a QR code or a link for this specific friend profile.',
+                    activeShare: activeShare,
+                    isSubmitting: state.isSubmitting,
                     onCreate: _createInvite,
-                    onShare: () => _shareInvite(state.hub.activeShare),
-                    onCopy: () => _copyInvite(state.hub.activeShare),
-                    onScan: _openScanner,
+                    onShare: () => shareFriendInvite(activeShare),
+                    onCopy: () => copyFriendInvite(context, activeShare),
+                    onScan: () => openFriendScanner(
+                      context,
+                      onValue: _onInviteValueReceived,
+                    ),
+                  ),
+                  const SizedBox(height: AppDimens.marginLarge),
+                ],
+                if (widget.user != null && widget.selectedFriend == null) ...[
+                  OutlinedButton.icon(
+                    onPressed: () => openFriendScanner(
+                      context,
+                      onValue: _onInviteValueReceived,
+                    ),
+                    icon: const Icon(Icons.qr_code_scanner_outlined),
+                    label: const Text('Scan invite'),
                   ),
                   const SizedBox(height: AppDimens.marginLarge),
                 ],
@@ -97,21 +114,15 @@ class _FriendScreenState extends State<FriendScreen> {
                   FriendInvitePreviewCard(
                     invite: state.invitePreview!,
                     isSubmitting: state.isSubmitting,
-                    onAccept: () {
-                      context.read<FriendBloc>().add(
-                        const FriendAcceptRequested(),
-                      );
-                    },
-                    onReject: () {
-                      context.read<FriendBloc>().add(
-                        const FriendRejectRequested(),
-                      );
-                    },
-                    onClose: () {
-                      context.read<FriendBloc>().add(
-                        const FriendPreviewCleared(),
-                      );
-                    },
+                    onAccept: () => context.read<FriendBloc>().add(
+                      const FriendAcceptRequested(),
+                    ),
+                    onReject: () => context.read<FriendBloc>().add(
+                      const FriendRejectRequested(),
+                    ),
+                    onClose: () => context.read<FriendBloc>().add(
+                      const FriendPreviewCleared(),
+                    ),
                   ),
                   const SizedBox(height: AppDimens.marginLarge),
                 ],
@@ -123,7 +134,7 @@ class _FriendScreenState extends State<FriendScreen> {
                 const SizedBox(height: AppDimens.marginLarge),
                 FriendInviteSection(
                   title: 'Sent invitations',
-                  emptyLabel: 'You have not shared a profile link yet.',
+                  emptyLabel: 'You have not shared a friend profile yet.',
                   invites: state.hub.sentInvites,
                 ),
                 const SizedBox(height: AppDimens.marginLarge),
@@ -137,64 +148,35 @@ class _FriendScreenState extends State<FriendScreen> {
     );
   }
 
-  void _onStateChanged(BuildContext context, FriendState state) {
-    if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-      NotificationHelper.showFailureNotification(context, state.errorMessage!);
+  FriendShareEntity? _resolveActiveShare(FriendShareEntity? share) {
+    final selectedFriend = widget.selectedFriend;
+    if (share == null || selectedFriend == null) {
+      return share;
     }
-    if (state.flashMessage != null && state.flashMessage!.isNotEmpty) {
-      NotificationHelper.showSuccessNotification(context, state.flashMessage!);
-    }
+    return share.sourceFriendSid == selectedFriend.sid ? share : null;
   }
 
   void _createInvite() {
     final user = widget.user;
-    if (user == null) {
+    final friend = widget.selectedFriend;
+    if (user == null || friend == null) {
       return;
     }
+
     context.read<FriendBloc>().add(
       FriendCreateInviteRequested(
         senderName: user.username,
         senderEmail: user.email,
         senderImage: user.image,
+        sourceFriendSid: friend.sid,
+        sourceFriendName: friend.username,
+        sourceFriendEmail: friend.email,
+        sourceFriendImage: friend.image,
       ),
     );
   }
 
-  Future<void> _copyInvite(FriendShareEntity? share) async {
-    if (share == null) {
-      return;
-    }
-    await Clipboard.setData(ClipboardData(text: share.inviteUrl));
-    if (!mounted) {
-      return;
-    }
-    NotificationHelper.showSuccessNotification(
-      context,
-      'Invitation link copied.',
-    );
-  }
-
-  Future<void> _openScanner() async {
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return FriendQrScannerSheet(
-          onValue: (value) {
-            context.read<FriendBloc>().add(FriendInviteCodeReceived(value));
-          },
-        );
-      },
-    );
-  }
-
-  Future<void> _shareInvite(FriendShareEntity? share) async {
-    if (share == null) {
-      return;
-    }
-    await Share.share(
-      'Join me on Bicount and connect with my profile: ${share.inviteUrl}',
-    );
+  void _onInviteValueReceived(String value) {
+    context.read<FriendBloc>().add(FriendInviteCodeReceived(value));
   }
 }

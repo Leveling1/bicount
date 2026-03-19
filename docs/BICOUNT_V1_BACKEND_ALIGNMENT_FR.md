@@ -463,3 +463,51 @@ Sans ces Ã©lÃ©ments:
 - le partage de profil restera partiellement local
 - l'acceptation distante ne sera pas complÃ¨te
 - les notifications push ne partiront pas
+
+## Mise à jour 2026-03-19 - liaison d'un friend local vers un vrai compte
+
+Le flux de partage a évolué.
+
+Nouveau comportement produit :
+
+- un `friend` peut être créé localement et utilisé dans les transactions avant que la personne n'ait un compte Bicount
+- les nouveaux `friends` locaux créés par l'application arrivent désormais avec `uid = null`
+- pour compatibilité avec des données plus anciennes, le front considère aussi `uid = sid` et `fid = owner uid` comme un friend encore non lié
+- le bouton de partage n'apparaît que pour un friend non lié, depuis l'écran détail ami
+
+Nouveau contrat backend requis :
+
+- `friend_invites` ne représente plus seulement une invitation générique
+- chaque invitation doit cibler une ligne précise de `public.friends`
+- ajouter les colonnes suivantes dans `friend_invites` :
+  - `source_friend_sid text not null`
+  - `source_friend_name text`
+  - `source_friend_email text`
+  - `source_friend_image text`
+
+À l'acceptation d'une invitation, la logique backend doit :
+
+1. retrouver l'invitation via `invite_code`
+2. vérifier que l'invitation est encore valide
+3. renseigner `receiver_uid`
+4. passer le statut à `accepted`
+5. mettre à jour `public.friends.uid` avec le vrai `uid` du compte qui accepte, sur la ligne identifiée par `source_friend_sid`
+
+Côté app, l'écran liste dédié est maintenant `lib/features/friend/presentation/screens/friends_directory_screen.dart` et le détail temps réel repose sur `lib/features/friend/domain/services/friend_view_service.dart`.
+
+### Mise a jour unicite des device tokens
+
+L'application mobile maintient maintenant une seule ligne active par `user_uid` dans `device_tokens`.
+
+Durcissement recommande cote Supabase :
+
+```sql
+create unique index if not exists device_tokens_user_uid_unique
+on public.device_tokens(user_uid);
+```
+
+Comportement attendu par l'app :
+
+- si `user_uid` existe deja : mise a jour
+- si `user_uid` n'existe pas : insertion
+- si plusieurs lignes existent deja pour le meme `user_uid` : conservation d'une ligne et suppression des doublons

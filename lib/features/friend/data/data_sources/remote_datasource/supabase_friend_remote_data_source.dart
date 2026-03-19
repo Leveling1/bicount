@@ -1,4 +1,4 @@
-import 'package:bicount/features/friend/data/data_sources/remote_datasource/friend_remote_datasource.dart';
+﻿import 'package:bicount/features/friend/data/data_sources/remote_datasource/friend_remote_datasource.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -47,6 +47,10 @@ class SupabaseFriendRemoteDataSource implements FriendRemoteDataSource {
       'status': FriendInviteStatus.pending.value,
       'created_at': share.createdAt.toUtc().toIso8601String(),
       'expires_at': share.expiresAt.toUtc().toIso8601String(),
+      'source_friend_sid': share.sourceFriendSid,
+      'source_friend_name': share.sourceFriendName,
+      'source_friend_email': share.sourceFriendEmail,
+      'source_friend_image': share.sourceFriendImage,
     });
   }
 
@@ -106,6 +110,10 @@ class SupabaseFriendRemoteDataSource implements FriendRemoteDataSource {
       status: FriendInviteStatusX.fromValue(map['status'] as String?),
       createdAt: DateTime.parse(map['created_at'] as String).toLocal(),
       expiresAt: DateTime.parse(map['expires_at'] as String).toLocal(),
+      sourceFriendSid: map['source_friend_sid'] as String?,
+      sourceFriendName: map['source_friend_name'] as String?,
+      sourceFriendEmail: map['source_friend_email'] as String?,
+      sourceFriendImage: map['source_friend_image'] as String?,
     );
   }
 }

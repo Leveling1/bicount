@@ -1,10 +1,9 @@
-import 'package:bicount/core/constants/friend_const.dart';
+﻿import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
+import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/themes/app_dimens.dart';
 
@@ -15,10 +14,10 @@ class FriendCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String give = NumberFormatUtils.formatCurrency(friend.give! as num);
-    String receive = NumberFormatUtils.formatCurrency(friend.receive! as num);
+    final give = NumberFormatUtils.formatCurrency(friend.give ?? 0);
+    final receive = NumberFormatUtils.formatCurrency(friend.receive ?? 0);
     return Container(
-      decoration: BoxDecoration(color: Colors.transparent),
+      decoration: const BoxDecoration(color: Colors.transparent),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -31,27 +30,16 @@ class FriendCard extends StatelessWidget {
             padding: AppDimens.paddingSmallCard,
             child: Row(
               children: [
-                // Avatar
-                CircleAvatar(
-                  backgroundColor: Theme.of(context).cardColor,
+                AppAvatar(
+                  image: friend.relationType == FriendConst.subscription
+                      ? null
+                      : friend.image,
                   radius: 20,
-                  child: SizedBox(
-                    width: 30.w,
-                    height: 30.h,
-                    child: friend.relationType == FriendConst.subscription
-                        ? Icon(
-                            Icons.subscriptions,
-                            color: Theme.of(context).primaryColor,
-                          )
-                        : CachedNetworkImage(
-                            imageUrl: friend.image,
-                            fit: BoxFit.cover,
-                          ),
-                  ),
+                  fallbackIcon: friend.relationType == FriendConst.subscription
+                      ? Icons.subscriptions
+                      : Icons.person_outline,
                 ),
                 const SizedBox(width: 12),
-
-                // Name
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +57,7 @@ class FriendCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           friend.relationType == FriendConst.subscription
-                              ? SizedBox.shrink()
+                              ? const SizedBox.shrink()
                               : Row(
                                   children: [
                                     Text(
@@ -84,7 +72,7 @@ class FriendCard extends StatelessWidget {
                                     Text(
                                       give,
                                       style: TextStyle(
-                                        color: give == "0.00"
+                                        color: give == '0.00'
                                             ? Theme.of(
                                                 context,
                                               ).textTheme.bodySmall!.color
@@ -96,7 +84,6 @@ class FriendCard extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-
                           Row(
                             children: [
                               Text(
@@ -113,7 +100,7 @@ class FriendCard extends StatelessWidget {
                               Text(
                                 receive,
                                 style: TextStyle(
-                                  color: receive == "0.00"
+                                  color: receive == '0.00'
                                       ? Theme.of(
                                           context,
                                         ).textTheme.bodySmall!.color

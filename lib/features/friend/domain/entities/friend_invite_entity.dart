@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+﻿import 'package:equatable/equatable.dart';
 
 enum FriendInviteStatus { pending, accepted, rejected, expired }
 
@@ -51,6 +51,10 @@ class FriendShareEntity extends Equatable {
     required this.inviteUrl,
     required this.createdAt,
     required this.expiresAt,
+    this.sourceFriendSid,
+    this.sourceFriendName,
+    this.sourceFriendEmail,
+    this.sourceFriendImage,
   });
 
   final String inviteId;
@@ -58,6 +62,21 @@ class FriendShareEntity extends Equatable {
   final String inviteUrl;
   final DateTime createdAt;
   final DateTime expiresAt;
+  final String? sourceFriendSid;
+  final String? sourceFriendName;
+  final String? sourceFriendEmail;
+  final String? sourceFriendImage;
+
+  bool get isFriendProfileShare =>
+      sourceFriendSid != null && sourceFriendSid!.isNotEmpty;
+
+  String get subjectName {
+    final value = sourceFriendName?.trim();
+    if (value == null || value.isEmpty) {
+      return 'profile';
+    }
+    return value;
+  }
 
   @override
   List<Object?> get props => [
@@ -66,6 +85,10 @@ class FriendShareEntity extends Equatable {
     inviteUrl,
     createdAt,
     expiresAt,
+    sourceFriendSid,
+    sourceFriendName,
+    sourceFriendEmail,
+    sourceFriendImage,
   ];
 }
 
@@ -82,6 +105,10 @@ class FriendInviteEntity extends Equatable {
     required this.expiresAt,
     this.receiverUid,
     this.receiverName,
+    this.sourceFriendSid,
+    this.sourceFriendName,
+    this.sourceFriendEmail,
+    this.sourceFriendImage,
   });
 
   final String inviteId;
@@ -95,8 +122,23 @@ class FriendInviteEntity extends Equatable {
   final DateTime expiresAt;
   final String? receiverUid;
   final String? receiverName;
+  final String? sourceFriendSid;
+  final String? sourceFriendName;
+  final String? sourceFriendEmail;
+  final String? sourceFriendImage;
 
   bool get isPending => status == FriendInviteStatus.pending;
+
+  bool get isFriendProfileInvite =>
+      sourceFriendSid != null && sourceFriendSid!.isNotEmpty;
+
+  String get linkedProfileName {
+    final value = sourceFriendName?.trim();
+    if (value == null || value.isEmpty) {
+      return senderName;
+    }
+    return value;
+  }
 
   @override
   List<Object?> get props => [
@@ -111,6 +153,10 @@ class FriendInviteEntity extends Equatable {
     expiresAt,
     receiverUid,
     receiverName,
+    sourceFriendSid,
+    sourceFriendName,
+    sourceFriendEmail,
+    sourceFriendImage,
   ];
 }
 

@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:bicount/features/friend/domain/repositories/friend_repository.dart';
@@ -45,6 +45,10 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
         senderName: event.senderName,
         senderEmail: event.senderEmail,
         senderImage: event.senderImage,
+        sourceFriendSid: event.sourceFriendSid,
+        sourceFriendName: event.sourceFriendName,
+        sourceFriendEmail: event.sourceFriendEmail,
+        sourceFriendImage: event.sourceFriendImage,
       );
       add(const _FriendActionSucceeded('Invitation ready to share.'));
     } catch (error) {
