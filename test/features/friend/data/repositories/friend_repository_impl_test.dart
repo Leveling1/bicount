@@ -79,9 +79,13 @@ void main() {
     );
 
     final share = await repository.createInvite(
-      senderName: 'Louis',
-      senderEmail: 'louis@example.com',
+      senderName: 'youngsolver',
+      senderEmail: 'youngsolver@example.com',
       senderImage: '',
+      sourceFriendSid: '',
+      sourceFriendName: '',
+      sourceFriendEmail: '',
+      sourceFriendImage: '',
     );
 
     expect(share.inviteUrl, contains('/friend/invite?code='));

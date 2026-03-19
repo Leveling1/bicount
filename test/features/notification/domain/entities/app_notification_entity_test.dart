@@ -7,7 +7,7 @@ void main() {
       category: AppNotificationCategory.friendInvite,
       source: AppNotificationSource.foreground,
       title: 'New invite',
-      body: 'Louis invited you',
+      body: 'youngsolver invited you',
       data: {'invite_code': 'abc123'},
       route: '/friend/invite?code=abc123',
     );

@@ -340,7 +340,7 @@ Exemple minimal:
 {
   "category": "friend_invite",
   "title": "Nouvelle invitation",
-  "body": "Louis vous a invite sur Bicount",
+  "body": "youngsolver vous a invite sur Bicount",
   "route": "/friend/invite?code=abc123",
   "invite_code": "abc123"
 }
@@ -444,11 +444,11 @@ Si le domaine change plus tard:
 ## Fichiers Flutter Ã  considÃ©rer comme rÃ©fÃ©rence de contrat
 
 Si le back veut vÃ©rifier le contrat exact attendu par l'app:
-- [friend_repository_impl.dart](/C:/Users/louis/Documents/Projet/Young%20solver/Projets%20-%20Code/bicount/lib/features/friend/data/repositories/friend_repository_impl.dart)
-- [supabase_friend_remote_data_source.dart](/C:/Users/louis/Documents/Projet/Young%20solver/Projets%20-%20Code/bicount/lib/features/friend/data/data_sources/remote_datasource/supabase_friend_remote_data_source.dart)
-- [notification_repository_impl.dart](/C:/Users/louis/Documents/Projet/Young%20solver/Projets%20-%20Code/bicount/lib/features/notification/data/repositories/notification_repository_impl.dart)
-- [firebase_notification_remote_data_source.dart](/C:/Users/louis/Documents/Projet/Young%20solver/Projets%20-%20Code/bicount/lib/features/notification/data/data_sources/remote_datasource/firebase_notification_remote_data_source.dart)
-- [app_config.dart](/C:/Users/louis/Documents/Projet/Young%20solver/Projets%20-%20Code/bicount/lib/core/constants/app_config.dart)
+- [friend_repository_impl.dart](/C:/Users/youngsolver/Documents/Projet/Young%20solver/Projets%20-%20Code/bicount/lib/features/friend/data/repositories/friend_repository_impl.dart)
+- [supabase_friend_remote_data_source.dart](/C:/Users/youngsolver/Documents/Projet/Young%20solver/Projets%20-%20Code/bicount/lib/features/friend/data/data_sources/remote_datasource/supabase_friend_remote_data_source.dart)
+- [notification_repository_impl.dart](/C:/Users/youngsolver/Documents/Projet/Young%20solver/Projets%20-%20Code/bicount/lib/features/notification/data/repositories/notification_repository_impl.dart)
+- [firebase_notification_remote_data_source.dart](/C:/Users/youngsolver/Documents/Projet/Young%20solver/Projets%20-%20Code/bicount/lib/features/notification/data/data_sources/remote_datasource/firebase_notification_remote_data_source.dart)
+- [app_config.dart](/C:/Users/youngsolver/Documents/Projet/Young%20solver/Projets%20-%20Code/bicount/lib/core/constants/app_config.dart)
 
 ## RÃ©sumÃ© exÃ©cutif
 
@@ -464,36 +464,36 @@ Sans ces Ã©lÃ©ments:
 - l'acceptation distante ne sera pas complÃ¨te
 - les notifications push ne partiront pas
 
-## Mise à jour 2026-03-19 - liaison d'un friend local vers un vrai compte
+## Mise ï¿½ jour 2026-03-19 - liaison d'un friend local vers un vrai compte
 
-Le flux de partage a évolué.
+Le flux de partage a ï¿½voluï¿½.
 
 Nouveau comportement produit :
 
-- un `friend` peut être créé localement et utilisé dans les transactions avant que la personne n'ait un compte Bicount
-- les nouveaux `friends` locaux créés par l'application arrivent désormais avec `uid = null`
-- pour compatibilité avec des données plus anciennes, le front considère aussi `uid = sid` et `fid = owner uid` comme un friend encore non lié
-- le bouton de partage n'apparaît que pour un friend non lié, depuis l'écran détail ami
+- un `friend` peut ï¿½tre crï¿½ï¿½ localement et utilisï¿½ dans les transactions avant que la personne n'ait un compte Bicount
+- les nouveaux `friends` locaux crï¿½ï¿½s par l'application arrivent dï¿½sormais avec `uid = null`
+- pour compatibilitï¿½ avec des donnï¿½es plus anciennes, le front considï¿½re aussi `uid = sid` et `fid = owner uid` comme un friend encore non liï¿½
+- le bouton de partage n'apparaï¿½t que pour un friend non liï¿½, depuis l'ï¿½cran dï¿½tail ami
 
 Nouveau contrat backend requis :
 
-- `friend_invites` ne représente plus seulement une invitation générique
-- chaque invitation doit cibler une ligne précise de `public.friends`
+- `friend_invites` ne reprï¿½sente plus seulement une invitation gï¿½nï¿½rique
+- chaque invitation doit cibler une ligne prï¿½cise de `public.friends`
 - ajouter les colonnes suivantes dans `friend_invites` :
   - `source_friend_sid text not null`
   - `source_friend_name text`
   - `source_friend_email text`
   - `source_friend_image text`
 
-À l'acceptation d'une invitation, la logique backend doit :
+ï¿½ l'acceptation d'une invitation, la logique backend doit :
 
 1. retrouver l'invitation via `invite_code`
-2. vérifier que l'invitation est encore valide
+2. vï¿½rifier que l'invitation est encore valide
 3. renseigner `receiver_uid`
-4. passer le statut à `accepted`
-5. mettre à jour `public.friends.uid` avec le vrai `uid` du compte qui accepte, sur la ligne identifiée par `source_friend_sid`
+4. passer le statut ï¿½ `accepted`
+5. mettre ï¿½ jour `public.friends.uid` avec le vrai `uid` du compte qui accepte, sur la ligne identifiï¿½e par `source_friend_sid`
 
-Côté app, l'écran liste dédié est maintenant `lib/features/friend/presentation/screens/friends_directory_screen.dart` et le détail temps réel repose sur `lib/features/friend/domain/services/friend_view_service.dart`.
+Cï¿½tï¿½ app, l'ï¿½cran liste dï¿½diï¿½ est maintenant `lib/features/friend/presentation/screens/friends_directory_screen.dart` et le dï¿½tail temps rï¿½el repose sur `lib/features/friend/domain/services/friend_view_service.dart`.
 
 ### Mise a jour unicite des device tokens
 

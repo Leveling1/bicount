@@ -1,4 +1,5 @@
 ﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/details_card.dart';
@@ -61,25 +62,34 @@ class FriendsDirectoryScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        FriendDirectoryHeader(
-                          total: friends.length,
-                          linked: linkedCount,
-                          unlinked: friends.length - linkedCount,
+                        BicountReveal(
+                          delay: const Duration(milliseconds: 30),
+                          child: FriendDirectoryHeader(
+                            total: friends.length,
+                            linked: linkedCount,
+                            unlinked: friends.length - linkedCount,
+                          ),
                         ),
                         const SizedBox(height: AppDimens.marginLarge),
-                        Text(
-                          'Tap a friend to review the live transaction history or link a local profile to a real account.',
-                          style: Theme.of(context).textTheme.bodySmall,
+                        BicountReveal(
+                          delay: const Duration(milliseconds: 90),
+                          child: Text(
+                            'Tap a friend to review the live transaction history or link a local profile to a real account.',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
                         ),
                         const SizedBox(height: AppDimens.marginLarge),
                         Expanded(
                           child: friends.isEmpty
-                              ? DetailsCard(
-                                  child: Text(
-                                    'Create a transaction with someone and they will appear here. When they join Bicount, open their detail screen to share and link the profile.',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall,
+                              ? BicountReveal(
+                                  delay: const Duration(milliseconds: 140),
+                                  child: DetailsCard(
+                                    child: Text(
+                                      'Create a transaction with someone and they will appear here. When they join Bicount, open their detail screen to share and link the profile.',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall,
+                                    ),
                                   ),
                                 )
                               : ListView.separated(
@@ -88,9 +98,15 @@ class FriendsDirectoryScreen extends StatelessWidget {
                                       const SizedBox(height: 8),
                                   itemBuilder: (context, index) {
                                     final friend = friends[index];
-                                    return FriendCard(
-                                      friend: friend,
-                                      onTap: () => _openDetail(context, friend),
+                                    return BicountReveal(
+                                      delay: Duration(
+                                        milliseconds: 140 + (index * 35),
+                                      ),
+                                      child: FriendCard(
+                                        friend: friend,
+                                        onTap: () =>
+                                            _openDetail(context, friend),
+                                      ),
                                     );
                                   },
                                 ),

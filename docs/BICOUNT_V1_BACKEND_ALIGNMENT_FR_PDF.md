@@ -337,7 +337,7 @@ Exemple recommandÃ©:
 {
   "category": "friend_invite",
   "title": "Nouvelle invitation",
-  "body": "Louis vous a invitÃ© sur Bicount",
+  "body": "youngsolver vous a invitÃ© sur Bicount",
   "route": "/friend/invite?code=abc123",
   "invite_code": "abc123"
 }
@@ -454,9 +454,9 @@ Sans ces Ã©lÃ©ments:
 - l'acceptation distante ne sera pas complÃ¨te
 - les notifications push ne partiront pas
 
-## Mise à jour 2026-03-19 - liaison d'un friend local vers un vrai compte
+## Mise ï¿½ jour 2026-03-19 - liaison d'un friend local vers un vrai compte
 
-Le partage vise maintenant une ligne précise de `public.friends`.
+Le partage vise maintenant une ligne prï¿½cise de `public.friends`.
 
 A ajouter dans `friend_invites` :
 
@@ -469,7 +469,7 @@ A l'acceptation :
 
 1. retrouver l'invitation par `invite_code`
 2. remplir `receiver_uid`
-3. mettre le statut à `accepted`
-4. mettre à jour `public.friends.uid` sur la ligne identifiée par `source_friend_sid`
+3. mettre le statut ï¿½ `accepted`
+4. mettre ï¿½ jour `public.friends.uid` sur la ligne identifiï¿½e par `source_friend_sid`
 
-Les nouveaux friends locaux créés par l'app arrivent maintenant avec `uid = null` tant qu'ils ne sont pas liés.
+Les nouveaux friends locaux crï¿½ï¿½s par l'app arrivent maintenant avec `uid = null` tant qu'ils ne sont pas liï¿½s.

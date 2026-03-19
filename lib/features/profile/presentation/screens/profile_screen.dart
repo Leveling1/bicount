@@ -1,5 +1,6 @@
 ﻿import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/themes/other_theme.dart';
+import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
 import 'package:bicount/features/friend/presentation/screens/detail_friend.dart';
 import 'package:bicount/features/friend/presentation/screens/friends_directory_screen.dart';
@@ -42,104 +43,124 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  ProfileCard(
-                    image: data.user.image,
-                    name: data.user.username,
-                    email: data.user.email,
-                    balance: data.user.balance,
-                    onTap: () {},
+                  BicountReveal(
+                    delay: const Duration(milliseconds: 40),
+                    child: ProfileCard(
+                      image: data.user.image,
+                      name: data.user.username,
+                      email: data.user.email,
+                      balance: data.user.balance,
+                      onTap: () {},
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: InfoCardAmount(
-                          icon: IconLinks.income,
-                          title: 'Income',
-                          value: data.user.incomes!,
-                          color: Theme.of(
-                            context,
-                          ).extension<OtherTheme>()!.income!,
+                  BicountReveal(
+                    delay: const Duration(milliseconds: 100),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: InfoCardAmount(
+                            icon: IconLinks.income,
+                            title: 'Income',
+                            value: data.user.incomes!,
+                            color: Theme.of(
+                              context,
+                            ).extension<OtherTheme>()!.income!,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: AppDimens.marginMedium),
-                      Flexible(
-                        child: InfoCardAmount(
-                          icon: IconLinks.expense,
-                          title: 'Expense',
-                          value: data.user.expenses!,
-                          color: Theme.of(
-                            context,
-                          ).extension<OtherTheme>()!.expense!,
+                        const SizedBox(width: AppDimens.marginMedium),
+                        Flexible(
+                          child: InfoCardAmount(
+                            icon: IconLinks.expense,
+                            title: 'Expense',
+                            value: data.user.expenses!,
+                            color: Theme.of(
+                              context,
+                            ).extension<OtherTheme>()!.expense!,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: InfoCardAmount(
-                          icon: IconLinks.user,
-                          title: 'Personal',
-                          value: data.user.personalIncome!,
-                          color: Theme.of(
-                            context,
-                          ).extension<OtherTheme>()!.personnalIncome!,
+                  BicountReveal(
+                    delay: const Duration(milliseconds: 150),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: InfoCardAmount(
+                            icon: IconLinks.user,
+                            title: 'Personal',
+                            value: data.user.personalIncome!,
+                            color: Theme.of(
+                              context,
+                            ).extension<OtherTheme>()!.personnalIncome!,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: AppDimens.marginMedium),
-                      Flexible(
-                        child: InfoCardAmount(
-                          icon: IconLinks.graph,
-                          title: 'Recurring',
-                          value: recurringSpend,
-                          color: Theme.of(context).primaryColor,
+                        const SizedBox(width: AppDimens.marginMedium),
+                        Flexible(
+                          child: InfoCardAmount(
+                            icon: IconLinks.graph,
+                            title: 'Recurring',
+                            value: recurringSpend,
+                            color: Theme.of(context).primaryColor,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   const SizedBox(height: AppDimens.marginMedium),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Friends',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const FriendsDirectoryScreen(),
-                            ),
-                          );
-                        },
-                        style: Theme.of(context).textButtonTheme.style,
-                        child: Text(
-                          'See all',
-                          style: Theme.of(context).textTheme.bodyMedium,
+                  BicountReveal(
+                    delay: const Duration(milliseconds: 210),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Friends',
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
-                      ),
-                    ],
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const FriendsDirectoryScreen(),
+                              ),
+                            );
+                          },
+                          style: Theme.of(context).textButtonTheme.style,
+                          child: Text(
+                            'See all',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   if (visibleFriends.isEmpty)
-                    DetailsCard(
-                      child: Text(
-                        'Create a transaction with someone to add your first friend. Their profile can be linked later when they join Bicount.',
-                        style: Theme.of(context).textTheme.bodySmall,
+                    BicountReveal(
+                      delay: const Duration(milliseconds: 260),
+                      child: DetailsCard(
+                        child: Text(
+                          'Create a transaction with someone to add your first friend. Their profile can be linked later when they join Bicount.',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       ),
                     )
                   else
                     Column(
-                      children: visibleFriends.take(3).map((friend) {
-                        return FriendCard(
-                          friend: friend,
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => DetailFriend(friend: friend),
-                              ),
-                            );
-                          },
+                      children: visibleFriends.take(3).toList().asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final friend = entry.value;
+                        return BicountReveal(
+                          delay: Duration(milliseconds: 260 + (index * 45)),
+                          child: FriendCard(
+                            friend: friend,
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => DetailFriend(friend: friend),
+                                ),
+                              );
+                            },
+                          ),
                         );
                       }).toList(),
                     ),

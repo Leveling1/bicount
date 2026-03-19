@@ -1,4 +1,5 @@
 ﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/graph/presentation/bloc/graph_bloc.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_cashflow_chart.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_expense_breakdown_card.dart';
@@ -56,39 +57,80 @@ class GraphScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Overview', style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: AppDimens.marginSmall),
-                Text(
-                  'Track your flow, spot your recurring costs and keep the useful signals close.',
-                  style: Theme.of(context).textTheme.bodySmall,
+                BicountReveal(
+                  delay: const Duration(milliseconds: 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Overview',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: AppDimens.marginSmall),
+                      Text(
+                        'Track your flow, spot your recurring costs and keep the useful signals close.',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: AppDimens.marginLarge),
-                GraphPeriodSelector(
-                  selectedPeriod: state.period,
-                  onSelected: (period) {
-                    context.read<GraphBloc>().add(GraphPeriodChanged(period));
-                  },
+                BicountReveal(
+                  delay: const Duration(milliseconds: 90),
+                  child: GraphPeriodSelector(
+                    selectedPeriod: state.period,
+                    onSelected: (period) {
+                      context.read<GraphBloc>().add(GraphPeriodChanged(period));
+                    },
+                  ),
                 ),
                 const SizedBox(height: AppDimens.marginLarge),
-                GraphMetricOverview(dashboard: dashboard),
-                const SizedBox(height: AppDimens.marginLarge),
-                Text(
-                  'Cashflow trend',
-                  style: Theme.of(context).textTheme.titleMedium,
+                BicountReveal(
+                  delay: const Duration(milliseconds: 140),
+                  child: GraphMetricOverview(dashboard: dashboard),
                 ),
-                GraphCashflowChart(dashboard: dashboard),
                 const SizedBox(height: AppDimens.marginLarge),
-                Text(
-                  'Expense mix',
-                  style: Theme.of(context).textTheme.titleMedium,
+                BicountReveal(
+                  delay: const Duration(milliseconds: 190),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Cashflow trend',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      GraphCashflowChart(dashboard: dashboard),
+                    ],
+                  ),
                 ),
-                GraphExpenseBreakdownCard(dashboard: dashboard),
                 const SizedBox(height: AppDimens.marginLarge),
-                Text(
-                  'Subscriptions',
-                  style: Theme.of(context).textTheme.titleMedium,
+                BicountReveal(
+                  delay: const Duration(milliseconds: 230),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Expense mix',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      GraphExpenseBreakdownCard(dashboard: dashboard),
+                    ],
+                  ),
                 ),
-                GraphSubscriptionInsightCard(dashboard: dashboard),
+                const SizedBox(height: AppDimens.marginLarge),
+                BicountReveal(
+                  delay: const Duration(milliseconds: 270),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Subscriptions',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      GraphSubscriptionInsightCard(dashboard: dashboard),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

@@ -606,3 +606,23 @@ Backend note:
 
 - if you want database-level enforcement, add a unique constraint on `device_tokens.user_uid`
 - this current mobile behavior matches the requested product rule of one token row per user
+
+## Motion Update (2026-03-19)
+
+A lightweight motion layer is now part of the visible V1 experience.
+
+Rules:
+
+- use `lib/core/widgets/bicount_reveal.dart` for one-shot section reveals
+- prefer `AnimatedOpacity`, `AnimatedSlide`, `AnimatedScale`, `AnimatedContainer`, and `AnimatedSwitcher`
+- keep durations short, usually between 180ms and 320ms
+- animation should support comprehension and hierarchy, not decoration for its own sake
+- avoid heavy blur, long-running controllers, parallax, or effects that reanimate large scrolling lists continuously
+- when animating lists, only animate the first visible items or section entry, and keep the delays subtle
+
+Current visible motion touchpoints:
+
+- shell tab selection in `custom_bottom_navigation_bar.dart`
+- Home screen section reveals
+- Graphs screen staged reveals
+- Profile and friends flow staged reveals

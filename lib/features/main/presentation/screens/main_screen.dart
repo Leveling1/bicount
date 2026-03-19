@@ -6,6 +6,7 @@ import 'package:bicount/features/graph/presentation/screens/graph_screen.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
+import 'package:bicount/features/main/presentation/helpers/main_screen_helpers.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_app_bar.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_body.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_fab.dart';
@@ -32,8 +33,6 @@ class _MainScreenState extends State<MainScreen> {
   bool showSearchBar = false;
   int _selectedIndex = 0;
   int _selectedIndexTransaction = 0;
-
-  static const _titles = ['', 'Graphs', 'Transaction', 'Profile'];
 
   @override
   void initState() {
@@ -69,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
         final data = state is MainLoaded
             ? state.startData
             : MainEntity.fromEmpty();
-        final preparedData = _prepareData(data);
+        final preparedData = prepareMainScreenData(data);
 
         return Scaffold(
           backgroundColor: Theme.of(
@@ -77,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
           ).bottomNavigationBarTheme.backgroundColor,
           appBar: MainShellAppBar(
             connectionState: preparedData.connectionState,
-            title: _titles[_selectedIndex],
+            title: mainShellTitles[_selectedIndex],
             selectedIndex: _selectedIndex,
             showSearchBar: showSearchBar,
             onToggleSearch: () =>
@@ -106,21 +105,6 @@ class _MainScreenState extends State<MainScreen> {
               FloatingActionButtonLocation.centerFloat,
         );
       },
-    );
-  }
-
-  MainEntity _prepareData(MainEntity data) {
-    final sortedTransactions = List.of(data.transactions);
-    if (sortedTransactions.length > 1) {
-      sortedTransactions.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-    }
-
-    return MainEntity(
-      user: data.user,
-      connectionState: data.connectionState,
-      friends: data.friends,
-      subscriptions: data.subscriptions,
-      transactions: sortedTransactions,
     );
   }
 
@@ -169,13 +153,13 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onItemTapped(int index) {
     final distance = (_selectedIndex - index).abs();
-    const duration = Duration(milliseconds: 500);
+    const duration = Duration(milliseconds: 380);
 
     if (distance == 1) {
       pageController.animateToPage(
         index,
         duration: duration,
-        curve: Curves.linear,
+        curve: Curves.easeOutCubic,
       );
     } else {
       pageController.jumpToPage(index);

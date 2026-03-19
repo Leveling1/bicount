@@ -1,7 +1,8 @@
-import 'package:bicount/core/constants/icon_links.dart';
+﻿import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
+import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/home/presentation/widgets/card_type_revenue.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
@@ -44,150 +45,150 @@ class HomeScreen extends StatelessWidget {
               horizontal: AppDimens.paddingMedium,
             ),
             height: height - AppDimens.bottomBarHeight.h,
-            child: BlocBuilder<HomeBloc, HomeState>(
-              builder: (context, state) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: AppDimens.spacingMedium,
-                  children: [
-                    SizedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppDimens.paddingExtraLarge,
-                        ),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Text(
-                                "Your balance",
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
-
-                              Text(
-                                NumberFormatUtils.formatCurrency(
-                                  data.user.balance ?? 0.0,
-                                ),
-                                style: (data.user.balance ?? 0.0) >= 0
-                                    ? Theme.of(context).textTheme.titleLarge!
-                                          .copyWith(fontWeight: FontWeight.bold)
-                                    : Theme.of(
-                                        context,
-                                      ).textTheme.titleLarge!.copyWith(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: AppDimens.spacingMedium,
+              children: [
+                BicountReveal(
+                  delay: const Duration(milliseconds: 40),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppDimens.paddingExtraLarge,
+                    ),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            'Your balance',
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                          Text(
+                            NumberFormatUtils.formatCurrency(
+                              data.user.balance ?? 0.0,
+                            ),
+                            style: (data.user.balance ?? 0.0) >= 0
+                                ? Theme.of(context).textTheme.titleLarge!
+                                      .copyWith(fontWeight: FontWeight.bold)
+                                : Theme.of(context).textTheme.titleLarge!
+                                      .copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.red,
                                       ),
-                              ),
-                            ],
                           ),
-                        ),
+                        ],
                       ),
                     ),
-                    Text(
-                      "Accounts",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: CardTypeRevenue(
-                            onTap: () {
-                              onCardTap?.call(3);
-                            },
-                            label: "Personal",
-                            amount: data.user.personalIncome != null
-                                ? data.user.personalIncome!
-                                : 0.0,
-                            icon: SvgPicture.asset(
-                              IconLinks.user,
-                              width: AppDimens.iconSizeSmall,
-                              height: AppDimens.iconSizeSmall,
-                              colorFilter: ColorFilter.mode(
-                                Colors.white,
-                                BlendMode.srcIn,
+                  ),
+                ),
+                BicountReveal(
+                  delay: const Duration(milliseconds: 110),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Accounts',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: AppDimens.marginMedium),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CardTypeRevenue(
+                              onTap: () => onCardTap?.call(3),
+                              label: 'Personal',
+                              amount: data.user.personalIncome ?? 0.0,
+                              icon: SvgPicture.asset(
+                                IconLinks.user,
+                                width: AppDimens.iconSizeSmall,
+                                height: AppDimens.iconSizeSmall,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
                               ),
+                              color: Theme.of(
+                                context,
+                              ).extension<OtherTheme>()!.personnalIncome!,
                             ),
-                            color: Theme.of(
-                              context,
-                            ).extension<OtherTheme>()!.personnalIncome!,
                           ),
-                        ),
-                        const SizedBox(width: AppDimens.marginMedium),
-                        Expanded(
-                          flex: 1,
-                          child: CardTypeRevenue(
-                            onTap: () {
-                              onCardTap?.call(1);
-                            },
-                            label: "Recurring",
-                            amount: recurringSpend,
-                            icon: SvgPicture.asset(
-                              IconLinks.graph,
-                              width: AppDimens.iconSizeSmall,
-                              height: AppDimens.iconSizeSmall,
-                              colorFilter: ColorFilter.mode(
-                                Colors.white,
-                                BlendMode.srcIn,
+                          const SizedBox(width: AppDimens.marginMedium),
+                          Expanded(
+                            child: CardTypeRevenue(
+                              onTap: () => onCardTap?.call(1),
+                              label: 'Recurring',
+                              amount: recurringSpend,
+                              icon: SvgPicture.asset(
+                                IconLinks.graph,
+                                width: AppDimens.iconSizeSmall,
+                                height: AppDimens.iconSizeSmall,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
                               ),
+                              color: Theme.of(context).primaryColor,
                             ),
-                            color: Theme.of(context).primaryColor,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                if (data.transactions.isNotEmpty)
+                  BicountReveal(
+                    delay: const Duration(milliseconds: 180),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Transactions',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        TextButton(
+                          onPressed: () => onCardTap?.call(2),
+                          style: Theme.of(context).textButtonTheme.style,
+                          child: Text(
+                            'show more',
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ),
                       ],
                     ),
-                    data.transactions.isNotEmpty
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Transactions",
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  onCardTap?.call(2); // TransactionScreen
-                                },
-                                style: Theme.of(context).textButtonTheme.style,
-                                child: Text(
-                                  "show more",
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ),
-                            ],
-                          )
-                        : const SizedBox.shrink(),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: EdgeInsets.only(bottom: 30.h),
-                        itemCount: data.transactions.length.clamp(0, 5),
-                        itemBuilder: (context, index) {
-                          final t = data.transactions[index];
-                          final entity = TransactionEntity.fromTransaction(t);
+                  ),
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.only(bottom: 30.h),
+                    itemCount: data.transactions.length.clamp(0, 5),
+                    itemBuilder: (context, index) {
+                      final entity = TransactionEntity.fromTransaction(
+                        data.transactions[index],
+                      );
 
-                          return TransactionCard(
-                            transaction: entity,
-                            onTap: () {
-                              showCustomBottomSheet(
-                                context: context,
-                                minHeight: 0.95,
-                                color: null,
-                                child: DetailTransactionScreen(
-                                  key: ValueKey(entity.tid),
-                                  transaction: TransactionDetailArgs(
-                                    user: data.user,
-                                    transactionDetail: entity,
-                                    friends: data.friends,
-                                  ),
+                      return BicountReveal(
+                        delay: Duration(milliseconds: 210 + (index * 45)),
+                        child: TransactionCard(
+                          transaction: entity,
+                          onTap: () {
+                            showCustomBottomSheet(
+                              context: context,
+                              minHeight: 0.95,
+                              color: null,
+                              child: DetailTransactionScreen(
+                                key: ValueKey(entity.tid),
+                                transaction: TransactionDetailArgs(
+                                  user: data.user,
+                                  transactionDetail: entity,
+                                  friends: data.friends,
                                 ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              },
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         );

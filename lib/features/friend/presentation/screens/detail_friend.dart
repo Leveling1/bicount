@@ -1,4 +1,5 @@
 ﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/details_card.dart';
@@ -48,36 +49,50 @@ class DetailFriend extends StatelessWidget {
                       vertical: AppDimens.paddingMedium,
                     ),
                     children: [
-                      DetailFriendHeader(
-                        friend: currentFriend,
-                        isLinkedProfile: detail.isLinkedProfile,
+                      BicountReveal(
+                        delay: const Duration(milliseconds: 30),
+                        child: DetailFriendHeader(
+                          friend: currentFriend,
+                          isLinkedProfile: detail.isLinkedProfile,
+                        ),
                       ),
                       const SizedBox(height: AppDimens.marginLarge),
                       if (detail.canShareProfile)
-                        DetailsCard(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.link_outlined,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  'This friend is still local to your account. Use the share button to link it when the person has created a Bicount profile.',
-                                  style: Theme.of(context).textTheme.bodySmall,
+                        BicountReveal(
+                          delay: const Duration(milliseconds: 90),
+                          child: DetailsCard(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.link_outlined,
+                                  color: Theme.of(context).primaryColor,
                                 ),
-                              ),
-                            ],
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    'This friend is still local to your account. Use the share button to link it when the person has created a Bicount profile.',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      DetailFriendMetrics(detail: detail),
+                      BicountReveal(
+                        delay: const Duration(milliseconds: 140),
+                        child: DetailFriendMetrics(detail: detail),
+                      ),
                       const SizedBox(height: AppDimens.marginLarge),
-                      DetailFriendTransactionSection(
-                        detail: detail,
-                        user: data.user,
-                        friends: data.friends,
+                      BicountReveal(
+                        delay: const Duration(milliseconds: 190),
+                        child: DetailFriendTransactionSection(
+                          detail: detail,
+                          user: data.user,
+                          friends: data.friends,
+                        ),
                       ),
                     ],
                   ),

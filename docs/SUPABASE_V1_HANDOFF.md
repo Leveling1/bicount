@@ -228,7 +228,7 @@ Recommended payload:
 {
   "category": "friend_invite",
   "title": "New invitation",
-  "body": "Louis invited you on Bicount",
+  "body": "youngsolver invited you on Bicount",
   "route": "/friend/invite?code=abc123",
   "invite_code": "abc123"
 }
