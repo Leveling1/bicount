@@ -36,7 +36,8 @@ class _FriendScreenState extends State<FriendScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.initialInviteCode != null && widget.initialInviteCode!.isNotEmpty) {
+      if (widget.initialInviteCode != null &&
+          widget.initialInviteCode!.isNotEmpty) {
         context.read<FriendBloc>().add(
           FriendInviteCodeReceived(widget.initialInviteCode!),
         );
@@ -46,7 +47,9 @@ class _FriendScreenState extends State<FriendScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final realtimeFriends = context.select<MainBloc, List<FriendsModel>>((bloc) {
+    final realtimeFriends = context.select<MainBloc, List<FriendsModel>>((
+      bloc,
+    ) {
       final state = bloc.state;
       if (state is MainLoaded) {
         return state.startData.friends;
@@ -54,25 +57,22 @@ class _FriendScreenState extends State<FriendScreen> {
       return widget.friends;
     });
 
-    final visibleFriends = realtimeFriends
-        .where((friend) => widget.user == null || friend.uid != widget.user!.uid)
-        .toList()
-      ..sort(
-        (left, right) => ((right.give ?? 0) - (right.receive ?? 0))
-            .compareTo((left.give ?? 0) - (left.receive ?? 0)),
-      );
+    final visibleFriends =
+        realtimeFriends
+            .where(
+              (friend) => widget.user == null || friend.uid != widget.user!.uid,
+            )
+            .toList()
+          ..sort(
+            (left, right) => ((right.give ?? 0) - (right.receive ?? 0))
+                .compareTo((left.give ?? 0) - (left.receive ?? 0)),
+          );
 
     return BlocConsumer<FriendBloc, FriendState>(
       listener: _onStateChanged,
       builder: (context, state) {
         return SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(
-              AppDimens.paddingMedium,
-              AppDimens.paddingMedium,
-              AppDimens.paddingMedium,
-              AppDimens.paddingLarge,
-            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -98,13 +98,19 @@ class _FriendScreenState extends State<FriendScreen> {
                     invite: state.invitePreview!,
                     isSubmitting: state.isSubmitting,
                     onAccept: () {
-                      context.read<FriendBloc>().add(const FriendAcceptRequested());
+                      context.read<FriendBloc>().add(
+                        const FriendAcceptRequested(),
+                      );
                     },
                     onReject: () {
-                      context.read<FriendBloc>().add(const FriendRejectRequested());
+                      context.read<FriendBloc>().add(
+                        const FriendRejectRequested(),
+                      );
                     },
                     onClose: () {
-                      context.read<FriendBloc>().add(const FriendPreviewCleared());
+                      context.read<FriendBloc>().add(
+                        const FriendPreviewCleared(),
+                      );
                     },
                   ),
                   const SizedBox(height: AppDimens.marginLarge),
@@ -122,6 +128,7 @@ class _FriendScreenState extends State<FriendScreen> {
                 ),
                 const SizedBox(height: AppDimens.marginLarge),
                 FriendListCard(friends: visibleFriends),
+                const SizedBox(height: AppDimens.marginLarge),
               ],
             ),
           ),
@@ -161,7 +168,10 @@ class _FriendScreenState extends State<FriendScreen> {
     if (!mounted) {
       return;
     }
-    NotificationHelper.showSuccessNotification(context, 'Invitation link copied.');
+    NotificationHelper.showSuccessNotification(
+      context,
+      'Invitation link copied.',
+    );
   }
 
   Future<void> _openScanner() async {
