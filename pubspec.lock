@@ -130,13 +130,13 @@ packages:
     source: hosted
     version: "4.0.0"
   brick_offline_first:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: brick_offline_first
-      sha256: "997b3b14d8ba326fc5e2445de80ec1a5e7b3a92f3b438877a7128225e0aafba8"
+      sha256: acafff734c8c193d5ff99df077cdfc7dba523067a662461e5e28facf42d42fb2
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.2"
   brick_offline_first_build:
     dependency: transitive
     description:

@@ -108,4 +108,9 @@ class LocalGraphDataSourceImpl implements GraphLocalDataSource {
     _subscriptionsSubject = null;
     _accountFundingsSubject = null;
   }
+
+  void dispose() {
+    _authSubscription?.cancel();
+    _resetCaches();
+  }
 }

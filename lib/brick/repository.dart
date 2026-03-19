@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:brick_core/query.dart';
+import 'package:brick_offline_first/brick_offline_first.dart'
+    show OfflineFirstGetPolicy;
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_sqlite/memory_cache_provider.dart';
@@ -71,7 +73,8 @@ class Repository extends OfflineFirstWithSupabaseRepository {
   }
 
   @override
-  Stream<List<TModel>> subscribeToRealtime<TModel extends TRepositoryModel>({
+  Stream<List<TModel>>
+  subscribeToRealtime<TModel extends OfflineFirstWithSupabaseModel>({
     PostgresChangeEvent eventType = PostgresChangeEvent.all,
     OfflineFirstGetPolicy policy = OfflineFirstGetPolicy.alwaysHydrate,
     Query? query,
@@ -107,7 +110,9 @@ class Repository extends OfflineFirstWithSupabaseRepository {
               onError: (error, stackTrace) =>
                   subject.addError(error, stackTrace),
               onDone: () async {
-                await subject.close();
+                if (!subject.isClosed) {
+                  await subject.close();
+                }
                 _sharedRealtimeBindings.remove(key);
               },
             );
@@ -120,7 +125,9 @@ class Repository extends OfflineFirstWithSupabaseRepository {
         final activeSubscription = sourceSubscription;
         sourceSubscription = null;
         await activeSubscription?.cancel();
-        await subject.close();
+        if (!subject.isClosed) {
+          await subject.close();
+        }
         _sharedRealtimeBindings.remove(key);
       },
     );

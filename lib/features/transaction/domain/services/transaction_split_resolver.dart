@@ -130,7 +130,7 @@ class TransactionSplitResolver {
       final amount = amounts[entry.key];
       final percentage = request.totalAmount == 0
           ? 0.0
-          : math.min(100, (amount / request.totalAmount) * 100);
+          : math.min<double>(100, (amount / request.totalAmount) * 100);
       return ResolvedTransactionSplitEntity(
         beneficiary: entry.value.beneficiary,
         amount: amount,

@@ -1,7 +1,7 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/services/notification_helper.dart';
-import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';

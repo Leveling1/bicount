@@ -1,10 +1,8 @@
-import 'package:bicount/core/services/smooth_insert.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/services/notification_helper.dart';
-import '../../../../core/widgets/custom_search_field.dart';
 import '../bloc/list_bloc/list_bloc.dart';
 import '../widgets/company_card.dart';
 import '../widgets/company_card_skeleton.dart';

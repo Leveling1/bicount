@@ -13,11 +13,6 @@ class TransactionError extends TransactionState {
   TransactionError(this.failure);
 }
 
-class TransactionLinkedUsersLoaded extends TransactionState {
-  final List<UserEntity> users;
-  TransactionLinkedUsersLoaded(this.users);
-}
-
 // Subscription states
 class SubscriptionLoading extends TransactionState {}
 

@@ -39,7 +39,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       await Repository().upsert<FriendsModel>(friendAdd);
       return Right(friendAdd);
     } catch (_) {
-      return const Left(
+      return Left(
         MessageFailure(
           message: 'An error occurred while saving your new friend.',
         ),
@@ -87,7 +87,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       await Repository().upsert<TransactionModel>(transactionModel);
       return const Right(null);
     } catch (_) {
-      return const Left(
+      return Left(
         MessageFailure(message: 'The transaction could not be saved.'),
       );
     }
@@ -132,7 +132,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       await Repository().upsert<SubscriptionModel>(subscription);
       return const Right(null);
     } catch (_) {
-      return const Left(
+      return Left(
         MessageFailure(
           message:
               'An error occurred while unsubscribing from the subscription.',

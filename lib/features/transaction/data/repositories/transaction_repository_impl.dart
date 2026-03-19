@@ -1,13 +1,11 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
-import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
 import 'package:bicount/features/transaction/domain/entities/subscription_entity.dart';
 import 'package:bicount/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:bicount/features/transaction/domain/services/transaction_split_resolver.dart';
-import 'package:dartz/dartz.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/errors/failure.dart';

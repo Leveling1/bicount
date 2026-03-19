@@ -162,4 +162,9 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     _transactionsSubject = null;
     _subscriptionsSubject = null;
   }
+
+  void dispose() {
+    _authSubscription?.cancel();
+    _resetCaches();
+  }
 }
