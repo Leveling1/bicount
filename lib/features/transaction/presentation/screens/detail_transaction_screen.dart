@@ -15,16 +15,14 @@ import '../../../../core/widgets/details_card.dart';
 
 class DetailTransactionScreen extends StatelessWidget {
   final TransactionDetailArgs transaction;
-  DetailTransactionScreen({super.key, required this.transaction});
-
-  final double size = 20;
-  late TransactionEntity data;
-  final supabaseInstance = Supabase.instance.client;
-  late String uid = supabaseInstance.auth.currentUser!.id;
+  const DetailTransactionScreen({super.key, required this.transaction});
 
   @override
   Widget build(BuildContext context) {
-    data = transaction.transactionDetail;
+    const double size = 20;
+    final data = transaction.transactionDetail;
+    final supabaseInstance = Supabase.instance.client;
+    final uid = supabaseInstance.auth.currentUser!.id;
     String formattedDate = formatedDate(data.date);
     String formattedTime = formatedTime(data.date);
     String formattedCreatedDateTime = formatedDateTime(data.createdAt!);
