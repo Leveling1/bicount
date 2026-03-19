@@ -626,3 +626,30 @@ Current visible motion touchpoints:
 - Home screen section reveals
 - Graphs screen staged reveals
 - Profile and friends flow staged reveals
+
+## Backend Delta Doc Update (2026-03-19)
+
+A short backend action memo was added in `docs/new_action_on_back.md`.
+
+Use it when the need is not a full backend handoff, but a focused list of what still has to be done on Supabase for the current mobile build to work.
+
+Current emphasis in that memo:
+- targeted friend linking through `source_friend_sid`
+- preserving `friends.sid` while updating `friends.uid`
+- secure invite preview and reject flows through backend RPCs
+- realtime requirements for the visible V1 friend experience
+- `device_tokens` now assumes one active row per `user_uid`, with uniqueness already expected to exist on Supabase
+
+## Friend Share Reliability Update (2026-03-19)
+
+The friend share flow now updates the visible `FriendBloc` state immediately after a local invite is created.
+
+Why:
+- invite creation is cached locally first
+- remote invite creation or realtime propagation can be delayed or unavailable
+- the QR code and share link must still appear instantly in the bottom sheet
+
+Expected behavior now:
+- `Generate invite` immediately exposes the QR code and invite URL from local state
+- `Share link` and `Copy` become usable without waiting for Supabase realtime
+- the existing UI choices remain in place, including `CustomAppBar` and opening `FriendScreen` in `showCustomBottomSheet`

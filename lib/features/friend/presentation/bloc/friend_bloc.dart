@@ -39,9 +39,10 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     FriendCreateInviteRequested event,
     Emitter<FriendState> emit,
   ) async {
-    emit(state.copyWith(isSubmitting: true, flashMessage: null));
+    emit(state.copyWith(isSubmitting: true, flashMessage: null, errorMessage: null));
+
     try {
-      await repository.createInvite(
+      final share = await repository.createInvite(
         senderName: event.senderName,
         senderEmail: event.senderEmail,
         senderImage: event.senderImage,
@@ -49,6 +50,15 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
         sourceFriendName: event.sourceFriendName,
         sourceFriendEmail: event.sourceFriendEmail,
         sourceFriendImage: event.sourceFriendImage,
+      );
+      emit(
+        state.copyWith(
+          status: FriendStatus.ready,
+          hub: _hubWithActiveShare(share),
+          isSubmitting: false,
+          errorMessage: null,
+          flashMessage: null,
+        ),
       );
       add(const _FriendActionSucceeded('Invitation ready to share.'));
     } catch (error) {
@@ -72,7 +82,6 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     }
 
     emit(state.copyWith(isSubmitting: true, errorMessage: null));
-
     try {
       final invite = await repository.getInviteByCode(inviteCode);
       if (invite == null) {
@@ -130,10 +139,7 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     }
   }
 
-  void _onFriendPreviewCleared(
-    FriendPreviewCleared event,
-    Emitter<FriendState> emit,
-  ) {
+  void _onFriendPreviewCleared(FriendPreviewCleared event, Emitter<FriendState> emit) {
     emit(state.copyWith(invitePreview: null, flashMessage: null));
   }
 
@@ -144,14 +150,12 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
         hub: event.hub,
         isSubmitting: false,
         errorMessage: null,
+        flashMessage: null,
       ),
     );
   }
 
-  void _onFriendActionSucceeded(
-    _FriendActionSucceeded event,
-    Emitter<FriendState> emit,
-  ) {
+  void _onFriendActionSucceeded(_FriendActionSucceeded event, Emitter<FriendState> emit) {
     emit(
       state.copyWith(
         isSubmitting: false,
@@ -161,10 +165,7 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     );
   }
 
-  void _onFriendActionFailed(
-    _FriendActionFailed event,
-    Emitter<FriendState> emit,
-  ) {
+  void _onFriendActionFailed(_FriendActionFailed event, Emitter<FriendState> emit) {
     emit(
       state.copyWith(
         status: FriendStatus.failure,
@@ -174,6 +175,12 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
       ),
     );
   }
+
+  FriendHubEntity _hubWithActiveShare(FriendShareEntity share) => FriendHubEntity(
+    activeShare: share,
+    sentInvites: state.hub.sentInvites,
+    receivedInvites: state.hub.receivedInvites,
+  );
 
   @override
   Future<void> close() async {
