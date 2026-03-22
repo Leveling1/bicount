@@ -43,6 +43,7 @@
   "authYourEmailAddress": "Your email address",
   "authYourUserName": "Your user name",
   "authPassword": "Password",
+  "authConfirmPassword": "Confirm password",
   "authMinCharactersHint": "min. 8 characters",
   "authAgreeTerms": "I agree to the terms of use",
   "authContinueWithGoogle": "Continue with Google",

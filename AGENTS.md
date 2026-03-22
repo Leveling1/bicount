@@ -478,6 +478,7 @@ Stability work:
 - Android desugaring enabled for flutter_local_notifications
 - shared realtime stream protection added to the Brick repository
 - remote delete reconciliation added for offline cache consistency
+- local sign out now clears SQLite using Brick schema table names instead of hardcoded app table names
 
 ## Sensitive Areas
 
@@ -502,6 +503,7 @@ Be careful when editing these areas:
 8. When changing Brick subscriptions, remember that shared stream safety is already solved in lib/brick/repository.dart.
 9. When changing deletes or sync logic, do not remove the remote delete reconciliation unless you replace it with something equivalent.
 10. Keep documents in docs updated when backend contracts change.
+11. Do not hardcode SQLite table names for local cache cleanup; use the generated Brick schema so sign out stays aligned with real local tables.
 
 ## Suggested Read Order
 

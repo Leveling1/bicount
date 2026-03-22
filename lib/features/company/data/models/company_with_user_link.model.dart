@@ -3,8 +3,10 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/constants/tables_name.dart';
+
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(tableName: 'company_with_user_link'),
+  supabaseConfig: SupabaseSerializable(tableName: TablesName.companyWithUserLink),
 )
 class CompanyWithUserLinkModel extends OfflineFirstWithSupabaseModel {
   @Sqlite(name: 'company_id')

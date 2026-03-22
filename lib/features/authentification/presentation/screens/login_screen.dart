@@ -40,22 +40,22 @@ class LoginScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    BicountReveal(
+                    /*BicountReveal(
                       child: AuthBrandMark(
                         subtitle: context.l10n.authLoginWelcome,
                       ),
-                    ),
-                    const SizedBox(height: AppDimens.spacingLarge),
+                    ),*/
+                    AppDimens.spacerLarge,
                     BicountReveal(
                       delay: const Duration(milliseconds: 70),
                       child: Image.asset(AssetPaths.image_login, height: 220),
                     ),
-                    const SizedBox(height: AppDimens.spacingLarge),
+                    AppDimens.spacerLarge,
                     BicountReveal(
                       delay: const Duration(milliseconds: 120),
                       child: FieldsLogin(loading: state is SignInLoading),
                     ),
-                    const SizedBox(height: AppDimens.spacingExtraLarge),
+                    AppDimens.spacerMedium,
                     BicountReveal(
                       delay: const Duration(milliseconds: 170),
                       child: Row(

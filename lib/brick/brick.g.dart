@@ -9,25 +9,15 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 // ignore: unused_import, unused_shown_name, unnecessary_import
 import 'package:brick_supabase/brick_supabase.dart';
 // ignore: unused_import, unused_shown_name, unnecessary_import
-import 'package:uuid/uuid.dart'; // GENERATED CODE DO NOT EDIT
+import 'package:uuid/uuid.dart';
+// ignore: unused_import, unused_shown_name, unnecessary_import
+import '../../../../core/constants/tables_name.dart';// GENERATED CODE DO NOT EDIT
 // ignore: unused_import
 import 'dart:convert';
-import 'package:brick_sqlite/brick_sqlite.dart'
-    show
-        SqliteModel,
-        SqliteAdapter,
-        SqliteModelDictionary,
-        RuntimeSqliteColumnDefinition,
-        SqliteProvider;
-import 'package:brick_supabase/brick_supabase.dart'
-    show
-        SupabaseProvider,
-        SupabaseModel,
-        SupabaseAdapter,
-        SupabaseModelDictionary;
+import 'package:brick_sqlite/brick_sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition, SqliteProvider;
+import 'package:brick_supabase/brick_supabase.dart' show SupabaseProvider, SupabaseModel, SupabaseAdapter, SupabaseModelDictionary;
 // ignore: unused_import, unused_shown_name
-import 'package:brick_offline_first/brick_offline_first.dart'
-    show RuntimeOfflineFirstDefinition;
+import 'package:brick_offline_first/brick_offline_first.dart' show RuntimeOfflineFirstDefinition;
 // ignore: unused_import, unused_shown_name
 import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;
 
@@ -64,7 +54,7 @@ final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
   AccountFundingModel: AccountFundingModelAdapter(),
   ProjectModel: ProjectModelAdapter(),
   SubscriptionModel: SubscriptionModelAdapter(),
-  TransactionModel: TransactionModelAdapter(),
+  TransactionModel: TransactionModelAdapter()
 };
 final supabaseModelDictionary = SupabaseModelDictionary(supabaseMappings);
 
@@ -79,6 +69,6 @@ final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   AccountFundingModel: AccountFundingModelAdapter(),
   ProjectModel: ProjectModelAdapter(),
   SubscriptionModel: SubscriptionModelAdapter(),
-  TransactionModel: TransactionModelAdapter(),
+  TransactionModel: TransactionModelAdapter()
 };
 final sqliteModelDictionary = SqliteModelDictionary(sqliteMappings);

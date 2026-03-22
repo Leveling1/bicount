@@ -4,15 +4,14 @@ import 'package:brick_core/core.dart';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../../brick/db/schema.g.dart';
 import '../../../../../brick/repository.dart';
-import '../../../../../core/constants/tables_name.dart';
 import '../../models/user.model.dart';
 
 class LocalAuthentification implements AuthentificationLocalDataSource {
   final supabaseInstance = Supabase.instance.client;
   late String uid = supabaseInstance.auth.currentUser!.id;
 
-  /// For the local sign up process
   @override
   Future<Either<Failure, void>> signUp(
     String name,
@@ -39,7 +38,6 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
     }
   }
 
-  /// For the sign in process
   @override
   Future<Either<Failure, void>> signIn() async {
     try {
@@ -52,25 +50,19 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
     }
   }
 
-  /// For the sign out process
   @override
   Future<Either<Failure, void>> signOut() async {
     try {
-      final repo = Repository(); // ton Repository global
+      final repo = Repository();
 
-      // 1️⃣ Vider le cache mémoire
-      repo.memoryCacheProvider.reset();
-
-      // 2️⃣ Vider toutes les tables SQLite (sans fermer la connexion)
-      const tables = TablesName.listTable;
-      for (final table in tables) {
-        await repo.sqliteProvider.rawExecute('DELETE FROM `$table`');
+      for (final table in schema.tables) {
+        await repo.sqliteProvider.rawExecute('DELETE FROM `${table.name}`');
       }
-      return right(null);
+
+      repo.memoryCacheProvider.reset();
+      return const Right(null);
     } catch (e) {
-      return left(
-        AuthenticationFailure(message: "Échec de la déconnexion locale : $e"),
-      );
+      return Left(AuthenticationFailure(message: 'Local sign out failed: $e'));
     }
   }
 }

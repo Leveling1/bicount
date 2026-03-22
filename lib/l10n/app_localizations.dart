@@ -356,6 +356,12 @@ abstract class AppLocalizations {
   /// **'Password'**
   String get authPassword;
 
+  /// No description provided for @authPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get authConfirmPassword;
+
   /// No description provided for @authMinCharactersHint.
   ///
   /// In en, this message translates to:

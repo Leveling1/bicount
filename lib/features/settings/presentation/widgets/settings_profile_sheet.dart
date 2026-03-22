@@ -59,17 +59,17 @@ class _SettingsProfileSheetState extends State<SettingsProfileSheet> {
                   context.l10n.settingsProfileSheetTitle,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: AppDimens.marginSmall),
+                AppDimens.spacerSmall,
                 Text(
                   context.l10n.settingsProfileSheetDescription,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
-                const SizedBox(height: AppDimens.marginMedium),
+                AppDimens.spacerMedium,
                 Text(
                   context.l10n.settingsProfileNameLabel,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                const SizedBox(height: AppDimens.marginSmall),
+                AppDimens.spacerSmall,
                 TextFormField(
                   controller: _nameController,
                   validator: (value) =>
@@ -80,12 +80,12 @@ class _SettingsProfileSheetState extends State<SettingsProfileSheet> {
                     hintText: context.l10n.settingsProfileNameHint,
                   ),
                 ),
-                const SizedBox(height: AppDimens.marginMedium),
+                AppDimens.spacerMedium,
                 Text(
                   context.l10n.settingsProfileAvatarLabel,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                const SizedBox(height: AppDimens.marginSmall),
+                AppDimens.spacerSmall,
                 Wrap(
                   spacing: 12,
                   runSpacing: 12,
@@ -113,12 +113,13 @@ class _SettingsProfileSheetState extends State<SettingsProfileSheet> {
                     );
                   }).toList(),
                 ),
-                const SizedBox(height: AppDimens.marginLarge),
+                AppDimens.spacerLarge,
                 CustomButton(
                   text: context.l10n.settingsProfileSave,
                   loading: state.isPending(SettingsPendingAction.profile),
                   onPressed: _submit,
                 ),
+                AppDimens.spacerLarge
               ],
             ),
           );

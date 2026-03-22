@@ -38,12 +38,12 @@ class SignUpScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    BicountReveal(
+                    /*BicountReveal(
                       child: AuthBrandMark(
                         subtitle: context.l10n.authSignupLead,
                       ),
-                    ),
-                    const SizedBox(height: AppDimens.spacingLarge),
+                    ),*/
+                    AppDimens.spacerLarge,
                     BicountReveal(
                       delay: const Duration(milliseconds: 80),
                       child: Column(
@@ -60,12 +60,12 @@ class SignUpScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppDimens.spacingLarge),
+                    AppDimens.spacerLarge,
                     BicountReveal(
                       delay: const Duration(milliseconds: 130),
                       child: FieldsSignUp(loading: state is SignUpLoading),
                     ),
-                    const SizedBox(height: AppDimens.spacingExtraLarge),
+                    AppDimens.spacerMedium,
                     BicountReveal(
                       delay: const Duration(milliseconds: 180),
                       child: Row(
@@ -83,12 +83,12 @@ class SignUpScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    AppDimens.spacerLarge,
+                    AppDimens.spacerMedium,
                     const BicountReveal(
                       delay: Duration(milliseconds: 220),
                       child: Separator(),
                     ),
-                    AppDimens.spacerLarge,
+                    AppDimens.spacerMedium,
                     BicountReveal(
                       delay: const Duration(milliseconds: 260),
                       child: CustomGoogleAuthButton(

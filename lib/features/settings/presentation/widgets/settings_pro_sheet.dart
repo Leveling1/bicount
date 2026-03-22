@@ -57,12 +57,12 @@ class _SettingsProSheetState extends State<SettingsProSheet> {
                   context.l10n.settingsProSheetTitle,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: AppDimens.marginSmall),
+                AppDimens.spacerSmall,
                 Text(
                   context.l10n.settingsProSheetDescription,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
-                const SizedBox(height: AppDimens.marginMedium),
+                AppDimens.spacerMedium,
                 _SettingsField(
                   controller: _emailController,
                   label: context.l10n.settingsProContactEmailLabel,
@@ -89,12 +89,13 @@ class _SettingsProSheetState extends State<SettingsProSheet> {
                   hint: context.l10n.settingsProUseCaseHint,
                   maxLines: 4,
                 ),
-                const SizedBox(height: AppDimens.marginLarge),
+                AppDimens.spacerLarge,
                 CustomButton(
                   text: context.l10n.settingsProSubmit,
                   loading: state.isPending(SettingsPendingAction.pro),
                   onPressed: _submit,
                 ),
+                AppDimens.spacerLarge,
               ],
             ),
           );
@@ -146,7 +147,7 @@ class _SettingsField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: Theme.of(context).textTheme.titleSmall),
-          const SizedBox(height: AppDimens.marginSmall),
+          AppDimens.spacerLarge,
           TextFormField(
             controller: controller,
             validator: validator,

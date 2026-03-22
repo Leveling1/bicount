@@ -64,7 +64,6 @@ class OnboardingSlideView extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: AppDimens.spacingLarge),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppDimens.paddingMedium,
@@ -83,7 +82,7 @@ class OnboardingSlideView extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: AppDimens.spacingLarge),
+        AppDimens.spacerLarge,
         Text(
           slide.title,
           textAlign: TextAlign.center,
@@ -93,20 +92,20 @@ class OnboardingSlideView extends StatelessWidget {
             height: 1.08,
           ),
         ),
-        const SizedBox(height: AppDimens.spacingMedium),
+        AppDimens.spacerMedium,
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 460),
           child: Text(
             slide.description,
             textAlign: TextAlign.center,
-            style: theme.textTheme.bodyLarge?.copyWith(
+            style: theme.textTheme.bodyMedium?.copyWith(
               color: bodyColor,
               height: 1.45,
             ),
           ),
         ),
         if (slide.highlight != null) ...[
-          const SizedBox(height: AppDimens.spacingMedium),
+          AppDimens.spacerMedium,
           AnimatedContainer(
             duration: const Duration(milliseconds: 220),
             curve: Curves.easeOutCubic,

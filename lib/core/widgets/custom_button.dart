@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../constants/icon_links.dart';
+import '../themes/app_colors.dart';
 import '../themes/app_dimens.dart';
 
 class CustomButton extends StatelessWidget {
@@ -70,8 +71,22 @@ class CustomGoogleAuthButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: 50,
-      child: ElevatedButton(
+      child: OutlinedButton(
         onPressed: isLoading ? null : onPressed,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.tertiaryColorBasic,
+          backgroundColor: Theme.of(context).textTheme.titleLarge!.color!.withValues(alpha: 0.05),
+          side: BorderSide(
+            color: Theme.of(context).textTheme.titleLarge!.color!.withValues(alpha: 0.50),
+            width: 1.4,
+          ),
+          minimumSize: const Size.fromHeight(54),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              AppDimens.radiusMedium,
+            ),
+          ),
+        ),
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 180),
           switchInCurve: Curves.easeOutCubic,
@@ -88,7 +103,7 @@ class CustomGoogleAuthButton extends StatelessWidget {
                   key: const ValueKey('google_loading'),
                   height: 32,
                   child: LoadingAnimationWidget.horizontalRotatingDots(
-                    color: Theme.of(context).cardColor,
+                    color: Theme.of(context).textTheme.titleLarge!.color!,
                     size: 38,
                   ),
                 )
@@ -116,7 +131,7 @@ class CustomGoogleAuthButton extends StatelessWidget {
                             : context.l10n.authCreateGoogleAccount,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).textTheme.titleLarge?.color!,
                         ),
                       ),
                     ),

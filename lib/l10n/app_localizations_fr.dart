@@ -142,6 +142,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authPassword => 'Mot de passe';
 
   @override
+  String get authConfirmPassword => 'Confirmez le mot de passe';
+
+  @override
   String get authMinCharactersHint => '8 caractères min.';
 
   @override

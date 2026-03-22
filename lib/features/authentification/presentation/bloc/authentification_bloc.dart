@@ -17,6 +17,9 @@ class AuthentificationBloc
 
     // For the authentification with google process
     on<AuthWithGoogleEvent>(_authWithGoogle);
+
+    // For the sign out process
+    on<SignOutEvent>(_signOut);
   }
 
   /// For the sign in process
@@ -65,6 +68,21 @@ class AuthentificationBloc
     result.fold(
       (failure) => emit(AuthWithGoogleFailure(error: failure.message)),
       (user) => emit(AuthWithGoogleSuccess()),
+    );
+  }
+
+
+  /// For the sign out process
+  // Signout
+  Future<void> _signOut(
+    SignOutEvent event,
+    Emitter<AuthentificationState> emit,
+  ) async {
+    emit(SignOutLoading());
+    final result = await authentificationRepository.signOut();
+    result.fold(
+      (failure) => emit(SignOutFailure(error: failure.message)),
+      (user) => emit(SignOutSuccess()),
     );
   }
 }

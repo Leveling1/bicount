@@ -142,6 +142,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authPassword => 'Password';
 
   @override
+  String get authConfirmPassword => 'Confirm password';
+
+  @override
   String get authMinCharactersHint => 'min. 8 characters';
 
   @override

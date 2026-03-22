@@ -19,6 +19,7 @@ class _FieldsSignUpState extends State<FieldsSignUp> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final FocusNode _usernameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
@@ -79,6 +80,15 @@ class _FieldsSignUpState extends State<FieldsSignUp> {
           CustomTextField(
             label: context.l10n.authMinCharactersHint,
             textController: _passwordController,
+            type: CustomTextFieldType.password,
+            title: context.l10n.authPassword,
+            node: _passwordFocus,
+            textInputAction: TextInputAction.done,
+            onFieldSubmitted: (_) => _submit(),
+          ),
+          CustomTextField(
+            label: context.l10n.authConfirmPassword,
+            textController: _confirmPasswordController,
             type: CustomTextFieldType.password,
             title: context.l10n.authPassword,
             node: _passwordFocus,

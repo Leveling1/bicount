@@ -3,8 +3,10 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/constants/tables_name.dart';
+
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(tableName: 'transactions'),
+  supabaseConfig: SupabaseSerializable(tableName: TablesName.transactions),
 )
 class TransactionModel extends OfflineFirstWithSupabaseModel {
   @Sqlite(name: 'gtid')

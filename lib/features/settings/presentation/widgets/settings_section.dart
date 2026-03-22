@@ -1,6 +1,8 @@
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/themes/app_dimens.dart';
+
 class SettingsSection extends StatelessWidget {
   const SettingsSection({
     super.key,
@@ -18,15 +20,20 @@ class SettingsSection extends StatelessWidget {
     ) sync* {
       yield entry.value;
       if (entry.key != children.length - 1) {
-        yield Divider(color: Theme.of(context).dividerColor, height: 10);
+        yield Divider(
+          color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
+          height: 10
+        );
       }
     }).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        AppDimens.spacerMedium,
         Text(title, style: Theme.of(context).textTheme.titleMedium),
-        DetailsCard(child: Column(children: sectionChildren)),
+        AppDimens.spacerSmall,
+        DetailsCard(isMargin: false, child: Column(children: sectionChildren)),
       ],
     );
   }

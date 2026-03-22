@@ -26,9 +26,9 @@ class SettingsOptionSheet<T> extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: AppDimens.marginSmall),
+        AppDimens.spacerSmall,
         Text(description, style: Theme.of(context).textTheme.bodySmall),
-        const SizedBox(height: AppDimens.marginMedium),
+        AppDimens.spacerMedium,
         ...options.map(
           (option) => ListTile(
             contentPadding: EdgeInsets.zero,
@@ -44,6 +44,7 @@ class SettingsOptionSheet<T> extends StatelessWidget {
             },
           ),
         ),
+        AppDimens.spacerMedium
       ],
     );
   }

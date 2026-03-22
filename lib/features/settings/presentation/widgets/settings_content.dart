@@ -17,8 +17,6 @@ import 'package:bicount/features/settings/presentation/widgets/settings_section.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../authentification/presentation/bloc/authentification_bloc.dart';
-
 class SettingsContent extends StatelessWidget {
   const SettingsContent({super.key});
 
@@ -121,18 +119,13 @@ class SettingsContent extends StatelessWidget {
                 child: SettingsSection(
                   title: context.l10n.settingsSectionSecurity,
                   children: [
-                    BlocBuilder<AuthentificationBloc, AuthentificationState>(
-                      builder: (context, localeState) {
-                        return SettingsActionTile(
-                          icon: Icons.logout,
-                          title: context.l10n.settingsSignOutTitle,
-                          subtitle: context.l10n.settingsSignOutDescription,
-                          onTap: () =>
-                              context.read<AuthentificationBloc>().add(
-                                SignOutEvent(),
-                              ),
-                        );
-                      }
+                    SettingsActionTile(
+                      icon: Icons.logout,
+                      title: context.l10n.settingsSignOutTitle,
+                      subtitle: context.l10n.settingsSignOutDescription,
+                      onTap: () => context.read<SettingsBloc>().add(
+                        const SettingsSignOutRequested(),
+                      ),
                     ),
                     SettingsActionTile(
                       icon: Icons.delete_outline,

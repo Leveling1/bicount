@@ -55,12 +55,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
               child: Column(
                 children: [
-                  BicountReveal(
-                    child: AuthBrandMark(
-                      subtitle: context.l10n.authBrandSubtitle,
-                    ),
-                  ),
-                  const SizedBox(height: AppDimens.spacingLarge),
                   Expanded(
                     child: BicountReveal(
                       delay: const Duration(milliseconds: 70),
