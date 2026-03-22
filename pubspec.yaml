@@ -71,7 +71,6 @@ flutter:
   assets:
     - assets/logo/
     - assets/images/
-    - assets/memoji/
     - assets/icons/
     - assets/app_icon/
 

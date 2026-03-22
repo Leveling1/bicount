@@ -9,6 +9,7 @@ import 'package:bicount/features/friend/presentation/screens/detail_friend.dart'
 import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_card.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_directory_header.dart';
+import 'package:bicount/features/friend/presentation/widgets/friends_directory_skeleton.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class FriendsDirectoryScreen extends StatelessWidget {
             ],
           ),
           body: data == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const FriendsDirectorySkeleton()
               : SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

@@ -25,15 +25,7 @@ class GraphPeriodSelector extends StatelessWidget {
               label: Text(context.graphPeriodLabel(period)),
               selected: selected,
               backgroundColor: Theme.of(context).cardColor,
-              selectedColor: Theme.of(
-                context,
-              ).primaryColor.withValues(alpha: 0.16),
-              labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: selected
-                    ? Theme.of(context).primaryColor
-                    : Theme.of(context).textTheme.bodyMedium?.color,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-              ),
+              selectedColor: Theme.of(context).primaryColor,
               onSelected: (_) => onSelected(period),
               side: BorderSide.none,
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
+
+import 'bicount_skeleton.dart';
 
 class CircleImageSkeleton extends StatelessWidget {
   final double width;
@@ -13,11 +14,9 @@ class CircleImageSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SkeletonItem(
-      child: CircleAvatar(
-        radius: width,
-        backgroundColor: Theme.of(context).cardColor.withValues(alpha: 0.3),
-      ),
+    return BicountSkeletonCircle(
+      size: width * 2,
+      margin: EdgeInsets.zero,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:bicount/core/errors/failure.dart';
+import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/features/authentification/data/data_sources/local_datasource/authentification_local_datasource.dart';
 import 'package:brick_core/core.dart';
 import 'package:dartz/dartz.dart';
@@ -21,7 +22,7 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
     try {
       final user = UserModel(
         uid: uid,
-        image: 'assets/memoji/memoji_1.png',
+        image: Constants.memojiDefault,
         email: email,
         username: name,
         incomes: 0.0,

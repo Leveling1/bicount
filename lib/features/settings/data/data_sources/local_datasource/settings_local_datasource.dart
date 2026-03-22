@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/features/settings/data/models/settings_memoji_page_model.dart';
+import 'package:bicount/features/settings/domain/entities/settings_memoji_page_entity.dart';
 import 'package:bicount/features/settings/domain/entities/settings_profile_update_entity.dart';
 import 'package:bicount/features/settings/domain/entities/theme_preference.dart';
 import 'package:brick_core/core.dart';
@@ -11,10 +15,13 @@ abstract class SettingsLocalDataSource {
   Future<AppThemePreference> readThemePreference();
   Future<void> saveThemePreference(AppThemePreference preference);
   Future<void> updateProfile(SettingsProfileUpdateEntity update);
+  Future<SettingsMemojiPageEntity?> readCachedMemojiPage();
+  Future<void> cacheMemojiPage(SettingsMemojiPageEntity page);
 }
 
 class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
   static const _themePreferenceKey = 'bicount_theme_preference';
+  static const _memojiCacheKey = 'bicount_settings_memoji_cache_v1';
 
   final SupabaseClient _client = Supabase.instance.client;
 
@@ -79,5 +86,29 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
     } catch (_) {
       throw MessageFailure(message: 'Unable to save your profile right now.');
     }
+  }
+
+  @override
+  Future<SettingsMemojiPageEntity?> readCachedMemojiPage() async {
+    final preferences = await SharedPreferences.getInstance();
+    final rawCache = preferences.getString(_memojiCacheKey);
+    if (rawCache == null || rawCache.isEmpty) {
+      return null;
+    }
+
+    try {
+      final json = jsonDecode(rawCache) as Map<String, dynamic>;
+      return SettingsMemojiPageModel.fromJson(json).toEntity();
+    } catch (_) {
+      await preferences.remove(_memojiCacheKey);
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheMemojiPage(SettingsMemojiPageEntity page) async {
+    final preferences = await SharedPreferences.getInstance();
+    final model = SettingsMemojiPageModel.fromEntity(page);
+    await preferences.setString(_memojiCacheKey, jsonEncode(model.toJson()));
   }
 }

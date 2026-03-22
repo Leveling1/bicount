@@ -1,8 +1,8 @@
 import 'package:bicount/features/group/domain/entities/member_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 import '../themes/app_dimens.dart';
+import 'app_avatar.dart';
 
 class UserCard extends StatelessWidget {
   final MemberModel user;
@@ -34,15 +34,7 @@ class UserCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Avatar
-                  CircleAvatar(
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    radius: 30,
-                    child: SizedBox(
-                      width: 60.w,
-                      height: 60.h,
-                      child: Image.asset(user.image!),
-                    ),
-                  ),
+                  AppAvatar(image: user.image, radius: 30),
                   const SizedBox(height: 12),
 
                   // Name and date

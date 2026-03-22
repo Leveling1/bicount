@@ -3,6 +3,7 @@ import 'package:bicount/features/authentification/data/repositories/authentifica
 import 'package:bicount/features/settings/data/data_sources/local_datasource/settings_local_datasource.dart';
 import 'package:bicount/features/settings/data/data_sources/remote_datasource/settings_remote_datasource.dart';
 import 'package:bicount/features/settings/domain/entities/delete_account_request_entity.dart';
+import 'package:bicount/features/settings/domain/entities/settings_memoji_page_entity.dart';
 import 'package:bicount/features/settings/domain/entities/pro_upgrade_request_entity.dart';
 import 'package:bicount/features/settings/domain/entities/settings_profile_update_entity.dart';
 import 'package:bicount/features/settings/domain/entities/theme_preference.dart';
@@ -37,6 +38,36 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
+  Future<SettingsMemojiPageEntity?> readCachedMemojiPage() {
+    return _localDataSource.readCachedMemojiPage();
+  }
+
+  @override
+  Future<SettingsMemojiPageEntity> fetchMemojiPage({
+    required int page,
+    int limit = 20,
+  }) async {
+    try {
+      final remotePage = await _remoteDataSource.fetchMemojiPage(
+        page: page,
+        limit: limit,
+      );
+      final mergedPage = page <= 1
+          ? remotePage
+          : _mergeMemojiPages(
+              await _localDataSource.readCachedMemojiPage(),
+              remotePage,
+            );
+      await _localDataSource.cacheMemojiPage(mergedPage);
+      return mergedPage;
+    } on Failure {
+      rethrow;
+    } catch (_) {
+      throw MessageFailure(message: 'Unable to load memoji right now.');
+    }
+  }
+
+  @override
   Future<void> requestProAccess(ProUpgradeRequestEntity request) async {
     try {
       await _remoteDataSource.requestProAccess(request);
@@ -63,5 +94,24 @@ class SettingsRepositoryImpl implements SettingsRepository {
     } catch (_) {
       throw MessageFailure(message: 'Unable to delete your account right now.');
     }
+  }
+
+  SettingsMemojiPageEntity _mergeMemojiPages(
+    SettingsMemojiPageEntity? cachedPage,
+    SettingsMemojiPageEntity freshPage,
+  ) {
+    if (cachedPage == null || cachedPage.items.isEmpty) {
+      return freshPage;
+    }
+
+    final mergedItems = [...cachedPage.items];
+    final knownUrls = mergedItems.map((item) => item.url).toSet();
+    for (final item in freshPage.items) {
+      if (knownUrls.add(item.url)) {
+        mergedItems.add(item);
+      }
+    }
+
+    return freshPage.copyWith(items: mergedItems);
   }
 }

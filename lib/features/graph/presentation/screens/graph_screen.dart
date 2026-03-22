@@ -6,10 +6,10 @@ import 'package:bicount/features/graph/presentation/widgets/graph_cashflow_chart
 import 'package:bicount/features/graph/presentation/widgets/graph_expense_breakdown_card.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_metric_card.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_period_selector.dart';
+import 'package:bicount/features/graph/presentation/widgets/graph_screen_skeleton.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_subscription_insight_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class GraphScreen extends StatelessWidget {
   const GraphScreen({super.key});
@@ -19,12 +19,7 @@ class GraphScreen extends StatelessWidget {
     return BlocBuilder<GraphBloc, GraphState>(
       builder: (context, state) {
         if (state.status == GraphStatus.loading && state.dashboard == null) {
-          return Center(
-            child: LoadingAnimationWidget.hexagonDots(
-              color: Theme.of(context).primaryColor,
-              size: 36,
-            ),
-          );
+          return const GraphScreenSkeleton();
         }
 
         if (state.status == GraphStatus.failure && state.dashboard == null) {
@@ -53,7 +48,7 @@ class GraphScreen extends StatelessWidget {
               AppDimens.paddingMedium,
               AppDimens.paddingLarge,
               AppDimens.paddingMedium,
-              120,
+              AppDimens.paddingMedium,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

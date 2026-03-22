@@ -65,6 +65,11 @@ class AppDimens {
   static const double modalDetailDiscountHeight = 350.0;
   static const double marketStatisticsChartHeight = 380.0;
   static const double videosMaxHeight = 400.0;
+  static const double settingsAvatarPickerHeight = 312.0;
+  static const double settingsAvatarPreviewRadius = 34.0;
+  static const double settingsAvatarTileRadius = 22.0;
+  static const double settingsAvatarTileSize = 64.0;
+  static const double skeletonTileHeight = 14.0;
 
   // Aspect ratios
   static const double aspectRatioWide = 18 / 9;

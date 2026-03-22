@@ -6,6 +6,7 @@ import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
+import 'package:bicount/features/friend/presentation/widgets/detail_friend_skeleton.dart';
 import 'package:bicount/features/friend/presentation/widgets/detail_friend_header.dart';
 import 'package:bicount/features/friend/presentation/widgets/detail_friend_metrics.dart';
 import 'package:bicount/features/friend/presentation/widgets/detail_friend_transaction_section.dart';
@@ -42,7 +43,7 @@ class DetailFriend extends StatelessWidget {
             ],
           ),
           body: data == null || detail == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const DetailFriendSkeleton()
               : SafeArea(
                   child: ListView(
                     padding: const EdgeInsets.symmetric(

@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'bicount_skeleton.dart';
+
 class AppAvatar extends StatelessWidget {
   final String? image;
   final double radius;
@@ -43,6 +45,7 @@ class AppAvatar extends StatelessWidget {
               : CachedNetworkImage(
                   imageUrl: imagePath,
                   fit: BoxFit.cover,
+                  placeholder: (_, __) => BicountSkeletonCircle(size: size),
                   errorWidget: (_, __, ___) => Icon(
                     fallbackIcon,
                     color: Theme.of(context).iconTheme.color,

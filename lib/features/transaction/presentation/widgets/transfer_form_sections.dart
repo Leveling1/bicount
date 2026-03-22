@@ -22,14 +22,7 @@ extension _TransferFormSections on _TransferFormState {
           AppDimens.spacerSmall,
           TransferFormSplitModeSection(
             splitMode: _splitMode,
-            onChanged: (mode) {
-              setState(() {
-                _splitMode = mode;
-                if (mode != TransactionSplitMode.equal) {
-                  _seedSplitInputsForCurrentMode(overwrite: false);
-                }
-              });
-            },
+            onChanged: _onSplitModeChanged,
           ),
           AppDimens.spacerMediumSmall,
           Align(
@@ -90,15 +83,7 @@ extension _TransferFormSections on _TransferFormState {
           dateController: _date,
           friendNames: friendNames,
           isCurrentUserSelected: _isCurrentUserAlias(_sender.text),
-          onCurrentUserChanged: (checked) {
-            setState(() {
-              if (checked == true) {
-                _sender.text = context.l10n.commonMe;
-              } else {
-                _sender.clear();
-              }
-            });
-          },
+          onCurrentUserChanged: _onCurrentUserChanged,
         ),
         AppDimens.spacerMedium,
         TransferFormBeneficiariesSection(
@@ -125,11 +110,7 @@ extension _TransferFormSections on _TransferFormState {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           TextButton(
-            onPressed: () {
-              setState(() {
-                _seedSplitInputsForCurrentMode(overwrite: true);
-              });
-            },
+            onPressed: _resetSplitInputs,
             child: Text(context.l10n.transactionSplitEqually),
           ),
         ],
@@ -144,7 +125,7 @@ extension _TransferFormSections on _TransferFormState {
             controller: controller,
             mode: _splitMode,
             currency: _selectedCurrency,
-            onChanged: (_) => setState(() {}),
+            onChanged: _onSplitValueChanged,
           ),
         );
       }),

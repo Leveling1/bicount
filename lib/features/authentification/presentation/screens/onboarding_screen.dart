@@ -5,7 +5,6 @@ import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/authentification/presentation/models/onboarding_slide.dart';
-import 'package:bicount/features/authentification/presentation/widgets/auth_brand_mark.dart';
 import 'package:bicount/features/authentification/presentation/widgets/onboarding_background.dart';
 import 'package:bicount/features/authentification/presentation/widgets/onboarding_carousel.dart';
 import 'package:bicount/features/authentification/presentation/widgets/onboarding_cta_row.dart';

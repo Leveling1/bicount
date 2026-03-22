@@ -4,7 +4,6 @@ import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
-import 'package:bicount/features/authentification/presentation/widgets/auth_brand_mark.dart';
 import 'package:bicount/features/authentification/presentation/widgets/fields_signup.dart';
 import 'package:bicount/features/authentification/presentation/widgets/separator.dart';
 import 'package:flutter/material.dart';

@@ -813,6 +813,29 @@ Rules:
 - validators in reusable form widgets must also use localized strings, not hardcoded English
 - Lingala remains feasible with a future `lib/l10n/app_ln.arb`; add it only when product scope explicitly includes it
 
+## Remote Memoji And Skeleton Update (2026-03-22)
+
+The settings profile editor no longer relies on a hardcoded local memoji catalog.
+
+Current contract:
+- profile avatar selection loads remote memoji from the Supabase Edge Function `get-memoji`
+- the function is called with `GET` query params `page` and `limit`
+- the app should progressively load more pages until `has_next` becomes false
+- already loaded memoji pages are cached locally so the picker can still show known avatars when the network is unavailable
+
+Implementation rules:
+- keep avatar-like URL displays on cached network widgets; `lib/core/widgets/app_avatar.dart` is the preferred entry point for profile and friend avatar rendering
+- do not reintroduce hardcoded memoji lists for the visible profile editing flow
+- if the memoji request fails and no cache exists yet, show the themed empty state with a retry action instead of a spinner or blank area
+- if cached memoji exist, prefer showing cached data first, then refresh page 1 in the background
+- keep the settings memoji picker paginated and lightweight; avoid downloading the whole catalog at once
+
+Loading rules:
+- visible screen loading states should prefer the shared skeleton components in `lib/core/widgets/bicount_skeleton.dart`
+- avoid introducing new `CircularProgressIndicator` screen states in visible V1 flows when a skeleton is more appropriate
+- button-level pending states may still use compact inline loading indicators when a skeleton would not fit the interaction
+- use `lib/core/themes/app_dimens.dart` for spacing, sizes, and repeated UI measurements in new loading and picker widgets
+
 ## Locale And Feedback Stability Update (2026-03-22)
 
 Recent behavior fixes now define the expected UX for locale fallback, onboarding motion, and transaction feedback.
