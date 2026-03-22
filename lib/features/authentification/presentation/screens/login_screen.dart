@@ -19,6 +19,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -48,7 +50,7 @@ class LoginScreen extends StatelessWidget {
                     AppDimens.spacerLarge,
                     BicountReveal(
                       delay: const Duration(milliseconds: 70),
-                      child: Image.asset(AssetPaths.image_login, height: 220),
+                      child: Image.asset(isDark ? AssetPaths.imageLoginDark : AssetPaths.imageLoginLight, height: 220),
                     ),
                     AppDimens.spacerLarge,
                     BicountReveal(

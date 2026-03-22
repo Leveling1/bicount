@@ -1,5 +1,4 @@
 class UserEntity {
-  final String? sid;
   final String uid;
   final String email;
   final String? username;
@@ -10,7 +9,6 @@ class UserEntity {
   final double? personalIncome;
 
   const UserEntity({
-    required this.sid,
     required this.uid,
     required this.email,
     required this.username,
@@ -23,13 +21,12 @@ class UserEntity {
 
   @override
   String toString() {
-    return 'User(id: $sid, uuid: $uid, email: $email, name: $username, sales: $sales, expenses: $expenses, profit: $profit, company_income: $companyIncome, personal_income: $personalIncome)';
+    return 'User(uid: $uid, email: $email, name: $username, sales: $sales, expenses: $expenses, profit: $profit, company_income: $companyIncome, personal_income: $personalIncome)';
   }
 
   factory UserEntity.fromData(Map<String, dynamic> data) {
     return UserEntity(
-      sid: data['sid'],
-      uid: data['uuid'] as String,
+      uid: data['uid'] as String,
       email: data['email'] as String,
       username: data['username'] as String,
       sales: data['sales'] as double?,

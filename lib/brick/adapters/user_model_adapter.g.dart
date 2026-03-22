@@ -20,7 +20,6 @@ Future<UserModel> _$UserModelFromSupabase(
     personalIncome: data['personal_income'] == null
         ? null
         : data['personal_income'] as double?,
-    sid: data['sid'] as String?,
   );
 }
 
@@ -39,7 +38,6 @@ Future<Map<String, dynamic>> _$UserModelToSupabase(
     'balance': instance.balance,
     'company_income': instance.companyIncome,
     'personal_income': instance.personalIncome,
-    'sid': instance.sid,
   };
 }
 
@@ -62,7 +60,6 @@ Future<UserModel> _$UserModelFromSqlite(
     personalIncome: data['personal_income'] == null
         ? null
         : data['personal_income'] as double?,
-    sid: data['sid'] as String,
   )..primaryKey = data['_brick_id'] as int;
 }
 
@@ -81,7 +78,6 @@ Future<Map<String, dynamic>> _$UserModelToSqlite(
     'balance': instance.balance,
     'company_income': instance.companyIncome,
     'personal_income': instance.personalIncome,
-    'sid': instance.sid,
   };
 }
 
@@ -131,15 +127,11 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
       association: false,
       columnName: 'personal_income',
     ),
-    'sid': const RuntimeSupabaseColumnDefinition(
-      association: false,
-      columnName: 'sid',
-    ),
   };
   @override
   final ignoreDuplicates = false;
   @override
-  final uniqueFields = {'sid'};
+  final uniqueFields = {'uid'};
   @override
   final Map<String, RuntimeSqliteColumnDefinition> fieldsToSqliteColumns = {
     'primaryKey': const RuntimeSqliteColumnDefinition(
@@ -202,12 +194,6 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
       iterable: false,
       type: double,
     ),
-    'sid': const RuntimeSqliteColumnDefinition(
-      association: false,
-      columnName: 'sid',
-      iterable: false,
-      type: String,
-    ),
   };
   @override
   Future<int?> primaryKeyByUniqueColumns(
@@ -216,8 +202,8 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
   ) async {
     final results = await executor.rawQuery(
       '''
-        SELECT * FROM `UserModel` WHERE sid = ? LIMIT 1''',
-      [instance.sid],
+        SELECT * FROM `UserModel` WHERE uid = ? LIMIT 1''',
+      [instance.uid],
     );
 
     // SQFlite returns [{}] when no results are found

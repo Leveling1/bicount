@@ -7,17 +7,28 @@ import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';
-import 'package:bicount/core/widgets/custom_suggestion_text_field.dart';
-import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
 import 'package:bicount/features/transaction/domain/services/transaction_split_resolver.dart';
+import 'package:bicount/features/transaction/presentation/widgets/split_input_row.dart';
+import 'package:bicount/features/transaction/presentation/widgets/split_preview_result.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_beneficiaries_section.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_beneficiary_list.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_party_section.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_preview_card.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_split_mode_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/themes/app_dimens.dart';
 import '../bloc/transaction_bloc.dart';
+
+part 'transfer_form_helpers.dart';
+part 'transfer_form_sections.dart';
+part 'transfer_form_split_logic.dart';
+part 'transfer_form_submission.dart';
 
 class TransferForm extends StatefulWidget {
   const TransferForm({super.key, required this.user, required this.friends});
@@ -71,291 +82,48 @@ class _TransferFormState extends State<TransferForm> {
     return BlocConsumer<TransactionBloc, TransactionState>(
       listenWhen: (previous, current) =>
           current is TransactionCreated || current is TransactionError,
-      listener: (context, state) {
-        if (state is TransactionCreated) {
-          NotificationHelper.showSuccessNotification(
-            context,
-            context.l10n.transactionSavedSuccess,
-          );
-          clearForm();
-        } else if (state is TransactionError) {
-          NotificationHelper.showFailureNotification(
-            context,
-            localizeRuntimeMessage(context, state.failure.message),
-          );
-        }
-      },
+      listener: _onTransactionStateChanged,
       builder: (context, state) {
         return Form(
           key: _formKey,
-          child: Column(
-            children: [
-              CustomFormField(
-                controller: _name,
-                label: context.l10n.commonTitle,
-                hint: context.l10n.transferEnterTransactionName,
-              ),
-              const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    context.l10n.commonAmount,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  CustomAmountField(amount: _amount, currency: _currency),
-                ],
-              ),
-              const SizedBox(height: 16),
-              CustomFormField(
-                controller: _note,
-                label: context.l10n.commonNote,
-                hint: context.l10n.commonPlaceholderNote,
-                enableValidator: false,
-              ),
-              const SizedBox(height: 16),
-              IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            context.l10n.transferPaidBy,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          CustomSuggestionTextField(
-                            controller: _sender,
-                            hintText: context.l10n.transferEnterSenderName,
-                            options: friendNames,
-                            isVisible: false,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      flex: 2,
-                      child: CustomFormField(
-                        controller: _date,
-                        hint: context.l10n.commonDateHint,
-                        inputType: TextInputType.datetime,
-                        isDate: true,
-                        label: context.l10n.commonWhen,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              CheckboxListTile(
-                value: _isCurrentUserAlias(_sender.text),
-                onChanged: (checked) {
-                  setState(() {
-                    if (checked == true) {
-                      _sender.text = context.l10n.commonMe;
-                    } else {
-                      _sender.clear();
-                    }
-                  });
-                },
-                title: Text(
-                  context.l10n.transferItsMePayer,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
-              ),
-              const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    context.l10n.transferBeneficiaries,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  CustomSuggestionTextField(
-                    controller: _beneficiary,
-                    onAdd: _addBeneficiary,
-                    isVisible: true,
-                    hintText: context.l10n.transferEnterBeneficiaryName,
-                    options: friendNames,
-                  ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      context.l10n.transferBeneficiariesHint,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ),
-                ],
-              ),
-              if (_beneficiaryList.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                Column(
-                  children: _beneficiaryList.asMap().entries.map((entry) {
-                    final friend = entry.value;
-                    final previewShare =
-                        splitPreview.sharesByKey[_beneficiaryKey(friend)];
-                    return SizedBox(
-                      width: double.infinity,
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          friend.username,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        subtitle: previewShare != null
-                            ? Text(
-                                '${context.l10n.commonPreview}: ${previewShare.amount.toStringAsFixed(2)} ${_currency.text.isEmpty ? 'USD' : _currency.text}',
-                                style: Theme.of(context).textTheme.bodySmall,
-                              )
-                            : null,
-                        trailing: IconButton(
-                          icon: const Icon(Icons.close, color: Colors.red),
-                          onPressed: () => _removeBeneficiary(entry.key),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 8),
-                _SplitModeSection(
-                  splitMode: _splitMode,
-                  onChanged: (mode) {
-                    setState(() {
-                      _splitMode = mode;
-                      if (mode != TransactionSplitMode.equal) {
-                        _seedSplitInputsForCurrentMode(overwrite: false);
-                      }
-                    });
-                  },
-                ),
-                const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    context.splitModeHelper(_splitMode),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-                if (_splitMode != TransactionSplitMode.equal) ...[
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        context.l10n.transactionSplitDetails,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _seedSplitInputsForCurrentMode(overwrite: true);
-                          });
-                        },
-                        child: Text(context.l10n.transactionSplitEqually),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  ..._beneficiaryList.map((friend) {
-                    final controller = _splitControllerFor(friend);
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: _SplitInputRow(
-                        friend: friend,
-                        controller: controller,
-                        mode: _splitMode,
-                        currency: _currency.text.isEmpty
-                            ? 'USD'
-                            : _currency.text,
-                        onChanged: (_) => setState(() {}),
-                      ),
-                    );
-                  }),
-                ],
-                const SizedBox(height: 12),
-                DetailsCard(
-                  child: splitPreview.errorMessage != null
-                      ? Text(
-                          localizeRuntimeMessage(
-                            context,
-                            splitPreview.errorMessage!,
-                          ),
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.error,
-                              ),
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              context.l10n.commonPreview,
-                              style: Theme.of(context).textTheme.bodyLarge
-                                  ?.copyWith(fontWeight: FontWeight.w700),
-                            ),
-                            const SizedBox(height: 10),
-                            ...splitPreview.resolvedSplits.map((split) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        split.beneficiary.username,
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyMedium,
-                                      ),
-                                    ),
-                                    if (split.percentage != null &&
-                                        _splitMode !=
-                                            TransactionSplitMode.customAmount)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 10,
-                                        ),
-                                        child: Text(
-                                          '${split.percentage!.toStringAsFixed(2)}%',
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodySmall,
-                                        ),
-                                      ),
-                                    Text(
-                                      '${split.amount.toStringAsFixed(2)} ${_currency.text.isEmpty ? 'USD' : _currency.text}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }),
-                          ],
-                        ),
-                ),
-              ],
-              const SizedBox(height: 32),
-              CustomButton(
-                text: context.l10n.commonSave,
-                loading: state is TransactionLoading,
-                onPressed: _submit,
-              ),
-              const SizedBox(height: 32),
-            ],
+          child: _buildFormBody(
+            context,
+            state: state,
+            friendNames: friendNames,
+            splitPreview: splitPreview,
           ),
         );
       },
     );
+  }
+
+  void _onCurrentUserChanged(bool? checked) {
+    setState(() {
+      if (checked == true) {
+        _sender.text = context.l10n.commonMe;
+      } else {
+        _sender.clear();
+      }
+    });
+  }
+
+  void _onSplitModeChanged(TransactionSplitMode mode) {
+    setState(() {
+      _splitMode = mode;
+      if (mode != TransactionSplitMode.equal) {
+        _seedSplitInputsForCurrentMode(overwrite: false);
+      }
+    });
+  }
+
+  void _resetSplitInputs() {
+    setState(() {
+      _seedSplitInputsForCurrentMode(overwrite: true);
+    });
+  }
+
+  void _onSplitValueChanged(String _) {
+    setState(() {});
   }
 
   void _addBeneficiary() {
@@ -395,255 +163,6 @@ class _TransferFormState extends State<TransferForm> {
     });
   }
 
-  void _submit() {
-    if (!(_formKey.currentState?.validate() ?? false)) {
-      return;
-    }
-
-    if (_beneficiaryList.isEmpty && _beneficiary.text.trim().isNotEmpty) {
-      _addBeneficiary();
-    }
-
-    if (_beneficiaryList.isEmpty) {
-      NotificationHelper.showFailureNotification(
-        context,
-        context.l10n.transactionAddAtLeastOneBeneficiary,
-      );
-      return;
-    }
-
-    final totalAmount = _parseAmount(_amount.text);
-    if (totalAmount == null || totalAmount <= 0) {
-      NotificationHelper.showFailureNotification(
-        context,
-        context.l10n.transactionEnterValidAmount,
-      );
-      return;
-    }
-
-    try {
-      final request = CreateTransactionRequestEntity(
-        name: _name.text.trim(),
-        date: _resolveTransactionDate(),
-        totalAmount: totalAmount,
-        currency: _currency.text.isEmpty ? 'USD' : _currency.text,
-        sender: _resolveSender(),
-        note: _note.text.trim(),
-        splitMode: _splitMode,
-        splits: _buildSplitInputs(),
-      );
-      _splitResolver.resolve(request);
-      context.read<TransactionBloc>().add(CreateTransactionEvent(request));
-    } on MessageFailure catch (error) {
-      NotificationHelper.showFailureNotification(
-        context,
-        localizeRuntimeMessage(context, error.message),
-      );
-    }
-  }
-
-  List<TransactionSplitInputEntity> _buildSplitInputs() {
-    return _beneficiaryList.map((friend) {
-      final value = _parseAmount(_splitControllerFor(friend).text);
-      return TransactionSplitInputEntity(
-        beneficiary: friend,
-        percentage: _splitMode == TransactionSplitMode.percentage
-            ? value
-            : null,
-        amount: _splitMode == TransactionSplitMode.customAmount ? value : null,
-      );
-    }).toList();
-  }
-
-  FriendsModel _resolveSender() {
-    if (_sender.text.trim().isEmpty && widget.user != null) {
-      return _toCurrentUserParty();
-    }
-    return _resolveParty(_sender.text.trim());
-  }
-
-  FriendsModel _resolveParty(String rawValue) {
-    if (_isCurrentUserAlias(rawValue) && widget.user != null) {
-      return _toCurrentUserParty();
-    }
-
-    return widget.friends.firstWhere(
-      (friend) => friend.username.toLowerCase() == rawValue.toLowerCase(),
-      orElse: () => FriendsModel(
-        sid: '',
-        username: rawValue,
-        uid: '',
-        image: Constants.memojiDefault,
-        email: '',
-        relationType: FriendConst.friend,
-      ),
-    );
-  }
-
-  FriendsModel _toCurrentUserParty() {
-    final user = widget.user!;
-    return FriendsModel(
-      sid: user.sid,
-      username: user.username,
-      uid: user.uid,
-      image: user.image,
-      email: user.email,
-      relationType: FriendConst.friend,
-    );
-  }
-
-  TextEditingController _splitControllerFor(FriendsModel friend) {
-    final key = _beneficiaryKey(friend);
-    return _splitControllers.putIfAbsent(key, TextEditingController.new);
-  }
-
-  void _seedSplitInputsForCurrentMode({required bool overwrite}) {
-    if (_beneficiaryList.isEmpty) {
-      return;
-    }
-
-    if (_splitMode == TransactionSplitMode.percentage) {
-      final count = _beneficiaryList.length;
-      var distributed = 0.0;
-      for (var index = 0; index < _beneficiaryList.length; index++) {
-        final friend = _beneficiaryList[index];
-        final controller = _splitControllerFor(friend);
-        if (!overwrite && controller.text.trim().isNotEmpty) {
-          continue;
-        }
-
-        final value = index == count - 1
-            ? (100 - distributed)
-            : double.parse((100 / count).toStringAsFixed(2));
-        distributed += value;
-        controller.text = value.toStringAsFixed(2);
-      }
-      return;
-    }
-
-    if (_splitMode == TransactionSplitMode.customAmount) {
-      final totalAmount = _parseAmount(_amount.text);
-      if (totalAmount == null || totalAmount <= 0) {
-        return;
-      }
-
-      final previewRequest = CreateTransactionRequestEntity(
-        name: _name.text.trim().isEmpty
-            ? context.l10n.commonPreview
-            : _name.text.trim(),
-        date: _resolveTransactionDate(),
-        totalAmount: totalAmount,
-        currency: _currency.text.isEmpty ? 'USD' : _currency.text,
-        sender: widget.user != null
-            ? _toCurrentUserParty()
-            : _beneficiaryList.first,
-        note: _note.text.trim(),
-        splitMode: TransactionSplitMode.equal,
-        splits: _beneficiaryList
-            .map((friend) => TransactionSplitInputEntity(beneficiary: friend))
-            .toList(),
-      );
-
-      final equalShares = _splitResolver.resolve(previewRequest);
-      for (final share in equalShares) {
-        final controller = _splitControllerFor(share.beneficiary);
-        if (!overwrite && controller.text.trim().isNotEmpty) {
-          continue;
-        }
-        controller.text = share.amount.toStringAsFixed(2);
-      }
-    }
-  }
-
-  _SplitPreviewResult _buildPreview() {
-    if (_beneficiaryList.isEmpty) {
-      return _SplitPreviewResult(resolvedSplits: [], sharesByKey: {});
-    }
-
-    final totalAmount = _parseAmount(_amount.text);
-    if (totalAmount == null || totalAmount <= 0) {
-      return _SplitPreviewResult(
-        resolvedSplits: [],
-        sharesByKey: {},
-        errorMessage: context.l10n.transactionPreviewEnterValidTotal,
-      );
-    }
-
-    try {
-      final request = CreateTransactionRequestEntity(
-        name: _name.text.trim().isEmpty
-            ? context.l10n.commonPreview
-            : _name.text.trim(),
-        date: _resolveTransactionDate(),
-        totalAmount: totalAmount,
-        currency: _currency.text.isEmpty ? 'USD' : _currency.text,
-        sender: widget.user != null
-            ? _toCurrentUserParty()
-            : _beneficiaryList.first,
-        note: _note.text.trim(),
-        splitMode: _splitMode,
-        splits: _buildSplitInputs(),
-      );
-      final resolved = _splitResolver.resolve(request);
-      return _SplitPreviewResult(
-        resolvedSplits: resolved,
-        sharesByKey: {
-          for (final split in resolved)
-            _beneficiaryKey(split.beneficiary): split,
-        },
-      );
-    } on MessageFailure catch (error) {
-      return _SplitPreviewResult(
-        resolvedSplits: const [],
-        sharesByKey: const {},
-        errorMessage: error.message,
-      );
-    }
-  }
-
-  double? _parseAmount(String rawValue) {
-    if (rawValue.trim().isEmpty) {
-      return null;
-    }
-    return double.tryParse(rawValue.replaceAll(',', '.'));
-  }
-
-  String _resolveTransactionDate() {
-    if (_date.text.isEmpty) {
-      return DateTime.now().toIso8601String();
-    }
-
-    final parsedDate =
-        DateTime.tryParse(_date.text) ??
-        DateFormat('dd/MM/yy').tryParseStrict(_date.text) ??
-        DateFormat('dd/MM/yyyy').tryParseStrict(_date.text);
-    if (parsedDate != null) {
-      return parsedDate.toIso8601String();
-    }
-
-    return DateTime.now().toIso8601String();
-  }
-
-  bool _isCurrentUserAlias(String rawValue) {
-    final value = rawValue.trim().toLowerCase();
-    if (value.isEmpty) {
-      return false;
-    }
-
-    return <String>{
-      'me',
-      'moi',
-      context.l10n.commonMe.toLowerCase(),
-    }.contains(value);
-  }
-
-  String _beneficiaryKey(FriendsModel friend) {
-    if (friend.sid.isNotEmpty) {
-      return friend.sid;
-    }
-    return '${friend.username.toLowerCase()}::${friend.email.toLowerCase()}';
-  }
-
   void clearForm() {
     setState(() {
       _name.clear();
@@ -661,109 +180,4 @@ class _TransferFormState extends State<TransferForm> {
       _splitControllers.clear();
     });
   }
-}
-
-class _SplitModeSection extends StatelessWidget {
-  const _SplitModeSection({required this.splitMode, required this.onChanged});
-
-  final TransactionSplitMode splitMode;
-  final ValueChanged<TransactionSplitMode> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.l10n.transactionSplitMethod,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: TransactionSplitMode.values.map((mode) {
-            return ChoiceChip(
-              label: Text(context.splitModeLabel(mode)),
-              selected: splitMode == mode,
-              onSelected: (_) => onChanged(mode),
-              side: BorderSide.none,
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-}
-
-class _SplitInputRow extends StatelessWidget {
-  const _SplitInputRow({
-    required this.friend,
-    required this.controller,
-    required this.mode,
-    required this.currency,
-    required this.onChanged,
-  });
-
-  final FriendsModel friend;
-  final TextEditingController controller;
-  final TransactionSplitMode mode;
-  final String currency;
-  final ValueChanged<String> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final suffix = mode == TransactionSplitMode.percentage ? '%' : currency;
-
-    return DetailsCard(
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  friend.username,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  mode == TransactionSplitMode.percentage
-                      ? context.l10n.transactionSetPercentageReceived
-                      : context.l10n.transactionSetExactAmountReceived,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          SizedBox(
-            width: 120,
-            child: TextFormField(
-              controller: controller,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              decoration: InputDecoration(suffixText: suffix, hintText: '0.00'),
-              onChanged: onChanged,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SplitPreviewResult {
-  const _SplitPreviewResult({
-    required this.resolvedSplits,
-    required this.sharesByKey,
-    this.errorMessage,
-  });
-
-  final List<ResolvedTransactionSplitEntity> resolvedSplits;
-  final Map<String, ResolvedTransactionSplitEntity> sharesByKey;
-  final String? errorMessage;
 }

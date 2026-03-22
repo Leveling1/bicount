@@ -20,7 +20,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     const icons = [
       IconLinks.home,
-      IconLinks.graph,
+      IconLinks.graphIcon,
       IconLinks.transaction,
       IconLinks.user,
     ];

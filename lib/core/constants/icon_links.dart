@@ -12,4 +12,5 @@ class IconLinks {
   static const String note = 'assets/icons/note.svg';
   static const String frequency = 'assets/icons/frequency_icon.svg';
   static const String googleIcon = 'assets/icons/google.svg';
+  static const String graphIcon = 'assets/icons/graph_icon.svg';
 }

@@ -26,7 +26,6 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
     );
     if (response.user != null) {
       return entity.UserEntity(
-        sid: '',
         uid: response.user!.id,
         username: '',
         email: response.user!.email ?? '',
@@ -44,7 +43,6 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
     );
     if (response.user != null) {
       return entity.UserEntity(
-        sid: '',
         uid: response.user!.id,
         username: '',
         email: response.user!.email ?? '',

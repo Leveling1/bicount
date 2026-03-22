@@ -62,7 +62,6 @@ class _FriendScreenState extends State<FriendScreen> {
     final visibleFriends = _viewService.visibleFriends(
       realtimeFriends,
       currentUserUid: widget.user?.uid,
-      currentUserSid: widget.user?.sid,
     );
 
     return BlocConsumer<FriendBloc, FriendState>(

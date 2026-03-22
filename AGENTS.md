@@ -425,6 +425,14 @@ Invite link config lives in lib/core/constants/app_config.dart.
 Default invite base URL is https://preview.bicount.app.
 Expected route format is /friend/invite?code=INVITE_CODE.
 
+User identity contract:
+
+- backend `users.sid` has been removed
+- `users.uid` is now the only primary identifier for the current user
+- visible V1 code must use `UserModel.uid` for current-user identity
+- do not reintroduce `sid` on `UserModel`, auth flows, or user-based sync logic
+- `FriendsModel.sid` still exists and is still used as the stable local/shared identifier for friend records and friend-linked transactions
+
 ## UX And Design Principles
 
 Do not redesign Bicount into a generic template.
@@ -478,6 +486,7 @@ Stability work:
 - Android desugaring enabled for flutter_local_notifications
 - shared realtime stream protection added to the Brick repository
 - remote delete reconciliation added for offline cache consistency
+- `transfer_form.dart` was split into dedicated `part` files and presentational sub-widgets to keep transaction UI maintainable and under the 200-line rule
 - local sign out now clears SQLite using Brick schema table names instead of hardcoded app table names
 
 ## Sensitive Areas
@@ -503,6 +512,8 @@ Be careful when editing these areas:
 8. When changing Brick subscriptions, remember that shared stream safety is already solved in lib/brick/repository.dart.
 9. When changing deletes or sync logic, do not remove the remote delete reconciliation unless you replace it with something equivalent.
 10. Keep documents in docs updated when backend contracts change.
+11. Treat `UserModel.uid` as the only user primary key; if you see current-user logic still using `sid`, migrate it instead of patching around it.
+12. Do not remove `FriendsModel.sid` unless the user explicitly confirms a backend change for the friends domain too.
 11. Do not hardcode SQLite table names for local cache cleanup; use the generated Brick schema so sign out stays aligned with real local tables.
 
 ## Suggested Read Order

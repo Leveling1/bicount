@@ -20,7 +20,6 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
   ) async {
     try {
       final user = UserModel(
-        sid: uid,
         uid: uid,
         image: 'assets/memoji/memoji_1.png',
         email: email,

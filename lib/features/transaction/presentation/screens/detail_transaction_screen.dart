@@ -35,7 +35,6 @@ class DetailTransactionScreen extends StatelessWidget {
         : '';
 
     final ourData = FriendsModel(
-      sid: transaction.user.sid,
       username: transaction.user.username,
       uid: transaction.user.uid,
       image: transaction.user.image,

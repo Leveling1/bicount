@@ -65,7 +65,6 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
 
       await Repository().upsert<UserModel>(
         UserModel(
-          sid: currentUser.sid,
           uid: currentUser.uid,
           image: update.image,
           username: update.username,

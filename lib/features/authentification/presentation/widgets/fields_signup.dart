@@ -87,10 +87,10 @@ class _FieldsSignUpState extends State<FieldsSignUp> {
             onFieldSubmitted: (_) => _submit(),
           ),
           CustomTextField(
-            label: context.l10n.authConfirmPassword,
+            label: context.l10n.authMinCharactersHint,
             textController: _confirmPasswordController,
             type: CustomTextFieldType.password,
-            title: context.l10n.authPassword,
+            title: context.l10n.authConfirmPassword,
             node: _passwordFocus,
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => _submit(),

@@ -7,6 +7,7 @@ part '20251201172247.migration.dart';
 part '20251202023307.migration.dart';
 part '20251202215424.migration.dart';
 part '20251203002105.migration.dart';
+part '20260322103000.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
@@ -16,11 +17,12 @@ final migrations = <Migration>{
   const Migration20251202023307(),
   const Migration20251202215424(),
   const Migration20251203002105(),
+  const Migration20260322103000(),
 };
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  20251203002105,
+  20260322103000,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -52,7 +54,7 @@ final schema = Schema(
           nullable: false,
           isPrimaryKey: true,
         ),
-        SchemaColumn('uid', Column.varchar),
+        SchemaColumn('uid', Column.varchar, unique: true),
         SchemaColumn('image', Column.varchar),
         SchemaColumn('username', Column.varchar),
         SchemaColumn('email', Column.varchar),
@@ -61,10 +63,9 @@ final schema = Schema(
         SchemaColumn('balance', Column.Double),
         SchemaColumn('company_income', Column.Double),
         SchemaColumn('personal_income', Column.Double),
-        SchemaColumn('sid', Column.varchar, unique: true),
       },
       indices: <SchemaIndex>{
-        SchemaIndex(columns: ['sid'], unique: true),
+        SchemaIndex(columns: ['uid'], unique: true),
       },
     ),
     SchemaTable(

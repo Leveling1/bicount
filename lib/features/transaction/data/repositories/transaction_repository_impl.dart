@@ -1,5 +1,6 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
+import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
@@ -28,7 +29,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
       final sender = transaction.sender;
       final gtid = const Uuid().v4();
 
-      var senderId = sender.sid;
+      var senderId = _resolvePartyId(sender);
       if (senderId.isEmpty) {
         final senderResult = await localDataSource.createANewFriend(sender);
         senderId = await senderResult.fold(_throwFailure, (userModel) async {
@@ -37,7 +38,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
       }
 
       for (final split in resolvedSplits) {
-        var beneficiaryId = split.beneficiary.sid;
+        var beneficiaryId = _resolvePartyId(split.beneficiary);
         var image = split.beneficiary.image;
 
         if (beneficiaryId.isEmpty) {
@@ -117,5 +118,18 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
   Future<T> _throwFailure<T>(Failure failure) async {
     throw failure;
+  }
+
+  String _resolvePartyId(FriendsModel party) {
+    if (party.sid.isNotEmpty) {
+      return party.sid;
+    }
+
+    final uid = party.uid;
+    if (uid != null && uid.isNotEmpty) {
+      return uid;
+    }
+
+    return '';
   }
 }

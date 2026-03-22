@@ -149,7 +149,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     }
 
     await Future.wait([
-      _incrementalDeleteSync<UserModel>(uniqueValueOf: (model) => model.sid),
+      _incrementalDeleteSync<UserModel>(uniqueValueOf: (model) => model.uid),
       _incrementalDeleteSync<FriendsModel>(uniqueValueOf: (model) => model.sid),
       _incrementalDeleteSync<TransactionModel>(
         uniqueValueOf: (model) => model.tid,

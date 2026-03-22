@@ -29,16 +29,12 @@ class FriendsDirectoryScreen extends StatelessWidget {
             : _viewService.visibleFriends(
                 data.friends,
                 currentUserUid: data.user.uid,
-                currentUserSid: data.user.sid,
               );
         final linkedCount = data == null
             ? 0
             : friends
                   .where(
-                    (friend) => !_viewService.isShareableFriend(
-                      friend,
-                      ownerUid: data.user.uid,
-                    ),
+                    (friend) => !_viewService.isShareableFriend(friend),
                   )
                   .length;
 

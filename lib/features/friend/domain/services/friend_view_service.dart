@@ -31,7 +31,7 @@ class FriendViewService {
     final totalGiven = transactions
         .where(
           (transaction) =>
-              transaction.senderId == data.user.sid &&
+              transaction.senderId == data.user.uid &&
               transaction.beneficiaryId == friend.sid,
         )
         .fold<double>(0, (sum, transaction) => sum + transaction.amount);
@@ -40,11 +40,11 @@ class FriendViewService {
         .where(
           (transaction) =>
               transaction.senderId == friend.sid &&
-              transaction.beneficiaryId == data.user.sid,
+              transaction.beneficiaryId == data.user.uid,
         )
         .fold<double>(0, (sum, transaction) => sum + transaction.amount);
 
-    final canShareProfile = isShareableFriend(friend, ownerUid: data.user.uid);
+    final canShareProfile = isShareableFriend(friend);
 
     return FriendDetailEntity(
       friend: friend,
@@ -57,25 +57,17 @@ class FriendViewService {
     );
   }
 
-  bool isShareableFriend(FriendsModel friend, {String? ownerUid}) {
+  bool isShareableFriend(FriendsModel friend) {
     final uid = friend.uid;
-    if (uid == null || uid.isEmpty) {
-      return true;
-    }
-
-    return ownerUid != null && friend.fid == ownerUid && uid == friend.sid;
+    return uid == null || uid.isEmpty;
   }
 
   List<FriendsModel> visibleFriends(
     List<FriendsModel> friends, {
     String? currentUserUid,
-    String? currentUserSid,
   }) {
     final filtered = friends.where((friend) {
       if (friend.relationType == FriendConst.subscription) {
-        return false;
-      }
-      if (currentUserSid != null && friend.sid == currentUserSid) {
         return false;
       }
       if (currentUserUid != null && friend.uid == currentUserUid) {

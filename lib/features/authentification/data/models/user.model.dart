@@ -9,9 +9,6 @@ import '../../../../core/constants/tables_name.dart';
   supabaseConfig: SupabaseSerializable(tableName: TablesName.users),
 )
 class UserModel extends OfflineFirstWithSupabaseModel {
-  @Supabase(name: 'uid')
-  @Sqlite()
-  final String uid;
 
   @Supabase(name: 'image')
   @Sqlite()
@@ -45,13 +42,12 @@ class UserModel extends OfflineFirstWithSupabaseModel {
   @Sqlite()
   final double? personalIncome;
 
-  @Supabase(unique: true, name: 'sid')
+  @Supabase(unique: true, name: 'uid')
   @Sqlite(index: true, unique: true)
-  final String sid;
+  final String uid;
 
   UserModel({
-    String? sid,
-    required this.uid,
+    String? uid,
     required this.image,
     required this.username,
     required this.email,
@@ -60,6 +56,6 @@ class UserModel extends OfflineFirstWithSupabaseModel {
     this.expenses,
     this.companyIncome,
     this.personalIncome,
-  }) : sid = sid ?? const Uuid().v4(),
+  }) : uid = uid ?? const Uuid().v4(),
        super();
 }

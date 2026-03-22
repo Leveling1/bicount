@@ -31,7 +31,6 @@ class ProfileScreen extends StatelessWidget {
     final visibleFriends = _friendViewService.visibleFriends(
       data.friends,
       currentUserUid: data.user.uid,
-      currentUserSid: data.user.sid,
     );
 
     return Scaffold(
