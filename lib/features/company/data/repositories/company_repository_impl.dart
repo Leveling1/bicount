@@ -38,7 +38,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
   ) async {
     String cid = uuid.v4();
     try {
-      final uri = Uri.parse(Secrets.create_company_endpoint);
+      final uri = Uri.parse(Secrets.createCompanyEndpoint);
 
       var request = http.MultipartRequest("POST", uri)
         ..fields['name'] = company.name
@@ -47,7 +47,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
         ..fields['cid'] = cid
         ..fields['lid'] = uuid.v4()
         ..headers['Authorization'] = 'Bearer $accessToken'
-        ..headers['apikey'] = Secrets.supabaseAnonKey;
+        ..headers['apikey'] = Secrets.anonKey;
 
       if (logoFile != null) {
         final mimeType = lookupMimeType(logoFile.path) ?? 'image/jpeg';

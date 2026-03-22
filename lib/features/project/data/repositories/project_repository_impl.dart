@@ -28,7 +28,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
     File? logoFile,
   ) async {
     try {
-      final uri = Uri.parse(Secrets.create_project_endpoint);
+      final uri = Uri.parse(Secrets.createProjectEndpoint);
 
       var request = http.MultipartRequest("POST", uri)
         ..fields['name'] = project.name
@@ -39,7 +39,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
         ..fields['cid'] = project.cid
         ..fields['pid'] = uuid.v4()
         ..headers['Authorization'] = 'Bearer $accessToken'
-        ..headers['apikey'] = Secrets.supabaseAnonKey;
+        ..headers['apikey'] = Secrets.anonKey;
       if (logoFile != null) {
         final mimeType = lookupMimeType(logoFile.path) ?? 'image/jpeg';
         final fileStream = http.ByteStream(logoFile.openRead());

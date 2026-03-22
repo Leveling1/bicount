@@ -13,6 +13,29 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
 
   AuthentificationRepositoryImpl(this.localDataSource, this.remoteDataSource);
 
+  /// Aauth with google
+  @override
+  Future<Either<Failure, void>> authWithGoogle() async {
+    try {
+      // Création distante
+      final remoteUser = await remoteDataSource.authWithGoogle();
+
+      if (remoteUser.isLeft()) {
+        final failure = remoteUser.swap().getOrElse(() => throw Exception());
+        return Left(AuthenticationFailure(message: 'Erreur : ${failure.message}'));
+      }
+
+      return Right(null);
+    } catch (e) {
+      if (e is AuthApiException) {
+        return Left(AuthenticationFailure(message: e.message));
+      }
+      return Left(
+        AuthenticationFailure(message: 'Erreur lors de l\'authentification : $e'),
+      );
+    }
+  }
+
   @override
   Future<Either<Failure, entity.UserEntity>> signInWithEmailAndPassword(
     String email,
@@ -91,12 +114,5 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
     } catch (e) {
       return Left(AuthenticationFailure(message: e.toString()));
     }
-  }
-
-  // For the authentification with google process
-  @override
-  Future<Either<Failure, void>> authWithGoogle() {
-    // TODO: implement authWithGoogle
-    throw UnimplementedError();
   }
 }

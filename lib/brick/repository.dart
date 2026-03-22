@@ -48,8 +48,8 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     );
 
     await Supabase.initialize(
-      url: Secrets.supabaseProjectUrl,
-      anonKey: Secrets.supabaseAnonKey,
+      url: Secrets.projectUrl,
+      anonKey: Secrets.anonKey,
       httpClient: client,
     );
 

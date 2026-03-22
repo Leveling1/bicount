@@ -5,7 +5,9 @@ import 'package:bicount/features/authentification/presentation/widgets/fields_lo
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/widgets/custom_button.dart';
 import '../bloc/authentification_bloc.dart';
+import '../widgets/separator.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -48,6 +50,16 @@ class LoginScreen extends StatelessWidget {
                               style: Theme.of(context).textTheme.bodyMedium!
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
+                          ),
+                          AppDimens.spacerLarge,
+                          const Separator(),
+                          AppDimens.spacerLarge,
+                          CustomGoogleAuthButton(
+                            isLogin: true,
+                            isLoading: state is AuthWithGoogleLoading,
+                            onPressed: () {
+                              context.read<AuthentificationBloc>().add(AuthWithGoogleEvent());
+                            },
                           ),
                         ],
                       ),
