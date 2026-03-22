@@ -1,4 +1,4 @@
-﻿import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
@@ -40,9 +40,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       return Right(friendAdd);
     } catch (_) {
       return Left(
-        MessageFailure(
-          message: 'An error occurred while saving your new friend.',
-        ),
+        MessageFailure(message: 'Unable to save this friend right now.'),
       );
     }
   }
@@ -117,9 +115,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       return const Right(null);
     } catch (error) {
       return Left(
-        MessageFailure(
-          message: 'An error occurred while saving your subscription. $error',
-        ),
+        MessageFailure(message: 'Unable to save this subscription right now.'),
       );
     }
   }
@@ -134,8 +130,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     } catch (_) {
       return Left(
         MessageFailure(
-          message:
-              'An error occurred while unsubscribing from the subscription.',
+          message: 'Unable to update this subscription right now.',
         ),
       );
     }

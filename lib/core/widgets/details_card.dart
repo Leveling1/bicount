@@ -11,10 +11,9 @@ class DetailsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(top: AppDimens.marginMedium),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: AppDimens.borderRadiusAllMedium,
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppDimens.paddingMedium),

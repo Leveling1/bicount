@@ -1,9 +1,11 @@
 import 'dart:async';
 
-import 'package:bicount/features/authentification/presentation/screens/login_screen.dart';
-import 'package:bicount/features/authentification/presentation/screens/signup_screen.dart';
 import 'package:bicount/core/constants/app_config.dart';
+import 'package:bicount/features/authentification/presentation/screens/login_screen.dart';
+import 'package:bicount/features/authentification/presentation/screens/onboarding_screen.dart';
+import 'package:bicount/features/authentification/presentation/screens/signup_screen.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_invite_landing_screen.dart';
+import 'package:bicount/features/settings/presentation/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -26,19 +28,48 @@ class AppRouter {
         navigatorKey: rootNavigatorKey,
         routes: [
           GoRoute(path: '/', builder: (context, state) => MainScreen()),
+          GoRoute(
+            path: '/onboarding',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: const OnboardingScreen(),
+              state: state,
+            ),
+          ),
           GoRoute(path: '/graphs', builder: (context, state) => MainScreen()),
           GoRoute(
             path: '/transaction',
             builder: (context, state) => MainScreen(),
           ),
           GoRoute(
-            path: '/friend/invite',
-            builder: (context, state) => FriendInviteLandingScreen(
-              inviteCode: state.uri.queryParameters['code'] ?? '',
+            path: '/settings',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: const SettingsScreen(),
+              state: state,
             ),
           ),
-          GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
-          GoRoute(path: '/signUp', builder: (context, state) => SignUpScreen()),
+          GoRoute(
+            path: '/friend/invite',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: FriendInviteLandingScreen(
+                inviteCode: state.uri.queryParameters['code'] ?? '',
+              ),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/login',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: LoginScreen(),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/signUp',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: SignUpScreen(),
+              state: state,
+            ),
+          ),
           if (AppConfig.exposeCompanySurface)
             GoRoute(
               path: '/company',
@@ -82,14 +113,14 @@ class AppRouter {
             ),
         ],
         redirect: (context, state) {
-          final supabase = Supabase.instance.client;
-          final session = supabase.auth.currentSession;
-
+          final session = Supabase.instance.client.auth.currentSession;
           final isLoggedIn = session != null;
-          final loggingIn =
-              state.uri.toString() == '/login' ||
-              state.uri.toString() == '/signUp';
           final path = state.uri.path;
+          final isPublicPath =
+              path == '/onboarding' ||
+              path == '/login' ||
+              path == '/signUp' ||
+              path == '/friend/invite';
 
           if (!AppConfig.exposeCompanySurface &&
               (path == '/company' ||
@@ -105,8 +136,19 @@ class AppRouter {
             return '/';
           }
 
-          if (!isLoggedIn && !loggingIn) return '/login';
-          if (isLoggedIn && loggingIn) return '/';
+          if (!isLoggedIn) {
+            if (path == '/') {
+              return '/onboarding';
+            }
+            if (!isPublicPath) {
+              return '/onboarding';
+            }
+            return null;
+          }
+
+          if (path == '/onboarding' || path == '/login' || path == '/signUp') {
+            return '/';
+          }
           return null;
         },
         refreshListenable: GoRouterRefreshStream(
@@ -124,6 +166,7 @@ class GoRouterRefreshStream extends ChangeNotifier {
       notifyListeners();
     });
   }
+
   late final StreamSubscription _subscription;
 
   @override

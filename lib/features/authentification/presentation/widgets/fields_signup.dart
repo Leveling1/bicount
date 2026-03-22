@@ -1,3 +1,4 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_text_field.dart';
@@ -7,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FieldsSignUp extends StatefulWidget {
   const FieldsSignUp({super.key, required this.loading});
+
   final bool loading;
+
   @override
   State<FieldsSignUp> createState() => _FieldsSignUpState();
 }
@@ -19,11 +22,11 @@ class _FieldsSignUpState extends State<FieldsSignUp> {
   final FocusNode _usernameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
-  bool _rememberMe = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _acceptTerms = false;
 
   void _submit() {
-    if (_formKey.currentState?.validate() ?? false) {
+    if ((_formKey.currentState?.validate() ?? false) && _acceptTerms) {
       context.read<AuthentificationBloc>().add(
         SignUpEvent(
           username: _usernameController.text,
@@ -53,19 +56,19 @@ class _FieldsSignUpState extends State<FieldsSignUp> {
         spacing: AppDimens.spacingMedium,
         children: [
           CustomTextField(
-            label: "example",
+            label: 'example',
             textController: _usernameController,
-            title: "Your user name",
+            title: context.l10n.authYourUserName,
             node: _usernameFocus,
             textInputAction: TextInputAction.next,
             onFieldSubmitted: (_) {
-              FocusScope.of(context).requestFocus(_passwordFocus);
+              FocusScope.of(context).requestFocus(_emailFocus);
             },
           ),
           CustomTextField(
-            label: "example@gmail.com",
+            label: 'example@gmail.com',
             textController: _emailController,
-            title: "Your email address",
+            title: context.l10n.authYourEmailAddress,
             type: CustomTextFieldType.email,
             node: _emailFocus,
             textInputAction: TextInputAction.next,
@@ -74,31 +77,33 @@ class _FieldsSignUpState extends State<FieldsSignUp> {
             },
           ),
           CustomTextField(
-            label: "min. 8 characters",
+            label: context.l10n.authMinCharactersHint,
             textController: _passwordController,
             type: CustomTextFieldType.password,
-            title: "Password",
+            title: context.l10n.authPassword,
             node: _passwordFocus,
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => _submit(),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("I agree with therms of use"),
+              Expanded(
+                child: Text(
+                  context.l10n.authAgreeTerms,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
               Checkbox(
-                value: _rememberMe,
+                value: _acceptTerms,
                 activeColor: Theme.of(context).colorScheme.surface,
-                onChanged: (bool? newValue) {
-                  setState(() {
-                    _rememberMe = newValue ?? false;
-                  });
+                onChanged: (value) {
+                  setState(() => _acceptTerms = value ?? false);
                 },
               ),
             ],
           ),
           CustomButton(
-            text: "sign up",
+            text: context.l10n.authSignUp,
             loading: widget.loading,
             onPressed: _submit,
           ),

@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
@@ -30,10 +31,10 @@ class FriendInvitePreviewCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Invitation preview',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  context.l10n.friendInvitePreview,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
               IconButton(onPressed: onClose, icon: const Icon(Icons.close)),
@@ -71,10 +72,10 @@ class FriendInvitePreviewCard extends StatelessWidget {
           if (invite.isFriendProfileInvite) ...[
             const SizedBox(height: AppDimens.marginMedium),
             Text(
-              'Profile to link: ${invite.linkedProfileName}',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              context.l10n.friendProfileToLink(invite.linkedProfileName),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             if ((invite.sourceFriendEmail ?? '').isNotEmpty)
               const SizedBox(height: 4),
@@ -86,7 +87,11 @@ class FriendInvitePreviewCard extends StatelessWidget {
           ],
           const SizedBox(height: AppDimens.marginMedium),
           Text(
-            'This invite expires on ${MaterialLocalizations.of(context).formatMediumDate(invite.expiresAt)}.',
+            context.l10n.friendInviteExpiresOn(
+              MaterialLocalizations.of(
+                context,
+              ).formatMediumDate(invite.expiresAt),
+            ),
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: AppDimens.marginLarge),
@@ -96,11 +101,11 @@ class FriendInvitePreviewCard extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: invite.isPending && !isSubmitting ? onAccept : null,
-                child: const Text('Accept'),
+                child: Text(context.l10n.commonAccept),
               ),
               OutlinedButton(
                 onPressed: invite.isPending && !isSubmitting ? onReject : null,
-                child: const Text('Reject'),
+                child: Text(context.l10n.commonReject),
               ),
             ],
           ),

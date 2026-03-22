@@ -56,6 +56,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(SubscriptionAdded());
     } on MessageFailure catch (error) {
       emit(SubscriptionError(error.message));
+    } on Failure catch (error) {
+      emit(SubscriptionError(error.message));
     } catch (_) {
       emit(SubscriptionError('An unexpected error occurred.'));
     }
@@ -71,6 +73,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       await repository.unsubscribe(event.subscription);
       emit(UnsubscriptionSuccess());
     } on MessageFailure catch (error) {
+      emit(SubscriptionError(error.message));
+    } on Failure catch (error) {
       emit(SubscriptionError(error.message));
     } catch (_) {
       emit(SubscriptionError('An unexpected error occurred.'));

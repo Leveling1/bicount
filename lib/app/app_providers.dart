@@ -1,4 +1,7 @@
-﻿import 'package:app_links/app_links.dart';
+import 'package:app_links/app_links.dart';
+import 'package:bicount/app/app_settings_providers.dart';
+import 'package:bicount/core/localization/data/locale_preferences.dart';
+import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
 import 'package:bicount/features/authentification/data/data_sources/local_datasource/local_authentification.dart';
 import 'package:bicount/features/authentification/data/data_sources/remote_datasource/supabase_authentification.dart';
 import 'package:bicount/features/authentification/data/repositories/authentification_repository_impl.dart';
@@ -45,23 +48,33 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
   return [
+    RepositoryProvider<LocalePreferences>(create: (_) => LocalePreferences()),
     RepositoryProvider<AuthentificationRepositoryImpl>(
       create: (_) => AuthentificationRepositoryImpl(
         LocalAuthentification(),
         SupabaseAuthentification(Supabase.instance.client),
       ),
     ),
+    ...buildSettingsRepositoryProviders(),
     RepositoryProvider<MainRepositoryImpl>(
-      create: (_) => MainRepositoryImpl(LocalMainDataSourceImpl(), MainRemoteDataSourceImpl()),
+      create: (_) => MainRepositoryImpl(
+        LocalMainDataSourceImpl(),
+        MainRemoteDataSourceImpl(),
+      ),
     ),
     RepositoryProvider<HomeRepositoryImpl>(
-      create: (_) => HomeRepositoryImpl(RemoteHomeDataSourceImpl(), LocalHomeDataSourceImpl()),
+      create: (_) => HomeRepositoryImpl(
+        RemoteHomeDataSourceImpl(),
+        LocalHomeDataSourceImpl(),
+      ),
     ),
     RepositoryProvider<TransactionRepositoryImpl>(
-      create: (_) => TransactionRepositoryImpl(LocalTransactionDataSourceImpl()),
+      create: (_) =>
+          TransactionRepositoryImpl(LocalTransactionDataSourceImpl()),
     ),
     RepositoryProvider<ProfileRepositoryImpl>(
-      create: (_) => ProfileRepositoryImpl(localDataSource: ProfileLocalDataSourceImpl()),
+      create: (_) =>
+          ProfileRepositoryImpl(localDataSource: ProfileLocalDataSourceImpl()),
     ),
     RepositoryProvider<GraphRepositoryImpl>(
       create: (_) => GraphRepositoryImpl(LocalGraphDataSourceImpl()),
@@ -69,12 +82,16 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
     RepositoryProvider<FriendRepositoryImpl>(
       create: (_) => FriendRepositoryImpl(
         localDataSource: LocalFriendDataSourceImpl(),
-        remoteDataSource: SupabaseFriendRemoteDataSource(Supabase.instance.client),
+        remoteDataSource: SupabaseFriendRemoteDataSource(
+          Supabase.instance.client,
+        ),
       ),
     ),
     RepositoryProvider<NotificationRepositoryImpl>(
       create: (_) => NotificationRepositoryImpl(
-        localDataSource: LocalNotificationDataSourceImpl(FlutterLocalNotificationsPlugin()),
+        localDataSource: LocalNotificationDataSourceImpl(
+          FlutterLocalNotificationsPlugin(),
+        ),
         remoteDataSource: FirebaseNotificationRemoteDataSource(
           messaging: FirebaseMessaging.instance,
           supabase: Supabase.instance.client,
@@ -90,38 +107,56 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
         ),
       ),
     if (enableCompanySurface)
-      RepositoryProvider<GroupRepositoryImpl>(create: (_) => GroupRepositoryImpl()),
+      RepositoryProvider<GroupRepositoryImpl>(
+        create: (_) => GroupRepositoryImpl(),
+      ),
     if (enableCompanySurface)
-      RepositoryProvider<ProjectRepositoryImpl>(create: (_) => ProjectRepositoryImpl()),
+      RepositoryProvider<ProjectRepositoryImpl>(
+        create: (_) => ProjectRepositoryImpl(),
+      ),
   ];
 }
 
 List<BlocProvider> buildBlocProviders(bool enableCompanySurface) {
   return [
+    BlocProvider<LocaleCubit>(
+      create: (context) =>
+          LocaleCubit(context.read<LocalePreferences>())..hydrate(),
+    ),
+    ...buildSettingsBlocProviders(),
     BlocProvider<AuthentificationBloc>(
       create: (context) => AuthentificationBloc(
-        authentificationRepository: context.read<AuthentificationRepositoryImpl>(),
+        authentificationRepository: context
+            .read<AuthentificationRepositoryImpl>(),
       ),
     ),
-    BlocProvider<MainBloc>(create: (context) => MainBloc(context.read<MainRepositoryImpl>())),
-    BlocProvider<HomeBloc>(create: (context) => HomeBloc(context.read<HomeRepositoryImpl>())),
+    BlocProvider<MainBloc>(
+      create: (context) => MainBloc(context.read<MainRepositoryImpl>()),
+    ),
+    BlocProvider<HomeBloc>(
+      create: (context) => HomeBloc(context.read<HomeRepositoryImpl>()),
+    ),
     BlocProvider<TransactionBloc>(
-      create: (context) => TransactionBloc(context.read<TransactionRepositoryImpl>()),
+      create: (context) =>
+          TransactionBloc(context.read<TransactionRepositoryImpl>()),
     ),
     BlocProvider<ProfileBloc>(
       create: (context) => ProfileBloc(context.read<ProfileRepositoryImpl>()),
     ),
     BlocProvider<GraphBloc>(
-      create: (context) => GraphBloc(context.read<GraphRepositoryImpl>())
-        ..add(const GraphStarted()),
+      create: (context) =>
+          GraphBloc(context.read<GraphRepositoryImpl>())
+            ..add(const GraphStarted()),
     ),
     BlocProvider<FriendBloc>(
-      create: (context) => FriendBloc(context.read<FriendRepositoryImpl>())
-        ..add(const FriendStarted()),
+      create: (context) =>
+          FriendBloc(context.read<FriendRepositoryImpl>())
+            ..add(const FriendStarted()),
     ),
     BlocProvider<NotificationBloc>(
-      create: (context) => NotificationBloc(context.read<NotificationRepositoryImpl>())
-        ..add(const NotificationBootstrapRequested()),
+      create: (context) =>
+          NotificationBloc(context.read<NotificationRepositoryImpl>())
+            ..add(const NotificationBootstrapRequested()),
     ),
     if (enableCompanySurface)
       BlocProvider<CompanyBloc>(

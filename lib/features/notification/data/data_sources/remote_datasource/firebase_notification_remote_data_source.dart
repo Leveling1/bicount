@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/notification_remote_datasource.dart';
@@ -75,7 +75,9 @@ class FirebaseNotificationRemoteDataSource
 
     await _persistDeviceToken(userId, token);
 
-    _tokenRefreshSubscription ??= messaging.onTokenRefresh.listen((freshToken) async {
+    _tokenRefreshSubscription ??= messaging.onTokenRefresh.listen((
+      freshToken,
+    ) async {
       final currentUserId = supabase.auth.currentUser?.id;
       if (currentUserId == null) {
         return;
@@ -95,7 +97,10 @@ class FirebaseNotificationRemoteDataSource
 
     try {
       final existingRows = List<Map<String, dynamic>>.from(
-        await supabase.from('device_tokens').select('token_id').eq('user_uid', userId),
+        await supabase
+            .from('device_tokens')
+            .select('token_id')
+            .eq('user_uid', userId),
       );
 
       if (existingRows.isNotEmpty) {
@@ -115,7 +120,10 @@ class FirebaseNotificationRemoteDataSource
           return;
         }
 
-        await supabase.from('device_tokens').update(payload).eq('user_uid', userId);
+        await supabase
+            .from('device_tokens')
+            .update(payload)
+            .eq('user_uid', userId);
         return;
       }
 
@@ -155,7 +163,7 @@ class FirebaseNotificationRemoteDataSource
     return AppNotificationEntity(
       category: AppNotificationCategory.deepLink,
       source: AppNotificationSource.deepLink,
-      title: 'Open link',
+      title: 'Bicount',
       body: uri.toString(),
       data: uri.queryParameters.map((key, value) => MapEntry(key, value)),
       route: '${uri.path}$query',

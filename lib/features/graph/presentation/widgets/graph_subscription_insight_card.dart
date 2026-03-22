@@ -1,4 +1,4 @@
-﻿import 'package:bicount/core/constants/subscription_const.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/details_card.dart';
@@ -23,41 +23,45 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
             runSpacing: AppDimens.spacingMedium,
             children: [
               GraphSubscriptionStat(
-                title: 'Active',
+                title: context.l10n.graphActive,
                 value: '${dashboard.activeSubscriptionCount}',
               ),
               GraphSubscriptionStat(
-                title: 'Monthly load',
+                title: context.l10n.graphMonthlyLoad,
                 value: NumberFormatUtils.formatCurrency(
                   dashboard.monthlySubscriptionSpend,
                 ),
               ),
               GraphSubscriptionStat(
-                title: 'Next 7 days',
-                value: NumberFormatUtils.formatCurrency(dashboard.dueSoonAmount),
+                title: context.l10n.graphNext7Days,
+                value: NumberFormatUtils.formatCurrency(
+                  dashboard.dueSoonAmount,
+                ),
               ),
             ],
           ),
           if (dashboard.upcomingSubscriptions.isNotEmpty) ...[
             const SizedBox(height: AppDimens.marginLarge),
             Text(
-              'Upcoming charges',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              context.l10n.graphUpcomingCharges,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: AppDimens.marginMedium),
             ...dashboard.upcomingSubscriptions.map((subscription) {
-              final nextBillingDate = DateFormat('dd MMM yyyy').format(
-                subscription.nextBillingDate,
-              );
+              final nextBillingDate = DateFormat(
+                'dd MMM yyyy',
+              ).format(subscription.nextBillingDate);
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
                     CircleAvatar(
                       radius: 16,
-                      backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.14),
+                      backgroundColor: Theme.of(
+                        context,
+                      ).primaryColor.withValues(alpha: 0.14),
                       child: Icon(
                         Icons.subscriptions_outlined,
                         size: 16,
@@ -71,13 +75,12 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
                         children: [
                           Text(
                             subscription.title,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            '${Frequency.getFrequencyString(subscription.frequency)} - $nextBillingDate',
+                            '${context.frequencyLabel(subscription.frequency)} - $nextBillingDate',
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
@@ -96,7 +99,7 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
           ] else ...[
             const SizedBox(height: AppDimens.marginLarge),
             Text(
-              'No active subscriptions scheduled yet.',
+              context.l10n.graphNoActiveSubscriptions,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
@@ -122,7 +125,9 @@ class GraphSubscriptionStat extends StatelessWidget {
       width: 100.w,
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.35),
+        color: Theme.of(
+          context,
+        ).scaffoldBackgroundColor.withValues(alpha: 0.35),
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
       ),
       child: Column(
@@ -132,9 +137,9 @@ class GraphSubscriptionStat extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             value,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
         ],
       ),

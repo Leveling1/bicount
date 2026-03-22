@@ -1,4 +1,4 @@
-﻿import 'package:bicount/core/utils/number_format_utils.dart';
+import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card_base.dart';
 import 'package:flutter/material.dart';
 

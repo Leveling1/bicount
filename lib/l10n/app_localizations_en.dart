@@ -1,0 +1,1009 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get appName => 'Bicount';
+
+  @override
+  String get languageSystem => 'System';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageFrench => 'French';
+
+  @override
+  String get languageSectionTitle => 'Language';
+
+  @override
+  String get languageSectionDescription =>
+      'Choose how Bicount is displayed. By default, the app follows your device language.';
+
+  @override
+  String get languageSheetTitle => 'Choose a language';
+
+  @override
+  String get languageFollowSystem => 'Follow system language';
+
+  @override
+  String get commonSave => 'Save';
+
+  @override
+  String get commonTitle => 'Title';
+
+  @override
+  String get commonSource => 'Source';
+
+  @override
+  String get commonCopy => 'Copy';
+
+  @override
+  String get commonAccept => 'Accept';
+
+  @override
+  String get commonReject => 'Reject';
+
+  @override
+  String get commonPreview => 'Preview';
+
+  @override
+  String get commonAmount => 'Amount';
+
+  @override
+  String get commonNote => 'Note';
+
+  @override
+  String get commonWhen => 'When';
+
+  @override
+  String get commonFrequency => 'Frequency';
+
+  @override
+  String get commonSender => 'Sender';
+
+  @override
+  String get commonBeneficiary => 'Beneficiary';
+
+  @override
+  String get commonDate => 'Date';
+
+  @override
+  String get commonTime => 'Time';
+
+  @override
+  String get commonCreatedAt => 'Created at';
+
+  @override
+  String get commonDateHint => 'DD/MM/YYYY';
+
+  @override
+  String get commonPlaceholderNote => '...';
+
+  @override
+  String get commonMe => 'Me';
+
+  @override
+  String get commonOpenLink => 'Open link';
+
+  @override
+  String get commonOr => 'or';
+
+  @override
+  String get commonSuccess => 'Success';
+
+  @override
+  String get commonError => 'Error';
+
+  @override
+  String get authBrandSubtitle => 'Personal and shared money, made calm.';
+
+  @override
+  String get authLogIn => 'Log in';
+
+  @override
+  String get authSignUp => 'Sign up';
+
+  @override
+  String get authDontHaveAccount => 'Don\'t have an account?';
+
+  @override
+  String get authAlreadyHaveAccount => 'Already have an account?';
+
+  @override
+  String get authLoginWelcome =>
+      'Welcome back to your shared and personal money space.';
+
+  @override
+  String get authSignupLead =>
+      'Create your account and start with a clear money flow.';
+
+  @override
+  String get authSignupDescription =>
+      'Create your Bicount account to continue.';
+
+  @override
+  String get authEmailAddress => 'Email address';
+
+  @override
+  String get authYourEmailAddress => 'Your email address';
+
+  @override
+  String get authYourUserName => 'Your user name';
+
+  @override
+  String get authPassword => 'Password';
+
+  @override
+  String get authMinCharactersHint => 'min. 8 characters';
+
+  @override
+  String get authAgreeTerms => 'I agree to the terms of use';
+
+  @override
+  String get authContinueWithGoogle => 'Continue with Google';
+
+  @override
+  String get authCreateGoogleAccount => 'Create a Google account';
+
+  @override
+  String get authGenericSignInError =>
+      'Unable to sign in right now. Please try again.';
+
+  @override
+  String get authGenericSignUpError =>
+      'Unable to create your account right now. Please try again.';
+
+  @override
+  String get authGenericSignOutError => 'Unable to sign out right now.';
+
+  @override
+  String get authGoogleCancelled => 'Google sign-in was cancelled.';
+
+  @override
+  String get authGoogleMissingEmail =>
+      'Google did not return the information needed to create your account.';
+
+  @override
+  String get authGoogleTimeout => 'Sign-in took too long. Please try again.';
+
+  @override
+  String get authNetworkError =>
+      'Network issue. Please check your internet connection.';
+
+  @override
+  String get authGoogleFailed => 'Google sign-in failed. Please try again.';
+
+  @override
+  String get validationEmailRequired => 'Email required';
+
+  @override
+  String get validationInvalidEmail => 'Invalid email';
+
+  @override
+  String get validationPasswordRequired => 'Password required';
+
+  @override
+  String get validationAtLeastEightCharacters => 'At least 8 characters';
+
+  @override
+  String get validationFieldRequired => 'This field is required';
+
+  @override
+  String get validationTooShort => 'Too short';
+
+  @override
+  String get validationAmountGreaterThanZero =>
+      'Enter an amount greater than zero.';
+
+  @override
+  String get runtimeUnexpectedError =>
+      'Something went wrong. Please try again.';
+
+  @override
+  String get runtimeFriendSaveFailed => 'Unable to save this friend right now.';
+
+  @override
+  String get runtimeTransactionSaveFailed =>
+      'The transaction could not be saved.';
+
+  @override
+  String get runtimeSubscriptionSaveFailed =>
+      'Unable to save this subscription right now.';
+
+  @override
+  String get runtimeSubscriptionUnsubscribeFailed =>
+      'Unable to update this subscription right now.';
+
+  @override
+  String get runtimeAccountFundingSaveFailed =>
+      'Unable to save this account funding right now.';
+
+  @override
+  String get runtimeProfileSaveFailed =>
+      'Unable to save your profile right now.';
+
+  @override
+  String get runtimeProRequestFailed =>
+      'Unable to request Bicount Pro right now.';
+
+  @override
+  String get runtimeDeleteAccountFailed =>
+      'Unable to delete your account right now.';
+
+  @override
+  String get runtimeDataLoadFailed => 'Unable to load your data right now.';
+
+  @override
+  String get fieldEnterAmount => 'Enter amount';
+
+  @override
+  String get fieldSelectCurrency => 'Select currency';
+
+  @override
+  String get onboardingSharedMoneyBadge => 'Shared money';
+
+  @override
+  String get onboardingSharedMoneyTitle =>
+      'Keep every shared payment easy to follow';
+
+  @override
+  String get onboardingSharedMoneyDescription =>
+      'Track what you give, what others receive, and what still needs attention without messy notes or endless messages.';
+
+  @override
+  String get onboardingDailyOverviewBadge => 'Daily overview';
+
+  @override
+  String get onboardingDailyOverviewTitle =>
+      'See your money in one calm, useful view';
+
+  @override
+  String get onboardingDailyOverviewDescription =>
+      'Follow your balance, subscriptions, and everyday habits with visuals that help you decide faster.';
+
+  @override
+  String get onboardingProBadge => 'Bicount Pro';
+
+  @override
+  String get onboardingProTitle => 'Grow into team and business finance later';
+
+  @override
+  String get onboardingProDescription =>
+      'Bicount Pro is our upcoming space for teams and business activity. It is not active yet, but it is already part of the Bicount direction.';
+
+  @override
+  String get onboardingProHighlight => 'Coming soon';
+
+  @override
+  String get onboardingFooterPrimary =>
+      'Bicount helps you manage personal and shared money with clarity from day one.';
+
+  @override
+  String get onboardingFooterOverview =>
+      'A clear picture of your balance, habits, and subscriptions helps you move faster without extra effort.';
+
+  @override
+  String get onboardingFooterPro =>
+      'Bicount Pro is the next step for teams and business finance, while today you can already start with your personal flow.';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navGraphs => 'Graphs';
+
+  @override
+  String get navTransaction => 'Transaction';
+
+  @override
+  String get navProfile => 'Profile';
+
+  @override
+  String get shellOfflineBadge => 'Offline';
+
+  @override
+  String get shellAddFunds => 'Add funds';
+
+  @override
+  String get networkOfflineMessage =>
+      'Internet connection lost: you are in offline mode';
+
+  @override
+  String get networkUnstableMessage => 'Unstable internet connection';
+
+  @override
+  String get homeBalance => 'Your balance';
+
+  @override
+  String get homeAccounts => 'Accounts';
+
+  @override
+  String get homeTransactions => 'Transactions';
+
+  @override
+  String get homeShowMore => 'Show more';
+
+  @override
+  String get profileIncome => 'Income';
+
+  @override
+  String get profileExpense => 'Expense';
+
+  @override
+  String get profilePersonal => 'Personal';
+
+  @override
+  String get profileRecurring => 'Recurring';
+
+  @override
+  String get profileFriends => 'Friends';
+
+  @override
+  String get profileSeeAll => 'See all';
+
+  @override
+  String get profileFirstFriendHint =>
+      'Create a transaction with someone to add your first friend. Their profile can be linked later when they join Bicount.';
+
+  @override
+  String get profileLanguageTitle => 'App language';
+
+  @override
+  String get profileLanguageDescription =>
+      'Switch language anytime. If no language is chosen, Bicount follows your device.';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsHeaderSubtitle =>
+      'Tune Bicount around your routine, your preferences, and your account safety.';
+
+  @override
+  String get settingsSectionAccount => 'Account';
+
+  @override
+  String get settingsSectionAppearance => 'Appearance';
+
+  @override
+  String get settingsSectionSecurity => 'Security';
+
+  @override
+  String get settingsEditProfileTitle => 'Edit profile';
+
+  @override
+  String get settingsEditProfileDescription =>
+      'Update your visible name and avatar.';
+
+  @override
+  String get settingsEditProfileCta => 'Update profile';
+
+  @override
+  String get settingsFriendsTitle => 'Friends and links';
+
+  @override
+  String get settingsFriendsDescription =>
+      'Review your local friends and linked profiles.';
+
+  @override
+  String get settingsThemeTitle => 'Theme';
+
+  @override
+  String get settingsThemeDescription =>
+      'Choose how Bicount looks across the app.';
+
+  @override
+  String get settingsThemeSheetTitle => 'Choose a theme';
+
+  @override
+  String get settingsThemeSheetDescription =>
+      'Keep following your device or pick a fixed appearance.';
+
+  @override
+  String get settingsThemeSystem => 'Follow system';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeDark => 'Dark';
+
+  @override
+  String get settingsLanguageTitle => 'Language';
+
+  @override
+  String get settingsLanguageDescription =>
+      'Change the app language at any time.';
+
+  @override
+  String get settingsLanguageSheetDescription =>
+      'If no language is selected, Bicount follows your device and falls back to English if needed.';
+
+  @override
+  String get settingsProTitle => 'Switch to Bicount Pro';
+
+  @override
+  String get settingsProDescription =>
+      'Tell us how you want to use Bicount Pro for your team or activity.';
+
+  @override
+  String get settingsProSheetTitle => 'Request Bicount Pro';
+
+  @override
+  String get settingsProSheetDescription =>
+      'Share a few details so we can contact you when the Pro space is ready.';
+
+  @override
+  String get settingsProOrganizationLabel => 'Team or company';
+
+  @override
+  String get settingsProOrganizationHint =>
+      'Your team, studio, company, or activity name';
+
+  @override
+  String get settingsProUseCaseLabel => 'What would you like to manage?';
+
+  @override
+  String get settingsProUseCaseHint =>
+      'Tell us about your workflow, team size, or finance needs';
+
+  @override
+  String get settingsProContactEmailLabel => 'Contact email';
+
+  @override
+  String get settingsProSubmit => 'Send request';
+
+  @override
+  String get settingsProfileSheetTitle => 'Edit your profile';
+
+  @override
+  String get settingsProfileSheetDescription =>
+      'Choose the identity other people see when they transact with you.';
+
+  @override
+  String get settingsProfileNameLabel => 'Display name';
+
+  @override
+  String get settingsProfileNameHint => 'Enter your display name';
+
+  @override
+  String get settingsProfileAvatarLabel => 'Avatar';
+
+  @override
+  String get settingsProfileSave => 'Save changes';
+
+  @override
+  String get settingsDeleteTitle => 'Delete account';
+
+  @override
+  String get settingsDeleteDescription =>
+      'Request account deletion and tell us why you are leaving.';
+
+  @override
+  String get settingsDeleteConfirmTitle => 'Delete this account?';
+
+  @override
+  String get settingsDeleteConfirmDescription =>
+      'We will ask for a short reason before sending the deletion request.';
+
+  @override
+  String get settingsDeleteConfirmCta => 'Continue';
+
+  @override
+  String get settingsDeleteSheetTitle => 'Delete account request';
+
+  @override
+  String get settingsDeleteSheetDescription =>
+      'Help us understand why you want to leave Bicount.';
+
+  @override
+  String get settingsDeleteReasonLabel => 'Main reason';
+
+  @override
+  String get settingsDeleteDetailsLabel => 'Extra details';
+
+  @override
+  String get settingsDeleteDetailsHint =>
+      'Add any detail that can help us improve or process your request';
+
+  @override
+  String get settingsDeleteReasonMissingFeatures => 'Missing features';
+
+  @override
+  String get settingsDeleteReasonTooExpensive => 'Too expensive';
+
+  @override
+  String get settingsDeleteReasonPrivacy => 'Privacy concerns';
+
+  @override
+  String get settingsDeleteReasonTooComplex => 'Too complex';
+
+  @override
+  String get settingsDeleteReasonNotUseful => 'Not useful enough';
+
+  @override
+  String get settingsDeleteReasonOther => 'Other';
+
+  @override
+  String get settingsDeleteSubmit => 'Send deletion request';
+
+  @override
+  String get settingsSignOutTitle => 'Sign out';
+
+  @override
+  String get settingsSignOutDescription =>
+      'Disconnect this device from your Bicount account.';
+
+  @override
+  String get settingsProfileUpdatedSuccess => 'Profile updated successfully.';
+
+  @override
+  String get settingsProRequestedSuccess =>
+      'Your Bicount Pro request has been sent.';
+
+  @override
+  String get settingsSignedOutSuccess => 'You have been signed out.';
+
+  @override
+  String get settingsDeleteRequestedSuccess =>
+      'Your account deletion request has been submitted.';
+
+  @override
+  String get graphOverview => 'Overview';
+
+  @override
+  String get graphOverviewDescription =>
+      'Track your flow, spot your recurring costs, and keep the useful signals close.';
+
+  @override
+  String get graphUnableToLoad => 'Unable to load analytics';
+
+  @override
+  String get graphCashflowTrend => 'Cashflow trend';
+
+  @override
+  String get graphExpenseMix => 'Expense mix';
+
+  @override
+  String get graphSubscriptions => 'Subscriptions';
+
+  @override
+  String get graphNetFlow => 'Net flow';
+
+  @override
+  String get graphIncome => 'Income';
+
+  @override
+  String get graphExpenses => 'Expenses';
+
+  @override
+  String get graphActive => 'Active';
+
+  @override
+  String get graphMonthlyLoad => 'Monthly load';
+
+  @override
+  String get graphNext7Days => 'Next 7 days';
+
+  @override
+  String get graphUpcomingCharges => 'Upcoming charges';
+
+  @override
+  String get graphNoActiveSubscriptions =>
+      'No active subscriptions scheduled yet.';
+
+  @override
+  String get graphPeriodAll => 'All';
+
+  @override
+  String get graphBreakdownExpenses => 'Expenses';
+
+  @override
+  String get graphBreakdownSubscriptions => 'Subscriptions';
+
+  @override
+  String get graphBreakdownOther => 'Other';
+
+  @override
+  String get friendsTitle => 'Friends';
+
+  @override
+  String get friendsDirectoryIntro =>
+      'Tap a friend to review the live transaction history or link a local profile to a real account.';
+
+  @override
+  String get friendsDirectoryEmpty =>
+      'Create a transaction with someone and they will appear here. When they join Bicount, open their detail screen to share and link the profile.';
+
+  @override
+  String get friendsTotal => 'Total';
+
+  @override
+  String get friendsLinked => 'Linked';
+
+  @override
+  String get friendsToLink => 'To link';
+
+  @override
+  String get friendInviteLandingTitle => 'Friend invite';
+
+  @override
+  String get friendInvitationsTitle => 'Friend invitations';
+
+  @override
+  String friendLinkTitle(Object name) {
+    return 'Link $name';
+  }
+
+  @override
+  String get friendScreenIntro =>
+      'Scan an invite, review pending links, and track shared profiles in real time.';
+
+  @override
+  String get friendLinkIntro =>
+      'Share this local friend profile when the person has created a Bicount account so the backend can link both profiles together.';
+
+  @override
+  String friendShareProfileTitle(Object name) {
+    return 'Share $name profile';
+  }
+
+  @override
+  String get friendShareProfileDescription =>
+      'Generate a QR code or a link for this specific friend profile.';
+
+  @override
+  String friendShareMessage(Object name, Object url) {
+    return 'Join me on Bicount and link the profile for $name: $url';
+  }
+
+  @override
+  String get friendMyProfile => 'my Bicount profile';
+
+  @override
+  String get friendScanInvite => 'Scan invite';
+
+  @override
+  String get friendScanQrTitle => 'Scan invitation QR code';
+
+  @override
+  String get friendPendingRequests => 'Pending requests';
+
+  @override
+  String get friendIncomingEmpty => 'No incoming invitations for now.';
+
+  @override
+  String get friendSentInvitations => 'Sent invitations';
+
+  @override
+  String get friendSentEmpty => 'You have not shared a friend profile yet.';
+
+  @override
+  String get friendCurrentFriends => 'Current friends';
+
+  @override
+  String get friendCurrentEmpty =>
+      'Your accepted contacts will show up here in real time.';
+
+  @override
+  String get friendInvitePreview => 'Invitation preview';
+
+  @override
+  String friendProfileToLink(Object name) {
+    return 'Profile to link: $name';
+  }
+
+  @override
+  String friendInviteExpiresOn(Object date) {
+    return 'This invite expires on $date.';
+  }
+
+  @override
+  String get friendShareGenerate => 'Generate invite';
+
+  @override
+  String get friendShareRefresh => 'Refresh link';
+
+  @override
+  String get friendShareLink => 'Share link';
+
+  @override
+  String get friendShareScanQr => 'Scan QR';
+
+  @override
+  String get friendInvitationLinkCopied => 'Invitation link copied.';
+
+  @override
+  String get friendInvitationReady => 'Invitation ready to share.';
+
+  @override
+  String get friendInvitationNotFound => 'This invitation was not found.';
+
+  @override
+  String get friendInvitationAccepted => 'Invitation accepted.';
+
+  @override
+  String get friendInvitationRejected => 'Invitation rejected.';
+
+  @override
+  String friendProfileShared(Object name) {
+    return 'Profile shared: $name';
+  }
+
+  @override
+  String friendSharedBy(Object status, Object sender) {
+    return '$status · shared by $sender';
+  }
+
+  @override
+  String get friendLinkedAccount => 'Linked account';
+
+  @override
+  String get friendLocalFriend => 'Local friend';
+
+  @override
+  String get friendLinkHint =>
+      'This friend is still local to your account. Use the share button to link it when the person has created a Bicount profile.';
+
+  @override
+  String get friendGiven => 'Given';
+
+  @override
+  String get friendReceived => 'Received';
+
+  @override
+  String get friendNet => 'Net';
+
+  @override
+  String get friendSharedTransactions => 'Shared transactions';
+
+  @override
+  String get friendTransactionsEmpty =>
+      'Transactions with this friend will appear here in real time.';
+
+  @override
+  String get friendUnableToReadInvite => 'Unable to read this invitation.';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusAccepted => 'Accepted';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get statusExpired => 'Expired';
+
+  @override
+  String get statusPaused => 'Paused';
+
+  @override
+  String get statusUnsubscribed => 'Unsubscribed';
+
+  @override
+  String get transactionNoTransactionsFound => 'No transactions found';
+
+  @override
+  String get transactionToday => 'Today';
+
+  @override
+  String get transactionYesterday => 'Yesterday';
+
+  @override
+  String get transactionFilterAll => 'All';
+
+  @override
+  String get transactionFilterIncome => 'Income';
+
+  @override
+  String get transactionFilterExpense => 'Expense';
+
+  @override
+  String get transactionFilterSubscription => 'Subscription';
+
+  @override
+  String get transactionFilterOther => 'Other';
+
+  @override
+  String get transactionFilterPersonal => 'Personal';
+
+  @override
+  String get transactionAddTitle => 'Add transaction';
+
+  @override
+  String get transactionNewSubscriptionTitle => 'New subscription';
+
+  @override
+  String get transactionAddFundsTitle => 'Add funds to your account';
+
+  @override
+  String get transactionSavedSuccess => 'Transaction saved successfully.';
+
+  @override
+  String get transactionDuplicateBeneficiary =>
+      'This beneficiary is already in the split.';
+
+  @override
+  String get transactionAddAtLeastOneBeneficiary =>
+      'Add at least one beneficiary.';
+
+  @override
+  String get transactionEnterValidAmount => 'Enter a valid amount.';
+
+  @override
+  String get transactionPreviewEnterValidTotal =>
+      'Enter a valid total amount to preview the split.';
+
+  @override
+  String get transactionSplitMethod => 'Split method';
+
+  @override
+  String get transactionSplitDetails => 'Split details';
+
+  @override
+  String get transactionSplitEqually => 'Split equally';
+
+  @override
+  String get transactionSplitModeEqual => 'Equal';
+
+  @override
+  String get transactionSplitModePercentage => 'Percentage';
+
+  @override
+  String get transactionSplitModeCustom => 'Custom';
+
+  @override
+  String get transactionSplitHelperEqual =>
+      'Bicount splits the total amount equally for every beneficiary.';
+
+  @override
+  String get transactionSplitHelperPercentage =>
+      'Set a percentage for each beneficiary. The total must reach 100%.';
+
+  @override
+  String get transactionSplitHelperCustom =>
+      'Set the exact amount received by each beneficiary.';
+
+  @override
+  String get transactionSetPercentageReceived => 'Set the percentage received.';
+
+  @override
+  String get transactionSetExactAmountReceived =>
+      'Set the exact amount received.';
+
+  @override
+  String get transferEnterTransactionName => 'Enter transaction name';
+
+  @override
+  String get transferPaidBy => 'Paid by';
+
+  @override
+  String get transferEnterSenderName => 'Enter sender name';
+
+  @override
+  String get transferItsMePayer => 'It\'s me paying';
+
+  @override
+  String get transferBeneficiaries => 'Beneficiaries';
+
+  @override
+  String get transferEnterBeneficiaryName => 'Enter beneficiary name';
+
+  @override
+  String get transferBeneficiariesHint =>
+      'Add as many receivers as you want. Use Me if you are also receiving a share.';
+
+  @override
+  String get subscriptionIntro =>
+      'Register a recurring payment such as streaming services, internet, gym, software, or any repetitive expense.';
+
+  @override
+  String get subscriptionName => 'Subscription name';
+
+  @override
+  String get subscriptionNameHint => 'e.g. Netflix, Spotify...';
+
+  @override
+  String get subscriptionFrequencyHint => 'Choose the frequency';
+
+  @override
+  String get subscriptionStartDate => 'Start date';
+
+  @override
+  String get subscriptionNextPaymentDifferent =>
+      'The next payment will be on a different date.';
+
+  @override
+  String get subscriptionNextBillingDate => 'Next billing date';
+
+  @override
+  String get subscriptionSavedSuccess => 'Subscription saved successfully!';
+
+  @override
+  String get subscriptionNextBilling => 'Next billing';
+
+  @override
+  String get subscriptionBillingStop => 'Billing stop';
+
+  @override
+  String get subscriptionCumulativeExpenses => 'Cumulative expenses';
+
+  @override
+  String get subscriptionSubscribedOn => 'Subscribed on';
+
+  @override
+  String get subscriptionUnsubscribe => 'Unsubscribe';
+
+  @override
+  String get subscriptionUnsubscribeSuccess =>
+      'Subscription cancelled successfully.';
+
+  @override
+  String get accountFundingIntro =>
+      'Add money to your account securely by recording a new deposit or credit to increase your available balance.';
+
+  @override
+  String get accountFundingEnterSource => 'Enter source of funds';
+
+  @override
+  String get accountFundingSavedSuccess =>
+      'Account funding transaction added successfully';
+
+  @override
+  String get transactionTypeTransfer => 'Transfer';
+
+  @override
+  String get transactionTypeSubscription => 'Subscription';
+
+  @override
+  String get transactionTypeAddFund => 'Add funds';
+
+  @override
+  String get transactionTypeIncome => 'Income';
+
+  @override
+  String get transactionTypeExpense => 'Expense';
+
+  @override
+  String get transactionTypeOther => 'Other';
+
+  @override
+  String get frequencyWeekly => 'Weekly';
+
+  @override
+  String get frequencyMonthly => 'Monthly';
+
+  @override
+  String get frequencyQuarterly => 'Quarterly';
+
+  @override
+  String get frequencyYearly => 'Yearly';
+
+  @override
+  String get frequencyOneTime => 'One time';
+
+  @override
+  String get runtimeSplitPercentagePositive =>
+      'Every beneficiary needs a percentage greater than zero.';
+
+  @override
+  String get runtimeSplitPercentagesTotal => 'Percentages must add up to 100%.';
+
+  @override
+  String get runtimeSplitAmountPositive =>
+      'Every beneficiary needs an amount greater than zero.';
+
+  @override
+  String get runtimeSplitMismatch =>
+      'The split does not match the total amount. Check the individual amounts.';
+}

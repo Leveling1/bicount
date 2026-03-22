@@ -1,4 +1,4 @@
-﻿import 'package:bicount/app/bicount_app.dart';
+import 'package:bicount/app/bicount_app.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {

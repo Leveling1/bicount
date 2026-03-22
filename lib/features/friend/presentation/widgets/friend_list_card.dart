@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/core/widgets/details_card.dart';
@@ -15,12 +16,15 @@ class FriendListCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Current friends', style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          context.l10n.friendCurrentFriends,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: AppDimens.marginSmall),
         DetailsCard(
           child: friends.isEmpty
               ? Text(
-                  'Your accepted contacts will show up here in real time.',
+                  context.l10n.friendCurrentEmpty,
                   style: Theme.of(context).textTheme.bodySmall,
                 )
               : Column(
@@ -42,9 +46,8 @@ class FriendListCard extends StatelessWidget {
                               children: [
                                 Text(
                                   friend.username,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(fontWeight: FontWeight.w600),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(

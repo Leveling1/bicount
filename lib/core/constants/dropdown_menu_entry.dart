@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/subscription_const.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
 class DropdownMenuEntryConstants {
@@ -6,7 +7,7 @@ class DropdownMenuEntryConstants {
       [
         DropdownMenuEntry(
           value: Frequency.weekly,
-          label: 'Weekly',
+          label: context.frequencyLabel(Frequency.weekly),
           style: ButtonStyle(
             foregroundColor: WidgetStatePropertyAll(
               Theme.of(context).textTheme.titleLarge?.color,
@@ -15,7 +16,7 @@ class DropdownMenuEntryConstants {
         ),
         DropdownMenuEntry(
           value: Frequency.monthly,
-          label: 'Monthly',
+          label: context.frequencyLabel(Frequency.monthly),
           style: ButtonStyle(
             foregroundColor: WidgetStatePropertyAll(
               Theme.of(context).textTheme.titleLarge?.color,
@@ -24,7 +25,7 @@ class DropdownMenuEntryConstants {
         ),
         DropdownMenuEntry(
           value: Frequency.quarterly,
-          label: 'Quarterly',
+          label: context.frequencyLabel(Frequency.quarterly),
           style: ButtonStyle(
             foregroundColor: WidgetStatePropertyAll(
               Theme.of(context).textTheme.titleLarge?.color,
@@ -33,7 +34,7 @@ class DropdownMenuEntryConstants {
         ),
         DropdownMenuEntry(
           value: Frequency.yearly,
-          label: 'Yearly',
+          label: context.frequencyLabel(Frequency.yearly),
           style: ButtonStyle(
             foregroundColor: WidgetStatePropertyAll(
               Theme.of(context).textTheme.titleLarge?.color,

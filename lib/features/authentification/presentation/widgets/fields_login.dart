@@ -1,3 +1,4 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_text_field.dart';
@@ -7,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FieldsLogin extends StatefulWidget {
   const FieldsLogin({super.key, required this.loading});
+
   final bool loading;
+
   @override
   State<FieldsLogin> createState() => _FieldsLoginState();
 }
@@ -47,9 +50,9 @@ class _FieldsLoginState extends State<FieldsLogin> {
         spacing: AppDimens.spacingMedium,
         children: [
           CustomTextField(
-            label: "example@gmail.com",
+            label: 'example@gmail.com',
             textController: _emailController,
-            title: "Email address",
+            title: context.l10n.authEmailAddress,
             type: CustomTextFieldType.email,
             node: _emailFocus,
             textInputAction: TextInputAction.next,
@@ -58,16 +61,16 @@ class _FieldsLoginState extends State<FieldsLogin> {
             },
           ),
           CustomTextField(
-            label: "password",
+            label: context.l10n.authPassword,
             textController: _passwordController,
             type: CustomTextFieldType.password,
-            title: "Password",
+            title: context.l10n.authPassword,
             node: _passwordFocus,
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => _submit(),
           ),
           CustomButton(
-            text: "Log in",
+            text: context.l10n.authLogIn,
             loading: widget.loading,
             onPressed: _submit,
           ),

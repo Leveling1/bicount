@@ -1,5 +1,7 @@
 import 'package:bicount/core/constants/dropdown_menu_entry.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/services/smooth_insert.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
@@ -38,11 +40,14 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
         if (state is SubscriptionAdded) {
           NotificationHelper.showSuccessNotification(
             context,
-            'Subscription saved successfully!',
+            context.l10n.subscriptionSavedSuccess,
           );
           Navigator.pop(context);
         } else if (state is SubscriptionError) {
-          NotificationHelper.showFailureNotification(context, state.message);
+          NotificationHelper.showFailureNotification(
+            context,
+            localizeRuntimeMessage(context, state.message),
+          );
         }
       },
       builder: (context, state) {
@@ -52,36 +57,30 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Register a recurring payment such as streaming services, internet, gym, software, or any repetitive expense.',
+                context.l10n.subscriptionIntro,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 16),
-
-              // Name
               CustomFormField(
                 controller: _name,
-                label: "Subscription name",
-                hint: "e.g. Netflix, Spotify...",
+                label: context.l10n.subscriptionName,
+                hint: context.l10n.subscriptionNameHint,
               ),
               const SizedBox(height: 16),
-
-              // Amount + currency
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Amount",
+                    context.l10n.commonAmount,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   CustomAmountField(amount: _amount, currency: _currency),
                 ],
               ),
               const SizedBox(height: 16),
-
-              // Frequency
               CustomDropdownMenu(
-                title: 'Frequency',
-                hintText: 'Specify the level',
+                title: context.l10n.commonFrequency,
+                hintText: context.l10n.subscriptionFrequencyHint,
                 onChanged: (value) {
                   setState(() {
                     _frequency.text = value.toString();
@@ -92,12 +91,10 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Start date
               CustomFormField(
                 controller: _startDate,
-                label: "Start date",
-                hint: "DD/MM/YYYY",
+                label: context.l10n.subscriptionStartDate,
+                hint: context.l10n.commonDateHint,
                 isDate: true,
                 inputType: TextInputType.datetime,
               ),
@@ -109,24 +106,20 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                   });
                 },
                 title: Text(
-                  "The next payment will be on a different date.",
+                  context.l10n.subscriptionNextPaymentDifferent,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 0,
-                  horizontal: 0,
-                ), // Reduced padding
+                contentPadding: EdgeInsets.zero,
               ),
-              // Next billing date
               SmoothInsert(
                 visible: isDifferentDate,
                 child: Column(
                   children: [
                     CustomFormField(
                       controller: _nextBillingDate,
-                      label: "Next billing date",
-                      hint: "DD/MM/YYYY",
+                      label: context.l10n.subscriptionNextBillingDate,
+                      hint: context.l10n.commonDateHint,
                       isDate: true,
                       inputType: TextInputType.datetime,
                     ),
@@ -134,20 +127,15 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                   ],
                 ),
               ),
-
-              // Notes
               CustomFormField(
                 controller: _note,
-                label: "Note",
-                hint: "Add a note (optional)",
+                label: context.l10n.commonNote,
+                hint: context.l10n.commonPlaceholderNote,
                 enableValidator: false,
               ),
-
               const SizedBox(height: 32),
-
-              // Save button
               CustomButton(
-                text: "Save",
+                text: context.l10n.commonSave,
                 loading: state is SubscriptionLoading,
                 onPressed: _submit,
               ),

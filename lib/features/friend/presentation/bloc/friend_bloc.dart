@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:bicount/features/friend/domain/repositories/friend_repository.dart';
@@ -39,7 +39,13 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     FriendCreateInviteRequested event,
     Emitter<FriendState> emit,
   ) async {
-    emit(state.copyWith(isSubmitting: true, flashMessage: null, errorMessage: null));
+    emit(
+      state.copyWith(
+        isSubmitting: true,
+        flashMessage: null,
+        errorMessage: null,
+      ),
+    );
 
     try {
       final share = await repository.createInvite(
@@ -139,7 +145,10 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     }
   }
 
-  void _onFriendPreviewCleared(FriendPreviewCleared event, Emitter<FriendState> emit) {
+  void _onFriendPreviewCleared(
+    FriendPreviewCleared event,
+    Emitter<FriendState> emit,
+  ) {
     emit(state.copyWith(invitePreview: null, flashMessage: null));
   }
 
@@ -155,7 +164,10 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     );
   }
 
-  void _onFriendActionSucceeded(_FriendActionSucceeded event, Emitter<FriendState> emit) {
+  void _onFriendActionSucceeded(
+    _FriendActionSucceeded event,
+    Emitter<FriendState> emit,
+  ) {
     emit(
       state.copyWith(
         isSubmitting: false,
@@ -165,7 +177,10 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     );
   }
 
-  void _onFriendActionFailed(_FriendActionFailed event, Emitter<FriendState> emit) {
+  void _onFriendActionFailed(
+    _FriendActionFailed event,
+    Emitter<FriendState> emit,
+  ) {
     emit(
       state.copyWith(
         status: FriendStatus.failure,
@@ -176,11 +191,12 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     );
   }
 
-  FriendHubEntity _hubWithActiveShare(FriendShareEntity share) => FriendHubEntity(
-    activeShare: share,
-    sentInvites: state.hub.sentInvites,
-    receivedInvites: state.hub.receivedInvites,
-  );
+  FriendHubEntity _hubWithActiveShare(FriendShareEntity share) =>
+      FriendHubEntity(
+        activeShare: share,
+        sentInvites: state.hub.sentInvites,
+        receivedInvites: state.hub.receivedInvites,
+      );
 
   @override
   Future<void> close() async {

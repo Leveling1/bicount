@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
@@ -32,8 +33,11 @@ class FriendInviteSection extends StatelessWidget {
                         ? invite.linkedProfileName
                         : invite.senderName;
                     final subtitle = invite.isFriendProfileInvite
-                        ? '${invite.status.label} • shared by ${invite.senderName}'
-                        : invite.status.label;
+                        ? context.l10n.friendSharedBy(
+                            context.friendInviteStatusLabel(invite.status),
+                            invite.senderName,
+                          )
+                        : context.friendInviteStatusLabel(invite.status);
                     final avatar = invite.isFriendProfileInvite
                         ? invite.sourceFriendImage
                         : invite.senderImage;

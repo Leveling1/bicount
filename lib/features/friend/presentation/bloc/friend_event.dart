@@ -1,4 +1,4 @@
-﻿part of 'friend_bloc.dart';
+part of 'friend_bloc.dart';
 
 sealed class FriendEvent {
   const FriendEvent();

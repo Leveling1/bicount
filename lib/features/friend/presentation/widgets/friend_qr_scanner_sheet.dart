@@ -1,12 +1,10 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class FriendQrScannerSheet extends StatefulWidget {
-  const FriendQrScannerSheet({
-    super.key,
-    required this.onValue,
-  });
+  const FriendQrScannerSheet({super.key, required this.onValue});
 
   final ValueChanged<String> onValue;
 
@@ -40,13 +38,15 @@ class _FriendQrScannerSheetState extends State<FriendQrScannerSheet> {
           ),
           const SizedBox(height: AppDimens.marginLarge),
           Text(
-            'Scan invitation QR code',
+            context.l10n.friendScanQrTitle,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: AppDimens.marginMedium),
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppDimens.borderRadiusExtraLarge),
+              borderRadius: BorderRadius.circular(
+                AppDimens.borderRadiusExtraLarge,
+              ),
               child: MobileScanner(
                 onDetect: (capture) {
                   if (_handled) {

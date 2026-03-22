@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/header_button.dart';
@@ -14,6 +15,7 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.showSearchBar,
     required this.onToggleSearch,
     required this.onAddFunds,
+    required this.onOpenSettings,
   });
 
   final int connectionState;
@@ -22,6 +24,7 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showSearchBar;
   final VoidCallback onToggleSearch;
   final VoidCallback onAddFunds;
+  final VoidCallback onOpenSettings;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -35,7 +38,9 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
       leadingWidth: connectionState == Constants.disconnected ? 110.0 : null,
-      leading: connectionState == Constants.disconnected ? const _OfflineBadge() : null,
+      leading: connectionState == Constants.disconnected
+          ? const _OfflineBadge()
+          : null,
       title: Text(title, style: Theme.of(context).textTheme.titleSmall),
       actions: [
         AnimatedSwitcher(
@@ -45,26 +50,34 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
           },
           child: switch (selectedIndex) {
             2 => IconButton(
-                key: ValueKey('search_$selectedIndex$showSearchBar'),
-                onPressed: onToggleSearch,
-                icon: Icon(
-                  showSearchBar ? Icons.close : Icons.search,
-                  key: ValueKey(showSearchBar ? 'icon_close' : 'icon_search'),
-                  color: Theme.of(context).textTheme.titleSmall!.color!,
-                  size: AppDimens.iconSizeMedium,
-                ),
+              key: ValueKey('search_$selectedIndex$showSearchBar'),
+              onPressed: onToggleSearch,
+              icon: Icon(
+                showSearchBar ? Icons.close : Icons.search,
+                key: ValueKey(showSearchBar ? 'icon_close' : 'icon_search'),
+                color: Theme.of(context).textTheme.titleSmall!.color!,
+                size: AppDimens.iconSizeMedium,
               ),
+            ),
             3 => Row(
-                key: ValueKey('profile_actions_$selectedIndex'),
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  HeaderButton(
-                    text: 'Add funds',
-                    icon: Icons.add,
-                    onTap: onAddFunds,
+              key: ValueKey('profile_actions_$selectedIndex'),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                HeaderButton(
+                  text: context.l10n.shellAddFunds,
+                  icon: Icons.add,
+                  onTap: onAddFunds,
+                ),
+                IconButton(
+                  onPressed: onOpenSettings,
+                  icon: Icon(
+                    Icons.settings_outlined,
+                    color: Theme.of(context).textTheme.titleSmall?.color,
+                    size: AppDimens.iconSizeMedium,
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
             _ => const SizedBox.shrink(key: ValueKey('no_action')),
           },
         ),
@@ -97,7 +110,7 @@ class _OfflineBadge extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Text(
-              'Connexion',
+              context.l10n.shellOfflineBadge,
               style: const TextStyle(
                 color: AppColors.errorColorBasic,
                 fontSize: 11,

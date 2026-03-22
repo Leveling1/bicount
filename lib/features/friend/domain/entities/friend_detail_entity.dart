@@ -1,4 +1,4 @@
-﻿import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:equatable/equatable.dart';
 

@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
@@ -43,7 +44,7 @@ class FriendsDirectoryScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: CustomAppBar(
-            title: 'Friends',
+            title: context.l10n.friendsTitle,
             actions: [
               if (data != null)
                 IconButton(
@@ -74,7 +75,7 @@ class FriendsDirectoryScreen extends StatelessWidget {
                         BicountReveal(
                           delay: const Duration(milliseconds: 90),
                           child: Text(
-                            'Tap a friend to review the live transaction history or link a local profile to a real account.',
+                            context.l10n.friendsDirectoryIntro,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ),
@@ -85,7 +86,7 @@ class FriendsDirectoryScreen extends StatelessWidget {
                                   delay: const Duration(milliseconds: 140),
                                   child: DetailsCard(
                                     child: Text(
-                                      'Create a transaction with someone and they will appear here. When they join Bicount, open their detail screen to share and link the profile.',
+                                      context.l10n.friendsDirectoryEmpty,
                                       style: Theme.of(
                                         context,
                                       ).textTheme.bodySmall,

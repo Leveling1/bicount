@@ -1,5 +1,6 @@
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -14,8 +15,9 @@ import '../../domain/entities/transaction_entity.dart';
 import '../../../../core/widgets/details_card.dart';
 
 class DetailTransactionScreen extends StatelessWidget {
-  final TransactionDetailArgs transaction;
   const DetailTransactionScreen({super.key, required this.transaction});
+
+  final TransactionDetailArgs transaction;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +25,10 @@ class DetailTransactionScreen extends StatelessWidget {
     final data = transaction.transactionDetail;
     final supabaseInstance = Supabase.instance.client;
     final uid = supabaseInstance.auth.currentUser!.id;
-    String formattedDate = formatedDate(data.date);
-    String formattedTime = formatedTime(data.date);
-    String formattedCreatedDateTime = formatedDateTime(data.createdAt!);
-    String sign = data.sender == uid
+    final formattedDate = formatedDate(data.date);
+    final formattedTime = formatedTime(data.date);
+    final formattedCreatedDateTime = formatedDateTime(data.createdAt!);
+    final sign = data.sender == uid
         ? '-'
         : data.beneficiary == uid
         ? '+'
@@ -40,13 +42,13 @@ class DetailTransactionScreen extends StatelessWidget {
       email: transaction.user.email,
       relationType: FriendConst.friend,
     );
-    String sender = transaction.friends
+    final sender = transaction.friends
         .firstWhere(
           (friend) => friend.sid == data.sender,
           orElse: () => ourData,
         )
         .username;
-    String beneficiary = transaction.friends
+    final beneficiary = transaction.friends
         .firstWhere(
           (friend) => friend.sid == data.beneficiary,
           orElse: () => ourData,
@@ -101,9 +103,9 @@ class DetailTransactionScreen extends StatelessWidget {
                 Text(
                   '$sign ${data.amount} ${data.currency.symbol}',
                   style: TextStyle(
-                    color: sign == "+"
+                    color: sign == '+'
                         ? AppColors.primaryColorDark
-                        : sign == "-"
+                        : sign == '-'
                         ? AppColors.negativeColorDark
                         : Theme.of(context).textTheme.titleLarge?.color,
                     fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
@@ -111,25 +113,21 @@ class DetailTransactionScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  TransactionTypes.getTypeText(data.type),
+                  context.transactionTypeLabel(data.type),
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-
                 DetailsCard(
                   child: Column(
                     children: [
-                      RowDetail(title: 'Date', content: formattedDate),
+                      RowDetail(
+                        title: context.l10n.commonDate,
+                        content: formattedDate,
+                      ),
                       const SizedBox(height: 8),
-                      RowDetail(title: 'Time', content: formattedTime),
-                    ],
-                  ),
-                ),
-                DetailsCard(
-                  child: Column(
-                    children: [
-                      RowDetail(title: 'Sender', content: sender),
-                      const SizedBox(height: 8),
-                      RowDetail(title: 'Beneficiary', content: beneficiary),
+                      RowDetail(
+                        title: context.l10n.commonTime,
+                        content: formattedTime,
+                      ),
                     ],
                   ),
                 ),
@@ -137,17 +135,30 @@ class DetailTransactionScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       RowDetail(
-                        title: 'Frequency',
-                        content: TransactionTypes.frequencyToString(
-                          data.frequency!,
-                        ),
+                        title: context.l10n.commonSender,
+                        content: sender,
                       ),
-                      data.note.isNotEmpty && data.note != ""
-                          ? const SizedBox(height: 8)
-                          : const SizedBox.shrink(),
-                      data.note.isNotEmpty && data.note != ""
-                          ? RowDetail(title: 'Note', content: data.note)
-                          : const SizedBox.shrink(),
+                      const SizedBox(height: 8),
+                      RowDetail(
+                        title: context.l10n.commonBeneficiary,
+                        content: beneficiary,
+                      ),
+                    ],
+                  ),
+                ),
+                DetailsCard(
+                  child: Column(
+                    children: [
+                      RowDetail(
+                        title: context.l10n.commonFrequency,
+                        content: context.frequencyLabel(data.frequency!),
+                      ),
+                      if (data.note.isNotEmpty) const SizedBox(height: 8),
+                      if (data.note.isNotEmpty)
+                        RowDetail(
+                          title: context.l10n.commonNote,
+                          content: data.note,
+                        ),
                     ],
                   ),
                 ),
@@ -159,7 +170,10 @@ class DetailTransactionScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Created at', style: Theme.of(context).textTheme.bodySmall),
+            Text(
+              context.l10n.commonCreatedAt,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             Text(
               formattedCreatedDateTime,
               style: Theme.of(context).textTheme.bodySmall,
@@ -173,10 +187,10 @@ class DetailTransactionScreen extends StatelessWidget {
 }
 
 class RowDetail extends StatelessWidget {
+  const RowDetail({super.key, required this.title, required this.content});
+
   final String title;
   final String content;
-
-  const RowDetail({super.key, required this.title, required this.content});
 
   @override
   Widget build(BuildContext context) {

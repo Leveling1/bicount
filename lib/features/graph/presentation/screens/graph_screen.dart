@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/graph/presentation/bloc/graph_bloc.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_cashflow_chart.dart';
@@ -31,7 +32,7 @@ class GraphScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(AppDimens.paddingLarge),
               child: Text(
-                state.errorMessage ?? 'Unable to load analytics',
+                state.errorMessage ?? context.l10n.graphUnableToLoad,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
@@ -63,12 +64,12 @@ class GraphScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Overview',
+                        context.l10n.graphOverview,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: AppDimens.marginSmall),
                       Text(
-                        'Track your flow, spot your recurring costs and keep the useful signals close.',
+                        context.l10n.graphOverviewDescription,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -96,7 +97,7 @@ class GraphScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Cashflow trend',
+                        context.l10n.graphCashflowTrend,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       GraphCashflowChart(dashboard: dashboard),
@@ -110,7 +111,7 @@ class GraphScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Expense mix',
+                        context.l10n.graphExpenseMix,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       GraphExpenseBreakdownCard(dashboard: dashboard),
@@ -124,7 +125,7 @@ class GraphScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Subscriptions',
+                        context.l10n.graphSubscriptions,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       GraphSubscriptionInsightCard(dashboard: dashboard),

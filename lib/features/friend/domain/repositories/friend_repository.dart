@@ -1,4 +1,4 @@
-﻿import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
+import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 
 abstract class FriendRepository {
   Stream<FriendHubEntity> watchHub();

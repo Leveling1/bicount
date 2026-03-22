@@ -1,15 +1,14 @@
 import 'package:intl/intl.dart';
 
 class NumberFormatUtils {
-  /// Formats a number as currency according to the given [locale] and [currencyCode], using the correct symbol (e.g. $, €).
   static String formatCurrency(
     num value, {
-    String locale = 'en_US',
+    String? locale,
     String currencyCode = 'USD',
   }) {
     final symbol = currencyCode == 'USD' ? '\$' : 'Fc';
     final formatter = NumberFormat.currency(
-      locale: locale,
+      locale: locale ?? _resolvedLocale(),
       name: currencyCode,
       symbol: '',
     );
@@ -17,10 +16,9 @@ class NumberFormatUtils {
     return '$formattedNumber $symbol';
   }
 
-  /// Formats a transaction amount with + or - sign, and currency formatting.
   static String formatTransactionAmount(
     num value, {
-    String locale = 'en_US',
+    String? locale,
     String currencyCode = 'USD',
   }) {
     final formatted = formatCurrency(
@@ -34,15 +32,23 @@ class NumberFormatUtils {
 
   static String compactCurrency(
     num value, {
-    String locale = 'en_US',
+    String? locale,
     String currencyCode = 'USD',
   }) {
     final symbol = currencyCode == 'USD' ? '\$' : 'Fc';
     final formatter = NumberFormat.compactCurrency(
-      locale: locale,
+      locale: locale ?? _resolvedLocale(),
       symbol: '',
       decimalDigits: 0,
     );
     return '${formatter.format(value)}$symbol';
+  }
+
+  static String _resolvedLocale() {
+    final locale = Intl.getCurrentLocale();
+    if (locale.isEmpty || locale == 'und') {
+      return 'en';
+    }
+    return locale;
   }
 }

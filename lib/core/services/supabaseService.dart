@@ -266,7 +266,6 @@ class CRUD {
     }
   }
 
-
   Future<String?> uploadFileMergeFile(
     String bucket,
     String id_document,

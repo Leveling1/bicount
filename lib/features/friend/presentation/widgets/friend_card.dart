@@ -1,4 +1,4 @@
-﻿import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';

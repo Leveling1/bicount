@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
@@ -7,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/services/notification_helper.dart';
-import '../../../../core/utils/date_format_utils.dart';
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../../data/models/transaction.model.dart';
 import '../../domain/entities/transaction_detail_args.dart';
@@ -16,11 +15,6 @@ import '../bloc/transaction_bloc.dart';
 import 'detail_transaction_screen.dart';
 
 class TransactionScreen extends StatefulWidget {
-  final MainEntity data;
-  final bool showSearchBar;
-  final TextEditingController searchController;
-  final int selectedIndexTransaction;
-
   const TransactionScreen({
     super.key,
     required this.data,
@@ -28,6 +22,11 @@ class TransactionScreen extends StatefulWidget {
     required this.searchController,
     required this.selectedIndexTransaction,
   });
+
+  final MainEntity data;
+  final bool showSearchBar;
+  final TextEditingController searchController;
+  final int selectedIndexTransaction;
 
   @override
   State<TransactionScreen> createState() => _TransactionScreenState();
@@ -37,34 +36,18 @@ class _TransactionScreenState extends State<TransactionScreen> {
   late List<TransactionModel> transactions = [];
 
   Map<String, List<TransactionModel>> groupTransactionsByDate(
+    BuildContext context,
     List<TransactionModel> transactions,
   ) {
-    Map<String, List<TransactionModel>> grouped = {};
+    final grouped = <String, List<TransactionModel>>{};
 
-    for (var tx in transactions) {
-      final DateTime date = DateTime.parse(tx.createdAt!);
-      final now = DateTime.now();
-
-      String key;
-      if (isSameDate(date, now)) {
-        key = 'Today';
-      } else if (isSameDate(date, now.subtract(Duration(days: 1)))) {
-        key = 'Yesterday';
-      } else {
-        key = formatDate(date);
-      }
-
-      if (!grouped.containsKey(key)) {
-        grouped[key] = [];
-      }
-      grouped[key]!.add(tx);
+    for (final tx in transactions) {
+      final date = DateTime.parse(tx.createdAt!);
+      final key = context.transactionDateGroupLabel(date);
+      grouped.putIfAbsent(key, () => []).add(tx);
     }
 
     return grouped;
-  }
-
-  bool isSameDate(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   List<TransactionModel> _filterTransactions(List<TransactionModel> source) {
@@ -96,22 +79,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
     if (!widget.showSearchBar) {
       widget.searchController.clear();
     }
-    return BlocConsumer<TransactionBloc, TransactionState>(
-      listener: (context, state) {
-        if (state is TransactionCreated) {
-          NotificationHelper.showSuccessNotification(context, state.toString());
-        } else if (state is TransactionError) {
-          NotificationHelper.showFailureNotification(
-            context,
-            state.failure.message,
-          );
-        }
-      },
+    return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
         transactions = widget.data.transactions;
         final filteredTransactions = _filterTransactions(transactions);
-
-        final grouped = groupTransactionsByDate(filteredTransactions);
+        final grouped = groupTransactionsByDate(context, filteredTransactions);
 
         return transactions.isNotEmpty
             ? Column(
@@ -141,7 +113,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                       ),
                                       const SizedBox(height: 8),
                                       ...entry.value.map((tx) {
-                                        TransactionEntity transaction =
+                                        final transaction =
                                             TransactionEntity.fromTransaction(
                                               tx,
                                             );
@@ -175,13 +147,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           ),
                         )
                       : Expanded(
-                          child: const Center(
-                            child: Text('No transactions found'),
+                          child: Center(
+                            child: Text(
+                              context.l10n.transactionNoTransactionsFound,
+                            ),
                           ),
                         ),
                 ],
               )
-            : const Center(child: Text('No transactions found'));
+            : Center(child: Text(context.l10n.transactionNoTransactionsFound));
       },
     );
   }

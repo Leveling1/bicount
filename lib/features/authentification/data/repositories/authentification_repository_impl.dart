@@ -22,7 +22,9 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
 
       if (remoteUser.isLeft()) {
         final failure = remoteUser.swap().getOrElse(() => throw Exception());
-        return Left(AuthenticationFailure(message: 'Erreur : ${failure.message}'));
+        return Left(
+          AuthenticationFailure(message: 'Erreur : ${failure.message}'),
+        );
       }
 
       return Right(null);
@@ -31,7 +33,9 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
         return Left(AuthenticationFailure(message: e.message));
       }
       return Left(
-        AuthenticationFailure(message: 'Erreur lors de l\'authentification : $e'),
+        AuthenticationFailure(
+          message: 'Erreur lors de l\'authentification : $e',
+        ),
       );
     }
   }

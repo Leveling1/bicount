@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/icon_links.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
@@ -6,24 +7,29 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
-  final int selectedIndex;
-  final Function(int) onTap;
-
   const CustomBottomNavigationBar({
     super.key,
     required this.selectedIndex,
     required this.onTap,
   });
 
+  final int selectedIndex;
+  final Function(int) onTap;
+
   @override
   Widget build(BuildContext context) {
-    List<String> icons = const [
+    const icons = [
       IconLinks.home,
       IconLinks.graph,
       IconLinks.transaction,
       IconLinks.user,
     ];
-    List<String> titles = const ['Home', 'Graphs', 'Transaction', 'Profile'];
+    final titles = [
+      context.l10n.navHome,
+      context.l10n.navGraphs,
+      context.l10n.navTransaction,
+      context.l10n.navProfile,
+    ];
 
     return Theme(
       data: Theme.of(context).copyWith(splashColor: Colors.transparent),
@@ -43,7 +49,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             currentIndex: selectedIndex,
             onTap: onTap,
             items: List.generate(icons.length, (index) {
-              double size = selectedIndex == index ? 24 : 20;
+              final size = selectedIndex == index ? 24.0 : 20.0;
               return BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   icons[index],

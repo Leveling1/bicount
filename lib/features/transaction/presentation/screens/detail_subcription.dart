@@ -1,5 +1,7 @@
 import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/get_new_date.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -16,17 +18,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DetailSubscription extends StatelessWidget {
-  final FriendsModel friend;
-  final SubscriptionModel subscription;
   const DetailSubscription({
     super.key,
     required this.friend,
     required this.subscription,
   });
 
+  final FriendsModel friend;
+  final SubscriptionModel subscription;
+
   @override
   Widget build(BuildContext context) {
-    final Color badgeColor = SubscriptionConst.getStatusColor(
+    final badgeColor = SubscriptionConst.getStatusColor(
       subscription.status!,
       context,
     );
@@ -35,12 +38,12 @@ class DetailSubscription extends StatelessWidget {
         if (state is UnsubscriptionSuccess) {
           NotificationHelper.showSuccessNotification(
             context,
-            "Unsubscription successful",
+            context.l10n.subscriptionUnsubscribeSuccess,
           );
         } else if (state is UnsubscriptionError) {
           NotificationHelper.showFailureNotification(
             context,
-            state.failure.message,
+            localizeRuntimeMessage(context, state.failure.message),
           );
         }
       },
@@ -73,19 +76,17 @@ class DetailSubscription extends StatelessWidget {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Text(
-                SubscriptionConst.getStatusString(subscription.status!),
+                context.subscriptionStatusLabel(subscription.status!),
                 style: TextStyle(color: badgeColor, fontSize: 11),
                 textAlign: TextAlign.center,
               ),
             ),
-
             Row(
               children: [
                 Flexible(
-                  flex: 1,
                   child: InfoCardAmount(
                     icon: IconLinks.moneyIcon,
-                    title: 'Amount',
+                    title: context.l10n.commonAmount,
                     value: subscription.amount,
                     color: Theme.of(
                       context,
@@ -94,12 +95,11 @@ class DetailSubscription extends StatelessWidget {
                 ),
                 const SizedBox(width: AppDimens.marginMedium),
                 Flexible(
-                  flex: 1,
                   child: InfoCard(
                     icon: IconLinks.calendar,
                     title: subscription.status == SubscriptionConst.active
-                        ? 'Next billing'
-                        : 'Billing stop',
+                        ? context.l10n.subscriptionNextBilling
+                        : context.l10n.subscriptionBillingStop,
                     content: subscription.status == SubscriptionConst.active
                         ? getNextMonthSameDay(subscription.nextBillingDate)
                         : formatedDateTimeNumericFullYear(
@@ -114,32 +114,31 @@ class DetailSubscription extends StatelessWidget {
             ),
             LinearInfoCard(
               icon: IconLinks.frequency,
-              title: 'Frequency',
-              content: Frequency.getFrequencyString(subscription.frequency),
+              title: context.l10n.commonFrequency,
+              content: context.frequencyLabel(subscription.frequency),
               color: Theme.of(
                 context,
               ).extension<OtherTheme>()!.personnalIncome!,
             ),
             LinearInfoCard(
               icon: IconLinks.expense,
-              title: 'Cumulative expenses',
+              title: context.l10n.subscriptionCumulativeExpenses,
               content: NumberFormatUtils.formatCurrency(friend.receive! as num),
               color: Theme.of(context).extension<OtherTheme>()!.expense!,
             ),
-            subscription.notes == "" || subscription.notes == null
-                ? const SizedBox.shrink()
-                : InfoCardNote(
-                    icon: IconLinks.note,
-                    title: 'Note',
-                    content: subscription.notes!,
-                    color: Theme.of(context).primaryColor,
-                  ),
+            if (subscription.notes?.isNotEmpty ?? false)
+              InfoCardNote(
+                icon: IconLinks.note,
+                title: context.l10n.commonNote,
+                content: subscription.notes!,
+                color: Theme.of(context).primaryColor,
+              ),
             const SizedBox(height: AppDimens.paddingSmall),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Subscribed on',
+                  context.l10n.subscriptionSubscribedOn,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 Text(
@@ -153,7 +152,7 @@ class DetailSubscription extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Created at',
+                  context.l10n.commonCreatedAt,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 Text(
@@ -162,22 +161,21 @@ class DetailSubscription extends StatelessWidget {
                 ),
               ],
             ),
-            subscription.status == SubscriptionConst.active
-                ? Column(
-                    children: [
-                      const SizedBox(height: AppDimens.marginMedium),
-                      CustomButton(
-                        text: 'unsubscribe',
-                        loading: state is UnsubscriptionLoading,
-                        onPressed: () {
-                          context.read<TransactionBloc>().add(
-                            UnsubscribeEvent(subscription),
-                          );
-                        },
-                      ),
-                    ],
-                  )
-                : const SizedBox.shrink(),
+            if (subscription.status == SubscriptionConst.active)
+              Column(
+                children: [
+                  const SizedBox(height: AppDimens.marginMedium),
+                  CustomButton(
+                    text: context.l10n.subscriptionUnsubscribe,
+                    loading: state is UnsubscriptionLoading,
+                    onPressed: () {
+                      context.read<TransactionBloc>().add(
+                        UnsubscribeEvent(subscription),
+                      );
+                    },
+                  ),
+                ],
+              ),
             const SizedBox(height: AppDimens.marginLarge),
           ],
         );

@@ -85,7 +85,7 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
       /// while also granting permission to access user information.
       final authorization =
           await googleUser.authorizationClient.authorizationForScopes(scopes) ??
-              await googleUser.authorizationClient.authorizeScopes(scopes);
+          await googleUser.authorizationClient.authorizeScopes(scopes);
       final idToken = googleUser.authentication.idToken;
       final accessToken = authorization.accessToken;
       if (idToken == null) {
@@ -100,7 +100,9 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
 
       if (authResponse.user == null) {
         return Left(
-          AuthenticationFailure(message: 'Échec de l\'authentification avec Google'),
+          AuthenticationFailure(
+            message: 'Échec de l\'authentification avec Google',
+          ),
         );
       }
 
@@ -108,7 +110,9 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
 
       // Validate user email
       if (supabaseUser.email == null || supabaseUser.email!.isEmpty) {
-        return Left(AuthenticationFailure(message: 'Email non fourni par Google'));
+        return Left(
+          AuthenticationFailure(message: 'Email non fourni par Google'),
+        );
       }
 
       // Retourne true si le lancement du navigateur a réussi

@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
@@ -28,14 +29,14 @@ class DetailFriendTransactionSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Shared transactions',
+          context.l10n.friendSharedTransactions,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: AppDimens.marginSmall),
         DetailsCard(
           child: detail.transactions.isEmpty
               ? Text(
-                  'Transactions with this friend will appear here in real time.',
+                  context.l10n.friendTransactionsEmpty,
                   style: Theme.of(context).textTheme.bodySmall,
                 )
               : ListView.separated(

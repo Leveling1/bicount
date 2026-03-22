@@ -1,3 +1,4 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
 import '../themes/app_colors.dart';
@@ -43,7 +44,9 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
   }
 
   String? _validator(String? value) {
-    if (value == null || value.isEmpty) return 'This field is required';
+    if (value == null || value.isEmpty) {
+      return context.l10n.validationFieldRequired;
+    }
     return null;
   }
 

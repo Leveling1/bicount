@@ -1,4 +1,4 @@
-﻿import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/features/friend/domain/entities/friend_detail_entity.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
@@ -15,18 +15,18 @@ class FriendViewService {
       (candidate) => candidate.sid == fallbackFriend.sid,
       orElse: () => fallbackFriend,
     );
-    final transactions = data.transactions
-        .where(
-          (transaction) =>
-              transaction.senderId == friend.sid ||
-              transaction.beneficiaryId == friend.sid,
-        )
-        .toList()
-      ..sort(
-        (left, right) => _resolveSortDate(right).compareTo(
-          _resolveSortDate(left),
-        ),
-      );
+    final transactions =
+        data.transactions
+            .where(
+              (transaction) =>
+                  transaction.senderId == friend.sid ||
+                  transaction.beneficiaryId == friend.sid,
+            )
+            .toList()
+          ..sort(
+            (left, right) =>
+                _resolveSortDate(right).compareTo(_resolveSortDate(left)),
+          );
 
     final totalGiven = transactions
         .where(
@@ -91,7 +91,9 @@ class FriendViewService {
       if (balanceComparison != 0) {
         return balanceComparison;
       }
-      return left.username.toLowerCase().compareTo(right.username.toLowerCase());
+      return left.username.toLowerCase().compareTo(
+        right.username.toLowerCase(),
+      );
     });
 
     return filtered;

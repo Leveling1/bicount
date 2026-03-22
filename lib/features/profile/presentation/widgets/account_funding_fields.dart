@@ -1,3 +1,5 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
@@ -15,11 +17,11 @@ class AccountFundingForm extends StatefulWidget {
 }
 
 class _AccountFundingFormState extends State<AccountFundingForm> {
-  final TextEditingController _source = TextEditingController(),
-      _date = TextEditingController(),
-      _amount = TextEditingController(),
-      _currency = TextEditingController(),
-      _note = TextEditingController();
+  final TextEditingController _source = TextEditingController();
+  final TextEditingController _date = TextEditingController();
+  final TextEditingController _amount = TextEditingController();
+  final TextEditingController _currency = TextEditingController();
+  final TextEditingController _note = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -29,11 +31,14 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
         if (state is AccountFundingAdded) {
           NotificationHelper.showSuccessNotification(
             context,
-            'Account funding transaction added successfully',
+            context.l10n.accountFundingSavedSuccess,
           );
           Navigator.pop(context);
         } else if (state is AccountFundingError) {
-          NotificationHelper.showFailureNotification(context, state.message);
+          NotificationHelper.showFailureNotification(
+            context,
+            localizeRuntimeMessage(context, state.message),
+          );
         }
       },
       builder: (context, state) {
@@ -42,21 +47,21 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
           child: Column(
             children: [
               Text(
-                'Add money to your account securely by recording a new deposit or credit to increase your available balance.',
+                context.l10n.accountFundingIntro,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 16),
               CustomFormField(
                 controller: _source,
-                label: "Source",
-                hint: 'Enter source of funds',
+                label: context.l10n.commonSource,
+                hint: context.l10n.accountFundingEnterSource,
               ),
               const SizedBox(height: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Amount",
+                    context.l10n.commonAmount,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   CustomAmountField(amount: _amount, currency: _currency),
@@ -65,21 +70,21 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
               const SizedBox(height: 16),
               CustomFormField(
                 controller: _note,
-                label: "Note",
-                hint: 'Add a note (optional)',
+                label: context.l10n.commonNote,
+                hint: context.l10n.commonPlaceholderNote,
                 enableValidator: false,
               ),
               const SizedBox(height: 16),
               CustomFormField(
                 controller: _date,
-                hint: 'DD/MM/YYYY',
+                hint: context.l10n.commonDateHint,
                 inputType: TextInputType.datetime,
                 isDate: true,
-                label: 'When',
+                label: context.l10n.commonWhen,
               ),
               const SizedBox(height: 32),
               CustomButton(
-                text: 'Save',
+                text: context.l10n.commonSave,
                 loading: state is AccountFundingLoading,
                 onPressed: _submit,
               ),

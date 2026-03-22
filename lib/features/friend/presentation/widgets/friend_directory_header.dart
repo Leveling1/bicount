@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:flutter/material.dart';
 
@@ -19,11 +20,17 @@ class FriendDirectoryHeader extends StatelessWidget {
     return DetailsCard(
       child: Row(
         children: [
-          _FriendDirectoryStat(label: 'Total', value: total),
+          _FriendDirectoryStat(label: context.l10n.friendsTotal, value: total),
           const SizedBox(width: AppDimens.marginMedium),
-          _FriendDirectoryStat(label: 'Linked', value: linked),
+          _FriendDirectoryStat(
+            label: context.l10n.friendsLinked,
+            value: linked,
+          ),
           const SizedBox(width: AppDimens.marginMedium),
-          _FriendDirectoryStat(label: 'To link', value: unlinked),
+          _FriendDirectoryStat(
+            label: context.l10n.friendsToLink,
+            value: unlinked,
+          ),
         ],
       ),
     );
@@ -44,9 +51,9 @@ class _FriendDirectoryStat extends StatelessWidget {
         children: [
           Text(
             '$value',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 4),
           Text(label, style: Theme.of(context).textTheme.bodySmall),

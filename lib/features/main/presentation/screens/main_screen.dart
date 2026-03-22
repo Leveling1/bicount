@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/constants/network_status.dart';
+import 'package:bicount/core/constants/network_status.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
@@ -62,6 +63,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final titles = localizedMainShellTitles(context);
+
     return BlocConsumer<MainBloc, MainState>(
       listener: _onStateChanged,
       builder: (context, state) {
@@ -76,12 +79,13 @@ class _MainScreenState extends State<MainScreen> {
           ).bottomNavigationBarTheme.backgroundColor,
           appBar: MainShellAppBar(
             connectionState: preparedData.connectionState,
-            title: mainShellTitles[_selectedIndex],
+            title: titles[_selectedIndex],
             selectedIndex: _selectedIndex,
             showSearchBar: showSearchBar,
             onToggleSearch: () =>
                 setState(() => showSearchBar = !showSearchBar),
             onAddFunds: _openAddFundsSheet,
+            onOpenSettings: () => context.push('/settings'),
           ),
           body: MainShellBody(
             selectedIndex: _selectedIndex,
@@ -134,12 +138,12 @@ class _MainScreenState extends State<MainScreen> {
       if (state.networkStatus == NetworkStatus.disconnected) {
         NotificationHelper.showFailureNotification(
           context,
-          'Internet connection lost: you are in offline mode',
+          context.l10n.networkOfflineMessage,
         );
       } else if (state.networkStatus == NetworkStatus.unstable) {
         NotificationHelper.showFailureNotification(
           context,
-          'Unstable internet connection',
+          context.l10n.networkUnstableMessage,
         );
       }
     }

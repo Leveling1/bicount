@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../brick/repository.dart';
+import '../../../../../core/constants/tables_name.dart';
 import '../../models/user.model.dart';
 
 class LocalAuthentification implements AuthentificationLocalDataSource {
@@ -60,9 +61,11 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
       // 1️⃣ Vider le cache mémoire
       repo.memoryCacheProvider.reset();
 
-      // 2️⃣ Vider la base SQLite
-      await repo.sqliteProvider.resetDb();
-
+      // 2️⃣ Vider toutes les tables SQLite (sans fermer la connexion)
+      const tables = TablesName.listTable;
+      for (final table in tables) {
+        await repo.sqliteProvider.rawExecute('DELETE FROM `$table`');
+      }
       return right(null);
     } catch (e) {
       return left(

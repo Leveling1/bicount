@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/themes/app_colors.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
@@ -28,7 +29,7 @@ class GraphExpenseBreakdownCard extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  'No outgoing transactions for this period yet.',
+                  context.l10n.transactionNoTransactionsFound,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
@@ -41,7 +42,9 @@ class GraphExpenseBreakdownCard extends StatelessWidget {
                     PieChartData(
                       centerSpaceRadius: 52,
                       sectionsSpace: 2,
-                      sections: dashboard.expenseBreakdown.asMap().entries.map((entry) {
+                      sections: dashboard.expenseBreakdown.asMap().entries.map((
+                        entry,
+                      ) {
                         final color = colors[entry.key % colors.length];
                         final total = dashboard.expenseBreakdown.fold<double>(
                           0,
@@ -55,10 +58,11 @@ class GraphExpenseBreakdownCard extends StatelessWidget {
                           color: color,
                           radius: 42,
                           title: '${percent.toStringAsFixed(0)}%',
-                          titleStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          titleStyle: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                         );
                       }).toList(),
                     ),
@@ -74,20 +78,22 @@ class GraphExpenseBreakdownCard extends StatelessWidget {
                         Container(
                           width: 10,
                           height: 10,
-                          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                          ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            entry.value.label,
+                            context.graphBreakdownLabel(entry.value.label),
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ),
                         Text(
                           NumberFormatUtils.formatCurrency(entry.value.value),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                       ],
                     ),

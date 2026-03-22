@@ -1,24 +1,31 @@
-import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/bicount_reveal.dart';
+import 'package:bicount/core/widgets/custom_button.dart';
+import 'package:bicount/features/authentification/presentation/widgets/auth_brand_mark.dart';
 import 'package:bicount/features/authentification/presentation/widgets/fields_signup.dart';
+import 'package:bicount/features/authentification/presentation/widgets/separator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/widgets/custom_button.dart';
+
 import '../bloc/authentification_bloc.dart';
-import '../widgets/separator.dart';
 
 class SignUpScreen extends StatelessWidget {
-  SignUpScreen({super.key});
+  const SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.sizeOf(context).height;
     return Scaffold(
       body: BlocConsumer<AuthentificationBloc, AuthentificationState>(
         listener: (context, state) {
           if (state is SignUpFailure) {
-            NotificationHelper.showFailureNotification(context, state.error);
+            NotificationHelper.showFailureNotification(
+              context,
+              localizeRuntimeMessage(context, state.error),
+            );
           } else if (state is SignUpSuccess) {
             GoRouter.of(context).go('/');
           }
@@ -31,50 +38,67 @@ class SignUpScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: height / 10,
+                    BicountReveal(
+                      child: AuthBrandMark(
+                        subtitle: context.l10n.authSignupLead,
+                      ),
+                    ),
+                    const SizedBox(height: AppDimens.spacingLarge),
+                    BicountReveal(
+                      delay: const Duration(milliseconds: 80),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Let's Get Started",
+                            context.l10n.authSignUp,
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           Text(
-                            "Fill the login to continue",
+                            context.l10n.authSignupDescription,
                             style: Theme.of(context).textTheme.headlineSmall,
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: AppDimens.spacingLarge),
-                    FieldsSignUp(loading: state is SignUpLoading),
+                    BicountReveal(
+                      delay: const Duration(milliseconds: 130),
+                      child: FieldsSignUp(loading: state is SignUpLoading),
+                    ),
                     const SizedBox(height: AppDimens.spacingExtraLarge),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Already have an account?"),
-                        TextButton(
-                          onPressed: () {
-                            GoRouter.of(context).go('/login');
-                          },
-                          child: Text(
-                            "Log in",
-                            style: Theme.of(context).textTheme.bodyMedium!
-                                .copyWith(fontWeight: FontWeight.bold),
+                    BicountReveal(
+                      delay: const Duration(milliseconds: 180),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(context.l10n.authAlreadyHaveAccount),
+                          TextButton(
+                            onPressed: () => GoRouter.of(context).go('/login'),
+                            child: Text(
+                              context.l10n.authLogIn,
+                              style: Theme.of(context).textTheme.bodyMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     AppDimens.spacerLarge,
-                    const Separator(),
+                    const BicountReveal(
+                      delay: Duration(milliseconds: 220),
+                      child: Separator(),
+                    ),
                     AppDimens.spacerLarge,
-                    CustomGoogleAuthButton(
-                      isLoading: state is AuthWithGoogleLoading,
-                      onPressed: () {
-                        context.read<AuthentificationBloc>().add(AuthWithGoogleEvent());
-                      },
+                    BicountReveal(
+                      delay: const Duration(milliseconds: 260),
+                      child: CustomGoogleAuthButton(
+                        isLoading: state is AuthWithGoogleLoading,
+                        onPressed: () {
+                          context.read<AuthentificationBloc>().add(
+                            AuthWithGoogleEvent(),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

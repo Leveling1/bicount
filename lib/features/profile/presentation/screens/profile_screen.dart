@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/constants/icon_links.dart';
+import 'package:bicount/core/constants/icon_links.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
@@ -16,9 +17,9 @@ import '../bloc/profile_bloc.dart';
 import '../widgets/profile_card.dart';
 
 class ProfileScreen extends StatelessWidget {
-  final MainEntity data;
   const ProfileScreen({super.key, required this.data});
 
+  final MainEntity data;
   static const _friendViewService = FriendViewService();
 
   @override
@@ -60,7 +61,7 @@ class ProfileScreen extends StatelessWidget {
                         Flexible(
                           child: InfoCardAmount(
                             icon: IconLinks.income,
-                            title: 'Income',
+                            title: context.l10n.profileIncome,
                             value: data.user.incomes!,
                             color: Theme.of(
                               context,
@@ -71,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
                         Flexible(
                           child: InfoCardAmount(
                             icon: IconLinks.expense,
-                            title: 'Expense',
+                            title: context.l10n.profileExpense,
                             value: data.user.expenses!,
                             color: Theme.of(
                               context,
@@ -88,7 +89,7 @@ class ProfileScreen extends StatelessWidget {
                         Flexible(
                           child: InfoCardAmount(
                             icon: IconLinks.user,
-                            title: 'Personal',
+                            title: context.l10n.profilePersonal,
                             value: data.user.personalIncome!,
                             color: Theme.of(
                               context,
@@ -99,7 +100,7 @@ class ProfileScreen extends StatelessWidget {
                         Flexible(
                           child: InfoCardAmount(
                             icon: IconLinks.graph,
-                            title: 'Recurring',
+                            title: context.l10n.profileRecurring,
                             value: recurringSpend,
                             color: Theme.of(context).primaryColor,
                           ),
@@ -109,12 +110,12 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: AppDimens.marginMedium),
                   BicountReveal(
-                    delay: const Duration(milliseconds: 210),
+                    delay: const Duration(milliseconds: 190),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Friends',
+                          context.l10n.profileFriends,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         TextButton(
@@ -127,7 +128,7 @@ class ProfileScreen extends StatelessWidget {
                           },
                           style: Theme.of(context).textButtonTheme.style,
                           child: Text(
-                            'See all',
+                            context.l10n.profileSeeAll,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ),
@@ -136,33 +137,40 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   if (visibleFriends.isEmpty)
                     BicountReveal(
-                      delay: const Duration(milliseconds: 260),
+                      delay: const Duration(milliseconds: 240),
                       child: DetailsCard(
                         child: Text(
-                          'Create a transaction with someone to add your first friend. Their profile can be linked later when they join Bicount.',
+                          context.l10n.profileFirstFriendHint,
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
                     )
                   else
                     Column(
-                      children: visibleFriends.take(3).toList().asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final friend = entry.value;
-                        return BicountReveal(
-                          delay: Duration(milliseconds: 260 + (index * 45)),
-                          child: FriendCard(
-                            friend: friend,
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => DetailFriend(friend: friend),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      }).toList(),
+                      children: visibleFriends
+                          .take(3)
+                          .toList()
+                          .asMap()
+                          .entries
+                          .map((entry) {
+                            final index = entry.key;
+                            final friend = entry.value;
+                            return BicountReveal(
+                              delay: Duration(milliseconds: 240 + (index * 45)),
+                              child: FriendCard(
+                                friend: friend,
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          DetailFriend(friend: friend),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          })
+                          .toList(),
                     ),
                 ],
               ),

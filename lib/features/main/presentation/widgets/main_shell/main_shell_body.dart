@@ -1,4 +1,4 @@
-﻿import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/services/smooth_insert.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/container_body.dart';

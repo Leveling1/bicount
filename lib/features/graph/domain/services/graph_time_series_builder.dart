@@ -1,4 +1,4 @@
-﻿import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
 import 'package:bicount/features/profile/data/models/account_funding.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
@@ -55,7 +55,12 @@ class GraphTimeSeriesBuilder {
 
     while (!cursor.isAfter(end)) {
       final currentKey = bucketKey(cursor, period);
-      final inflow = _bucketInflowForDate(transactions, fundings, currentKey, period);
+      final inflow = _bucketInflowForDate(
+        transactions,
+        fundings,
+        currentKey,
+        period,
+      );
       final outflow = _bucketOutflowForDate(transactions, currentKey, period);
       runningNet += inflow - outflow;
 
@@ -139,7 +144,8 @@ class GraphTimeSeriesBuilder {
         .where(
           (transaction) =>
               transaction.type == TransactionTypes.incomeCode &&
-              bucketKey(resolveTransactionDate(transaction), period) == bucketKeyValue,
+              bucketKey(resolveTransactionDate(transaction), period) ==
+                  bucketKeyValue,
         )
         .fold<double>(0, (sum, transaction) => sum + transaction.amount);
     final fundingIncome = fundings
@@ -161,7 +167,8 @@ class GraphTimeSeriesBuilder {
         .where(
           (transaction) =>
               transaction.type != TransactionTypes.incomeCode &&
-              bucketKey(resolveTransactionDate(transaction), period) == bucketKeyValue,
+              bucketKey(resolveTransactionDate(transaction), period) ==
+                  bucketKeyValue,
         )
         .fold<double>(0, (sum, transaction) => sum + transaction.amount);
   }

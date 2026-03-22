@@ -540,6 +540,59 @@ Current state of the codebase:
 - backend still needs to match the documented contracts for full production behavior
 - device-level QA remains important before external prospect distribution
 
+## Settings Feature Update
+
+The app now includes a dedicated `settings` feature.
+
+Main user actions:
+
+- request `Bicount Pro`
+- change theme
+- change language
+- edit visible profile identity
+- sign out
+- request account deletion after confirmation and a reason form
+
+Access pattern:
+
+- settings is exposed through the profile area with a dedicated icon in the shell app bar
+- route path is `/settings`
+
+Architecture notes:
+
+- theme persistence is handled by `ThemeCubit` + `SettingsRepositoryImpl`
+- language persistence remains handled by `LocaleCubit`
+- settings success/error feedback goes through the shared notification system
+- account deletion uses a confirmation dialog first, then a bottom sheet form
+
+## Settings Backend Contract
+
+When changing settings flows that touch Supabase, keep this file updated:
+
+- `docs/settings_backend_actions.md`
+
+Current backend additions expected by settings:
+
+- `pro_upgrade_requests`
+- `account_deletion_requests`
+- Edge Function `delete-account`
+
+## Localization Rule Update
+
+All new user-visible settings texts must use the localization system.
+
+Mandatory rule:
+
+- do not add hardcoded UI copy for settings, onboarding, profile, auth, or other user-facing flows
+- add new strings to `lib/l10n/app_en.arb` and `lib/l10n/app_fr.arb`
+- regenerate localizations after ARB changes
+- if a runtime/backend message must be translated, map it in `lib/core/localization/runtime_message_localizer.dart`
+
+Fallback rule:
+
+- the app follows the system language by default
+- if the system language is unsupported or cannot be resolved, English is the fallback
+
 ## Refactor Rule
 
 Manual source files should stay at or below 200 lines whenever the split is reasonable.
@@ -653,3 +706,109 @@ Expected behavior now:
 - `Generate invite` immediately exposes the QR code and invite URL from local state
 - `Share link` and `Copy` become usable without waiting for Supabase realtime
 - the existing UI choices remain in place, including `CustomAppBar` and opening `FriendScreen` in `showCustomBottomSheet`
+
+## Onboarding Update (2026-03-22)
+
+The authentication entry flow now starts with a dedicated onboarding experience for unauthenticated users.
+
+Rules:
+- default unauthenticated entry should land on `/onboarding`
+- `/login` and `/signUp` stay directly reachable from onboarding CTAs
+- onboarding copy must stay user-facing, not technical
+- the third onboarding step introduces `Bicount Pro` as a coming-soon product direction for teams and business activity
+- onboarding visuals live in `assets/images/` as transparent PNG illustrations and should stay aligned with the app primary color family
+- keep CTA buttons on one row, with a clear primary action for sign up and a secondary action for log in
+
+## Onboarding Visual Refresh (2026-03-22)
+
+The onboarding illustration system now uses theme-specific transparent PNG assets.
+
+Rules:
+- onboarding illustrations must exist in both `light` and `dark` variants
+- do not place text inside onboarding illustrations
+- keep the visual language minimal, rounded, product-like, and close to premium mobile onboarding references
+- prefer soft depth, clean geometry, and restrained accent colors over busy scenes
+- onboarding and auth transitions should use lightweight fade/slide motion only
+- common CTA buttons should animate loading and content switches with short `AnimatedSwitcher` transitions
+
+## Auth Layout Stability Update (2026-03-22)
+
+Authentication screens should avoid nested flex layouts inside scrollable areas.
+
+Rules:
+- do not place a `Row` with `Expanded` children inside another unconstrained `Row` in auth screens
+- avoid combining `SingleChildScrollView` with fragile `Spacer` or unnecessary fixed-height wrappers in auth entry screens
+- use simple vertical sections for auth CTA areas when possible to keep layout predictable on smaller devices
+- `Separator` now supports a safer compact mode when a bounded width is not guaranteed
+
+## Delivery Discipline Update (2026-03-22)
+
+These instructions apply in addition to all previous rules in this file.
+They do not replace or weaken any earlier product, architecture, or UX constraints.
+
+Mandatory execution rules after any meaningful code change:
+- verify that the modified flow actually works after implementation
+- run the most relevant validation possible for the change, such as targeted analysis, build, tests, or a runtime check
+- if errors or regressions are found, fix them before considering the task complete
+- do not stop at code edits only when the issue can be validated locally
+- after each major update, add or refresh the relevant notes in `AGENTS.md`
+
+Performance protection rules:
+- prefer modifications that keep runtime performance stable or improved
+- avoid heavy UI effects, unnecessary rebuilds, large always-on animations, and wasteful realtime listeners
+- choose the simplest implementation that satisfies the UX goal while preserving fluidity
+- when adding motion, keep it lightweight and short, and avoid patterns that can degrade scrolling or navigation smoothness
+
+File size and factorization rules:
+- do not create or keep manual source files above 200 lines unless the file is generated or there is an explicit user exception
+- when a file grows too much, split it into smaller focused files instead of stacking more logic into one screen or widget
+- prefer small reusable widgets, helpers, services, and mappers to keep files readable and maintainable
+- keep business rules, UI composition, and integration code separated as much as practical within the existing BLoC architecture
+
+## Localization Update (2026-03-22)
+
+Current app localization status:
+- visible V1 flows are localized in English and French
+- the app follows the system language by default when no explicit choice is saved
+- a manual language override is available from the Profile screen and is persisted with SharedPreferences
+- generated localization files live in `lib/l10n`
+- source ARB files are `lib/l10n/app_en.arb` and `lib/l10n/app_fr.arb`
+- generated imports should use `package:bicount/l10n/app_localizations.dart`
+
+Implementation rules for future agents:
+- never hardcode new user-facing strings in visible V1 flows; add them to ARB files first
+- after changing ARB files, run `flutter gen-l10n`
+- after localization changes, run at least `flutter analyze lib` and a relevant build check
+- keep date, time, and number formatting locale-aware; do not reintroduce hardcoded `en_EN`, `en_US`, or similar defaults for user-facing formatting
+- if a runtime message comes from repositories, blocs, or backend glue and can surface in UI, localize it through the existing runtime message localizer or replace it with a localized source
+
+Future language expansion:
+- Lingala is technically supported by the current architecture
+- to add Lingala later, create `lib/l10n/app_ln.arb`, regenerate l10n, and extend the locale selector if the product wants it exposed in settings
+
+## Localization Runtime Completion (2026-03-22)
+
+The i18n pass now covers both visible labels and the main runtime feedback shown to users.
+
+Rules:
+- if the device locale is unsupported or cannot be matched cleanly, fall back to English
+- keep French and English as the current shipped locales unless the user explicitly asks to add more
+- the language selector persists the explicit user choice with SharedPreferences, but `system` remains the default behavior
+- runtime messages that can surface in toasts, bloc errors, or repository failures should be mapped through `lib/core/localization/runtime_message_localizer.dart`
+- when adding new user-facing failure messages in repositories or blocs, use stable English source strings so the runtime localizer can translate them reliably
+- avoid leaking low-level exception text directly into the UI when a cleaner localized message can be shown instead
+- validators in reusable form widgets must also use localized strings, not hardcoded English
+- Lingala remains feasible with a future `lib/l10n/app_ln.arb`; add it only when product scope explicitly includes it
+
+## Locale And Feedback Stability Update (2026-03-22)
+
+Recent behavior fixes now define the expected UX for locale fallback, onboarding motion, and transaction feedback.
+
+Rules:
+- if the saved locale is absent and the device locale is unsupported or cannot be resolved cleanly, the app must fall back to English
+- keep the app locale resolution deterministic; do not leave locale behavior ambiguous when system matching fails
+- onboarding can auto-advance, but only after a real reading delay; keep it soft, short, and easy to interrupt by manual swipe
+- when a user manually changes onboarding page, reset the auto-slide timer instead of forcing an immediate second movement
+- transaction success and error toasts must have a single owner for each flow; do not listen to the same `TransactionBloc` success state in both the container screen and the form if both can toast
+- prefer form-level success handling for create/edit flows when the confirmation belongs to the action the user just submitted
+- shared notification helpers must stay localized; do not reintroduce hardcoded English toast titles in visible V1 flows

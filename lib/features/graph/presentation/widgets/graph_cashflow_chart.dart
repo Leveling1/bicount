@@ -1,4 +1,4 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
@@ -34,9 +34,9 @@ class GraphCashflowChart extends StatelessWidget {
             children: [
               Text(
                 'Cumulative net',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
               ),
               Text(
                 dashboard.period.description,
@@ -60,7 +60,9 @@ class GraphCashflowChart extends StatelessWidget {
                   drawVerticalLine: false,
                   getDrawingHorizontalLine: (value) {
                     return FlLine(
-                      color: Theme.of(context).dividerColor.withValues(alpha: 0.18),
+                      color: Theme.of(
+                        context,
+                      ).dividerColor.withValues(alpha: 0.18),
                       strokeWidth: 1,
                     );
                   },
@@ -91,10 +93,13 @@ class GraphCashflowChart extends StatelessWidget {
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 30,
-                      interval: _bottomInterval(dashboard.cashflowPoints.length),
+                      interval: _bottomInterval(
+                        dashboard.cashflowPoints.length,
+                      ),
                       getTitlesWidget: (value, meta) {
                         final index = value.toInt();
-                        if (index < 0 || index >= dashboard.cashflowPoints.length) {
+                        if (index < 0 ||
+                            index >= dashboard.cashflowPoints.length) {
                           return const SizedBox.shrink();
                         }
                         final point = dashboard.cashflowPoints[index];
@@ -114,7 +119,9 @@ class GraphCashflowChart extends StatelessWidget {
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
                   LineChartBarData(
-                    spots: dashboard.cashflowPoints.asMap().entries.map((entry) {
+                    spots: dashboard.cashflowPoints.asMap().entries.map((
+                      entry,
+                    ) {
                       return FlSpot(
                         entry.key.toDouble(),
                         entry.value.cumulativeNet,

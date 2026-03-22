@@ -1,3 +1,4 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/features/profile/presentation/widgets/account_funding_fields.dart';
 import 'package:flutter/material.dart';
 
@@ -14,11 +15,11 @@ class _AccountFundingHandlerState extends State<AccountFundingHandler> {
     return Column(
       children: [
         Text(
-          'Add funds to your account',
+          context.l10n.transactionAddFundsTitle,
           style: Theme.of(context).textTheme.headlineLarge,
         ),
         const SizedBox(height: 12),
-        AccountFundingForm(),
+        const AccountFundingForm(),
       ],
     );
   }

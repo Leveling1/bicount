@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/widgets/app_avatar.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +34,11 @@ class DetailFriendHeader extends StatelessWidget {
             isLinkedProfile ? Icons.verified_user_outlined : Icons.link_off,
             size: 18,
           ),
-          label: Text(isLinkedProfile ? 'Linked account' : 'Local friend'),
+          label: Text(
+            isLinkedProfile
+                ? context.l10n.friendLinkedAccount
+                : context.l10n.friendLocalFriend,
+          ),
         ),
       ],
     );

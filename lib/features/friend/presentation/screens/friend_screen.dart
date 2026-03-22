@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
@@ -75,22 +76,25 @@ class _FriendScreenState extends State<FriendScreen> {
               children: [
                 FriendScreenIntro(
                   title: widget.selectedFriend == null
-                      ? 'Friend invitations'
-                      : 'Link ${widget.selectedFriend!.username}',
+                      ? context.l10n.friendInvitationsTitle
+                      : context.l10n.friendLinkTitle(
+                          widget.selectedFriend!.username,
+                        ),
                   description: widget.selectedFriend == null
-                      ? 'Scan an invite, review pending links, and track shared profiles in real time.'
-                      : 'Share this local friend profile when the person has created a Bicount account so the backend can link both profiles together.',
+                      ? context.l10n.friendScreenIntro
+                      : context.l10n.friendLinkIntro,
                 ),
                 const SizedBox(height: AppDimens.marginLarge),
                 if (widget.user != null && widget.selectedFriend != null) ...[
                   FriendShareCard(
-                    title: 'Share ${widget.selectedFriend!.username} profile',
-                    description:
-                        'Generate a QR code or a link for this specific friend profile.',
+                    title: context.l10n.friendShareProfileTitle(
+                      widget.selectedFriend!.username,
+                    ),
+                    description: context.l10n.friendShareProfileDescription,
                     activeShare: activeShare,
                     isSubmitting: state.isSubmitting,
                     onCreate: _createInvite,
-                    onShare: () => shareFriendInvite(activeShare),
+                    onShare: () => shareFriendInvite(context, activeShare),
                     onCopy: () => copyFriendInvite(context, activeShare),
                     onScan: () => openFriendScanner(
                       context,
@@ -106,7 +110,7 @@ class _FriendScreenState extends State<FriendScreen> {
                       onValue: _onInviteValueReceived,
                     ),
                     icon: const Icon(Icons.qr_code_scanner_outlined),
-                    label: const Text('Scan invite'),
+                    label: Text(context.l10n.friendScanInvite),
                   ),
                   const SizedBox(height: AppDimens.marginLarge),
                 ],
@@ -127,14 +131,14 @@ class _FriendScreenState extends State<FriendScreen> {
                   const SizedBox(height: AppDimens.marginLarge),
                 ],
                 FriendInviteSection(
-                  title: 'Pending requests',
-                  emptyLabel: 'No incoming invitations for now.',
+                  title: context.l10n.friendPendingRequests,
+                  emptyLabel: context.l10n.friendIncomingEmpty,
                   invites: state.hub.receivedInvites,
                 ),
                 const SizedBox(height: AppDimens.marginLarge),
                 FriendInviteSection(
-                  title: 'Sent invitations',
-                  emptyLabel: 'You have not shared a friend profile yet.',
+                  title: context.l10n.friendSentInvitations,
+                  emptyLabel: context.l10n.friendSentEmpty,
                   invites: state.hub.sentInvites,
                 ),
                 const SizedBox(height: AppDimens.marginLarge),

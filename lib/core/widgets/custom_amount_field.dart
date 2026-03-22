@@ -1,3 +1,4 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,10 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'custom_form_text_field.dart';
 
 class CustomAmountField extends StatelessWidget {
-  final TextEditingController amount;
-  final TextEditingController currency;
-  final bool? enableValidator;
-
   const CustomAmountField({
     super.key,
     required this.amount,
@@ -16,8 +13,14 @@ class CustomAmountField extends StatelessWidget {
     this.enableValidator = true,
   });
 
-  String? _validator(String? value) {
-    if (value == null || value.isEmpty) return 'This field is required';
+  final TextEditingController amount;
+  final TextEditingController currency;
+  final bool? enableValidator;
+
+  String? _validator(BuildContext context, String? value) {
+    if (value == null || value.isEmpty) {
+      return context.l10n.validationFieldRequired;
+    }
     return null;
   }
 
@@ -32,9 +35,11 @@ class CustomAmountField extends StatelessWidget {
           Expanded(
             flex: 3,
             child: CustomFormTextField(
-              hintText: 'Enter amount',
+              hintText: context.l10n.fieldEnterAmount,
               inputType: TextInputType.number,
-              validator: enableValidator! ? _validator : null,
+              validator: enableValidator!
+                  ? (value) => _validator(context, value)
+                  : null,
               controller: amount,
             ),
           ),
@@ -45,14 +50,9 @@ class CustomAmountField extends StatelessWidget {
 }
 
 class CurrencyField extends StatelessWidget {
-  final TextEditingController controller;
-  final String hintText;
-  final String defaultCurrencyCode;
-
   CurrencyField({
     super.key,
     required this.controller,
-    this.hintText = 'Select currency',
     this.defaultCurrencyCode = 'USD',
   }) {
     if (controller.text.isEmpty) {
@@ -60,13 +60,16 @@ class CurrencyField extends StatelessWidget {
     }
   }
 
+  final TextEditingController controller;
+  final String defaultCurrencyCode;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       readOnly: true,
       enableInteractiveSelection: false,
-      decoration: InputDecoration(hintText: hintText),
+      decoration: InputDecoration(hintText: context.l10n.fieldSelectCurrency),
       style: TextStyle(
         fontSize: AppDimens.textSizeMedium.sp,
         fontWeight: FontWeight.w600,

@@ -1,4 +1,4 @@
-﻿import 'package:bicount/core/constants/subscription_const.dart';
+import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/graph/data/models/graph_source_data.dart';
 import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
@@ -31,11 +31,14 @@ class GraphDashboardBuilder {
       (sum, funding) => sum + funding.amount,
     );
     final expenseAmount = filteredTransactions
-        .where((transaction) => transaction.type == TransactionTypes.expenseCode)
+        .where(
+          (transaction) => transaction.type == TransactionTypes.expenseCode,
+        )
         .fold<double>(0, (sum, transaction) => sum + transaction.amount);
     final subscriptionAmount = filteredTransactions
         .where(
-          (transaction) => transaction.type == TransactionTypes.subscriptionCode,
+          (transaction) =>
+              transaction.type == TransactionTypes.subscriptionCode,
         )
         .fold<double>(0, (sum, transaction) => sum + transaction.amount);
     final otherAmount = filteredTransactions
@@ -46,7 +49,8 @@ class GraphDashboardBuilder {
     final outflow = expenseAmount + subscriptionAmount + otherAmount;
     final dueSoonAmount = activeSubscriptions
         .where(
-          (subscription) => timeSeriesBuilder
+          (subscription) =>
+              timeSeriesBuilder
                   .resolveSubscriptionDate(subscription.nextBillingDate)
                   .difference(timeSeriesBuilder.startOfDay(DateTime.now()))
                   .inDays <=
@@ -103,12 +107,16 @@ class GraphDashboardBuilder {
     activeSubscriptions.sort((left, right) {
       return timeSeriesBuilder
           .resolveSubscriptionDate(left.nextBillingDate)
-          .compareTo(timeSeriesBuilder.resolveSubscriptionDate(right.nextBillingDate));
+          .compareTo(
+            timeSeriesBuilder.resolveSubscriptionDate(right.nextBillingDate),
+          );
     });
     return activeSubscriptions;
   }
 
-  double _estimateMonthlySubscriptionSpend(List<SubscriptionModel> subscriptions) {
+  double _estimateMonthlySubscriptionSpend(
+    List<SubscriptionModel> subscriptions,
+  ) {
     return subscriptions.fold<double>(0, (sum, subscription) {
       switch (subscription.frequency) {
         case Frequency.weekly:

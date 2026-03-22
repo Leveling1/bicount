@@ -1,6 +1,8 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/errors/failure.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
@@ -67,17 +69,19 @@ class _TransferFormState extends State<TransferForm> {
     final splitPreview = _buildPreview();
 
     return BlocConsumer<TransactionBloc, TransactionState>(
+      listenWhen: (previous, current) =>
+          current is TransactionCreated || current is TransactionError,
       listener: (context, state) {
         if (state is TransactionCreated) {
           NotificationHelper.showSuccessNotification(
             context,
-            'Transaction saved successfully.',
+            context.l10n.transactionSavedSuccess,
           );
           clearForm();
         } else if (state is TransactionError) {
           NotificationHelper.showFailureNotification(
             context,
-            state.failure.message,
+            localizeRuntimeMessage(context, state.failure.message),
           );
         }
       },
@@ -88,15 +92,15 @@ class _TransferFormState extends State<TransferForm> {
             children: [
               CustomFormField(
                 controller: _name,
-                label: 'Title',
-                hint: 'Enter transaction name',
+                label: context.l10n.commonTitle,
+                hint: context.l10n.transferEnterTransactionName,
               ),
               const SizedBox(height: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Amount',
+                    context.l10n.commonAmount,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   CustomAmountField(amount: _amount, currency: _currency),
@@ -105,8 +109,8 @@ class _TransferFormState extends State<TransferForm> {
               const SizedBox(height: 16),
               CustomFormField(
                 controller: _note,
-                label: 'Note',
-                hint: 'Add a note (optional)',
+                label: context.l10n.commonNote,
+                hint: context.l10n.commonPlaceholderNote,
                 enableValidator: false,
               ),
               const SizedBox(height: 16),
@@ -120,12 +124,12 @@ class _TransferFormState extends State<TransferForm> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Paid by',
+                            context.l10n.transferPaidBy,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           CustomSuggestionTextField(
                             controller: _sender,
-                            hintText: 'Enter sender name',
+                            hintText: context.l10n.transferEnterSenderName,
                             options: friendNames,
                             isVisible: false,
                           ),
@@ -137,28 +141,28 @@ class _TransferFormState extends State<TransferForm> {
                       flex: 2,
                       child: CustomFormField(
                         controller: _date,
-                        hint: 'DD/MM/YYYY',
+                        hint: context.l10n.commonDateHint,
                         inputType: TextInputType.datetime,
                         isDate: true,
-                        label: 'When',
+                        label: context.l10n.commonWhen,
                       ),
                     ),
                   ],
                 ),
               ),
               CheckboxListTile(
-                value: _sender.text.trim().toLowerCase() == 'me',
+                value: _isCurrentUserAlias(_sender.text),
                 onChanged: (checked) {
                   setState(() {
                     if (checked == true) {
-                      _sender.text = 'Me';
+                      _sender.text = context.l10n.commonMe;
                     } else {
                       _sender.clear();
                     }
                   });
                 },
                 title: Text(
-                  "It's me the payer",
+                  context.l10n.transferItsMePayer,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
@@ -169,21 +173,21 @@ class _TransferFormState extends State<TransferForm> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Beneficiaries',
+                    context.l10n.transferBeneficiaries,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   CustomSuggestionTextField(
                     controller: _beneficiary,
                     onAdd: _addBeneficiary,
                     isVisible: true,
-                    hintText: 'Enter beneficiary name',
+                    hintText: context.l10n.transferEnterBeneficiaryName,
                     options: friendNames,
                   ),
                   const SizedBox(height: 8),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Add as many receivers as you want. Use "me" if you are also receiving a share.',
+                      context.l10n.transferBeneficiariesHint,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
@@ -206,7 +210,7 @@ class _TransferFormState extends State<TransferForm> {
                         ),
                         subtitle: previewShare != null
                             ? Text(
-                                'Share: ${previewShare.amount.toStringAsFixed(2)} ${_currency.text.isEmpty ? 'USD' : _currency.text}',
+                                '${context.l10n.commonPreview}: ${previewShare.amount.toStringAsFixed(2)} ${_currency.text.isEmpty ? 'USD' : _currency.text}',
                                 style: Theme.of(context).textTheme.bodySmall,
                               )
                             : null,
@@ -234,7 +238,7 @@ class _TransferFormState extends State<TransferForm> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    _splitMode.helperText,
+                    context.splitModeHelper(_splitMode),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
@@ -244,7 +248,7 @@ class _TransferFormState extends State<TransferForm> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Split details',
+                        context.l10n.transactionSplitDetails,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       TextButton(
@@ -253,7 +257,7 @@ class _TransferFormState extends State<TransferForm> {
                             _seedSplitInputsForCurrentMode(overwrite: true);
                           });
                         },
-                        child: const Text('Split equally'),
+                        child: Text(context.l10n.transactionSplitEqually),
                       ),
                     ],
                   ),
@@ -278,7 +282,10 @@ class _TransferFormState extends State<TransferForm> {
                 DetailsCard(
                   child: splitPreview.errorMessage != null
                       ? Text(
-                          splitPreview.errorMessage!,
+                          localizeRuntimeMessage(
+                            context,
+                            splitPreview.errorMessage!,
+                          ),
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(
                                 color: Theme.of(context).colorScheme.error,
@@ -288,7 +295,7 @@ class _TransferFormState extends State<TransferForm> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Preview',
+                              context.l10n.commonPreview,
                               style: Theme.of(context).textTheme.bodyLarge
                                   ?.copyWith(fontWeight: FontWeight.w700),
                             ),
@@ -339,7 +346,7 @@ class _TransferFormState extends State<TransferForm> {
               ],
               const SizedBox(height: 32),
               CustomButton(
-                text: 'Save',
+                text: context.l10n.commonSave,
                 loading: state is TransactionLoading,
                 onPressed: _submit,
               ),
@@ -365,7 +372,7 @@ class _TransferFormState extends State<TransferForm> {
     if (exists) {
       NotificationHelper.showFailureNotification(
         context,
-        'This beneficiary is already in the split.',
+        context.l10n.transactionDuplicateBeneficiary,
       );
       return;
     }
@@ -400,7 +407,7 @@ class _TransferFormState extends State<TransferForm> {
     if (_beneficiaryList.isEmpty) {
       NotificationHelper.showFailureNotification(
         context,
-        'Add at least one beneficiary.',
+        context.l10n.transactionAddAtLeastOneBeneficiary,
       );
       return;
     }
@@ -409,7 +416,7 @@ class _TransferFormState extends State<TransferForm> {
     if (totalAmount == null || totalAmount <= 0) {
       NotificationHelper.showFailureNotification(
         context,
-        'Enter a valid amount.',
+        context.l10n.transactionEnterValidAmount,
       );
       return;
     }
@@ -428,7 +435,10 @@ class _TransferFormState extends State<TransferForm> {
       _splitResolver.resolve(request);
       context.read<TransactionBloc>().add(CreateTransactionEvent(request));
     } on MessageFailure catch (error) {
-      NotificationHelper.showFailureNotification(context, error.message);
+      NotificationHelper.showFailureNotification(
+        context,
+        localizeRuntimeMessage(context, error.message),
+      );
     }
   }
 
@@ -453,7 +463,7 @@ class _TransferFormState extends State<TransferForm> {
   }
 
   FriendsModel _resolveParty(String rawValue) {
-    if (rawValue.trim().toLowerCase() == 'me' && widget.user != null) {
+    if (_isCurrentUserAlias(rawValue) && widget.user != null) {
       return _toCurrentUserParty();
     }
 
@@ -518,7 +528,9 @@ class _TransferFormState extends State<TransferForm> {
       }
 
       final previewRequest = CreateTransactionRequestEntity(
-        name: _name.text.trim().isEmpty ? 'Preview' : _name.text.trim(),
+        name: _name.text.trim().isEmpty
+            ? context.l10n.commonPreview
+            : _name.text.trim(),
         date: _resolveTransactionDate(),
         totalAmount: totalAmount,
         currency: _currency.text.isEmpty ? 'USD' : _currency.text,
@@ -545,21 +557,23 @@ class _TransferFormState extends State<TransferForm> {
 
   _SplitPreviewResult _buildPreview() {
     if (_beneficiaryList.isEmpty) {
-      return const _SplitPreviewResult(resolvedSplits: [], sharesByKey: {});
+      return _SplitPreviewResult(resolvedSplits: [], sharesByKey: {});
     }
 
     final totalAmount = _parseAmount(_amount.text);
     if (totalAmount == null || totalAmount <= 0) {
-      return const _SplitPreviewResult(
+      return _SplitPreviewResult(
         resolvedSplits: [],
         sharesByKey: {},
-        errorMessage: 'Enter a valid total amount to preview the split.',
+        errorMessage: context.l10n.transactionPreviewEnterValidTotal,
       );
     }
 
     try {
       final request = CreateTransactionRequestEntity(
-        name: _name.text.trim().isEmpty ? 'Preview' : _name.text.trim(),
+        name: _name.text.trim().isEmpty
+            ? context.l10n.commonPreview
+            : _name.text.trim(),
         date: _resolveTransactionDate(),
         totalAmount: totalAmount,
         currency: _currency.text.isEmpty ? 'USD' : _currency.text,
@@ -610,6 +624,19 @@ class _TransferFormState extends State<TransferForm> {
     return DateTime.now().toIso8601String();
   }
 
+  bool _isCurrentUserAlias(String rawValue) {
+    final value = rawValue.trim().toLowerCase();
+    if (value.isEmpty) {
+      return false;
+    }
+
+    return <String>{
+      'me',
+      'moi',
+      context.l10n.commonMe.toLowerCase(),
+    }.contains(value);
+  }
+
   String _beneficiaryKey(FriendsModel friend) {
     if (friend.sid.isNotEmpty) {
       return friend.sid;
@@ -647,14 +674,17 @@ class _SplitModeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Split method', style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          context.l10n.transactionSplitMethod,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: TransactionSplitMode.values.map((mode) {
             return ChoiceChip(
-              label: Text(mode.label),
+              label: Text(context.splitModeLabel(mode)),
               selected: splitMode == mode,
               onSelected: (_) => onChanged(mode),
               side: BorderSide.none,
@@ -701,8 +731,8 @@ class _SplitInputRow extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   mode == TransactionSplitMode.percentage
-                      ? 'Set the percentage received.'
-                      : 'Set the exact amount received.',
+                      ? context.l10n.transactionSetPercentageReceived
+                      : context.l10n.transactionSetExactAmountReceived,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],

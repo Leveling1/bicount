@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
@@ -71,7 +72,7 @@ class DetailFriend extends StatelessWidget {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Text(
-                                    'This friend is still local to your account. Use the share button to link it when the person has created a Bicount profile.',
+                                    context.l10n.friendLinkHint,
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodySmall,

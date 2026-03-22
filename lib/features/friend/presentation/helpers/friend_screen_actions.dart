@@ -1,4 +1,6 @@
-﻿import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/localization/runtime_message_localizer.dart';
+import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:bicount/features/friend/presentation/bloc/friend_bloc.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_qr_scanner_sheet.dart';
@@ -8,10 +10,16 @@ import 'package:share_plus/share_plus.dart';
 
 void handleFriendStateFeedback(BuildContext context, FriendState state) {
   if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-    NotificationHelper.showFailureNotification(context, state.errorMessage!);
+    NotificationHelper.showFailureNotification(
+      context,
+      localizeRuntimeMessage(context, state.errorMessage!),
+    );
   }
   if (state.flashMessage != null && state.flashMessage!.isNotEmpty) {
-    NotificationHelper.showSuccessNotification(context, state.flashMessage!);
+    NotificationHelper.showSuccessNotification(
+      context,
+      localizeRuntimeMessage(context, state.flashMessage!),
+    );
   }
 }
 
@@ -28,7 +36,10 @@ Future<void> copyFriendInvite(
     return;
   }
 
-  NotificationHelper.showSuccessNotification(context, 'Invitation link copied.');
+  NotificationHelper.showSuccessNotification(
+    context,
+    context.l10n.friendInvitationLinkCopied,
+  );
 }
 
 Future<void> openFriendScanner(
@@ -43,15 +54,17 @@ Future<void> openFriendScanner(
   );
 }
 
-Future<void> shareFriendInvite(FriendShareEntity? share) async {
+Future<void> shareFriendInvite(
+  BuildContext context,
+  FriendShareEntity? share,
+) async {
   if (share == null) {
     return;
   }
 
   final label = share.isFriendProfileShare
       ? share.subjectName
-      : 'my Bicount profile';
-  await Share.share(
-    'Join me on Bicount and link the profile for $label: ${share.inviteUrl}',
-  );
+      : context.l10n.friendMyProfile;
+  final message = context.l10n.friendShareMessage(label, share.inviteUrl);
+  await Share.share(message);
 }

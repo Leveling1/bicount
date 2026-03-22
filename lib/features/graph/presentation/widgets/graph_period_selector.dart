@@ -1,4 +1,5 @@
-﻿import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
 import 'package:flutter/material.dart';
 
 class GraphPeriodSelector extends StatelessWidget {
@@ -21,10 +22,12 @@ class GraphPeriodSelector extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(right: 8),
             child: ChoiceChip(
-              label: Text(period.label),
+              label: Text(context.graphPeriodLabel(period)),
               selected: selected,
               backgroundColor: Theme.of(context).cardColor,
-              selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.16),
+              selectedColor: Theme.of(
+                context,
+              ).primaryColor.withValues(alpha: 0.16),
               labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: selected
                     ? Theme.of(context).primaryColor

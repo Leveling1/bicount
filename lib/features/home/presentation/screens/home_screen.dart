@@ -1,4 +1,6 @@
-﻿import 'package:bicount/core/constants/icon_links.dart';
+import 'package:bicount/core/constants/icon_links.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
@@ -21,9 +23,10 @@ import '../bloc/home_bloc.dart';
 typedef CardTapCallback = void Function(int index);
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key, this.onCardTap, required this.data});
+
   final CardTapCallback? onCardTap;
   final MainEntity data;
-  const HomeScreen({super.key, this.onCardTap, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,10 @@ class HomeScreen extends StatelessWidget {
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeError) {
-          NotificationHelper.showFailureNotification(context, state.message);
+          NotificationHelper.showFailureNotification(
+            context,
+            localizeRuntimeMessage(context, state.message),
+          );
         }
       },
       builder: (context, state) {
@@ -59,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            'Your balance',
+                            context.l10n.homeBalance,
                             style: Theme.of(context).textTheme.titleSmall,
                           ),
                           Text(
@@ -69,11 +75,12 @@ class HomeScreen extends StatelessWidget {
                             style: (data.user.balance ?? 0.0) >= 0
                                 ? Theme.of(context).textTheme.titleLarge!
                                       .copyWith(fontWeight: FontWeight.bold)
-                                : Theme.of(context).textTheme.titleLarge!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.red,
-                                      ),
+                                : Theme.of(
+                                    context,
+                                  ).textTheme.titleLarge!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
                           ),
                         ],
                       ),
@@ -86,7 +93,7 @@ class HomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Accounts',
+                        context.l10n.homeAccounts,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: AppDimens.marginMedium),
@@ -95,7 +102,7 @@ class HomeScreen extends StatelessWidget {
                           Expanded(
                             child: CardTypeRevenue(
                               onTap: () => onCardTap?.call(3),
-                              label: 'Personal',
+                              label: context.l10n.profilePersonal,
                               amount: data.user.personalIncome ?? 0.0,
                               icon: SvgPicture.asset(
                                 IconLinks.user,
@@ -115,7 +122,7 @@ class HomeScreen extends StatelessWidget {
                           Expanded(
                             child: CardTypeRevenue(
                               onTap: () => onCardTap?.call(1),
-                              label: 'Recurring',
+                              label: context.l10n.profileRecurring,
                               amount: recurringSpend,
                               icon: SvgPicture.asset(
                                 IconLinks.graph,
@@ -141,14 +148,14 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Transactions',
+                          context.l10n.homeTransactions,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         TextButton(
                           onPressed: () => onCardTap?.call(2),
                           style: Theme.of(context).textButtonTheme.style,
                           child: Text(
-                            'show more',
+                            context.l10n.homeShowMore,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ),

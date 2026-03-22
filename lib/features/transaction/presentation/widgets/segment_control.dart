@@ -1,4 +1,4 @@
-import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
 class SegmentedControlController extends ChangeNotifier {
@@ -6,52 +6,21 @@ class SegmentedControlController extends ChangeNotifier {
 
   int get selectedIndex => _selectedIndex;
 
-  String get selectedValue {
-    switch (_selectedIndex) {
-      case TransactionTypes.transfer:
-        return TransactionTypes.transferText;
-      case TransactionTypes.subscription:
-        return TransactionTypes.subscriptionText;
-      case TransactionTypes.addFund:
-        return TransactionTypes.addFundText;
-      default:
-        return TransactionTypes.transferText;
-    }
-  }
-
   void setSelectedIndex(int index) {
     if (_selectedIndex != index) {
       _selectedIndex = index;
       notifyListeners();
     }
   }
-
-  void setSelectedValue(String value) {
-    int index;
-    switch (value) {
-      case TransactionTypes.transferText:
-        index = TransactionTypes.transfer;
-        break;
-      case TransactionTypes.subscriptionText:
-        index = TransactionTypes.subscription;
-        break;
-      case TransactionTypes.addFundText:
-        index = TransactionTypes.addFund;
-        break;
-      default:
-        index = TransactionTypes.transfer;
-    }
-    setSelectedIndex(index);
-  }
 }
 
 class SegmentedControlWidget extends StatefulWidget {
-  final SegmentedControlController controller;
-
   const SegmentedControlWidget({super.key, required this.controller});
 
+  final SegmentedControlController controller;
+
   @override
-  _SegmentedControlWidgetState createState() => _SegmentedControlWidgetState();
+  State<SegmentedControlWidget> createState() => _SegmentedControlWidgetState();
 }
 
 class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
@@ -74,7 +43,7 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(4),
+      padding: const EdgeInsets.all(4),
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
@@ -84,31 +53,23 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildSegment(
-            TransactionTypes.transferText,
-            TransactionTypes.transfer,
-          ),
-          _buildSegment(
-            TransactionTypes.subscriptionText,
-            TransactionTypes.subscription,
-          ),
-          _buildSegment(TransactionTypes.addFundText, TransactionTypes.addFund),
+          _buildSegment(context.l10n.transactionTypeTransfer, 0),
+          _buildSegment(context.l10n.transactionTypeSubscription, 1),
+          _buildSegment(context.l10n.transactionTypeAddFund, 2),
         ],
       ),
     );
   }
 
   Widget _buildSegment(String text, int index) {
-    bool isSelected = widget.controller.selectedIndex == index;
+    final isSelected = widget.controller.selectedIndex == index;
 
     return GestureDetector(
-      onTap: () {
-        widget.controller.setSelectedIndex(index);
-      },
+      onTap: () => widget.controller.setSelectedIndex(index),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         decoration: BoxDecoration(
-          color: isSelected ? Color(0xFF6C6C6C) : Colors.transparent,
+          color: isSelected ? const Color(0xFF6C6C6C) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(

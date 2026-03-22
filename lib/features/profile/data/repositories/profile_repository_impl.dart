@@ -1,3 +1,4 @@
+import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/profile/data/data_sources/local_datasource/profile_local_data_source_impl.dart';
 import 'package:bicount/features/profile/domain/entities/add_account_funding_entity.dart';
 
@@ -8,11 +9,15 @@ class ProfileRepositoryImpl implements ProfileRepository {
   ProfileRepositoryImpl({required this.localDataSource});
 
   @override
-  Future<void> addAccountFunding(AddAccountFundingEntity data) {
+  Future<void> addAccountFunding(AddAccountFundingEntity data) async {
     try {
-      return localDataSource.addAccountFunding(data);
-    } catch (e) {
-      throw '.';
+      await localDataSource.addAccountFunding(data);
+    } on Failure {
+      rethrow;
+    } catch (_) {
+      throw MessageFailure(
+        message: 'Unable to save this account funding right now.',
+      );
     }
   }
 

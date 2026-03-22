@@ -1,3 +1,4 @@
+import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:bicount/features/profile/domain/entities/add_account_funding_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,8 +18,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       await repository.addAccountFunding(event.data);
       emit(AccountFundingAdded());
+    } on MessageFailure catch (error) {
+      emit(AccountFundingError(error.message));
+    } on Failure catch (error) {
+      emit(AccountFundingError(error.message));
     } catch (e) {
-      emit(AccountFundingError(e.toString()));
+      emit(
+        AccountFundingError('Unable to save this account funding right now.'),
+      );
     }
   }
 }

@@ -1,4 +1,4 @@
-﻿import 'package:bicount/core/constants/app_config.dart';
+import 'package:bicount/core/constants/app_config.dart';
 import 'package:bicount/features/friend/data/data_sources/local_datasource/friend_local_datasource.dart';
 import 'package:bicount/features/friend/data/data_sources/remote_datasource/friend_remote_datasource.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
@@ -95,7 +95,9 @@ class FriendRepositoryImpl implements FriendRepository {
         final cachedInvites = await localDataSource.getCachedInvites();
         final mergedInvites = [
           invite,
-          ...cachedInvites.where((item) => item.inviteCode != invite.inviteCode),
+          ...cachedInvites.where(
+            (item) => item.inviteCode != invite.inviteCode,
+          ),
         ];
         await localDataSource.cacheInvites(mergedInvites);
       }
@@ -137,7 +139,9 @@ class FriendRepositoryImpl implements FriendRepository {
       return;
     }
 
-    yield* remoteDataSource.watchInvites(currentUserId).asyncMap((invites) async {
+    yield* remoteDataSource.watchInvites(currentUserId).asyncMap((
+      invites,
+    ) async {
       await localDataSource.cacheInvites(invites);
       final refreshedShare = await localDataSource.getActiveShare();
       return _buildHub(

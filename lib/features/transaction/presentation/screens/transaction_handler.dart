@@ -1,4 +1,4 @@
-import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/smooth_switcher.dart';
 import 'package:bicount/core/services/title_animated_switcher.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
@@ -11,29 +11,27 @@ import 'package:flutter/material.dart';
 import '../widgets/segment_control.dart';
 
 class TransactionHandler extends StatefulWidget {
-  final UserModel? user;
-  final List<FriendsModel> friends;
   const TransactionHandler({
     super.key,
     required this.user,
     required this.friends,
   });
 
+  final UserModel? user;
+  final List<FriendsModel> friends;
+
   @override
   State<TransactionHandler> createState() => _TransactionHandlerState();
 }
 
 class _TransactionHandlerState extends State<TransactionHandler> {
-  final TextEditingController _type = TextEditingController();
-
-  late SegmentedControlController _segmentedType;
+  late final SegmentedControlController _segmentedType;
 
   @override
   void initState() {
     super.initState();
     _segmentedType = SegmentedControlController();
     _segmentedType.addListener(_onSegmentChanged);
-    _type.text = _segmentedType.selectedValue;
   }
 
   @override
@@ -44,25 +42,24 @@ class _TransactionHandlerState extends State<TransactionHandler> {
   }
 
   void _onSegmentChanged() {
-    setState(() {
-      _type.text = _segmentedType.selectedValue;
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final title = _type.text == TransactionTypes.transferText
-        ? 'Add transaction'
-        : _type.text == TransactionTypes.subscriptionText
-        ? 'New subscription'
-        : 'Add funds to your account';
+    final selectedIndex = _segmentedType.selectedIndex;
+    final title = switch (selectedIndex) {
+      0 => context.l10n.transactionAddTitle,
+      1 => context.l10n.transactionNewSubscriptionTitle,
+      _ => context.l10n.transactionAddFundsTitle,
+    };
 
     return Column(
       children: [
         TitleAnimatedSwitcher(
           child: Text(
             title,
-            key: ValueKey(_type.text),
+            key: ValueKey(selectedIndex),
             style: Theme.of(context).textTheme.headlineLarge,
           ),
         ),
@@ -70,11 +67,11 @@ class _TransactionHandlerState extends State<TransactionHandler> {
         SegmentedControlWidget(controller: _segmentedType),
         const SizedBox(height: 16),
         SmoothSwitcher(
-          child: _type.text == TransactionTypes.transferText
-              ? TransferForm(user: widget.user, friends: widget.friends)
-              : _type.text == TransactionTypes.subscriptionText
-              ? SubscriptionForm()
-              : AccountFundingForm(),
+          child: switch (selectedIndex) {
+            0 => TransferForm(user: widget.user, friends: widget.friends),
+            1 => const SubscriptionForm(),
+            _ => const AccountFundingForm(),
+          },
         ),
       ],
     );

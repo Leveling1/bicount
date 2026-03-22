@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +35,9 @@ class FriendShareCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 6),
           Text(description, style: Theme.of(context).textTheme.bodySmall),
@@ -72,12 +73,15 @@ class FriendShareCard extends StatelessWidget {
             const SizedBox(height: AppDimens.marginMedium),
             if (activeShare!.isFriendProfileShare)
               Text(
-                'Profile shared: ${activeShare!.subjectName}',
+                context.l10n.friendProfileShared(activeShare!.subjectName),
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             if (activeShare!.isFriendProfileShare)
               const SizedBox(height: AppDimens.marginSmall),
-            Text(activeShare!.inviteUrl, style: Theme.of(context).textTheme.bodySmall),
+            Text(
+              activeShare!.inviteUrl,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             const SizedBox(height: AppDimens.marginMedium),
           ],
           Wrap(
@@ -88,23 +92,25 @@ class FriendShareCard extends StatelessWidget {
                 onPressed: isSubmitting ? null : onCreate,
                 icon: const Icon(Icons.link_outlined),
                 label: Text(
-                  activeShare == null ? 'Generate invite' : 'Refresh link',
+                  activeShare == null
+                      ? context.l10n.friendShareGenerate
+                      : context.l10n.friendShareRefresh,
                 ),
               ),
               ElevatedButton.icon(
                 onPressed: activeShare == null ? null : onShare,
                 icon: const Icon(Icons.send_outlined),
-                label: const Text('Share link'),
+                label: Text(context.l10n.friendShareLink),
               ),
               OutlinedButton.icon(
                 onPressed: activeShare == null ? null : onCopy,
                 icon: const Icon(Icons.copy_outlined),
-                label: const Text('Copy'),
+                label: Text(context.l10n.commonCopy),
               ),
               OutlinedButton.icon(
                 onPressed: onScan,
                 icon: const Icon(Icons.qr_code_scanner_outlined),
-                label: const Text('Scan QR'),
+                label: Text(context.l10n.friendShareScanQr),
               ),
             ],
           ),

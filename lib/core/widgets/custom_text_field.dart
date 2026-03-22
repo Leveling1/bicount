@@ -1,3 +1,4 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class CustomTextField extends StatefulWidget {
     this.textInputAction,
     this.onFieldSubmitted,
   });
+
   final String label;
   final TextEditingController textController;
   final String title;
@@ -22,6 +24,7 @@ class CustomTextField extends StatefulWidget {
   final CustomTextFieldType type;
   final TextInputAction? textInputAction;
   final void Function(String)? onFieldSubmitted;
+
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
 }
@@ -36,22 +39,25 @@ class _CustomTextFieldState extends State<CustomTextField> {
   }
 
   String? _validator(String? value) {
+    final l10n = context.l10n;
     switch (widget.type) {
       case CustomTextFieldType.email:
-        if (value == null || value.isEmpty) return 'Email required';
+        if (value == null || value.isEmpty) return l10n.validationEmailRequired;
         final emailRegex = RegExp(
           r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
         );
-        if (!emailRegex.hasMatch(value)) return 'Invalid email';
+        if (!emailRegex.hasMatch(value)) return l10n.validationInvalidEmail;
         break;
       case CustomTextFieldType.password:
-        if (value == null || value.isEmpty) return 'Password required';
-        if (value.length < 8) return 'At least 8 characters';
+        if (value == null || value.isEmpty) {
+          return l10n.validationPasswordRequired;
+        }
+        if (value.length < 8) return l10n.validationAtLeastEightCharacters;
         break;
       case CustomTextFieldType.name:
       case CustomTextFieldType.postname:
-        if (value == null || value.isEmpty) return 'This field is required';
-        if (value.length < 2) return 'Too short';
+        if (value == null || value.isEmpty) return l10n.validationFieldRequired;
+        if (value.length < 2) return l10n.validationTooShort;
         break;
     }
     return null;

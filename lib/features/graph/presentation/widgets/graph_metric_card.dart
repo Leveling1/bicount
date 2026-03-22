@@ -1,4 +1,5 @@
-﻿import 'package:bicount/core/constants/icon_links.dart';
+import 'package:bicount/core/constants/icon_links.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
@@ -21,7 +22,7 @@ class GraphMetricOverview extends StatelessWidget {
       children: [
         GraphMetricCard(
           width: 165.w,
-          title: 'Net flow',
+          title: context.l10n.graphNetFlow,
           value: dashboard.netFlow,
           color: dashboard.netFlow >= 0
               ? Theme.of(context).extension<OtherTheme>()!.income!
@@ -30,14 +31,14 @@ class GraphMetricOverview extends StatelessWidget {
         ),
         GraphMetricCard(
           width: 165.w,
-          title: 'Income',
+          title: context.l10n.graphIncome,
           value: dashboard.inflow,
           color: Theme.of(context).extension<OtherTheme>()!.income!,
           icon: IconLinks.income,
         ),
         GraphMetricCard(
           width: 165.w,
-          title: 'Expenses',
+          title: context.l10n.graphExpenses,
           value: dashboard.outflow,
           color: Theme.of(context).extension<OtherTheme>()!.expense!,
           icon: IconLinks.expense,
@@ -91,10 +92,9 @@ class GraphMetricCard extends StatelessWidget {
               builder: (context, animatedValue, _) {
                 return Text(
                   NumberFormatUtils.formatCurrency(animatedValue),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      ?.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                 );
               },
             ),
