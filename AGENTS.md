@@ -278,6 +278,13 @@ Supported periods:
 - 90 days
 - all
 
+Interaction rule:
+
+- when the user changes graph period, keep the page shell visually stable
+- do not animate or rebuild the whole Graphs screen as if a full page reload happened
+- only the data-driven widgets should update, such as metric values, charts, breakdowns, and subscription insights
+- the intro copy, overall layout, and section structure should remain fixed during period changes
+
 ### transaction
 
 Purpose:
@@ -848,3 +855,34 @@ Rules:
 - transaction success and error toasts must have a single owner for each flow; do not listen to the same `TransactionBloc` success state in both the container screen and the form if both can toast
 - prefer form-level success handling for create/edit flows when the confirmation belongs to the action the user just submitted
 - shared notification helpers must stay localized; do not reintroduce hardcoded English toast titles in visible V1 flows
+
+## Auth Cache Rehydration Update (2026-03-23)
+
+The sign-out flow now clears local finance tables through the shared Brick repository, but reconnection must still be able to rehydrate all data from Supabase cleanly.
+
+Rules:
+- use `Repository.clearLocalSessionData()` for local sign-out cleanup instead of duplicating table wipe logic in auth code
+- do not cache the authenticated `uid` in a long-lived auth local data source field; always resolve it from the current Supabase session when needed
+- after local tables are cleared, an empty first emission for `UserModel` should not be treated as a fatal error while remote hydration is still in progress
+- `MainBloc` startup data loading must be restartable across sign-out and sign-in cycles; avoid long-lived `emit.forEach` patterns that make session restarts brittle
+- when touching auth or main startup flows, verify the sequence `sign out -> sign in -> start data reappears` before considering the task complete
+
+## Offline Finance Calculation Update (2026-03-23)
+
+Finance aggregates used by the visible V1 app are now expected to be calculated locally in mobile code.
+
+Rules:
+- do not rely on Supabase triggers as the primary source of truth for `users.balance`, `users.incomes`, `users.expenses`, `users.personal_income`, `users.company_income`, `friends.give`, `friends.receive`, `friends.personal_income`, `friends.company_income`, or `companies.profit`
+- keep the write-side formulas in shared services under `lib/core/services` so transactions, account funding, and subscriptions can apply side effects immediately while offline
+- keep the read-side totals in the `main` flow projected from raw rows (`transactions`, `account_funding`, identity rows, and friend rows) so a second device or a fresh local cache still shows correct numbers after sync
+- do not trust backend-derived numeric totals directly in the UI when projected local totals are available
+- subscription creation must remain locally atomic from the product point of view: save or update the subscription row, ensure the linked friend row exists, create the generated transaction row, then apply the finance deltas
+- if backend triggers still exist during transition, they must mirror the exact same formulas and must not be treated as canonical by the mobile UI
+
+Validation rule:
+- when touching offline finance logic, verify these paths before considering the task complete:
+- create a transaction
+- create an account funding
+- create a subscription
+- sign out then sign in again
+- if possible, validate a second-device or fresh-cache sync path too

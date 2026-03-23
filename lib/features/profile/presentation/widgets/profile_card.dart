@@ -1,7 +1,6 @@
 import 'package:bicount/core/utils/number_format_utils.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/themes/app_dimens.dart';
 
@@ -36,18 +35,7 @@ class ProfileCard extends StatelessWidget {
           child: Center(
             child: Column(
               children: [
-                CircleAvatar(
-                  backgroundColor: Theme.of(context).cardColor,
-                  radius: 40,
-                  child: SizedBox(
-                    width: 50.w,
-                    height: 50.h,
-                    child: CachedNetworkImage(
-                      imageUrl: image,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+                AppAvatar(image: image, radius: 40),
                 const SizedBox(height: 12),
                 Text(name, style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 4),

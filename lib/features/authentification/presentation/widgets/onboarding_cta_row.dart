@@ -22,9 +22,17 @@ class OnboardingCtaRow extends StatelessWidget {
             onPressed: onLogIn,
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.tertiaryColorBasic,
-              backgroundColor: Colors.white.withValues(alpha: 0.38),
+              backgroundColor:
+                  Theme.of(context).elevatedButtonTheme.style?.backgroundColor
+                      ?.resolve(const <WidgetState>{})
+                      ?.withValues(alpha: 0.2) ??
+                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.38),
               side: BorderSide(
-                color: Colors.white.withValues(alpha: 0.56),
+                color: Theme.of(context)
+                    .elevatedButtonTheme
+                    .style!
+                    .backgroundColor!
+                    .resolve(const <WidgetState>{})!,
                 width: 1.4,
               ),
               minimumSize: const Size.fromHeight(54),
@@ -34,7 +42,16 @@ class OnboardingCtaRow extends StatelessWidget {
                 ),
               ),
             ),
-            child: Text(context.l10n.authLogIn),
+            child: Text(
+              context.l10n.authLogIn,
+              style: TextStyle(
+                color: Theme.of(context)
+                    .elevatedButtonTheme
+                    .style
+                    ?.backgroundColor
+                    ?.resolve(const <WidgetState>{}),
+              ),
+            ),
           ),
         ),
         const SizedBox(width: AppDimens.spacingMedium),
@@ -42,8 +59,6 @@ class OnboardingCtaRow extends StatelessWidget {
           child: ElevatedButton(
             onPressed: onSignUp,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.surfaceColorLight,
-              foregroundColor: Colors.white,
               minimumSize: const Size.fromHeight(54),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(

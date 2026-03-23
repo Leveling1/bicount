@@ -7,29 +7,19 @@ class OnboardingBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final colors = isDark
-        ? const [Color(0xFF08140B), Color(0xFF102617), Color(0xFF0B2132)]
-        : [
-            AppColors.primaryColorLight,
-            AppColors.secondaryColorBasic,
-            const Color(0xFF9FD3FF),
-          ];
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: colors,
-          stops: const [0.0, 0.58, 1.0],
-        ),
+        color: Theme.of(context).scaffoldBackgroundColor,
       ),
       child: Stack(
         children: [
           _GlowOrb(
             alignment: const Alignment(-1.05, -0.92),
             size: 280,
-            color: Colors.white.withValues(alpha: isDark ? 0.06 : 0.16),
+            color: Theme.of(
+              context,
+            ).primaryColor.withValues(alpha: isDark ? 0.06 : 0.16),
           ),
           _GlowOrb(
             alignment: const Alignment(1.08, -0.35),
@@ -39,7 +29,7 @@ class OnboardingBackground extends StatelessWidget {
             ),
           ),
           _GlowOrb(
-            alignment: const Alignment(-0.78, 0.98),
+            alignment: const Alignment(-0.78, -0.2),
             size: 260,
             color: AppColors.tertiaryColorBasic.withValues(
               alpha: isDark ? 0.24 : 0.12,
@@ -48,7 +38,9 @@ class OnboardingBackground extends StatelessWidget {
           _GlowOrb(
             alignment: const Alignment(0.95, 0.92),
             size: 340,
-            color: Colors.white.withValues(alpha: isDark ? 0.05 : 0.12),
+            color: Theme.of(
+              context,
+            ).primaryColor.withValues(alpha: isDark ? 0.05 : 0.12),
           ),
         ],
       ),

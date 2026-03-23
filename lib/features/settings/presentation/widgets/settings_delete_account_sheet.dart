@@ -7,7 +7,6 @@ import 'package:bicount/features/settings/presentation/bloc/settings_event.dart'
 import 'package:bicount/features/settings/presentation/bloc/settings_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
 
 class SettingsDeleteAccountSheet extends StatefulWidget {
   const SettingsDeleteAccountSheet({super.key});
@@ -50,17 +49,17 @@ class _SettingsDeleteAccountSheetState
                   context.l10n.settingsDeleteSheetTitle,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: AppDimens.marginSmall),
+                AppDimens.spacerSmall,
                 Text(
                   context.l10n.settingsDeleteSheetDescription,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
-                const SizedBox(height: AppDimens.marginMedium),
+                AppDimens.spacerMedium,
                 Text(
                   context.l10n.settingsDeleteReasonLabel,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                const SizedBox(height: AppDimens.marginSmall),
+                AppDimens.spacerSmall,
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -69,40 +68,33 @@ class _SettingsDeleteAccountSheetState
                     return ChoiceChip(
                       label: Text(entry.value),
                       selected: selected,
+                      backgroundColor: Theme.of(context).cardColor,
+                      selectedColor: Theme.of(context).primaryColor,
                       onSelected: (_) =>
                           setState(() => _reasonCode = entry.key),
                     );
                   }).toList(),
                 ),
-                const SizedBox(height: AppDimens.marginMedium),
+                AppDimens.spacerMedium,
                 Text(
                   context.l10n.settingsDeleteDetailsLabel,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                const SizedBox(height: AppDimens.marginSmall),
+                AppDimens.spacerSmall,
                 TextFormField(
                   controller: _detailsController,
                   maxLines: 4,
-                  validator: (value) {
-                    if (_reasonCode == null) {
-                      return context.l10n.validationFieldRequired;
-                    }
-                    if (_reasonCode == 'other' &&
-                        (value == null || value.trim().isEmpty)) {
-                      return context.l10n.validationFieldRequired;
-                    }
-                    return null;
-                  },
                   decoration: InputDecoration(
                     hintText: context.l10n.settingsDeleteDetailsHint,
                   ),
                 ),
-                const SizedBox(height: AppDimens.marginLarge),
+                AppDimens.spacerLarge,
                 CustomButton(
                   text: context.l10n.settingsDeleteSubmit,
                   loading: state.isPending(SettingsPendingAction.deleteAccount),
                   onPressed: _submit,
                 ),
+                AppDimens.spacerLarge,
               ],
             ),
           );
@@ -114,7 +106,7 @@ class _SettingsDeleteAccountSheetState
   Map<String, String> _deleteReasons(BuildContext context) {
     return {
       'missing_features': context.l10n.settingsDeleteReasonMissingFeatures,
-      'too_expensive': context.l10n.settingsDeleteReasonTooExpensive,
+      //'too_expensive': context.l10n.settingsDeleteReasonTooExpensive,
       'privacy': context.l10n.settingsDeleteReasonPrivacy,
       'too_complex': context.l10n.settingsDeleteReasonTooComplex,
       'not_useful': context.l10n.settingsDeleteReasonNotUseful,
@@ -123,14 +115,9 @@ class _SettingsDeleteAccountSheetState
   }
 
   void _submit() {
-    if (!_formKey.currentState!.validate() || _reasonCode == null) {
-      return;
-    }
-
     context.read<SettingsBloc>().add(
       SettingsDeleteAccountRequested(
         DeleteAccountRequestEntity(
-          requestId: const Uuid().v4(),
           reasonCode: _reasonCode!,
           details: _detailsController.text.trim(),
         ),

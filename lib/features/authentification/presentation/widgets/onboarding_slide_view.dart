@@ -14,8 +14,18 @@ class OnboardingSlideView extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final titleColor = isDark ? Colors.white : AppColors.tertiaryColorBasic;
     final bodyColor = titleColor.withValues(alpha: isDark ? 0.8 : 0.84);
-    final chipBackground = Colors.white.withValues(alpha: isDark ? 0.1 : 0.22);
-    final chipBorder = Colors.white.withValues(alpha: isDark ? 0.14 : 0.34);
+    final chipBackground = Theme.of(context)
+        .elevatedButtonTheme
+        .style
+        ?.backgroundColor
+        ?.resolve(const <WidgetState>{})
+        ?.withValues(alpha: 0.1);
+    final chipBorder = Theme.of(context)
+        .elevatedButtonTheme
+        .style
+        ?.backgroundColor
+        ?.resolve(const <WidgetState>{})
+        ?.withValues(alpha: 0.3);
     final assetPath = slide.assetPathForBrightness(theme.brightness);
 
     return Column(
@@ -72,13 +82,17 @@ class OnboardingSlideView extends StatelessWidget {
           decoration: BoxDecoration(
             color: chipBackground,
             borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
-            border: Border.all(color: chipBorder),
+            border: Border.all(color: chipBorder!),
           ),
           child: Text(
             slide.badge,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: titleColor,
-              fontWeight: FontWeight.w700,
+              color: Theme.of(context)
+                  .elevatedButtonTheme
+                  .style
+                  ?.backgroundColor
+                  ?.resolve(const <WidgetState>{}),
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),

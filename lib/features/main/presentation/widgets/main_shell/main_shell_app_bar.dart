@@ -1,9 +1,10 @@
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/core/widgets/header_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -63,10 +64,17 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
               key: ValueKey('profile_actions_$selectedIndex'),
               mainAxisSize: MainAxisSize.min,
               children: [
-                HeaderButton(
-                  text: context.l10n.shellAddFunds,
-                  icon: Icons.add,
-                  onTap: onAddFunds,
+                IconButton(
+                  onPressed: onAddFunds,
+                  icon: SvgPicture.asset(
+                    IconLinks.addFundsIcon,
+                    width: AppDimens.iconSizeMedium,
+                    height: AppDimens.iconSizeMedium,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).textTheme.titleSmall!.color!,
+                      BlendMode.srcIn,
+                    ),
+                  ),
                 ),
                 IconButton(
                   onPressed: onOpenSettings,

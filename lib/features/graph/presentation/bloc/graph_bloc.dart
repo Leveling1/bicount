@@ -30,7 +30,19 @@ class GraphBloc extends Bloc<GraphEvent, GraphState> {
     GraphPeriodChanged event,
     Emitter<GraphState> emit,
   ) async {
-    emit(state.copyWith(status: GraphStatus.loading, period: event.period));
+    if (event.period == state.period) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        status: state.dashboard == null
+            ? GraphStatus.loading
+            : GraphStatus.success,
+        period: event.period,
+        errorMessage: null,
+      ),
+    );
     await _subscribeToDashboard(event.period);
   }
 

@@ -12,6 +12,7 @@ abstract class TransactionLocalDataSource {
     required String title,
     required String date,
     required double amount,
+    required int category,
     required String currency,
     required String note,
     required String senderId,

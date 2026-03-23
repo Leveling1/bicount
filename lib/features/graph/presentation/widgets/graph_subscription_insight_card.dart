@@ -16,11 +16,11 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return DetailsCard(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Wrap(
-            spacing: AppDimens.spacingMedium,
-            runSpacing: AppDimens.spacingMedium,
+            spacing: AppDimens.spacingSmall,
+            runSpacing: AppDimens.spacingSmall,
             children: [
               GraphSubscriptionStat(
                 title: context.l10n.graphActive,
@@ -41,14 +41,14 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
             ],
           ),
           if (dashboard.upcomingSubscriptions.isNotEmpty) ...[
-            const SizedBox(height: AppDimens.marginLarge),
+            AppDimens.spacerLarge,
             Text(
               context.l10n.graphUpcomingCharges,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: AppDimens.marginMedium),
+            AppDimens.spacerMedium,
             ...dashboard.upcomingSubscriptions.map((subscription) {
               final nextBillingDate = DateFormat(
                 'dd MMM yyyy',
@@ -68,7 +68,7 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    AppDimens.spacerMediumSmall,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,7 +78,7 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
-                          const SizedBox(height: 2),
+                          AppDimens.spacerUltraSmall,
                           Text(
                             '${context.frequencyLabel(subscription.frequency)} - $nextBillingDate',
                             style: Theme.of(context).textTheme.bodySmall,
@@ -97,7 +97,7 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
               );
             }),
           ] else ...[
-            const SizedBox(height: AppDimens.marginLarge),
+            AppDimens.spacerLarge,
             Text(
               context.l10n.graphNoActiveSubscriptions,
               style: Theme.of(context).textTheme.bodySmall,
@@ -134,7 +134,7 @@ class GraphSubscriptionStat extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 6),
+          AppDimens.spacerMini,
           Text(
             value,
             style: Theme.of(

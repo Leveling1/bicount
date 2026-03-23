@@ -147,7 +147,6 @@ class _SettingsField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: Theme.of(context).textTheme.titleSmall),
-          AppDimens.spacerLarge,
           TextFormField(
             controller: controller,
             validator: validator,

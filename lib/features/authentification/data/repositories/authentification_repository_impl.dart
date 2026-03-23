@@ -97,13 +97,14 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
   @override
   Future<Either<Failure, void>> signOut() async {
     try {
+      await remoteDataSource.signOut();
       final localSignOut = await localDataSource.signOut();
+
       if (localSignOut.isLeft()) {
         return Left(
           AuthenticationFailure(message: "An error occurred during sign out."),
         );
       }
-      await remoteDataSource.signOut();
       return const Right(null);
     } catch (e) {
       return Left(AuthenticationFailure(message: e.toString()));

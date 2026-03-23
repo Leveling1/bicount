@@ -3,6 +3,7 @@ import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
+import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/data/models/subscription.model.dart';
@@ -16,13 +17,21 @@ import '../../models/transaction.model.dart';
 
 class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   final supabaseInstance = Supabase.instance.client;
-  late String uid = supabaseInstance.auth.currentUser!.id;
+  final OfflineFinanceLocalService _offlineFinanceLocalService =
+      OfflineFinanceLocalService();
+
+  String? get _currentUid => supabaseInstance.auth.currentUser?.id;
 
   @override
   Future<Either<Failure, FriendsModel>> createANewFriend(
     FriendsModel friend,
   ) async {
     final id = const Uuid().v4();
+    final uid = _currentUid;
+    if (uid == null) {
+      return Left(AuthenticationFailure(message: 'Authentication failure'));
+    }
+
     try {
       final friendAdd = FriendsModel(
         uid: null,
@@ -51,12 +60,18 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     required String title,
     required String date,
     required double amount,
+    required int category,
     required String currency,
     required String note,
     required String senderId,
     required String beneficiaryId,
     required String image,
   }) async {
+    final uid = _currentUid;
+    if (uid == null) {
+      return Left(AuthenticationFailure(message: 'Authentication failure'));
+    }
+
     try {
       var type = TransactionTypes.othersCode;
       if (senderId == uid) {
@@ -79,10 +94,14 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         image: image,
         frequency: Frequency.oneTime,
         createdAt: DateTime.now().toIso8601String(),
-        category: Constants.personal,
+        category: category,
       );
 
       await Repository().upsert<TransactionModel>(transactionModel);
+      await _offlineFinanceLocalService.applyTransactionEffects(
+        currentUserId: uid,
+        transaction: transactionModel,
+      );
       return const Right(null);
     } catch (_) {
       return Left(
@@ -95,6 +114,11 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   Future<Either<Failure, void>> addSubscription(
     SubscriptionEntity subscription,
   ) async {
+    final uid = subscription.sid ?? _currentUid;
+    if (uid == null) {
+      return Left(AuthenticationFailure(message: 'Authentication failure'));
+    }
+
     try {
       final id = const Uuid().v4();
       final subscriptionAdd = SubscriptionModel(
@@ -109,9 +133,13 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         notes: subscription.note,
         status: subscription.status,
         createdAt: subscription.createdAt,
+        category: subscription.category,
       );
 
-      await Repository().upsert<SubscriptionModel>(subscriptionAdd);
+      await _offlineFinanceLocalService.createSubscriptionWithEffects(
+        currentUserId: uid,
+        subscription: subscriptionAdd,
+      );
       return const Right(null);
     } catch (error) {
       return Left(

@@ -61,6 +61,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
           title: transaction.name,
           date: transaction.date,
           amount: split.amount,
+          category: transaction.category,
           currency: transaction.currency,
           note: transaction.note,
           senderId: senderId,

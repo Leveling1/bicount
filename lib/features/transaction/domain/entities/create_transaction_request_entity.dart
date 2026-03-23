@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 
 enum TransactionSplitMode { equal, percentage, customAmount }
@@ -60,6 +61,7 @@ class CreateTransactionRequestEntity {
     required this.note,
     required this.splitMode,
     required this.splits,
+    this.category = Constants.personal,
   });
 
   final String name;
@@ -70,4 +72,5 @@ class CreateTransactionRequestEntity {
   final String note;
   final TransactionSplitMode splitMode;
   final List<TransactionSplitInputEntity> splits;
+  final int category;
 }

@@ -72,6 +72,16 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     );
   }
 
+  Future<void> clearLocalSessionData() async {
+    await _disposeRealtimeBindings();
+
+    for (final table in schema.tables) {
+      await sqliteProvider.rawExecute('DELETE FROM `${table.name}`');
+    }
+
+    memoryCacheProvider.reset();
+  }
+
   @override
   Stream<List<TModel>>
   subscribeToRealtime<TModel extends OfflineFirstWithSupabaseModel>({
@@ -132,7 +142,14 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       },
     );
 
-    _sharedRealtimeBindings[key] = _RealtimeBinding(subject: subject);
+    _sharedRealtimeBindings[key] = _RealtimeBinding(
+      subject: subject,
+      cancelSource: () async {
+        final activeSubscription = sourceSubscription;
+        sourceSubscription = null;
+        await activeSubscription?.cancel();
+      },
+    );
     return subject.stream;
   }
 
@@ -261,12 +278,25 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       return false;
     }
   }
+
+  Future<void> _disposeRealtimeBindings() async {
+    final bindings = _sharedRealtimeBindings.values.toList(growable: false);
+    _sharedRealtimeBindings.clear();
+
+    for (final binding in bindings) {
+      await binding.cancelSource();
+      if (!binding.subject.isClosed) {
+        await binding.subject.close();
+      }
+    }
+  }
 }
 
 class _RealtimeBinding {
-  const _RealtimeBinding({required this.subject});
+  const _RealtimeBinding({required this.subject, required this.cancelSource});
 
   final BehaviorSubject<dynamic> subject;
+  final Future<void> Function() cancelSource;
 }
 
 class _RealtimeSubscriptionKey {

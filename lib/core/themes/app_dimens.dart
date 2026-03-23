@@ -136,6 +136,7 @@ class AppDimens {
 
   // *** SPACER *** //
   // Spacer Height
+  static const spacerUltraSmall = SizedBox(height: 2);
   static const spacerMini = SizedBox(height: 5);
   static const spacerSmall = SizedBox(height: 8);
   static const spacerMediumSmall = SizedBox(height: 12);

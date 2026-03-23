@@ -1,4 +1,5 @@
 import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/features/profile/data/models/account_funding.model.dart';
 import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 
 import '../../../../transaction/data/models/transaction.model.dart';
@@ -9,4 +10,5 @@ abstract class MainLocalDataSource {
   Stream<List<FriendsModel>> getFriends();
   Stream<List<SubscriptionModel>> getSubscriptions();
   Stream<List<TransactionModel>> getTransaction();
+  Stream<List<AccountFundingModel>> getAccountFundings();
 }

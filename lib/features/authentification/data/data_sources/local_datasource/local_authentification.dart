@@ -1,17 +1,16 @@
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/features/authentification/data/data_sources/local_datasource/authentification_local_datasource.dart';
-import 'package:brick_core/core.dart';
+import 'package:brick_core/query.dart';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../../brick/db/schema.g.dart';
 import '../../../../../brick/repository.dart';
 import '../../models/user.model.dart';
 
 class LocalAuthentification implements AuthentificationLocalDataSource {
   final supabaseInstance = Supabase.instance.client;
-  late String uid = supabaseInstance.auth.currentUser!.id;
+  String? get _currentUid => supabaseInstance.auth.currentUser?.id;
 
   @override
   Future<Either<Failure, void>> signUp(
@@ -20,6 +19,11 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
     String password,
   ) async {
     try {
+      final uid = _currentUid;
+      if (uid == null) {
+        return Left(AuthenticationFailure(message: 'Authentication failure'));
+      }
+
       final user = UserModel(
         uid: uid,
         image: Constants.memojiDefault,
@@ -41,6 +45,11 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
   @override
   Future<Either<Failure, void>> signIn() async {
     try {
+      final uid = _currentUid;
+      if (uid == null) {
+        return Left(AuthenticationFailure(message: 'Authentication failure'));
+      }
+
       await Repository().get<UserModel>(
         query: Query(where: [Where.exact('uid', uid)]),
       );
@@ -53,13 +62,7 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
   @override
   Future<Either<Failure, void>> signOut() async {
     try {
-      final repo = Repository();
-
-      for (final table in schema.tables) {
-        await repo.sqliteProvider.rawExecute('DELETE FROM `${table.name}`');
-      }
-
-      repo.memoryCacheProvider.reset();
+      await Repository().clearLocalSessionData();
       return const Right(null);
     } catch (e) {
       return Left(AuthenticationFailure(message: 'Local sign out failed: $e'));

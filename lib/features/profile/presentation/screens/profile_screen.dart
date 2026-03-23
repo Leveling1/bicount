@@ -10,6 +10,7 @@ import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/widgets/details_card.dart';
@@ -50,7 +51,7 @@ class ProfileScreen extends StatelessWidget {
                       name: data.user.username,
                       email: data.user.email,
                       balance: data.user.balance,
-                      onTap: () {},
+                      onTap: () => context.push('/settings'),
                     ),
                   ),
                   BicountReveal(

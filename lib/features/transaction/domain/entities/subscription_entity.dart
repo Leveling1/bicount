@@ -1,3 +1,5 @@
+import 'package:bicount/core/constants/constants.dart';
+
 class SubscriptionEntity {
   final String title;
   final double amount;
@@ -9,6 +11,8 @@ class SubscriptionEntity {
 
   final String? note;
   final int status; // active, paused, cancelled
+  final int category;
+  final String? sid;
 
   final String createdAt;
 
@@ -21,6 +25,8 @@ class SubscriptionEntity {
     required this.nextBillingDate,
     this.note,
     required this.status,
+    this.category = Constants.personal,
+    this.sid,
     required this.createdAt,
   });
 }
