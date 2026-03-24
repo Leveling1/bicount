@@ -45,7 +45,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="preview.bicount.app"
+                    android:host="bicount.levelingcoder.com"
                     android:pathPrefix="/friend/invite" />
             </intent-filter>
         </activity>

@@ -1,7 +1,6 @@
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
@@ -30,8 +29,16 @@ class TransactionCard extends StatelessWidget {
         : sign == "-"
         ? AppColors.negativeColorDark
         : Theme.of(context).textTheme.bodyMedium!.color;
+
+    IconData transactionIcon = sign == "+"
+        ? Icons.arrow_upward
+        : sign == "-"
+        ? Icons.arrow_downward
+        : Icons.more_horiz;
+
     String time = TimeOfDay.fromDateTime(transaction.date).format(context);
     String currency = transaction.currency.symbol;
+
     return Container(
       decoration: BoxDecoration(color: Colors.transparent),
       child: Material(
@@ -53,18 +60,15 @@ class TransactionCard extends StatelessWidget {
                   child: SizedBox(
                     width: 30.w,
                     height: 30.h,
-                    child: transaction.type == TransactionTypes.subscriptionCode
-                        ? Icon(
-                            Icons.subscriptions,
-                            color: Theme.of(context).primaryColor,
-                          )
-                        : CachedNetworkImage(
-                            imageUrl: transaction.image!,
-                            fit: BoxFit.cover,
-                          ),
+                    child: Icon(
+                      transaction.type == TransactionTypes.subscriptionCode
+                          ? Icons.subscriptions
+                          : transactionIcon,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                AppDimens.spacerWidthMediumSmall,
 
                 // Name and date
                 Expanded(
@@ -75,7 +79,6 @@ class TransactionCard extends StatelessWidget {
                         transaction.name,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      const SizedBox(height: 4),
                       Text(
                         time,
                         style: TextStyle(
@@ -137,7 +140,7 @@ class TransactionCardSkeleton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            const SizedBox(width: 12),
+            AppDimens.spacerMediumSmall,
 
             // 🟢 Name + Date placeholder
             Expanded(
@@ -174,7 +177,7 @@ class TransactionCardSkeleton extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-                const SizedBox(height: 8),
+                AppDimens.spacerSmall,
                 SkeletonLine(
                   style: SkeletonLineStyle(
                     height: 12,

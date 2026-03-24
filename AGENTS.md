@@ -429,7 +429,7 @@ Reference documents:
 - docs/BICOUNT_V1_BACKEND_ALIGNMENT_FR.md
 
 Invite link config lives in lib/core/constants/app_config.dart.
-Default invite base URL is https://preview.bicount.app.
+Default invite base URL is https://bicount.levelingcoder.com.
 Expected route format is /friend/invite?code=INVITE_CODE.
 
 User identity contract:
@@ -899,3 +899,13 @@ Rules:
 - after a successful transaction edit from the detail sheet, close the sheet so the updated data can be reopened from the live list state
 - keep detail and form files under the 200-line rule by splitting readonly transaction detail widgets and transfer form interactions into focused files
 - when the user selects `Me` or `Moi` in the transfer form for sender or beneficiary, the transient current-user party must carry the authenticated `uid` as its resolved identifier so `sender_id` and `beneficiary_id` persist the real user id instead of a generated placeholder id
+
+## Invite Domain Update (2026-03-24)
+
+The active invite domain for Bicount is now `https://bicount.levelingcoder.com`.
+
+Rules:
+- keep `lib/core/constants/app_config.dart` aligned with the live invite domain unless the user explicitly switches environments
+- Android app-link host in `android/app/src/main/AndroidManifest.xml` must match the same domain
+- iOS associated domains entitlement in `ios/Runner/Runner.entitlements` must match the same domain
+- when the invite domain changes, also refresh the hosting instructions and the `.well-known` files served by the website
