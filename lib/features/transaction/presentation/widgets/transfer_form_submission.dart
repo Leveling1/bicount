@@ -11,6 +11,16 @@ extension _TransferFormSubmission on _TransferFormState {
         context.l10n.transactionSavedSuccess,
       );
       clearForm();
+      widget.onCompleted?.call();
+      return;
+    }
+
+    if (state is TransactionUpdated) {
+      NotificationHelper.showSuccessNotification(
+        context,
+        context.l10n.transactionUpdatedSuccess,
+      );
+      widget.onCompleted?.call();
       return;
     }
 
@@ -38,6 +48,14 @@ extension _TransferFormSubmission on _TransferFormState {
       return;
     }
 
+    if (_isEditing && _beneficiaryList.length != 1) {
+      NotificationHelper.showFailureNotification(
+        context,
+        context.l10n.transactionEditSingleBeneficiaryOnly,
+      );
+      return;
+    }
+
     final totalAmount = _parseAmount(_amount.text);
     if (totalAmount == null || totalAmount <= 0) {
       NotificationHelper.showFailureNotification(
@@ -55,11 +73,17 @@ extension _TransferFormSubmission on _TransferFormState {
         currency: _selectedCurrency,
         sender: _resolveSender(),
         note: _note.text.trim(),
-        splitMode: _splitMode,
+        splitMode: _isEditing ? TransactionSplitMode.equal : _splitMode,
         splits: _buildSplitInputs(),
       );
       _splitResolver.resolve(request);
-      context.read<TransactionBloc>().add(CreateTransactionEvent(request));
+      if (_isEditing) {
+        context.read<TransactionBloc>().add(
+          UpdateTransactionEvent(widget.initialTransaction!, request),
+        );
+      } else {
+        context.read<TransactionBloc>().add(CreateTransactionEvent(request));
+      }
     } on MessageFailure catch (error) {
       NotificationHelper.showFailureNotification(
         context,

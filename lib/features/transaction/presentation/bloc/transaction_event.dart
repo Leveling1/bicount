@@ -8,6 +8,13 @@ class CreateTransactionEvent extends TransactionEvent {
   final CreateTransactionRequestEntity transaction;
 }
 
+class UpdateTransactionEvent extends TransactionEvent {
+  UpdateTransactionEvent(this.previousTransaction, this.transaction);
+
+  final TransactionEntity previousTransaction;
+  final CreateTransactionRequestEntity transaction;
+}
+
 class AddSubscriptionEvent extends TransactionEvent {
   AddSubscriptionEvent(this.subscription);
 

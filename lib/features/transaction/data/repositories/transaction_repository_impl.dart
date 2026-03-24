@@ -5,6 +5,7 @@ import 'package:bicount/features/transaction/data/data_sources/local_datasource/
 import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
 import 'package:bicount/features/transaction/domain/entities/subscription_entity.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:bicount/features/transaction/domain/services/transaction_split_resolver.dart';
 import 'package:uuid/uuid.dart';
@@ -26,36 +27,11 @@ class TransactionRepositoryImpl extends TransactionRepository {
   ) async {
     try {
       final resolvedSplits = splitResolver.resolve(transaction);
-      final sender = transaction.sender;
+      final sender = await _ensureParty(transaction.sender);
       final gtid = const Uuid().v4();
 
-      var senderId = _resolvePartyId(sender);
-      if (senderId.isEmpty) {
-        final senderResult = await localDataSource.createANewFriend(sender);
-        senderId = await senderResult.fold(_throwFailure, (userModel) async {
-          return userModel.sid;
-        });
-      }
-
       for (final split in resolvedSplits) {
-        var beneficiaryId = _resolvePartyId(split.beneficiary);
-        var image = split.beneficiary.image;
-
-        if (beneficiaryId.isEmpty) {
-          final friendResult = await localDataSource.createANewFriend(
-            split.beneficiary,
-          );
-
-          beneficiaryId = await friendResult.fold(_throwFailure, (
-            friend,
-          ) async {
-            return friend.sid;
-          });
-          image = await friendResult.fold(_throwFailure, (friend) async {
-            return friend.image;
-          });
-        }
-
+        final beneficiary = await _ensureParty(split.beneficiary);
         final saveResult = await localDataSource.saveTransaction(
           gtid,
           title: transaction.name,
@@ -64,13 +40,54 @@ class TransactionRepositoryImpl extends TransactionRepository {
           category: transaction.category,
           currency: transaction.currency,
           note: transaction.note,
-          senderId: senderId,
-          beneficiaryId: beneficiaryId,
-          image: image.isEmpty ? Constants.memojiDefault : image,
+          senderId: sender.id,
+          beneficiaryId: beneficiary.id,
+          image: beneficiary.image.isEmpty
+              ? Constants.memojiDefault
+              : beneficiary.image,
         );
 
         await saveResult.fold(_throwFailure, (_) async => null);
       }
+    } on Failure {
+      rethrow;
+    } catch (_) {
+      throw UnknownFailure();
+    }
+  }
+
+  @override
+  Future<void> updateTransaction(
+    TransactionEntity previousTransaction,
+    CreateTransactionRequestEntity transaction,
+  ) async {
+    try {
+      final resolvedSplits = splitResolver.resolve(transaction);
+      if (resolvedSplits.length != 1) {
+        throw MessageFailure(
+          message: 'Edit this transaction with one beneficiary only.',
+        );
+      }
+
+      final sender = await _ensureParty(transaction.sender);
+      final split = resolvedSplits.single;
+      final beneficiary = await _ensureParty(split.beneficiary);
+      final result = await localDataSource.updateTransaction(
+        previousTransaction,
+        title: transaction.name,
+        date: transaction.date,
+        amount: split.amount,
+        category: transaction.category,
+        currency: transaction.currency,
+        note: transaction.note,
+        senderId: sender.id,
+        beneficiaryId: beneficiary.id,
+        image: beneficiary.image.isEmpty
+            ? Constants.memojiDefault
+            : beneficiary.image,
+      );
+
+      await result.fold(_throwFailure, (_) async => null);
     } on Failure {
       rethrow;
     } catch (_) {
@@ -117,6 +134,19 @@ class TransactionRepositoryImpl extends TransactionRepository {
     }
   }
 
+  Future<_ResolvedParty> _ensureParty(FriendsModel party) async {
+    var partyId = _resolvePartyId(party);
+    var image = party.image;
+
+    if (partyId.isEmpty) {
+      final result = await localDataSource.createANewFriend(party);
+      partyId = await result.fold(_throwFailure, (friend) async => friend.sid);
+      image = await result.fold(_throwFailure, (friend) async => friend.image);
+    }
+
+    return _ResolvedParty(id: partyId, image: image);
+  }
+
   Future<T> _throwFailure<T>(Failure failure) async {
     throw failure;
   }
@@ -133,4 +163,11 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
     return '';
   }
+}
+
+class _ResolvedParty {
+  const _ResolvedParty({required this.id, required this.image});
+
+  final String id;
+  final String image;
 }

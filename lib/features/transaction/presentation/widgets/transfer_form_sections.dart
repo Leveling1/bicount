@@ -19,19 +19,21 @@ extension _TransferFormSections on _TransferFormState {
             beneficiaryKeyOf: _beneficiaryKey,
             onRemove: _removeBeneficiary,
           ),
-          AppDimens.spacerSmall,
-          TransferFormSplitModeSection(
-            splitMode: _splitMode,
-            onChanged: _onSplitModeChanged,
-          ),
-          AppDimens.spacerMediumSmall,
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              context.splitModeHelper(_splitMode),
-              style: Theme.of(context).textTheme.bodySmall,
+          if (!_isEditing) ...[
+            AppDimens.spacerSmall,
+            TransferFormSplitModeSection(
+              splitMode: _splitMode,
+              onChanged: _onSplitModeChanged,
             ),
-          ),
+            AppDimens.spacerMediumSmall,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                context.splitModeHelper(_splitMode),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ],
           ..._buildSplitInputSection(context),
           AppDimens.spacerMediumSmall,
           TransferFormPreviewCard(
@@ -96,7 +98,7 @@ extension _TransferFormSections on _TransferFormState {
   }
 
   List<Widget> _buildSplitInputSection(BuildContext context) {
-    if (_splitMode == TransactionSplitMode.equal) {
+    if (_isEditing || _splitMode == TransactionSplitMode.equal) {
       return const [];
     }
 

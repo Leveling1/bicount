@@ -8,6 +8,8 @@ class TransactionLoading extends TransactionState {}
 
 class TransactionCreated extends TransactionState {}
 
+class TransactionUpdated extends TransactionState {}
+
 class TransactionError extends TransactionState {
   final Failure failure;
   TransactionError(this.failure);

@@ -886,3 +886,16 @@ Validation rule:
 - create a subscription
 - sign out then sign in again
 - if possible, validate a second-device or fresh-cache sync path too
+
+## Transaction Edit Update (2026-03-24)
+
+The transaction detail flow now supports editing a simple transaction from its detail sheet.
+
+Rules:
+- the edit entry point lives in `lib/features/transaction/presentation/screens/detail_transaction_screen.dart`
+- reuse the shared `TransferForm` for edit mode instead of introducing a visually different editor
+- edit mode is intended for a single transaction row, so keep it limited to one beneficiary
+- do not expose the edit action for subscription-generated transaction rows, because subscriptions are managed by a different flow
+- after a successful transaction edit from the detail sheet, close the sheet so the updated data can be reopened from the live list state
+- keep detail and form files under the 200-line rule by splitting readonly transaction detail widgets and transfer form interactions into focused files
+- when the user selects `Me` or `Moi` in the transfer form for sender or beneficiary, the transient current-user party must carry the authenticated `uid` as its resolved identifier so `sender_id` and `beneficiary_id` persist the real user id instead of a generated placeholder id

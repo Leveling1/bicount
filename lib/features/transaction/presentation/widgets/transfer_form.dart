@@ -10,6 +10,7 @@ import 'package:bicount/core/widgets/custom_form_text_field.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/features/transaction/domain/services/transaction_split_resolver.dart';
 import 'package:bicount/features/transaction/presentation/widgets/split_input_row.dart';
 import 'package:bicount/features/transaction/presentation/widgets/split_preview_result.dart';
@@ -26,15 +27,25 @@ import '../../../../core/themes/app_dimens.dart';
 import '../bloc/transaction_bloc.dart';
 
 part 'transfer_form_helpers.dart';
+part 'transfer_form_interactions.dart';
+part 'transfer_form_prefill.dart';
 part 'transfer_form_sections.dart';
 part 'transfer_form_split_logic.dart';
 part 'transfer_form_submission.dart';
 
 class TransferForm extends StatefulWidget {
-  const TransferForm({super.key, required this.user, required this.friends});
+  const TransferForm({
+    super.key,
+    required this.user,
+    required this.friends,
+    this.initialTransaction,
+    this.onCompleted,
+  });
 
   final UserModel? user;
   final List<FriendsModel> friends;
+  final TransactionEntity? initialTransaction;
+  final VoidCallback? onCompleted;
 
   @override
   State<TransferForm> createState() => _TransferFormState();
@@ -56,6 +67,13 @@ class _TransferFormState extends State<TransferForm> {
       const TransactionSplitResolver();
 
   TransactionSplitMode _splitMode = TransactionSplitMode.equal;
+  bool _didPrefillInitialTransaction = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _prefillInitialTransactionIfNeeded();
+  }
 
   @override
   void dispose() {
@@ -81,7 +99,9 @@ class _TransferFormState extends State<TransferForm> {
 
     return BlocConsumer<TransactionBloc, TransactionState>(
       listenWhen: (previous, current) =>
-          current is TransactionCreated || current is TransactionError,
+          current is TransactionCreated ||
+          current is TransactionUpdated ||
+          current is TransactionError,
       listener: _onTransactionStateChanged,
       builder: (context, state) {
         return Form(
@@ -97,87 +117,7 @@ class _TransferFormState extends State<TransferForm> {
     );
   }
 
-  void _onCurrentUserChanged(bool? checked) {
-    setState(() {
-      if (checked == true) {
-        _sender.text = context.l10n.commonMe;
-      } else {
-        _sender.clear();
-      }
-    });
-  }
-
-  void _onSplitModeChanged(TransactionSplitMode mode) {
-    setState(() {
-      _splitMode = mode;
-      if (mode != TransactionSplitMode.equal) {
-        _seedSplitInputsForCurrentMode(overwrite: false);
-      }
-    });
-  }
-
-  void _resetSplitInputs() {
-    setState(() {
-      _seedSplitInputsForCurrentMode(overwrite: true);
-    });
-  }
-
-  void _onSplitValueChanged(String _) {
-    setState(() {});
-  }
-
-  void _addBeneficiary() {
-    final rawValue = _beneficiary.text.trim();
-    if (rawValue.isEmpty) {
-      return;
-    }
-
-    final beneficiary = _resolveParty(rawValue);
-    final beneficiaryKey = _beneficiaryKey(beneficiary);
-    final exists = _beneficiaryList.any(
-      (friend) => _beneficiaryKey(friend) == beneficiaryKey,
-    );
-    if (exists) {
-      NotificationHelper.showFailureNotification(
-        context,
-        context.l10n.transactionDuplicateBeneficiary,
-      );
-      return;
-    }
-
-    setState(() {
-      _beneficiaryList.add(beneficiary);
-      _beneficiary.clear();
-      _splitControllerFor(beneficiary);
-      if (_splitMode != TransactionSplitMode.equal) {
-        _seedSplitInputsForCurrentMode(overwrite: false);
-      }
-    });
-  }
-
-  void _removeBeneficiary(int index) {
-    setState(() {
-      final removed = _beneficiaryList.removeAt(index);
-      final key = _beneficiaryKey(removed);
-      _splitControllers.remove(key)?.dispose();
-    });
-  }
-
-  void clearForm() {
-    setState(() {
-      _name.clear();
-      _date.clear();
-      _amount.clear();
-      _currency.clear();
-      _beneficiary.clear();
-      _sender.clear();
-      _note.clear();
-      _beneficiaryList.clear();
-      _splitMode = TransactionSplitMode.equal;
-      for (final controller in _splitControllers.values) {
-        controller.dispose();
-      }
-      _splitControllers.clear();
-    });
+  void _update(VoidCallback callback) {
+    setState(callback);
   }
 }

@@ -29,6 +29,7 @@ extension _TransferFormHelpers on _TransferFormState {
   FriendsModel _toCurrentUserParty() {
     final user = widget.user!;
     return FriendsModel(
+      sid: user.uid,
       username: user.username,
       uid: user.uid,
       image: user.image,

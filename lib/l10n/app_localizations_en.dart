@@ -210,6 +210,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get runtimeTransactionSaveFailed => 'The transaction could not be saved.';
 
   @override
+  String get runtimeTransactionUpdateFailed => 'Unable to update this transaction right now.';
+
+  @override
   String get runtimeSubscriptionSaveFailed => 'Unable to save this subscription right now.';
 
   @override
@@ -776,6 +779,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionAddTitle => 'Add transaction';
 
   @override
+  String get transactionEditTitle => 'Edit transaction';
+
+  @override
   String get transactionNewSubscriptionTitle => 'New subscription';
 
   @override
@@ -785,7 +791,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionSavedSuccess => 'Transaction saved successfully.';
 
   @override
+  String get transactionUpdatedSuccess => 'Transaction updated successfully.';
+
+  @override
   String get transactionDuplicateBeneficiary => 'This beneficiary is already in the split.';
+
+  @override
+  String get transactionEditSingleBeneficiaryOnly => 'Edit this transaction with one beneficiary only.';
 
   @override
   String get transactionAddAtLeastOneBeneficiary => 'Add at least one beneficiary.';

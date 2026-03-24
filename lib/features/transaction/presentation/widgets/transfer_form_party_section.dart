@@ -1,4 +1,5 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';
 import 'package:bicount/core/widgets/custom_suggestion_text_field.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class TransferFormPartySection extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
+              AppDimens.spacerMediumSmall,
               Expanded(
                 flex: 2,
                 child: CustomFormField(

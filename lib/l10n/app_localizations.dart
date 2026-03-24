@@ -497,6 +497,12 @@ abstract class AppLocalizations {
   /// **'The transaction could not be saved.'**
   String get runtimeTransactionSaveFailed;
 
+  /// No description provided for @runtimeTransactionUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update this transaction right now.'**
+  String get runtimeTransactionUpdateFailed;
+
   /// No description provided for @runtimeSubscriptionSaveFailed.
   ///
   /// In en, this message translates to:
@@ -1601,6 +1607,12 @@ abstract class AppLocalizations {
   /// **'Add transaction'**
   String get transactionAddTitle;
 
+  /// No description provided for @transactionEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit transaction'**
+  String get transactionEditTitle;
+
   /// No description provided for @transactionNewSubscriptionTitle.
   ///
   /// In en, this message translates to:
@@ -1619,11 +1631,23 @@ abstract class AppLocalizations {
   /// **'Transaction saved successfully.'**
   String get transactionSavedSuccess;
 
+  /// No description provided for @transactionUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction updated successfully.'**
+  String get transactionUpdatedSuccess;
+
   /// No description provided for @transactionDuplicateBeneficiary.
   ///
   /// In en, this message translates to:
   /// **'This beneficiary is already in the split.'**
   String get transactionDuplicateBeneficiary;
+
+  /// No description provided for @transactionEditSingleBeneficiaryOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit this transaction with one beneficiary only.'**
+  String get transactionEditSingleBeneficiaryOnly;
 
   /// No description provided for @transactionAddAtLeastOneBeneficiary.
   ///

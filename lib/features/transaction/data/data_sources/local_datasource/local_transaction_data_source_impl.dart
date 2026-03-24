@@ -8,6 +8,7 @@ import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/domain/entities/subscription_entity.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -144,6 +145,62 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     } catch (error) {
       return Left(
         MessageFailure(message: 'Unable to save this subscription right now.'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateTransaction(
+    TransactionEntity previousTransaction, {
+    required String title,
+    required String date,
+    required double amount,
+    required int category,
+    required String currency,
+    required String note,
+    required String senderId,
+    required String beneficiaryId,
+    required String image,
+  }) async {
+    final currentUid = _currentUid;
+    final ownerUid = previousTransaction.uid ?? currentUid;
+    if (ownerUid == null) {
+      return Left(AuthenticationFailure(message: 'Authentication failure'));
+    }
+
+    try {
+      var type = TransactionTypes.othersCode;
+      if (senderId == ownerUid) {
+        type = TransactionTypes.expenseCode;
+      } else if (beneficiaryId == ownerUid) {
+        type = TransactionTypes.incomeCode;
+      }
+
+      final transactionModel = TransactionModel(
+        tid: previousTransaction.tid,
+        uid: ownerUid,
+        gtid: previousTransaction.gtid,
+        name: title,
+        type: type,
+        beneficiaryId: beneficiaryId,
+        senderId: senderId,
+        date: date,
+        note: note,
+        amount: amount,
+        currency: currency,
+        image: image,
+        frequency: previousTransaction.frequency,
+        category: category,
+        createdAt:
+            previousTransaction.createdAt?.toIso8601String() ??
+            DateTime.now().toIso8601String(),
+      );
+
+      await Repository().upsert<TransactionModel>(transactionModel);
+      return const Right(null);
+    } catch (_) {
+      return Left(
+        MessageFailure(message: 'Unable to update this transaction right now.'),
       );
     }
   }

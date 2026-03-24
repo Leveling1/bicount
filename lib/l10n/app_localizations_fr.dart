@@ -210,6 +210,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get runtimeTransactionSaveFailed => 'La transaction n\'a pas pu être enregistrée.';
 
   @override
+  String get runtimeTransactionUpdateFailed => 'Impossible de mettre à jour cette transaction pour le moment.';
+
+  @override
   String get runtimeSubscriptionSaveFailed => 'Impossible d\'enregistrer cet abonnement pour le moment.';
 
   @override
@@ -776,6 +779,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transactionAddTitle => 'Ajouter une transaction';
 
   @override
+  String get transactionEditTitle => 'Modifier la transaction';
+
+  @override
   String get transactionNewSubscriptionTitle => 'Nouvel abonnement';
 
   @override
@@ -785,7 +791,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transactionSavedSuccess => 'Transaction enregistrée avec succès.';
 
   @override
+  String get transactionUpdatedSuccess => 'Transaction mise à jour avec succès.';
+
+  @override
   String get transactionDuplicateBeneficiary => 'Ce bénéficiaire est déjà dans la répartition.';
+
+  @override
+  String get transactionEditSingleBeneficiaryOnly => 'Modifiez cette transaction avec un seul bénéficiaire.';
 
   @override
   String get transactionAddAtLeastOneBeneficiary => 'Ajoutez au moins un bénéficiaire.';

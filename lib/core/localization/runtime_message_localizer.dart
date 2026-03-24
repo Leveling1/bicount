@@ -30,6 +30,8 @@ String localizeRuntimeMessage(BuildContext context, String message) {
       return context.l10n.runtimeFriendSaveFailed;
     case 'The transaction could not be saved.':
       return context.l10n.runtimeTransactionSaveFailed;
+    case 'Unable to update this transaction right now.':
+      return context.l10n.runtimeTransactionUpdateFailed;
     case 'Unable to save this subscription right now.':
       return context.l10n.runtimeSubscriptionSaveFailed;
     case 'Unable to update this subscription right now.':
@@ -56,6 +58,8 @@ String localizeRuntimeMessage(BuildContext context, String message) {
       return context.l10n.runtimeSplitAmountPositive;
     case 'The split does not match the total amount. Check the individual amounts.':
       return context.l10n.runtimeSplitMismatch;
+    case 'Edit this transaction with one beneficiary only.':
+      return context.l10n.transactionEditSingleBeneficiaryOnly;
     case 'An error occurred during the sign in.':
     case 'Sign in failed':
     case 'Exception: Sign in failed':

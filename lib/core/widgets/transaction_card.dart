@@ -24,6 +24,12 @@ class TransactionCard extends StatelessWidget {
         : transaction.beneficiary == uid
         ? '+'
         : '';
+
+    Color? color = sign == "+"
+        ? AppColors.primaryColorDark
+        : sign == "-"
+        ? AppColors.negativeColorDark
+        : Theme.of(context).textTheme.bodyMedium!.color;
     String time = TimeOfDay.fromDateTime(transaction.date).format(context);
     String currency = transaction.currency.symbol;
     return Container(
@@ -88,11 +94,7 @@ class TransactionCard extends StatelessWidget {
                     Text(
                       '$sign ${transaction.amount} $currency',
                       style: TextStyle(
-                        color: sign == "+"
-                            ? AppColors.primaryColorDark
-                            : sign == "-"
-                            ? AppColors.negativeColorDark
-                            : Theme.of(context).textTheme.bodyMedium!.color,
+                        color: color,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
