@@ -12,6 +12,7 @@ Future<AccountFundingModel> _$AccountFundingModelFromSupabase(
     amount: data['amount'] as double,
     currency: data['currency'] as String,
     category: data['category'] as int,
+    fundingType: data['funding_type'] as int,
     source: data['source'] as String,
     note: data['note'] == null ? null : data['note'] as String?,
     date: data['date'] as String,
@@ -32,6 +33,7 @@ Future<Map<String, dynamic>> _$AccountFundingModelToSupabase(
     'amount': instance.amount,
     'currency': instance.currency,
     'category': instance.category,
+    'funding_type': instance.fundingType,
     'source': instance.source,
     'note': instance.note,
     'date': instance.date,
@@ -50,6 +52,7 @@ Future<AccountFundingModel> _$AccountFundingModelFromSqlite(
     amount: data['amount'] as double,
     currency: data['currency'] as String,
     category: data['category'] as int,
+    fundingType: data['funding_type'] as int,
     source: data['source'] as String,
     note: data['note'] == null ? null : data['note'] as String?,
     date: data['date'] as String,
@@ -70,6 +73,7 @@ Future<Map<String, dynamic>> _$AccountFundingModelToSqlite(
     'amount': instance.amount,
     'currency': instance.currency,
     'category': instance.category,
+    'funding_type': instance.fundingType,
     'source': instance.source,
     'note': instance.note,
     'date': instance.date,
@@ -107,6 +111,10 @@ class AccountFundingModelAdapter
     'category': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'category',
+    ),
+    'fundingType': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'funding_type',
     ),
     'source': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -164,6 +172,12 @@ class AccountFundingModelAdapter
     'category': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'category',
+      iterable: false,
+      type: int,
+    ),
+    'fundingType': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'funding_type',
       iterable: false,
       type: int,
     ),

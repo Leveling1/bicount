@@ -19,6 +19,7 @@ Future<void> bootstrapBicountApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Repository.configure(databaseFactory);
+  await Repository().repairRecurringFundingMigrationStateIfNeeded();
   await Repository().initialize();
 }
 

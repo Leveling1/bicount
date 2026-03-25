@@ -316,6 +316,12 @@ Persistence strategy:
 - one transaction row per beneficiary
 - all rows of the same grouped operation share the same gtid
 
+Responsive UI note:
+
+- the transaction type segmented control should stay horizontally scrollable on narrow widths instead of overflowing or compressing labels too aggressively
+- the selected transaction type should use a lightweight sliding thumb that matches the segment shape instead of snapping only the text background
+- the scrollable transaction type selector should keep small masked side insets so clipped labels or thumb edges do not show abruptly at the viewport bounds
+
 ### profile
 
 Purpose:
@@ -909,3 +915,24 @@ Rules:
 - Android app-link host in `android/app/src/main/AndroidManifest.xml` must match the same domain
 - iOS associated domains entitlement in `ios/Runner/Runner.entitlements` must match the same domain
 - when the invite domain changes, also refresh the hosting instructions and the `.well-known` files served by the website
+
+## Recurring Funding Update (2026-03-25)
+
+The `Add funds` flow now supports recurring personal income such as salary.
+
+Rules:
+- keep one-time account funding rows and recurring income templates as separate concepts
+- actual credited money must stay in `account_funding`
+- recurring income templates must live in `recurring_fundings`
+- when a recurring income becomes due, mobile generates a real `account_funding` row locally, then advances `next_funding_date`
+- do not count recurring templates directly in balance, graphs, or funding totals before an actual funding row is created
+- `funding_type` is now part of `account_funding` and should stay aligned with the mobile contract
+- the visible `Add funds` form must support both one-time and recurring income without breaking the existing bottom-sheet flow
+- recurring income processing is currently triggered on startup and right after creation; if you change startup flows, preserve this behavior
+- subscription placeholder rows created in `friends` for offline projections must keep `uid = null`; never use `subscriptionId` as `friends.uid`, because backend `friends.uid` is a foreign key to real `users.uid`
+- backend work for this change is documented in `docs/recurring_funding_backend_actions.md`
+
+Migration rule:
+- keep the recurring-funding SQLite repair step in `Repository.repairRecurringFundingMigrationStateIfNeeded()` before `Repository().initialize()`; it protects existing local databases from duplicate-column failures on partially migrated devices
+- Brick tracks applied migrations in the `MigrationVersions` table, not only with `PRAGMA user_version`; if you repair a partially migrated local database, also mark the migration version there or Brick may replay the same `ALTER TABLE` commands
+- keep the temporary AndroidX forcing block in `android/build.gradle.kts` unless AGP is upgraded; it prevents transitive AndroidX updates from requiring a newer Android Gradle plugin than the project currently uses

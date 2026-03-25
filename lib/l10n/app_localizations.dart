@@ -1862,7 +1862,7 @@ abstract class AppLocalizations {
   /// No description provided for @accountFundingIntro.
   ///
   /// In en, this message translates to:
-  /// **'Add money to your account securely by recording a new deposit or credit to increase your available balance.'**
+  /// **'Record a one-time deposit or set up a recurring income like salary so your balance stays up to date.'**
   String get accountFundingIntro;
 
   /// No description provided for @accountFundingEnterSource.
@@ -1876,6 +1876,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account funding transaction added successfully'**
   String get accountFundingSavedSuccess;
+
+  /// No description provided for @accountFundingRecurringSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring income saved successfully'**
+  String get accountFundingRecurringSavedSuccess;
+
+  /// No description provided for @accountFundingTypeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Income type'**
+  String get accountFundingTypeTitle;
+
+  /// No description provided for @accountFundingTypeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an income type'**
+  String get accountFundingTypeHint;
+
+  /// No description provided for @accountFundingTypeSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get accountFundingTypeSalary;
+
+  /// No description provided for @accountFundingTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other income'**
+  String get accountFundingTypeOther;
+
+  /// No description provided for @accountFundingRepeatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat this income automatically'**
+  String get accountFundingRepeatLabel;
+
+  /// No description provided for @accountFundingFrequencyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how often it repeats'**
+  String get accountFundingFrequencyHint;
+
+  /// No description provided for @accountFundingFirstCreditDate.
+  ///
+  /// In en, this message translates to:
+  /// **'First credit date'**
+  String get accountFundingFirstCreditDate;
 
   /// No description provided for @transactionTypeTransfer.
   ///

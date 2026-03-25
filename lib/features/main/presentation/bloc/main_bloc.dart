@@ -27,6 +27,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       emit(MainLoading());
       await _startDataSubscription?.cancel();
       await repository.reconcileDeletedRecords();
+      await repository.processRecurringFundings();
       _startDataSubscription = repository.getStartDataStream().listen(
         (data) => add(_StartDataUpdated(data)),
         onError: (error, _) => add(_StartDataFailed(error.toString())),

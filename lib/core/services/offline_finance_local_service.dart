@@ -80,7 +80,7 @@ class OfflineFinanceLocalService {
     await Repository().upsert<FriendsModel>(
       FriendsModel(
         sid: subscriptionId,
-        uid: subscriptionId,
+        uid: null,
         fid: currentUserId,
         username: subscription.title,
         email: existingFriend?.email ?? '',

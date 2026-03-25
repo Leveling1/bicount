@@ -1,6 +1,7 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
+part '20260325165928.migration.dart';
 part '20251130001532.migration.dart';
 part '20251201154524.migration.dart';
 part '20251201172247.migration.dart';
@@ -11,6 +12,7 @@ part '20260322103000.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
+  const Migration20260325165928(),
   const Migration20251130001532(),
   const Migration20251201154524(),
   const Migration20251201172247(),
@@ -22,7 +24,7 @@ final migrations = <Migration>{
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  20260322103000,
+  20260325165928,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -54,7 +56,6 @@ final schema = Schema(
           nullable: false,
           isPrimaryKey: true,
         ),
-        SchemaColumn('uid', Column.varchar, unique: true),
         SchemaColumn('image', Column.varchar),
         SchemaColumn('username', Column.varchar),
         SchemaColumn('email', Column.varchar),
@@ -63,6 +64,7 @@ final schema = Schema(
         SchemaColumn('balance', Column.Double),
         SchemaColumn('company_income', Column.Double),
         SchemaColumn('personal_income', Column.Double),
+        SchemaColumn('uid', Column.varchar, unique: true),
       },
       indices: <SchemaIndex>{
         SchemaIndex(columns: ['uid'], unique: true),
@@ -176,6 +178,7 @@ final schema = Schema(
         SchemaColumn('amount', Column.Double),
         SchemaColumn('currency', Column.varchar),
         SchemaColumn('category', Column.integer),
+        SchemaColumn('funding_type', Column.integer),
         SchemaColumn('source', Column.varchar),
         SchemaColumn('note', Column.varchar),
         SchemaColumn('date', Column.varchar),
@@ -183,6 +186,35 @@ final schema = Schema(
       },
       indices: <SchemaIndex>{
         SchemaIndex(columns: ['funding_id'], unique: true),
+      },
+    ),
+    SchemaTable(
+      'RecurringFundingModel',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('recurring_funding_id', Column.varchar, unique: true),
+        SchemaColumn('uid', Column.varchar),
+        SchemaColumn('source', Column.varchar),
+        SchemaColumn('note', Column.varchar),
+        SchemaColumn('amount', Column.Double),
+        SchemaColumn('currency', Column.varchar),
+        SchemaColumn('funding_type', Column.integer),
+        SchemaColumn('frequency', Column.integer),
+        SchemaColumn('start_date', Column.varchar),
+        SchemaColumn('next_funding_date', Column.varchar),
+        SchemaColumn('last_processed_at', Column.varchar),
+        SchemaColumn('status', Column.integer),
+        SchemaColumn('created_at', Column.varchar),
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(columns: ['recurring_funding_id'], unique: true),
+        SchemaIndex(columns: ['uid'], unique: false),
       },
     ),
     SchemaTable(

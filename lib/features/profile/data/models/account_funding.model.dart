@@ -3,6 +3,7 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/constants/account_funding_const.dart';
 import '../../../../core/constants/tables_name.dart';
 
 @ConnectOfflineFirstWithSupabase(
@@ -29,6 +30,10 @@ class AccountFundingModel extends OfflineFirstWithSupabaseModel {
   @Sqlite()
   final int category;
 
+  @Supabase(name: 'funding_type')
+  @Sqlite()
+  final int fundingType;
+
   @Supabase(name: 'source')
   @Sqlite()
   final String source;
@@ -51,6 +56,7 @@ class AccountFundingModel extends OfflineFirstWithSupabaseModel {
     required this.amount,
     required this.currency,
     required this.category,
+    this.fundingType = AccountFundingType.other,
     required this.source,
     required this.date,
     this.note,

@@ -17,7 +17,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(AccountFundingLoading());
     try {
       await repository.addAccountFunding(event.data);
-      emit(AccountFundingAdded());
+      emit(AccountFundingAdded(isRecurring: event.data.isRecurring));
     } on MessageFailure catch (error) {
       emit(AccountFundingError(error.message));
     } on Failure catch (error) {

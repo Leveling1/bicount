@@ -29,7 +29,7 @@ class TransferFormPartySection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                flex: 3,
+                flex: 2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -46,7 +46,7 @@ class TransferFormPartySection extends StatelessWidget {
                   ],
                 ),
               ),
-              AppDimens.spacerMediumSmall,
+              AppDimens.spacerWidthMediumSmall,
               Expanded(
                 flex: 2,
                 child: CustomFormField(

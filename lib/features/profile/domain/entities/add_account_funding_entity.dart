@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/constants/account_funding_const.dart';
 
 class AddAccountFundingEntity {
   final String source;
@@ -8,6 +9,9 @@ class AddAccountFundingEntity {
   final String date;
   final int category;
   final String? sid;
+  final int fundingType;
+  final bool isRecurring;
+  final int? frequency;
 
   AddAccountFundingEntity({
     required this.source,
@@ -17,5 +21,8 @@ class AddAccountFundingEntity {
     required this.date,
     this.category = Constants.personal,
     this.sid,
+    this.fundingType = AccountFundingType.other,
+    this.isRecurring = false,
+    this.frequency,
   });
 }

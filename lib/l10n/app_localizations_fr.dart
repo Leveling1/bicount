@@ -905,13 +905,37 @@ class AppLocalizationsFr extends AppLocalizations {
   String get subscriptionUnsubscribeSuccess => 'Abonnement résilié avec succès.';
 
   @override
-  String get accountFundingIntro => 'Ajoutez de l\'argent à votre compte en enregistrant un nouveau dépôt ou crédit pour augmenter votre solde disponible.';
+  String get accountFundingIntro => 'Enregistrez un apport ponctuel ou un revenu récurrent comme un salaire pour garder votre solde à jour.';
 
   @override
   String get accountFundingEnterSource => 'Saisissez la source des fonds';
 
   @override
   String get accountFundingSavedSuccess => 'Opération d\'alimentation du compte ajoutée avec succès';
+
+  @override
+  String get accountFundingRecurringSavedSuccess => 'Revenu récurrent enregistré avec succès';
+
+  @override
+  String get accountFundingTypeTitle => 'Type de revenu';
+
+  @override
+  String get accountFundingTypeHint => 'Choisissez un type de revenu';
+
+  @override
+  String get accountFundingTypeSalary => 'Salaire';
+
+  @override
+  String get accountFundingTypeOther => 'Autre revenu';
+
+  @override
+  String get accountFundingRepeatLabel => 'Répéter ce revenu automatiquement';
+
+  @override
+  String get accountFundingFrequencyHint => 'Choisissez le rythme de répétition';
+
+  @override
+  String get accountFundingFirstCreditDate => 'Date du premier versement';
 
   @override
   String get transactionTypeTransfer => 'Transfert';

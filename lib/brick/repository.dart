@@ -15,10 +15,12 @@ import 'package:bicount/features/company/data/models/company_with_user_link.mode
 import 'package:bicount/features/group/data/models/group.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/profile/data/models/account_funding.model.dart';
+import 'package:bicount/features/profile/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/project/data/models/project.model.dart';
 import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as path;
 import 'package:rxdart/rxdart.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -29,6 +31,10 @@ import 'db/schema.g.dart';
 
 class Repository extends OfflineFirstWithSupabaseRepository {
   static late Repository? _instance;
+  static late DatabaseFactory _databaseFactory;
+  static const _sqliteDatabaseName = 'my_repository.sqlite';
+  static const _brickMigrationVersionsTableName = 'MigrationVersions';
+  static const _recurringFundingSchemaVersion = 20260325165928;
   final Map<_RealtimeSubscriptionKey, _RealtimeBinding>
   _sharedRealtimeBindings = {};
 
@@ -43,6 +49,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
   factory Repository() => _instance!;
 
   static Future<void> configure(DatabaseFactory databaseFactory) async {
+    _databaseFactory = databaseFactory;
     final (client, queue) = OfflineFirstWithSupabaseRepository.clientQueue(
       databaseFactory: databaseFactory,
     );
@@ -61,7 +68,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     _instance = Repository._(
       supabaseProvider: provider,
       sqliteProvider: SqliteProvider(
-        'my_repository.sqlite',
+        _sqliteDatabaseName,
         databaseFactory: databaseFactory,
         modelDictionary: sqliteModelDictionary,
       ),
@@ -70,6 +77,60 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       // Specify class types that should be cached in memory
       memoryCacheProvider: MemoryCacheProvider(),
     );
+  }
+
+  Future<void> repairRecurringFundingMigrationStateIfNeeded() async {
+    final databasePath = path.join(
+      await _databaseFactory.getDatabasesPath(),
+      _sqliteDatabaseName,
+    );
+    final database = await _databaseFactory.openDatabase(databasePath);
+
+    try {
+      if (!await _tableExists(database, 'AccountFundingModel')) {
+        return;
+      }
+
+      final latestBrickMigrationVersion = await _lastBrickMigrationVersion(
+        database,
+      );
+      final isRecurringFundingMigrationRecorded =
+          latestBrickMigrationVersion >= _recurringFundingSchemaVersion;
+      final hasFundingType = await _columnExists(
+        database,
+        'AccountFundingModel',
+        'funding_type',
+      );
+      final hasRecurringFundingTable = await _tableExists(
+        database,
+        'RecurringFundingModel',
+      );
+
+      if (
+        isRecurringFundingMigrationRecorded &&
+        hasFundingType &&
+        hasRecurringFundingTable
+      ) {
+        return;
+      }
+
+      await _ensureColumn(
+        database,
+        tableName: 'AccountFundingModel',
+        columnName: 'funding_type',
+        definition: 'INTEGER',
+      );
+      await _ensureRecurringFundingTable(database);
+      await _recordMigrationVersion(
+        database,
+        _recurringFundingSchemaVersion,
+      );
+      await database.execute(
+        'PRAGMA user_version = $_recurringFundingSchemaVersion',
+      );
+    } finally {
+      await database.close();
+    }
   }
 
   Future<void> clearLocalSessionData() async {
@@ -176,6 +237,9 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       ),
       _incrementalDeleteSync<AccountFundingModel>(
         uniqueValueOf: (model) => model.fundingId,
+      ),
+      _incrementalDeleteSync<RecurringFundingModel>(
+        uniqueValueOf: (model) => model.recurringFundingId,
       ),
       _incrementalDeleteSync<CompanyModel>(uniqueValueOf: (model) => model.cid),
       _incrementalDeleteSync<CompanyWithUserLinkModel>(
@@ -289,6 +353,179 @@ class Repository extends OfflineFirstWithSupabaseRepository {
         await binding.subject.close();
       }
     }
+  }
+
+  Future<void> _ensureRecurringFundingTable(Database database) async {
+    await database.execute('''
+      CREATE TABLE IF NOT EXISTS `RecurringFundingModel` (
+        `_brick_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        `recurring_funding_id` TEXT,
+        `uid` TEXT,
+        `source` TEXT,
+        `note` TEXT,
+        `amount` REAL,
+        `currency` TEXT,
+        `funding_type` INTEGER,
+        `frequency` INTEGER,
+        `start_date` TEXT,
+        `next_funding_date` TEXT,
+        `last_processed_at` TEXT,
+        `status` INTEGER,
+        `created_at` TEXT
+      )
+    ''');
+
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'recurring_funding_id',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'uid',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'source',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'note',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'amount',
+      definition: 'REAL',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'currency',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'funding_type',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'frequency',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'start_date',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'next_funding_date',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'last_processed_at',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'status',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'created_at',
+      definition: 'TEXT',
+    );
+
+    await database.execute(
+      'CREATE UNIQUE INDEX IF NOT EXISTS '
+      '`index_RecurringFundingModel_on_recurring_funding_id` '
+      'ON `RecurringFundingModel`(`recurring_funding_id`)',
+    );
+    await database.execute(
+      'CREATE INDEX IF NOT EXISTS `index_RecurringFundingModel_on_uid` '
+      'ON `RecurringFundingModel`(`uid`)',
+    );
+  }
+
+  Future<void> _ensureMigrationVersionsTable(Database database) async {
+    await database.execute(
+      'CREATE TABLE IF NOT EXISTS '
+      '$_brickMigrationVersionsTableName(version INTEGER PRIMARY KEY)',
+    );
+  }
+
+  Future<void> _ensureColumn(
+    Database database, {
+    required String tableName,
+    required String columnName,
+    required String definition,
+  }) async {
+    if (await _columnExists(database, tableName, columnName)) {
+      return;
+    }
+
+    await database.execute(
+      'ALTER TABLE `$tableName` ADD `$columnName` $definition NULL',
+    );
+  }
+
+  Future<bool> _tableExists(Database database, String tableName) async {
+    final rows = await database.rawQuery(
+      "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",
+      [tableName],
+    );
+    return rows.isNotEmpty;
+  }
+
+  Future<bool> _columnExists(
+    Database database,
+    String tableName,
+    String columnName,
+  ) async {
+    final rows = await database.rawQuery('PRAGMA table_info(`$tableName`)');
+    return rows.any((row) => row['name'] == columnName);
+  }
+
+  Future<int> _lastBrickMigrationVersion(Database database) async {
+    await _ensureMigrationVersionsTable(database);
+    final rows = await database.query(
+      _brickMigrationVersionsTableName,
+      orderBy: 'version DESC',
+      limit: 1,
+    );
+    if (rows.isEmpty) {
+      return -1;
+    }
+
+    final rawVersion = rows.first['version'];
+    return rawVersion is int ? rawVersion : int.tryParse('$rawVersion') ?? -1;
+  }
+
+  Future<void> _recordMigrationVersion(Database database, int version) async {
+    await _ensureMigrationVersionsTable(database);
+    await database.rawInsert(
+      'INSERT OR IGNORE INTO $_brickMigrationVersionsTableName(version) '
+      'VALUES(?)',
+      [version],
+    );
   }
 }
 

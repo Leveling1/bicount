@@ -905,13 +905,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionUnsubscribeSuccess => 'Subscription cancelled successfully.';
 
   @override
-  String get accountFundingIntro => 'Add money to your account securely by recording a new deposit or credit to increase your available balance.';
+  String get accountFundingIntro => 'Record a one-time deposit or set up a recurring income like salary so your balance stays up to date.';
 
   @override
   String get accountFundingEnterSource => 'Enter source of funds';
 
   @override
   String get accountFundingSavedSuccess => 'Account funding transaction added successfully';
+
+  @override
+  String get accountFundingRecurringSavedSuccess => 'Recurring income saved successfully';
+
+  @override
+  String get accountFundingTypeTitle => 'Income type';
+
+  @override
+  String get accountFundingTypeHint => 'Choose an income type';
+
+  @override
+  String get accountFundingTypeSalary => 'Salary';
+
+  @override
+  String get accountFundingTypeOther => 'Other income';
+
+  @override
+  String get accountFundingRepeatLabel => 'Repeat this income automatically';
+
+  @override
+  String get accountFundingFrequencyHint => 'Choose how often it repeats';
+
+  @override
+  String get accountFundingFirstCreditDate => 'First credit date';
 
   @override
   String get transactionTypeTransfer => 'Transfer';

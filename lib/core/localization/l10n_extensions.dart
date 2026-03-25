@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/account_funding_const.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
@@ -66,6 +67,16 @@ extension L10nBuildContextX on BuildContext {
       case Frequency.oneTime:
       default:
         return l10n.frequencyOneTime;
+    }
+  }
+
+  String accountFundingTypeLabel(int fundingType) {
+    switch (fundingType) {
+      case AccountFundingType.salary:
+        return l10n.accountFundingTypeSalary;
+      case AccountFundingType.other:
+      default:
+        return l10n.accountFundingTypeOther;
     }
   }
 

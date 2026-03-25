@@ -1,4 +1,5 @@
 import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/services/recurring_funding_local_service.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/data_sources/local_datasource/main_local_datasource.dart';
 import 'package:bicount/features/main/data/data_sources/remote_datasource/main_remote_datasource.dart';
@@ -18,15 +19,23 @@ class MainRepositoryImpl implements MainRepository {
     this.localDataSource,
     this.remoteDataSource, {
     this.projectionService = const MainFinanceProjectionService(),
-  });
+    RecurringFundingLocalService? recurringFundingLocalService,
+  }) : recurringFundingLocalService =
+           recurringFundingLocalService ?? RecurringFundingLocalService();
 
   final MainLocalDataSource localDataSource;
   final MainRemoteDataSource remoteDataSource;
   final MainFinanceProjectionService projectionService;
+  final RecurringFundingLocalService recurringFundingLocalService;
 
   @override
   Future<void> reconcileDeletedRecords() {
     return Repository().syncAllFromRemote();
+  }
+
+  @override
+  Future<void> processRecurringFundings() {
+    return recurringFundingLocalService.syncDueRecurringFundings();
   }
 
   @override

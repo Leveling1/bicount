@@ -1,8 +1,32 @@
+import 'package:bicount/core/constants/account_funding_const.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
 class DropdownMenuEntryConstants {
+  static List<DropdownMenuEntry<int>> accountFundingTypeEntries(
+    BuildContext context,
+  ) => [
+    DropdownMenuEntry(
+      value: AccountFundingType.salary,
+      label: context.accountFundingTypeLabel(AccountFundingType.salary),
+      style: ButtonStyle(
+        foregroundColor: WidgetStatePropertyAll(
+          Theme.of(context).textTheme.titleLarge?.color,
+        ),
+      ),
+    ),
+    DropdownMenuEntry(
+      value: AccountFundingType.other,
+      label: context.accountFundingTypeLabel(AccountFundingType.other),
+      style: ButtonStyle(
+        foregroundColor: WidgetStatePropertyAll(
+          Theme.of(context).textTheme.titleLarge?.color,
+        ),
+      ),
+    ),
+  ];
+
   static List<DropdownMenuEntry<int>> frequencyEntries(BuildContext context) =>
       [
         DropdownMenuEntry(

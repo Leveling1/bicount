@@ -5,6 +5,7 @@ class TablesName {
   static const String groups = 'groups';
   static const String friends = 'friends';
   static const String accountFunding = 'account_funding';
+  static const String recurringFundings = 'recurring_fundings';
   static const String projects = 'projects';
   static const String transactions = 'transactions';
   static const String accounts = 'accounts';
@@ -17,6 +18,7 @@ class TablesName {
     TablesName.groups,
     TablesName.friends,
     TablesName.accountFunding,
+    TablesName.recurringFundings,
     TablesName.projects,
     TablesName.transactions,
     TablesName.accounts,

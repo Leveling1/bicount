@@ -7,7 +7,6 @@ Future<UserModel> _$UserModelFromSupabase(
   OfflineFirstWithSupabaseRepository? repository,
 }) async {
   return UserModel(
-    uid: data['uid'] as String,
     image: data['image'] as String,
     username: data['username'] as String,
     email: data['email'] as String,
@@ -20,6 +19,7 @@ Future<UserModel> _$UserModelFromSupabase(
     personalIncome: data['personal_income'] == null
         ? null
         : data['personal_income'] as double?,
+    uid: data['uid'] as String?,
   );
 }
 
@@ -29,7 +29,6 @@ Future<Map<String, dynamic>> _$UserModelToSupabase(
   OfflineFirstWithSupabaseRepository? repository,
 }) async {
   return {
-    'uid': instance.uid,
     'image': instance.image,
     'username': instance.username,
     'email': instance.email,
@@ -38,6 +37,7 @@ Future<Map<String, dynamic>> _$UserModelToSupabase(
     'balance': instance.balance,
     'company_income': instance.companyIncome,
     'personal_income': instance.personalIncome,
+    'uid': instance.uid,
   };
 }
 
@@ -47,7 +47,6 @@ Future<UserModel> _$UserModelFromSqlite(
   OfflineFirstWithSupabaseRepository? repository,
 }) async {
   return UserModel(
-    uid: data['uid'] as String,
     image: data['image'] as String,
     username: data['username'] as String,
     email: data['email'] as String,
@@ -60,6 +59,7 @@ Future<UserModel> _$UserModelFromSqlite(
     personalIncome: data['personal_income'] == null
         ? null
         : data['personal_income'] as double?,
+    uid: data['uid'] as String,
   )..primaryKey = data['_brick_id'] as int;
 }
 
@@ -69,7 +69,6 @@ Future<Map<String, dynamic>> _$UserModelToSqlite(
   OfflineFirstWithSupabaseRepository? repository,
 }) async {
   return {
-    'uid': instance.uid,
     'image': instance.image,
     'username': instance.username,
     'email': instance.email,
@@ -78,6 +77,7 @@ Future<Map<String, dynamic>> _$UserModelToSqlite(
     'balance': instance.balance,
     'company_income': instance.companyIncome,
     'personal_income': instance.personalIncome,
+    'uid': instance.uid,
   };
 }
 
@@ -91,10 +91,6 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
   final defaultToNull = true;
   @override
   final fieldsToSupabaseColumns = {
-    'uid': const RuntimeSupabaseColumnDefinition(
-      association: false,
-      columnName: 'uid',
-    ),
     'image': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'image',
@@ -127,6 +123,10 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
       association: false,
       columnName: 'personal_income',
     ),
+    'uid': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'uid',
+    ),
   };
   @override
   final ignoreDuplicates = false;
@@ -139,12 +139,6 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
       columnName: '_brick_id',
       iterable: false,
       type: int,
-    ),
-    'uid': const RuntimeSqliteColumnDefinition(
-      association: false,
-      columnName: 'uid',
-      iterable: false,
-      type: String,
     ),
     'image': const RuntimeSqliteColumnDefinition(
       association: false,
@@ -193,6 +187,12 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
       columnName: 'personal_income',
       iterable: false,
       type: double,
+    ),
+    'uid': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'uid',
+      iterable: false,
+      type: String,
     ),
   };
   @override
