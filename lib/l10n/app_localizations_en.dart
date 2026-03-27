@@ -405,6 +405,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsProTitle => 'Switch to Bicount Pro';
 
   @override
+  String get settignsProMessage => 'Pro account coming soon! We\'re finalizing this feature for you. Thanks for waiting a bit.';
+
+  @override
   String get settingsProDescription => 'Tell us how you want to use Bicount Pro for your team or activity.';
 
   @override

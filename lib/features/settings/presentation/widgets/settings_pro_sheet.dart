@@ -10,9 +10,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 class SettingsProSheet extends StatefulWidget {
-  const SettingsProSheet({super.key, required this.defaultEmail});
+  const SettingsProSheet({
+    super.key,
+    required this.defaultEmail,
+    this.canSwitch = false,
+  });
 
   final String defaultEmail;
+  final bool canSwitch;
 
   @override
   State<SettingsProSheet> createState() => _SettingsProSheetState();
@@ -48,57 +53,69 @@ class _SettingsProSheetState extends State<SettingsProSheet> {
       listener: (context, state) => Navigator.of(context).pop(),
       child: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, state) {
-          return Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  context.l10n.settingsProSheetTitle,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                AppDimens.spacerSmall,
-                Text(
-                  context.l10n.settingsProSheetDescription,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                AppDimens.spacerMedium,
-                _SettingsField(
-                  controller: _emailController,
-                  label: context.l10n.settingsProContactEmailLabel,
-                  hint: context.l10n.authYourEmailAddress,
-                  inputType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return context.l10n.validationEmailRequired;
-                    }
-                    if (!value.contains('@')) {
-                      return context.l10n.validationInvalidEmail;
-                    }
-                    return null;
-                  },
-                ),
-                _SettingsField(
-                  controller: _organizationController,
-                  label: context.l10n.settingsProOrganizationLabel,
-                  hint: context.l10n.settingsProOrganizationHint,
-                ),
-                _SettingsField(
-                  controller: _useCaseController,
-                  label: context.l10n.settingsProUseCaseLabel,
-                  hint: context.l10n.settingsProUseCaseHint,
-                  maxLines: 4,
-                ),
-                AppDimens.spacerLarge,
-                CustomButton(
-                  text: context.l10n.settingsProSubmit,
-                  loading: state.isPending(SettingsPendingAction.pro),
-                  onPressed: _submit,
-                ),
-                AppDimens.spacerLarge,
-              ],
-            ),
-          );
+          return widget.canSwitch
+              ? Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        context.l10n.settingsProSheetTitle,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      AppDimens.spacerSmall,
+                      Text(
+                        context.l10n.settingsProSheetDescription,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      AppDimens.spacerMedium,
+                      _SettingsField(
+                        controller: _emailController,
+                        label: context.l10n.settingsProContactEmailLabel,
+                        hint: context.l10n.authYourEmailAddress,
+                        inputType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return context.l10n.validationEmailRequired;
+                          }
+                          if (!value.contains('@')) {
+                            return context.l10n.validationInvalidEmail;
+                          }
+                          return null;
+                        },
+                      ),
+                      _SettingsField(
+                        controller: _organizationController,
+                        label: context.l10n.settingsProOrganizationLabel,
+                        hint: context.l10n.settingsProOrganizationHint,
+                      ),
+                      _SettingsField(
+                        controller: _useCaseController,
+                        label: context.l10n.settingsProUseCaseLabel,
+                        hint: context.l10n.settingsProUseCaseHint,
+                        maxLines: 4,
+                      ),
+                      AppDimens.spacerLarge,
+                      CustomButton(
+                        text: context.l10n.settingsProSubmit,
+                        loading: state.isPending(SettingsPendingAction.pro),
+                        onPressed: _submit,
+                      ),
+                      AppDimens.spacerLarge,
+                    ],
+                  ),
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      context.l10n.settignsProMessage,
+                      textAlign: TextAlign.center,
+                    ),
+                    AppDimens.spacerLarge,
+                  ],
+                );
         },
       ),
     );

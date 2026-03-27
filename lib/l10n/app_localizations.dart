@@ -887,6 +887,12 @@ abstract class AppLocalizations {
   /// **'Switch to Bicount Pro'**
   String get settingsProTitle;
 
+  /// No description provided for @settignsProMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro account coming soon! We're finalizing this feature for you. Thanks for waiting a bit.'**
+  String get settignsProMessage;
+
   /// No description provided for @settingsProDescription.
   ///
   /// In en, this message translates to:
