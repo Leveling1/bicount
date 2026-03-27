@@ -51,19 +51,7 @@ extension _TransferFormHelpers on _TransferFormState {
   }
 
   String _resolveTransactionDate() {
-    if (_date.text.isEmpty) {
-      return DateTime.now().toIso8601String();
-    }
-
-    final parsedDate =
-        DateTime.tryParse(_date.text) ??
-        DateFormat('dd/MM/yy').tryParseStrict(_date.text) ??
-        DateFormat('dd/MM/yyyy').tryParseStrict(_date.text);
-    if (parsedDate != null) {
-      return parsedDate.toIso8601String();
-    }
-
-    return DateTime.now().toIso8601String();
+    return resolveFormDateToIso(_date.text);
   }
 
   bool _isCurrentUserAlias(String rawValue) {

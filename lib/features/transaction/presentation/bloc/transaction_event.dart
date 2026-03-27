@@ -14,15 +14,3 @@ class UpdateTransactionEvent extends TransactionEvent {
   final TransactionEntity previousTransaction;
   final CreateTransactionRequestEntity transaction;
 }
-
-class AddSubscriptionEvent extends TransactionEvent {
-  AddSubscriptionEvent(this.subscription);
-
-  final SubscriptionEntity subscription;
-}
-
-class UnsubscribeEvent extends TransactionEvent {
-  UnsubscribeEvent(this.subscription);
-
-  final SubscriptionModel subscription;
-}

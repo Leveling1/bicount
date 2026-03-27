@@ -1,10 +1,10 @@
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
-import 'package:bicount/features/profile/data/models/account_funding.model.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
+import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 
 class MainFinanceProjectionService {
   const MainFinanceProjectionService();
@@ -27,6 +27,7 @@ class MainFinanceProjectionService {
       ),
       subscriptions: subscriptions,
       transactions: transactions,
+      accountFundings: accountFundings,
     );
   }
 

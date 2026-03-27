@@ -1,8 +1,8 @@
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/constants/account_funding_const.dart';
 import 'package:bicount/core/constants/constants.dart';
-import 'package:bicount/features/profile/data/models/account_funding.model.dart';
-import 'package:bicount/features/profile/data/models/recurring_funding.model.dart';
+import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
+import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:brick_core/query.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:intl/intl.dart';
@@ -56,10 +56,10 @@ class RecurringFundingLocalService {
         continue;
       }
 
-      var currentDate = _scheduleService.startOfDay(parsedNextDate);
+      var currentDate = parsedNextDate;
       DateTime? lastProcessedDate;
 
-      while (!currentDate.isAfter(today)) {
+      while (!_scheduleService.startOfDay(currentDate).isAfter(today)) {
         final occurrenceFunding = AccountFundingModel(
           fundingId: _occurrenceFundingId(
             recurringFunding.recurringFundingId,
@@ -79,7 +79,7 @@ class RecurringFundingLocalService {
         final existingFunding = await Repository().get<AccountFundingModel>(
           policy: OfflineFirstGetPolicy.localOnly,
           query: Query(
-            where: [Where.exact('funding_id', occurrenceFunding.fundingId)],
+            where: [Where.exact('fundingId', occurrenceFunding.fundingId)],
           ),
         );
 

@@ -1,6 +1,4 @@
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
-import 'package:bicount/features/transaction/domain/entities/subscription_entity.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,8 +12,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   TransactionBloc(this.repository) : super(TransactionInitial()) {
     on<CreateTransactionEvent>(_onCreateTransaction);
     on<UpdateTransactionEvent>(_onUpdateTransaction);
-    on<AddSubscriptionEvent>(_onAddSubscription);
-    on<UnsubscribeEvent>(_onUnsubscribe);
   }
 
   final TransactionRepository repository;
@@ -77,39 +73,4 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  Future<void> _onAddSubscription(
-    AddSubscriptionEvent event,
-    Emitter<TransactionState> emit,
-  ) async {
-    emit(SubscriptionLoading());
-
-    try {
-      await repository.addSubscription(event.subscription);
-      emit(SubscriptionAdded());
-    } on MessageFailure catch (error) {
-      emit(SubscriptionError(error.message));
-    } on Failure catch (error) {
-      emit(SubscriptionError(error.message));
-    } catch (_) {
-      emit(SubscriptionError('An unexpected error occurred.'));
-    }
-  }
-
-  Future<void> _onUnsubscribe(
-    UnsubscribeEvent event,
-    Emitter<TransactionState> emit,
-  ) async {
-    emit(UnsubscriptionLoading());
-
-    try {
-      await repository.unsubscribe(event.subscription);
-      emit(UnsubscriptionSuccess());
-    } on MessageFailure catch (error) {
-      emit(SubscriptionError(error.message));
-    } on Failure catch (error) {
-      emit(SubscriptionError(error.message));
-    } catch (_) {
-      emit(SubscriptionError('An unexpected error occurred.'));
-    }
-  }
 }

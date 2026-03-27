@@ -13,8 +13,14 @@ List<String> localizedMainShellTitles(BuildContext context) {
 
 MainEntity prepareMainScreenData(MainEntity data) {
   final sortedTransactions = List.of(data.transactions);
+  final sortedAccountFundings = List.of(data.accountFundings);
   if (sortedTransactions.length > 1) {
     sortedTransactions.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+  }
+  if (sortedAccountFundings.length > 1) {
+    sortedAccountFundings.sort(
+      (a, b) => (b.createdAt ?? b.date).compareTo(a.createdAt ?? a.date),
+    );
   }
 
   return MainEntity(
@@ -23,5 +29,6 @@ MainEntity prepareMainScreenData(MainEntity data) {
     friends: data.friends,
     subscriptions: data.subscriptions,
     transactions: sortedTransactions,
+    accountFundings: sortedAccountFundings,
   );
 }

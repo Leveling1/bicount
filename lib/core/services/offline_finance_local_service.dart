@@ -4,10 +4,10 @@ import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/company/data/models/company.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
-import 'package:bicount/features/profile/data/models/account_funding.model.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
+import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:uuid/uuid.dart';
@@ -184,8 +184,8 @@ class OfflineFinanceLocalService {
       policy: OfflineFirstGetPolicy.localOnly,
       query: Query(
         where: [
-          Where.exact('sender_id', currentUserId),
-          Where.exact('beneficiary_id', subscriptionId),
+          Where.exact('senderId', currentUserId),
+          Where.exact('beneficiaryId', subscriptionId),
           Where.exact('type', TransactionTypes.subscriptionCode),
         ],
       ),

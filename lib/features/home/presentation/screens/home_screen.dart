@@ -1,23 +1,18 @@
 import 'package:bicount/core/constants/icon_links.dart';
-import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
-import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/home/presentation/widgets/card_type_revenue.dart';
+import 'package:bicount/features/home/presentation/widgets/home_recent_activity_section.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
-import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../core/localization/l10n_extensions.dart';
 import '../../../../core/services/notification_helper.dart';
-import '../../../../core/widgets/custom_bottom_sheet.dart';
-import '../../../transaction/domain/entities/transaction_detail_args.dart';
-import '../../../transaction/presentation/screens/detail_transaction_screen.dart';
 import '../bloc/home_bloc.dart';
 
 typedef CardTapCallback = void Function(int index);
@@ -50,7 +45,7 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
               horizontal: AppDimens.paddingMedium,
             ),
-            height: height - AppDimens.bottomBarHeight.h,
+            height: height - AppDimens.bottomBarHeight,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: AppDimens.spacingMedium,
@@ -141,59 +136,9 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (data.transactions.isNotEmpty)
-                  BicountReveal(
-                    delay: const Duration(milliseconds: 180),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          context.l10n.homeTransactions,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        TextButton(
-                          onPressed: () => onCardTap?.call(2),
-                          style: Theme.of(context).textButtonTheme.style,
-                          child: Text(
-                            context.l10n.homeShowMore,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.only(bottom: 30.h),
-                    itemCount: data.transactions.length.clamp(0, 5),
-                    itemBuilder: (context, index) {
-                      final entity = TransactionEntity.fromTransaction(
-                        data.transactions[index],
-                      );
-
-                      return BicountReveal(
-                        delay: Duration(milliseconds: 210 + (index * 45)),
-                        child: TransactionCard(
-                          transaction: entity,
-                          onTap: () {
-                            showCustomBottomSheet(
-                              context: context,
-                              minHeight: 0.95,
-                              color: null,
-                              child: DetailTransactionScreen(
-                                key: ValueKey(entity.tid),
-                                transaction: TransactionDetailArgs(
-                                  user: data.user,
-                                  transactionDetail: entity,
-                                  friends: data.friends,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
+                HomeRecentActivitySection(
+                  data: data,
+                  onShowMore: () => onCardTap?.call(2),
                 ),
               ],
             ),

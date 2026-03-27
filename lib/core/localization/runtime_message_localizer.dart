@@ -37,6 +37,7 @@ String localizeRuntimeMessage(BuildContext context, String message) {
     case 'Unable to update this subscription right now.':
       return context.l10n.runtimeSubscriptionUnsubscribeFailed;
     case 'Unable to save this account funding right now.':
+    case 'Unable to update this account funding right now.':
       return context.l10n.runtimeAccountFundingSaveFailed;
     case 'Unable to save your profile right now.':
       return context.l10n.runtimeProfileSaveFailed;

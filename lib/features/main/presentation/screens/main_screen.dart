@@ -3,6 +3,7 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
+import 'package:bicount/features/add_fund/presentation/screens/add_fund_handler.dart';
 import 'package:bicount/features/graph/presentation/screens/graph_screen.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
@@ -12,7 +13,6 @@ import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_body.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_fab.dart';
 import 'package:bicount/features/notification/presentation/bloc/notification_bloc.dart';
-import 'package:bicount/features/profile/presentation/screens/account_funding_handler.dart';
 import 'package:bicount/features/profile/presentation/screens/profile_screen.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_handler.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';

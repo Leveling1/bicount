@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/subscription_const.dart';
+import 'package:bicount/core/utils/form_date_utils.dart';
 import 'package:intl/intl.dart';
 
 class RecurringFundingScheduleService {
@@ -15,12 +16,7 @@ class RecurringFundingScheduleService {
   }
 
   String normalizeDate(String rawDate) {
-    final parsedDate = parseDate(rawDate);
-    if (parsedDate == null) {
-      throw FormatException('Invalid funding date format.');
-    }
-
-    return startOfDay(parsedDate).toIso8601String();
+    return resolveFormDateToIso(rawDate);
   }
 
   DateTime startOfDay(DateTime value) {

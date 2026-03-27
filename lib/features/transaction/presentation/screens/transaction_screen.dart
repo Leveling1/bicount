@@ -1,18 +1,10 @@
-import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
-import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:bicount/features/transaction/presentation/helpers/transaction_feed_builder.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transaction_feed_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../core/widgets/custom_bottom_sheet.dart';
-import '../../data/models/transaction.model.dart';
-import '../../domain/entities/transaction_detail_args.dart';
-import '../bloc/transaction_bloc.dart';
-import 'detail_transaction_screen.dart';
 
 class TransactionScreen extends StatefulWidget {
   const TransactionScreen({
@@ -33,130 +25,64 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
-  late List<TransactionModel> transactions = [];
-
-  Map<String, List<TransactionModel>> groupTransactionsByDate(
-    BuildContext context,
-    List<TransactionModel> transactions,
-  ) {
-    final grouped = <String, List<TransactionModel>>{};
-
-    for (final tx in transactions) {
-      final date = DateTime.parse(tx.createdAt!);
-      final key = context.transactionDateGroupLabel(date);
-      grouped.putIfAbsent(key, () => []).add(tx);
-    }
-
-    return grouped;
-  }
-
-  List<TransactionModel> _filterTransactions(List<TransactionModel> source) {
-    final query = widget.searchController.text.trim().toLowerCase();
-    final selectedCode =
-        TransactionTypes.allTypesInt[widget.selectedIndexTransaction];
-
-    return source.where((transaction) {
-      final matchesSearch =
-          query.isEmpty || transaction.name.toLowerCase().contains(query);
-      if (!matchesSearch) {
-        return false;
-      }
-
-      if (widget.selectedIndexTransaction == 0) {
-        return true;
-      }
-
-      if (selectedCode == TransactionTypes.personal) {
-        return transaction.category == TransactionTypes.personalIncome;
-      }
-
-      return transaction.type == selectedCode;
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     if (!widget.showSearchBar) {
       widget.searchController.clear();
     }
-    return BlocBuilder<TransactionBloc, TransactionState>(
-      builder: (context, state) {
-        transactions = widget.data.transactions;
-        final filteredTransactions = _filterTransactions(transactions);
-        final grouped = groupTransactionsByDate(context, filteredTransactions);
+    final feed = buildTransactionFeed(widget.data);
+    final filteredFeed = filterTransactionFeed(
+      source: feed,
+      query: widget.searchController.text,
+      selectedIndex: widget.selectedIndexTransaction,
+    );
+    final grouped = groupTransactionFeedByDate(context, filteredFeed);
 
-        return transactions.isNotEmpty
-            ? Column(
-                children: [
-                  filteredTransactions.isNotEmpty
-                      ? Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppDimens.paddingMedium,
+    if (feed.isEmpty) {
+      return Center(child: Text(context.l10n.transactionNoTransactionsFound));
+    }
+
+    return Column(
+      children: [
+        filteredFeed.isNotEmpty
+            ? Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimens.paddingMedium,
+                  ),
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(
+                      context,
+                    ).copyWith(scrollbars: false),
+                    child: ListView(
+                      padding: EdgeInsets.only(top: 15, bottom: 50.h),
+                      children: grouped.entries.map((entry) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              entry.key,
+                              style: Theme.of(context).textTheme.titleMedium,
                             ),
-                            child: ScrollConfiguration(
-                              behavior: ScrollConfiguration.of(
-                                context,
-                              ).copyWith(scrollbars: false),
-                              child: ListView(
-                                padding: EdgeInsets.only(top: 15, bottom: 50.h),
-                                children: grouped.entries.map((entry) {
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        entry.key,
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.titleMedium,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      ...entry.value.map((tx) {
-                                        final transaction =
-                                            TransactionEntity.fromTransaction(
-                                              tx,
-                                            );
-                                        return TransactionCard(
-                                          transaction: transaction,
-                                          onTap: () {
-                                            showCustomBottomSheet(
-                                              context: context,
-                                              minHeight: 0.95,
-                                              color: null,
-                                              child: DetailTransactionScreen(
-                                                transaction:
-                                                    TransactionDetailArgs(
-                                                      user: widget.data.user,
-                                                      transactionDetail:
-                                                          transaction,
-                                                      friends:
-                                                          widget.data.friends,
-                                                    ),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      }),
-                                      const SizedBox(height: 16),
-                                    ],
-                                  );
-                                }).toList(),
-                              ),
+                            const SizedBox(height: 8),
+                            ...entry.value.map(
+                              (item) =>
+                                  TransactionFeedTile(item: item, data: widget.data),
                             ),
-                          ),
-                        )
-                      : Expanded(
-                          child: Center(
-                            child: Text(
-                              context.l10n.transactionNoTransactionsFound,
-                            ),
-                          ),
-                        ),
-                ],
+                            const SizedBox(height: 16),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
               )
-            : Center(child: Text(context.l10n.transactionNoTransactionsFound));
-      },
+            : Expanded(
+                child: Center(
+                  child: Text(context.l10n.transactionNoTransactionsFound),
+                ),
+              ),
+      ],
     );
   }
 }

@@ -1,6 +1,4 @@
 import 'package:bicount/features/main/data/models/friends.model.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
-import 'package:bicount/features/transaction/domain/entities/subscription_entity.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:dartz/dartz.dart';
 
@@ -20,9 +18,6 @@ abstract class TransactionLocalDataSource {
     required String beneficiaryId,
     required String image,
   });
-  Future<Either<Failure, void>> addSubscription(
-    SubscriptionEntity subscription,
-  );
   Future<Either<Failure, void>> updateTransaction(
     TransactionEntity previousTransaction, {
     required String title,
@@ -35,5 +30,4 @@ abstract class TransactionLocalDataSource {
     required String beneficiaryId,
     required String image,
   });
-  Future<Either<Failure, void>> unsubscribe(SubscriptionModel subscription);
 }

@@ -14,25 +14,3 @@ class TransactionError extends TransactionState {
   final Failure failure;
   TransactionError(this.failure);
 }
-
-// Subscription states
-class SubscriptionLoading extends TransactionState {}
-
-class SubscriptionAdded extends TransactionState {}
-
-class SubscriptionError extends TransactionState {
-  final String message;
-  SubscriptionError(this.message);
-}
-
-// Unsubscription states
-class UnsubscriptionLoading extends TransactionState {}
-
-class UnsubscriptionSuccess extends TransactionState {}
-
-class Unsubscribed extends TransactionState {}
-
-class UnsubscriptionError extends TransactionState {
-  final Failure failure;
-  UnsubscriptionError(this.failure);
-}

@@ -1,10 +1,7 @@
 import 'package:bicount/core/constants/constants.dart';
-import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
-import 'package:bicount/features/transaction/domain/entities/subscription_entity.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:bicount/features/transaction/domain/services/transaction_split_resolver.dart';
@@ -87,45 +84,6 @@ class TransactionRepositoryImpl extends TransactionRepository {
             : beneficiary.image,
       );
 
-      await result.fold(_throwFailure, (_) async => null);
-    } on Failure {
-      rethrow;
-    } catch (_) {
-      throw UnknownFailure();
-    }
-  }
-
-  @override
-  Future<void> addSubscription(SubscriptionEntity subscription) async {
-    try {
-      final result = await localDataSource.addSubscription(subscription);
-      await result.fold(_throwFailure, (_) async => null);
-    } on Failure {
-      rethrow;
-    } catch (_) {
-      throw UnknownFailure();
-    }
-  }
-
-  @override
-  Future<void> unsubscribe(SubscriptionModel subscription) async {
-    try {
-      final subscriptionModel = SubscriptionModel(
-        subscriptionId: subscription.subscriptionId,
-        title: subscription.title,
-        amount: subscription.amount,
-        currency: subscription.currency,
-        frequency: subscription.frequency,
-        nextBillingDate: subscription.nextBillingDate,
-        category: subscription.category,
-        createdAt: subscription.createdAt,
-        sid: subscription.sid,
-        startDate: subscription.startDate,
-        notes: subscription.notes,
-        endDate: DateTime.now().toIso8601String(),
-        status: SubscriptionConst.unsubscribed,
-      );
-      final result = await localDataSource.unsubscribe(subscriptionModel);
       await result.fold(_throwFailure, (_) async => null);
     } on Failure {
       rethrow;

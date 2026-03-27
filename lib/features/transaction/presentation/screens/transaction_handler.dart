@@ -2,9 +2,9 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/smooth_switcher.dart';
 import 'package:bicount/core/services/title_animated_switcher.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/features/add_fund/presentation/widgets/account_funding_form.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
-import 'package:bicount/features/profile/presentation/widgets/account_funding_fields.dart';
-import 'package:bicount/features/transaction/presentation/widgets/subscription_form.dart';
+import 'package:bicount/features/subscription/presentation/widgets/subscription_form.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transfer_form.dart';
 import 'package:flutter/material.dart';
 

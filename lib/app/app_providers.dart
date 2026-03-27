@@ -33,11 +33,14 @@ import 'package:bicount/features/notification/data/data_sources/local_datasource
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/firebase_notification_remote_data_source.dart';
 import 'package:bicount/features/notification/data/repositories/notification_repository_impl.dart';
 import 'package:bicount/features/notification/presentation/bloc/notification_bloc.dart';
-import 'package:bicount/features/profile/data/data_sources/local_datasource/profile_local_data_source_impl.dart';
-import 'package:bicount/features/profile/data/repositories/profile_repository_impl.dart';
-import 'package:bicount/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:bicount/features/project/data/repositories/project_repository_impl.dart';
 import 'package:bicount/features/project/presentation/bloc/project_bloc.dart';
+import 'package:bicount/features/add_fund/data/data_sources/local_datasource/local_add_fund_data_source_impl.dart';
+import 'package:bicount/features/add_fund/data/repositories/add_fund_repository_impl.dart';
+import 'package:bicount/features/add_fund/presentation/bloc/add_fund_bloc.dart';
+import 'package:bicount/features/subscription/data/data_sources/local_datasource/local_subscription_data_source_impl.dart';
+import 'package:bicount/features/subscription/data/repositories/subscription_repository_impl.dart';
+import 'package:bicount/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/local_transaction_data_source_impl.dart';
 import 'package:bicount/features/transaction/data/repositories/transaction_repository_impl.dart';
 import 'package:bicount/features/transaction/presentation/bloc/transaction_bloc.dart';
@@ -72,9 +75,16 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
       create: (_) =>
           TransactionRepositoryImpl(LocalTransactionDataSourceImpl()),
     ),
-    RepositoryProvider<ProfileRepositoryImpl>(
+    RepositoryProvider<SubscriptionRepositoryImpl>(
       create: (_) =>
-          ProfileRepositoryImpl(localDataSource: ProfileLocalDataSourceImpl()),
+          SubscriptionRepositoryImpl(
+            localDataSource: LocalSubscriptionDataSourceImpl(),
+          ),
+    ),
+    RepositoryProvider<AddFundRepositoryImpl>(
+      create: (_) => AddFundRepositoryImpl(
+        localDataSource: LocalAddFundDataSourceImpl(),
+      ),
     ),
     RepositoryProvider<GraphRepositoryImpl>(
       create: (_) => GraphRepositoryImpl(LocalGraphDataSourceImpl()),
@@ -140,8 +150,12 @@ List<BlocProvider> buildBlocProviders(bool enableCompanySurface) {
       create: (context) =>
           TransactionBloc(context.read<TransactionRepositoryImpl>()),
     ),
-    BlocProvider<ProfileBloc>(
-      create: (context) => ProfileBloc(context.read<ProfileRepositoryImpl>()),
+    BlocProvider<SubscriptionBloc>(
+      create: (context) =>
+          SubscriptionBloc(context.read<SubscriptionRepositoryImpl>()),
+    ),
+    BlocProvider<AddFundBloc>(
+      create: (context) => AddFundBloc(context.read<AddFundRepositoryImpl>()),
     ),
     BlocProvider<GraphBloc>(
       create: (context) =>

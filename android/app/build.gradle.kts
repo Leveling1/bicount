@@ -44,7 +44,7 @@ android {
 }
 
 flutter {
-    source = "../.."
+    source = projectDir.parentFile.parentFile.canonicalPath
 }
 
 dependencies {

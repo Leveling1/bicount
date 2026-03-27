@@ -4,12 +4,12 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
+import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_detail_args.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_row.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -84,10 +84,7 @@ class TransactionDetailContent extends StatelessWidget {
                             color: Theme.of(context).primaryColor,
                           )
                         : data.image?.isNotEmpty == true
-                        ? CachedNetworkImage(
-                            imageUrl: data.image!,
-                            fit: BoxFit.cover,
-                          )
+                        ? AppAvatar(image: data.image!, radius: 40)
                         : Icon(
                             Icons.payments_outlined,
                             color: Theme.of(context).primaryColor,

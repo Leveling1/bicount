@@ -1,4 +1,5 @@
 import 'package:bicount/brick/repository.dart';
+import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/core/services/recurring_funding_local_service.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/data_sources/local_datasource/main_local_datasource.dart';
@@ -7,9 +8,8 @@ import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/main/domain/repositories/main_repository.dart';
 import 'package:bicount/features/main/domain/services/main_finance_projection_service.dart';
-import 'package:bicount/features/profile/data/models/account_funding.model.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
+import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../../../core/errors/failure.dart';
