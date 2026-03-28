@@ -40,6 +40,7 @@ class GraphDashboardEntity extends Equatable {
     required this.monthlySubscriptionSpend,
     required this.dueSoonAmount,
     required this.cashflowPoints,
+    required this.incomeBreakdown,
     required this.expenseBreakdown,
     required this.upcomingSubscriptions,
   });
@@ -52,6 +53,7 @@ class GraphDashboardEntity extends Equatable {
   final double monthlySubscriptionSpend;
   final double dueSoonAmount;
   final List<GraphCashflowPoint> cashflowPoints;
+  final List<GraphBreakdownItem> incomeBreakdown;
   final List<GraphBreakdownItem> expenseBreakdown;
   final List<UpcomingSubscriptionEntity> upcomingSubscriptions;
 
@@ -65,6 +67,7 @@ class GraphDashboardEntity extends Equatable {
     monthlySubscriptionSpend,
     dueSoonAmount,
     cashflowPoints,
+    incomeBreakdown,
     expenseBreakdown,
     upcomingSubscriptions,
   ];

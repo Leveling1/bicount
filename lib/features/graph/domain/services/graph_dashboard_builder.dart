@@ -73,6 +73,13 @@ class GraphDashboardBuilder {
         filteredFundings,
         period,
       ),
+      incomeBreakdown: [
+        GraphBreakdownItem(label: 'AddFunds', value: addFundsAmount),
+        GraphBreakdownItem(
+          label: 'ReceivedTransfers',
+          value: incomeFromTransactions,
+        ),
+      ].where((item) => item.value > 0).toList(),
       expenseBreakdown: [
         GraphBreakdownItem(label: 'Expenses', value: expenseAmount),
         GraphBreakdownItem(label: 'Subscriptions', value: subscriptionAmount),

@@ -2,8 +2,8 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/graph/presentation/bloc/graph_bloc.dart';
-import 'package:bicount/features/graph/presentation/widgets/graph_cashflow_chart.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_expense_breakdown_card.dart';
+import 'package:bicount/features/graph/presentation/widgets/graph_income_breakdown_card.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_metric_card.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_period_selector.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_screen_skeleton.dart';
@@ -130,10 +130,10 @@ class _GraphScreenContent extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          context.l10n.graphCashflowTrend,
+                          context.l10n.graphIncomeMix,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        GraphCashflowChart(dashboard: dashboard),
+                        GraphIncomeBreakdownCard(dashboard: dashboard),
                       ],
                     ),
                   ),
