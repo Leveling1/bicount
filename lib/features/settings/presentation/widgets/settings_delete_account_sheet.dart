@@ -118,7 +118,7 @@ class _SettingsDeleteAccountSheetState
     context.read<SettingsBloc>().add(
       SettingsDeleteAccountRequested(
         DeleteAccountRequestEntity(
-          reasonCode: _reasonCode!,
+          reasonCode: _reasonCode,
           details: _detailsController.text.trim(),
         ),
       ),

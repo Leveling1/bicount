@@ -93,15 +93,6 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
       throw MessageFailure(message: 'Authentication failure');
     }
 
-    await _client.from('account_deletion_requests').upsert({
-      'request_id': request.requestId,
-      'user_uid': user.id,
-      'reason_code': request.reasonCode,
-      'details': request.details,
-      'created_at': DateTime.now().toUtc().toIso8601String(),
-      'status': 'submitted',
-    });
-
     await _client.functions.invoke(
       'delete-account',
       body: {

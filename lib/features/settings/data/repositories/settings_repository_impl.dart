@@ -91,7 +91,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       await signOut();
     } on Failure {
       rethrow;
-    } catch (_) {
+    } catch (e) {
       throw MessageFailure(message: 'Unable to delete your account right now.');
     }
   }
