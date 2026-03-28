@@ -1,4 +1,5 @@
 import 'package:bicount/core/errors/failure.dart';
+import 'package:bicount/brick/repository.dart';
 import 'package:bicount/features/authentification/data/repositories/authentification_repository_impl.dart';
 import 'package:bicount/features/settings/data/data_sources/local_datasource/settings_local_datasource.dart';
 import 'package:bicount/features/settings/data/data_sources/remote_datasource/settings_remote_datasource.dart';
@@ -87,6 +88,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<void> deleteAccount(DeleteAccountRequestEntity request) async {
     try {
+      await Repository().pauseRealtimeBindings();
       await _remoteDataSource.deleteAccount(request);
       await signOut();
     } on Failure {

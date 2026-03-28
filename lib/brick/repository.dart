@@ -143,6 +143,10 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     memoryCacheProvider.reset();
   }
 
+  Future<void> pauseRealtimeBindings() async {
+    await _disposeRealtimeBindings();
+  }
+
   @override
   Stream<List<TModel>>
   subscribeToRealtime<TModel extends OfflineFirstWithSupabaseModel>({
