@@ -6,6 +6,7 @@ import 'package:bicount/features/authentification/presentation/screens/onboardin
 import 'package:bicount/features/authentification/presentation/screens/signup_screen.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_invite_landing_screen.dart';
 import 'package:bicount/features/settings/presentation/screens/settings_screen.dart';
+import 'package:bicount/features/subscription/presentation/screens/subscription_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -44,6 +45,13 @@ class AppRouter {
             path: '/settings',
             pageBuilder: (context, state) => buildFadeSlideTransitionPage(
               child: const SettingsScreen(),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/subscriptions',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: const SubscriptionScreen(),
               state: state,
             ),
           ),

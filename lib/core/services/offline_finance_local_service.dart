@@ -142,17 +142,6 @@ class OfflineFinanceLocalService {
       );
       return;
     }
-
-    final friend = await _findFriend(partyId);
-    if (friend == null) return;
-    await Repository().upsert<FriendsModel>(
-      _calculator.applyTransactionToFriend(
-        friend: friend,
-        isSender: isSender,
-        amount: amount,
-        category: category,
-      ),
-    );
   }
 
   Future<UserModel?> _findUser(String uid) => _firstOrNull(

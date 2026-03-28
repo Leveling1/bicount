@@ -6,30 +6,45 @@ extension _TransferFormSubmission on _TransferFormState {
     TransactionState state,
   ) {
     if (state is TransactionCreated) {
-      NotificationHelper.showSuccessNotification(
-        context,
-        context.l10n.transactionSavedSuccess,
-      );
-      clearForm();
-      widget.onCompleted?.call();
+      _runAfterFrame(() {
+        NotificationHelper.showSuccessNotification(
+          context,
+          context.l10n.transactionSavedSuccess,
+        );
+        clearForm();
+        widget.onCompleted?.call();
+      });
       return;
     }
 
     if (state is TransactionUpdated) {
-      NotificationHelper.showSuccessNotification(
-        context,
-        context.l10n.transactionUpdatedSuccess,
-      );
-      widget.onCompleted?.call();
+      _runAfterFrame(() {
+        NotificationHelper.showSuccessNotification(
+          context,
+          context.l10n.transactionUpdatedSuccess,
+        );
+        widget.onCompleted?.call();
+      });
       return;
     }
 
     if (state is TransactionError) {
-      NotificationHelper.showFailureNotification(
-        context,
-        localizeRuntimeMessage(context, state.failure.message),
-      );
+      _runAfterFrame(() {
+        NotificationHelper.showFailureNotification(
+          context,
+          localizeRuntimeMessage(context, state.failure.message),
+        );
+      });
     }
+  }
+
+  void _runAfterFrame(VoidCallback action) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      action();
+    });
   }
 
   void _submit() {

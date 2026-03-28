@@ -34,6 +34,12 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
   bool isDifferentDate = false;
 
   @override
+  void initState() {
+    super.initState();
+    _currency.text = 'USD';
+  }
+
+  @override
   void dispose() {
     _name.dispose();
     _amount.dispose();

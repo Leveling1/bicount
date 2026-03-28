@@ -7,6 +7,7 @@ import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../themes/app_dimens.dart';
+import '../utils/formated_text.dart';
 
 class TransactionCard extends StatelessWidget {
   final TransactionEntity transaction;
@@ -76,7 +77,7 @@ class TransactionCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        transaction.name,
+                        FormatedText().capitalizeFirstLetter(transaction.name),
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       Text(

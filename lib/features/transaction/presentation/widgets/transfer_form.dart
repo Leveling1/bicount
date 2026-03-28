@@ -71,6 +71,12 @@ class _TransferFormState extends State<TransferForm> {
   bool _didPrefillInitialTransaction = false;
 
   @override
+  void initState() {
+    super.initState();
+    _currency.text = 'USD';
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _prefillInitialTransactionIfNeeded();

@@ -40,108 +40,108 @@ class HomeScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDimens.paddingMedium,
-            ),
-            height: height - AppDimens.bottomBarHeight,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: AppDimens.spacingMedium,
-              children: [
-                BicountReveal(
-                  delay: const Duration(milliseconds: 40),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppDimens.paddingExtraLarge,
-                    ),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Text(
-                            context.l10n.homeBalance,
-                            style: Theme.of(context).textTheme.titleSmall,
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimens.paddingMedium,
+          ),
+          height: height - AppDimens.bottomBarHeight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: AppDimens.spacingMedium,
+            children: [
+              BicountReveal(
+                delay: const Duration(milliseconds: 40),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppDimens.paddingExtraLarge,
+                  ),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          context.l10n.homeBalance,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        Text(
+                          NumberFormatUtils.formatCurrency(
+                            data.user.balance ?? 0.0,
                           ),
-                          Text(
-                            NumberFormatUtils.formatCurrency(
-                              data.user.balance ?? 0.0,
-                            ),
-                            style: (data.user.balance ?? 0.0) >= 0
-                                ? Theme.of(context).textTheme.titleLarge!
-                                      .copyWith(fontWeight: FontWeight.bold)
-                                : Theme.of(
-                                    context,
-                                  ).textTheme.titleLarge!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                          ),
-                        ],
-                      ),
+                          style: (data.user.balance ?? 0.0) >= 0
+                              ? Theme.of(context).textTheme.titleLarge!
+                                    .copyWith(fontWeight: FontWeight.bold)
+                              : Theme.of(
+                                  context,
+                                ).textTheme.titleLarge!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                BicountReveal(
-                  delay: const Duration(milliseconds: 110),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.l10n.homeAccounts,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: AppDimens.marginMedium),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CardTypeRevenue(
-                              onTap: () => onCardTap?.call(3),
-                              label: context.l10n.profilePersonal,
-                              amount: data.user.personalIncome ?? 0.0,
-                              icon: SvgPicture.asset(
-                                IconLinks.user,
-                                width: AppDimens.iconSizeSmall,
-                                height: AppDimens.iconSizeSmall,
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.white,
-                                  BlendMode.srcIn,
-                                ),
+              ),
+              BicountReveal(
+                delay: const Duration(milliseconds: 110),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.homeAccounts,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: AppDimens.marginMedium),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CardTypeRevenue(
+                            onTap: () => onCardTap?.call(3),
+                            label: context.l10n.profilePersonal,
+                            amount: data.user.personalIncome ?? 0.0,
+                            icon: SvgPicture.asset(
+                              IconLinks.user,
+                              width: AppDimens.iconSizeSmall,
+                              height: AppDimens.iconSizeSmall,
+                              colorFilter: const ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
                               ),
-                              color: Theme.of(
-                                context,
-                              ).extension<OtherTheme>()!.personnalIncome!,
                             ),
+                            color: Theme.of(
+                              context,
+                            ).extension<OtherTheme>()!.personnalIncome!,
                           ),
-                          const SizedBox(width: AppDimens.marginMedium),
-                          Expanded(
-                            child: CardTypeRevenue(
-                              onTap: () => onCardTap?.call(1),
-                              label: context.l10n.profileRecurring,
-                              amount: recurringSpend,
-                              icon: SvgPicture.asset(
-                                IconLinks.graph,
-                                width: AppDimens.iconSizeSmall,
-                                height: AppDimens.iconSizeSmall,
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.white,
-                                  BlendMode.srcIn,
-                                ),
+                        ),
+                        const SizedBox(width: AppDimens.marginMedium),
+                        Expanded(
+                          child: CardTypeRevenue(
+                            onTap: () => onCardTap?.call(1),
+                            label: context.l10n.profileRecurring,
+                            amount: recurringSpend,
+                            icon: SvgPicture.asset(
+                              IconLinks.graph,
+                              width: AppDimens.iconSizeSmall,
+                              height: AppDimens.iconSizeSmall,
+                              colorFilter: const ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
                               ),
-                              color: Theme.of(context).primaryColor,
                             ),
+                            color: Theme.of(context).primaryColor,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                HomeRecentActivitySection(
+              ),
+              Expanded(
+                child: HomeRecentActivitySection(
                   data: data,
                   onShowMore: () => onCardTap?.call(2),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

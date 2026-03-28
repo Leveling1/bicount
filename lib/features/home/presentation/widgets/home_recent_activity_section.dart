@@ -24,6 +24,7 @@ class HomeRecentActivitySection extends StatelessWidget {
     }
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BicountReveal(
           delay: const Duration(milliseconds: 180),
@@ -45,20 +46,23 @@ class HomeRecentActivitySection extends StatelessWidget {
             ],
           ),
         ),
-        ...List.generate(recentItems.length, (index) {
-          final item = recentItems[index];
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: index == recentItems.length - 1
-                  ? AppDimens.paddingExtraLarge
-                  : 0,
+        const SizedBox(height: AppDimens.spacingSmall),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.only(
+              bottom: AppDimens.paddingExtraLarge,
             ),
-            child: BicountReveal(
-              delay: Duration(milliseconds: 210 + (index * 45)),
-              child: TransactionFeedTile(item: item, data: data),
-            ),
-          );
-        }),
+            physics: const BouncingScrollPhysics(),
+            itemCount: recentItems.length,
+            itemBuilder: (context, index) {
+              final item = recentItems[index];
+              return BicountReveal(
+                delay: Duration(milliseconds: 210 + (index * 45)),
+                child: TransactionFeedTile(item: item, data: data),
+              );
+            },
+          ),
+        ),
       ],
     );
   }

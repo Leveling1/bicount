@@ -93,6 +93,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonOpenLink => 'Open link';
 
   @override
+  String get commonSearch => 'Search';
+
+  @override
   String get commonOr => 'or';
 
   @override
@@ -220,6 +223,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get runtimeAccountFundingSaveFailed => 'Unable to save this account funding right now.';
+
+  @override
+  String get runtimeAccountFundingUpdateFailed => 'Unable to update this account funding right now.';
 
   @override
   String get runtimeProfileSaveFailed => 'Unable to save your profile right now.';
@@ -890,6 +896,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionSavedSuccess => 'Subscription saved successfully!';
 
   @override
+  String get subscriptionSearchPrompt => 'Search by subscription name or note.';
+
+  @override
+  String get subscriptionSearchEmpty => 'No subscription matches your search.';
+
+  @override
   String get subscriptionNextBilling => 'Next billing';
 
   @override
@@ -917,7 +929,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountFundingSavedSuccess => 'Account funding transaction added successfully';
 
   @override
+  String get accountFundingUpdatedSuccess => 'Account funding updated successfully';
+
+  @override
   String get accountFundingRecurringSavedSuccess => 'Recurring income saved successfully';
+
+  @override
+  String get accountFundingEditTitle => 'Edit added funds';
 
   @override
   String get accountFundingTypeTitle => 'Income type';

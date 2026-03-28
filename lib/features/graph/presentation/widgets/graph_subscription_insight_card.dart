@@ -7,6 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/utils/formated_text.dart';
+import 'graph_subscription_insight_helpers.dart';
+import '../../../subscription/presentation/screens/subscription_screen.dart';
+import '../../../subscription/presentation/widgets/subscription_detail_sheet.dart';
+
 class GraphSubscriptionInsightCard extends StatelessWidget {
   const GraphSubscriptionInsightCard({super.key, required this.dashboard});
 
@@ -42,57 +47,91 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
           ),
           if (dashboard.upcomingSubscriptions.isNotEmpty) ...[
             AppDimens.spacerLarge,
-            Text(
-              context.l10n.graphUpcomingCharges,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  context.l10n.graphUpcomingCharges,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const SubscriptionScreen(),
+                      ),
+                    );
+                  },
+                  style: Theme.of(context).textButtonTheme.style,
+                  child: Text(
+                    context.l10n.profileSeeAll,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ],
             ),
             AppDimens.spacerMedium,
             ...dashboard.upcomingSubscriptions.map((subscription) {
               final nextBillingDate = DateFormat(
                 'dd MMM yyyy',
               ).format(subscription.nextBillingDate);
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Theme.of(
-                        context,
-                      ).primaryColor.withValues(alpha: 0.14),
-                      child: Icon(
-                        Icons.subscriptions_outlined,
-                        size: 16,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    AppDimens.spacerMediumSmall,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            subscription.title,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.w600),
+              return Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    final item = resolveGraphSubscriptionItem(
+                      context,
+                      subscription,
+                    );
+                    if (item != null) {
+                      showSubscriptionDetailSheet(context, item);
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).scaffoldBackgroundColor.withValues(alpha: 0.35),
+                          child: Icon(
+                            Icons.subscriptions_outlined,
+                            size: 20,
+                            color: Theme.of(context).textTheme.bodyMedium!.color!,
                           ),
-                          AppDimens.spacerUltraSmall,
-                          Text(
-                            '${context.frequencyLabel(subscription.frequency)} - $nextBillingDate',
-                            style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        AppDimens.spacerWidthMediumSmall,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                              FormatedText().capitalizeFirstLetter(subscription.title),
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              ),
+                              AppDimens.spacerUltraSmall,
+                              Text(
+                                '${context.frequencyLabel(subscription.frequency)} - $nextBillingDate',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        AppDimens.spacerWidthMediumSmall,
+                        Text(
+                          NumberFormatUtils.formatCurrency(subscription.amount),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      NumberFormatUtils.formatCurrency(subscription.amount),
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               );
             }),

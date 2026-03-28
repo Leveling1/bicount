@@ -42,6 +42,7 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
   @override
   void initState() {
     super.initState();
+    _currency.text = 'USD';
     final funding = widget.initialFunding;
     if (funding != null) {
       hydrateAccountFundingForm(

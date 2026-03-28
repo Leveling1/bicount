@@ -50,15 +50,11 @@ class CustomAmountField extends StatelessWidget {
 }
 
 class CurrencyField extends StatelessWidget {
-  CurrencyField({
+  const CurrencyField({
     super.key,
     required this.controller,
     this.defaultCurrencyCode = 'USD',
-  }) {
-    if (controller.text.isEmpty) {
-      controller.text = defaultCurrencyCode;
-    }
-  }
+  });
 
   final TextEditingController controller;
   final String defaultCurrencyCode;

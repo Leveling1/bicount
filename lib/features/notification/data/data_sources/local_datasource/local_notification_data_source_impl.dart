@@ -104,7 +104,7 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
         ),
         iOS: const DarwinNotificationDetails(),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       payload: notification.encodePayload(),
     );
   }

@@ -263,6 +263,12 @@ abstract class AppLocalizations {
   /// **'Open link'**
   String get commonOpenLink;
 
+  /// No description provided for @commonSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get commonSearch;
+
   /// No description provided for @commonOr.
   ///
   /// In en, this message translates to:
@@ -520,6 +526,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to save this account funding right now.'**
   String get runtimeAccountFundingSaveFailed;
+
+  /// No description provided for @runtimeAccountFundingUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update this account funding right now.'**
+  String get runtimeAccountFundingUpdateFailed;
 
   /// No description provided for @runtimeProfileSaveFailed.
   ///
@@ -890,7 +902,7 @@ abstract class AppLocalizations {
   /// No description provided for @settignsProMessage.
   ///
   /// In en, this message translates to:
-  /// **'Pro account coming soon! We're finalizing this feature for you. Thanks for waiting a bit.'**
+  /// **'Pro account coming soon! We\'re finalizing this feature for you. Thanks for waiting a bit.'**
   String get settignsProMessage;
 
   /// No description provided for @settingsProDescription.
@@ -1829,6 +1841,18 @@ abstract class AppLocalizations {
   /// **'Subscription saved successfully!'**
   String get subscriptionSavedSuccess;
 
+  /// No description provided for @subscriptionSearchPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by subscription name or note.'**
+  String get subscriptionSearchPrompt;
+
+  /// No description provided for @subscriptionSearchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No subscription matches your search.'**
+  String get subscriptionSearchEmpty;
+
   /// No description provided for @subscriptionNextBilling.
   ///
   /// In en, this message translates to:
@@ -1883,11 +1907,23 @@ abstract class AppLocalizations {
   /// **'Account funding transaction added successfully'**
   String get accountFundingSavedSuccess;
 
+  /// No description provided for @accountFundingUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Account funding updated successfully'**
+  String get accountFundingUpdatedSuccess;
+
   /// No description provided for @accountFundingRecurringSavedSuccess.
   ///
   /// In en, this message translates to:
   /// **'Recurring income saved successfully'**
   String get accountFundingRecurringSavedSuccess;
+
+  /// No description provided for @accountFundingEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit added funds'**
+  String get accountFundingEditTitle;
 
   /// No description provided for @accountFundingTypeTitle.
   ///

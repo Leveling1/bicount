@@ -26,13 +26,14 @@ class InfoCardBase extends StatelessWidget {
       child: linear
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _InfoCardHeader(
-                  icon: icon,
-                  title: title,
-                  color: color,
-                  compact: true,
+                Expanded(
+                  child: _InfoCardHeader(
+                    icon: icon,
+                    title: title,
+                    color: color,
+                    compact: true,
+                  ),
                 ),
                 const SizedBox(width: AppDimens.marginSmall),
                 child,
@@ -85,13 +86,18 @@ class _InfoCardHeader extends StatelessWidget {
           ),
         ),
         SizedBox(width: compact ? AppDimens.marginSmall : 10),
-        Text(
-          title,
-          style: compact
-              ? Theme.of(context).textTheme.titleSmall
-              : TextStyle(
-                  fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
-                ),
+        Flexible(
+          child: Text(
+            title,
+            maxLines: AppDimens.maxLinesShort,
+            overflow: TextOverflow.ellipsis,
+            softWrap: true,
+            style: compact
+                ? Theme.of(context).textTheme.titleSmall
+                : TextStyle(
+                    fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                  ),
+          ),
         ),
       ],
     );

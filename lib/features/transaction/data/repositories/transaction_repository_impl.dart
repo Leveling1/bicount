@@ -37,8 +37,8 @@ class TransactionRepositoryImpl extends TransactionRepository {
           category: transaction.category,
           currency: transaction.currency,
           note: transaction.note,
-          senderId: sender.id,
-          beneficiaryId: beneficiary.id,
+          senderId: sender.sid,
+          beneficiaryId: beneficiary.sid,
           image: beneficiary.image.isEmpty
               ? Constants.memojiDefault
               : beneficiary.image,
@@ -77,8 +77,8 @@ class TransactionRepositoryImpl extends TransactionRepository {
         category: transaction.category,
         currency: transaction.currency,
         note: transaction.note,
-        senderId: sender.id,
-        beneficiaryId: beneficiary.id,
+        senderId: sender.sid,
+        beneficiaryId: beneficiary.sid,
         image: beneficiary.image.isEmpty
             ? Constants.memojiDefault
             : beneficiary.image,
@@ -102,7 +102,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
       image = await result.fold(_throwFailure, (friend) async => friend.image);
     }
 
-    return _ResolvedParty(id: partyId, image: image);
+    return _ResolvedParty(sid: partyId, image: image);
   }
 
   Future<T> _throwFailure<T>(Failure failure) async {
@@ -124,8 +124,8 @@ class TransactionRepositoryImpl extends TransactionRepository {
 }
 
 class _ResolvedParty {
-  const _ResolvedParty({required this.id, required this.image});
+  const _ResolvedParty({required this.sid, required this.image});
 
-  final String id;
+  final String sid;
   final String image;
 }
