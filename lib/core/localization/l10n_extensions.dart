@@ -29,9 +29,9 @@ extension L10nBuildContextX on BuildContext {
   String graphBreakdownLabel(String label) {
     switch (label) {
       case 'AddFunds':
-        return l10n.graphBreakdownAddFunds;
+        return l10n.transactionTypeAddFund;
       case 'ReceivedTransfers':
-        return l10n.graphBreakdownReceivedTransfers;
+        return l10n.transactionTypeIncome;
       case 'Expenses':
         return l10n.graphBreakdownExpenses;
       case 'Subscriptions':

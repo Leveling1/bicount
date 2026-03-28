@@ -130,7 +130,7 @@ class _GraphScreenContent extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          context.l10n.graphIncomeMix,
+                          context.l10n.graphIncome,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         GraphIncomeBreakdownCard(dashboard: dashboard),
