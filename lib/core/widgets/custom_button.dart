@@ -54,17 +54,22 @@ class CustomButton extends StatelessWidget {
   }
 }
 
-
 /// Provider button for Google and Apple.
 enum AuthProviderType { google, apple }
+
 class _ProviderButton extends StatelessWidget {
-  const _ProviderButton({required this.isLoading, required this.onPressed, required this.label, required this.provider, required this.icon});
+  const _ProviderButton({
+    required this.isLoading,
+    required this.onPressed,
+    required this.label,
+    required this.provider,
+    required this.icon,
+  });
   final bool isLoading;
   final VoidCallback onPressed;
   final String label;
   final String icon;
   final AuthProviderType provider;
-
 
   @override
   Widget build(BuildContext context) {
@@ -84,52 +89,42 @@ class _ProviderButton extends StatelessWidget {
             );
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 11,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
             child: isLoading
                 ? SizedBox(
-              key: const ValueKey('provider_loading'),
-              height: 32,
-              child: LoadingAnimationWidget.horizontalRotatingDots(
-                color: Theme.of(context).textTheme.titleLarge!.color!,
-                size: 38,
-              ),
-            )
-                : Row(
-              key: const ValueKey('provider_content'),
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceColorDark,
-                    borderRadius: BorderRadius.circular(
-                      AppDimens.borderRadiusMedium,
+                    key: const ValueKey('provider_loading'),
+                    height: 32,
+                    child: LoadingAnimationWidget.horizontalRotatingDots(
+                      color: Theme.of(context).cardColor,
+                      size: 38,
                     ),
+                  )
+                : Row(
+                    key: const ValueKey('provider_content'),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceColorDark,
+                          borderRadius: BorderRadius.circular(
+                            AppDimens.borderRadiusMedium,
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(8),
+                        child: SvgPicture.asset(icon),
+                      ),
+                      AppDimens.spacerWidthMedium,
+                      Flexible(child: Text(label, textAlign: TextAlign.center)),
+                    ],
                   ),
-                  padding: const EdgeInsets.all(8),
-                  child: SvgPicture.asset(icon),
-                ),
-                AppDimens.spacerWidthMedium,
-                Flexible(
-                  child: Text(
-                    label,
-                    textAlign: TextAlign.center,
-
-                  ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
     );
   }
 }
-
 
 class CustomGoogleAuthButton extends StatelessWidget {
   const CustomGoogleAuthButton({
@@ -154,7 +149,11 @@ class CustomGoogleAuthButton extends StatelessWidget {
 }
 
 class CustomAppleAuthButton extends StatelessWidget {
-  const CustomAppleAuthButton({super.key, required this.isLoading, required this.onPressed});
+  const CustomAppleAuthButton({
+    super.key,
+    required this.isLoading,
+    required this.onPressed,
+  });
   final bool isLoading;
   final VoidCallback onPressed;
 
@@ -170,7 +169,6 @@ class CustomAppleAuthButton extends StatelessWidget {
   }
 }
 
-
 class CustomAuthIconButton extends StatelessWidget {
   const CustomAuthIconButton({super.key, required this.onPressed});
 
@@ -182,10 +180,10 @@ class CustomAuthIconButton extends StatelessWidget {
       width: 36,
       height: 36,
       decoration: BoxDecoration(
-        color: Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}),
-        borderRadius: BorderRadius.circular(
-          AppDimens.borderRadiusMedium,
-        ),
+        color: Theme.of(
+          context,
+        ).elevatedButtonTheme.style?.backgroundColor?.resolve({}),
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
       ),
       margin: EdgeInsets.only(
         right: AppDimens.marginExtraSmall,
@@ -195,7 +193,9 @@ class CustomAuthIconButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          hoverColor: Theme.of(context).cardColor.withValues(alpha: 0.6),
+          hoverColor: Theme.of(
+            context,
+          ).elevatedButtonTheme.style?.backgroundColor?.resolve({})?.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
           onTap: onPressed,
           child: Padding(
@@ -210,5 +210,3 @@ class CustomAuthIconButton extends StatelessWidget {
     );
   }
 }
-
-

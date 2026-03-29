@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../core/constants/icon_links.dart';
-import '../../../../core/constants/path.dart';
 
 class AuthBrandMark extends StatelessWidget {
   const AuthBrandMark({super.key, this.subtitle});

@@ -1,5 +1,4 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
-import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -42,21 +41,29 @@ class _AuthEmailRequestFormState extends State<AuthEmailRequestForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TextFormField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            validator: _validateEmail,
-            decoration: InputDecoration(
-              hintText: context.l10n.authEmailPlaceholder,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 12,
-              ),
-              suffixIcon: _emailController.text.isNotEmpty ? CustomAuthIconButton(
-                onPressed: _submit,
-              ) : null,
-            ),
-            onFieldSubmitted: (_) => _submit(),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _emailController,
+            builder: (context, value, _) {
+              final hasValidEmail =
+                  _hasValidEmail(value.text) && !widget.loading;
+
+              return TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                validator: _validateEmail,
+                decoration: InputDecoration(
+                  hintText: context.l10n.authEmailPlaceholder,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  suffixIcon: hasValidEmail
+                      ? CustomAuthIconButton(onPressed: _submit)
+                      : null,
+                ),
+                onFieldSubmitted: (_) => _submit(),
+              );
+            },
           ),
         ],
       ),
@@ -75,13 +82,22 @@ class _AuthEmailRequestFormState extends State<AuthEmailRequestForm> {
       return context.l10n.validationEmailRequired;
     }
 
-    final emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
-    if (!emailRegex.hasMatch(email)) {
+    if (!_hasValidEmail(email)) {
       return context.l10n.validationInvalidEmail;
     }
 
     return null;
+  }
+
+  bool _hasValidEmail(String value) {
+    final email = value.trim();
+    if (email.isEmpty) {
+      return false;
+    }
+
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    return emailRegex.hasMatch(email);
   }
 }

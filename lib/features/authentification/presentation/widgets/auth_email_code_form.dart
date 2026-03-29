@@ -3,6 +3,8 @@ import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
+import 'otp_field.dart';
+
 class AuthEmailCodeForm extends StatefulWidget {
   const AuthEmailCodeForm({
     super.key,
@@ -40,20 +42,10 @@ class _AuthEmailCodeFormState extends State<AuthEmailCodeForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TextFormField(
-            controller: _codeController,
-            keyboardType: TextInputType.number,
-            maxLength: 6,
-            validator: _validateCode,
-            decoration: InputDecoration(
-              hintText: context.l10n.authCodeFieldHint,
-              counterText: '',
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 18,
-              ),
-            ),
-            onFieldSubmitted: (_) => _submit(),
+          OtpField(
+            validateCode: _validateCode,
+            submit: _submit,
+
           ),
           const SizedBox(height: AppDimens.spacingExtraSmall),
           Text(

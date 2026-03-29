@@ -33,10 +33,10 @@ class CustomAmountField extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(flex: 1, child: CurrencyField(controller: currency)),
+          Expanded(flex: 3, child: CurrencyField(controller: currency)),
           const SizedBox(width: 10),
           Expanded(
-            flex: 3,
+            flex: 7,
             child: CustomFormTextField(
               hintText: context.l10n.fieldEnterAmount,
               inputType: TextInputType.number,
@@ -76,26 +76,33 @@ class CurrencyField extends StatelessWidget {
         final selectedCode = _resolveSelectedCode(currencies, fallbackCode);
         _deferControllerSync(selectedCode);
 
-        return DropdownButtonFormField<String>(
-          initialValue: selectedCode,
-          decoration: InputDecoration(
-            hintText: context.l10n.fieldSelectCurrency,
+        return DropdownMenuFormField<String>(
+          controller: controller,
+          initialSelection: currencies.any((c) => c.code == selectedCode)
+              ? selectedCode
+              : fallbackCode,
+          hintText: context.l10n.fieldSelectCurrency,
+          textStyle: TextStyle(
+            fontSize: AppDimens.textSizeMedium.sp,
+            fontWeight: FontWeight.w600,
           ),
-          items: currencies
+          dropdownMenuEntries: currencies
               .map(
-                (currency) => DropdownMenuItem<String>(
-                  value: currency.code,
-                  child: Text(
-                    '${currency.code} - ${currency.symbol}',
-                    style: TextStyle(
-                      fontSize: AppDimens.textSizeMedium.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              )
+                (currency) => DropdownMenuEntry<String>(
+              value: currency.code,
+              label: currency.code,
+            ),
+          )
               .toList(growable: false),
-          onChanged: (value) => controller.text = value ?? fallbackCode,
+          onSelected: (value) {
+            controller.text = value ?? fallbackCode;
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return context.l10n.fieldSelectCurrency;
+            }
+            return null;
+          },
         );
       },
     );
