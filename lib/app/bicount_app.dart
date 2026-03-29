@@ -4,6 +4,7 @@ import 'package:bicount/core/constants/firebase_options.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
 import 'package:bicount/core/routes/app_router.dart';
 import 'package:bicount/core/themes/app_theme.dart';
+import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/settings/presentation/bloc/theme_cubit.dart';
 import 'package:bicount/features/settings/domain/entities/theme_preference.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,6 +21,8 @@ Future<void> bootstrapBicountApp() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Repository.configure(databaseFactory);
   await Repository().repairRecurringFundingMigrationStateIfNeeded();
+  await Repository().repairCurrencyFxMigrationStateIfNeeded();
+  await Repository().repairUserReferenceCurrencyMigrationStateIfNeeded();
   await Repository().initialize();
 }
 
@@ -41,39 +44,46 @@ class MyApp extends StatelessWidget {
               builder: (context, themeState) {
                 return BlocBuilder<LocaleCubit, LocaleState>(
                   builder: (context, localeState) {
-                    final resolvedLocale = _resolveLocale(localeState.locale);
-                    Intl.defaultLocale = resolvedLocale.toLanguageTag();
+                    return BlocBuilder<CurrencyCubit, CurrencyState>(
+                      builder: (context, _) {
+                        final resolvedLocale = _resolveLocale(
+                          localeState.locale,
+                        );
+                        Intl.defaultLocale = resolvedLocale.toLanguageTag();
 
-                    return MaterialApp.router(
-                      onGenerateTitle: (context) =>
-                          AppLocalizations.of(context)?.appName ?? 'Bicount',
-                      debugShowCheckedModeBanner: false,
-                      theme: AppTheme.lightTheme,
-                      darkTheme: AppTheme.darkTheme,
-                      themeMode: themeState.preference.themeMode,
-                      routerConfig: AppRouter().router,
-                      locale: resolvedLocale,
-                      localizationsDelegates:
-                          AppLocalizations.localizationsDelegates,
-                      supportedLocales: AppLocalizations.supportedLocales,
-                      localeListResolutionCallback:
-                          (locales, supportedLocales) {
-                            if (localeState.locale != null) {
-                              return localeState.locale;
-                            }
-                            if (locales != null) {
-                              for (final deviceLocale in locales) {
-                                for (final supportedLocale
-                                    in supportedLocales) {
-                                  if (supportedLocale.languageCode ==
-                                      deviceLocale.languageCode) {
-                                    return supportedLocale;
+                        return MaterialApp.router(
+                          onGenerateTitle: (context) =>
+                              AppLocalizations.of(context)?.appName ??
+                              'Bicount',
+                          debugShowCheckedModeBanner: false,
+                          theme: AppTheme.lightTheme,
+                          darkTheme: AppTheme.darkTheme,
+                          themeMode: themeState.preference.themeMode,
+                          routerConfig: AppRouter().router,
+                          locale: resolvedLocale,
+                          localizationsDelegates:
+                              AppLocalizations.localizationsDelegates,
+                          supportedLocales: AppLocalizations.supportedLocales,
+                          localeListResolutionCallback:
+                              (locales, supportedLocales) {
+                                if (localeState.locale != null) {
+                                  return localeState.locale;
+                                }
+                                if (locales != null) {
+                                  for (final deviceLocale in locales) {
+                                    for (final supportedLocale
+                                        in supportedLocales) {
+                                      if (supportedLocale.languageCode ==
+                                          deviceLocale.languageCode) {
+                                        return supportedLocale;
+                                      }
+                                    }
                                   }
                                 }
-                              }
-                            }
-                            return _fallbackLocale;
-                          },
+                                return _fallbackLocale;
+                              },
+                        );
+                      },
                     );
                   },
                 );

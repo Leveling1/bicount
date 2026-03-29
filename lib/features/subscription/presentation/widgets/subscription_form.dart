@@ -34,10 +34,7 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
   bool isDifferentDate = false;
 
   @override
-  void initState() {
-    super.initState();
-    _currency.text = 'USD';
-  }
+  void initState() => super.initState();
 
   @override
   void dispose() {
@@ -99,7 +96,8 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
               CustomDropdownMenu(
                 title: context.l10n.commonFrequency,
                 hintText: context.l10n.subscriptionFrequencyHint,
-                onChanged: (value) => setState(() => _frequency.text = '$value'),
+                onChanged: (value) =>
+                    setState(() => _frequency.text = '$value'),
                 menuEntries: DropdownMenuEntryConstants.frequencyEntries(
                   context,
                 ),

@@ -2,10 +2,10 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
+import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/add_fund/presentation/widgets/account_funding_form.dart';
-import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,8 +26,11 @@ class _DetailAddFundScreenState extends State<DetailAddFundScreen> {
   Widget build(BuildContext context) {
     final funding = widget.funding;
     final fundingDate = DateTime.tryParse(funding.date) ?? DateTime.now();
-    final createdAt =
-        DateTime.tryParse(funding.createdAt ?? '') ?? fundingDate;
+    final createdAt = DateTime.tryParse(funding.createdAt ?? '') ?? fundingDate;
+    final amount = NumberFormatUtils.formatCurrency(
+      funding.amount,
+      currencyCode: funding.currency,
+    );
 
     if (_isEditing) {
       return Column(
@@ -76,7 +79,7 @@ class _DetailAddFundScreenState extends State<DetailAddFundScreen> {
         const SizedBox(height: 12),
         Text(funding.source, style: Theme.of(context).textTheme.headlineLarge),
         Text(
-          '+ ${funding.amount} ${_resolveCurrencySymbol(funding.currency)}',
+          '+ $amount',
           style: TextStyle(
             color: AppColors.primaryColorDark,
             fontSize: Theme.of(context).textTheme.titleLarge?.fontSize,
@@ -141,13 +144,5 @@ class _DetailAddFundScreenState extends State<DetailAddFundScreen> {
         const SizedBox(height: AppDimens.paddingLarge),
       ],
     );
-  }
-
-  String _resolveCurrencySymbol(String currencyCode) {
-    try {
-      return Currency.values.byName(currencyCode).symbol;
-    } catch (_) {
-      return currencyCode;
-    }
   }
 }

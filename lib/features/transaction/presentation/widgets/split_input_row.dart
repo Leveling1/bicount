@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../../core/localization/l10n_extensions.dart';
@@ -13,7 +12,6 @@ class SplitInputRow extends StatelessWidget {
   final String currency;
   final ValueChanged<String> onChanged;
 
-
   const SplitInputRow({
     super.key,
     required this.friend,
@@ -22,7 +20,6 @@ class SplitInputRow extends StatelessWidget {
     required this.currency,
     required this.onChanged,
   });
-
 
   @override
   Widget build(BuildContext context) {

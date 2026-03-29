@@ -1,9 +1,9 @@
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/constants/account_funding_const.dart';
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
-import 'package:brick_core/query.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,13 +13,16 @@ import 'recurring_funding_schedule_service.dart';
 
 class RecurringFundingLocalService {
   RecurringFundingLocalService({
+    required CurrencyRepositoryImpl currencyRepository,
     OfflineFinanceLocalService? offlineFinanceLocalService,
     RecurringFundingScheduleService scheduleService =
         const RecurringFundingScheduleService(),
-  }) : _offlineFinanceLocalService =
+  }) : _currencyRepository = currencyRepository,
+       _offlineFinanceLocalService =
            offlineFinanceLocalService ?? OfflineFinanceLocalService(),
        _scheduleService = scheduleService;
 
+  final CurrencyRepositoryImpl _currencyRepository;
   final OfflineFinanceLocalService _offlineFinanceLocalService;
   final RecurringFundingScheduleService _scheduleService;
   final _client = Supabase.instance.client;
@@ -60,6 +63,10 @@ class RecurringFundingLocalService {
       DateTime? lastProcessedDate;
 
       while (!_scheduleService.startOfDay(currentDate).isAfter(today)) {
+        final quote = await _currencyRepository.resolveCreationQuote(
+          amount: recurringFunding.amount,
+          originalCurrencyCode: recurringFunding.currency,
+        );
         final occurrenceFunding = AccountFundingModel(
           fundingId: _occurrenceFundingId(
             recurringFunding.recurringFundingId,
@@ -68,6 +75,12 @@ class RecurringFundingLocalService {
           sid: uid,
           amount: recurringFunding.amount,
           currency: recurringFunding.currency,
+          referenceCurrencyCode: quote.referenceCurrencyCode,
+          convertedAmount: quote.convertedAmount,
+          amountCdf: quote.amountCdf,
+          rateToCdf: quote.rateToCdf,
+          fxRateDate: quote.fxRateDate,
+          fxSnapshotId: quote.fxSnapshotId,
           category: Constants.personal,
           fundingType: recurringFunding.fundingType,
           source: recurringFunding.source,
@@ -114,7 +127,8 @@ class RecurringFundingLocalService {
           frequency: recurringFunding.frequency,
           startDate: recurringFunding.startDate,
           nextFundingDate: currentDate.toIso8601String(),
-          lastProcessedAt: lastProcessedDate?.toIso8601String() ??
+          lastProcessedAt:
+              lastProcessedDate?.toIso8601String() ??
               recurringFunding.lastProcessedAt,
           status: recurringFunding.status,
           createdAt: recurringFunding.createdAt,

@@ -8,6 +8,7 @@ import 'package:bicount/core/utils/form_date_utils.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';
+import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
@@ -71,10 +72,7 @@ class _TransferFormState extends State<TransferForm> {
   bool _didPrefillInitialTransaction = false;
 
   @override
-  void initState() {
-    super.initState();
-    _currency.text = 'USD';
-  }
+  void initState() => super.initState();
 
   @override
   void didChangeDependencies() {

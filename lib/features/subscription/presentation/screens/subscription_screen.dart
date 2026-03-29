@@ -20,7 +20,8 @@ class SubscriptionScreen extends StatelessWidget {
           appBar: CustomAppBar(
             title: context.l10n.graphSubscriptions,
             actions: [
-              if (state is MainLoaded && state.startData.subscriptions.isNotEmpty)
+              if (state is MainLoaded &&
+                  state.startData.subscriptions.isNotEmpty)
                 IconButton(
                   onPressed: () => _openSearch(context, state.startData),
                   icon: const Icon(Icons.search_rounded),

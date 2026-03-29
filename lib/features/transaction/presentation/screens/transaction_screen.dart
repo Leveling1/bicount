@@ -66,8 +66,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                             ),
                             const SizedBox(height: 8),
                             ...entry.value.map(
-                              (item) =>
-                                  TransactionFeedTile(item: item, data: widget.data),
+                              (item) => TransactionFeedTile(
+                                item: item,
+                                data: widget.data,
+                              ),
                             ),
                             const SizedBox(height: 16),
                           ],

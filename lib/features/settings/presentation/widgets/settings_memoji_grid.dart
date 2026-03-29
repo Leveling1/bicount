@@ -37,7 +37,9 @@ class SettingsMemojiGrid extends StatelessWidget {
         itemBuilder: (context, index) {
           if (index >= items.length) {
             return const Center(
-              child: BicountSkeletonCircle(size: AppDimens.settingsAvatarTileSize),
+              child: BicountSkeletonCircle(
+                size: AppDimens.settingsAvatarTileSize,
+              ),
             );
           }
 

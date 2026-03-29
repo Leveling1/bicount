@@ -74,6 +74,7 @@ extension _TransferFormHelpers on _TransferFormState {
     return '${friend.username.toLowerCase()}::${friend.email.toLowerCase()}';
   }
 
-  String get _selectedCurrency =>
-      _currency.text.isEmpty ? 'USD' : _currency.text;
+  String get _selectedCurrency => _currency.text.isEmpty
+      ? context.read<CurrencyCubit>().state.config.referenceCurrencyCode
+      : _currency.text;
 }

@@ -1,6 +1,11 @@
+import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
+import 'package:bicount/core/localization/runtime_message_localizer.dart';
+import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
+import 'package:bicount/features/currency/domain/entities/app_currency_entity.dart';
+import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/settings/domain/entities/theme_preference.dart';
 import 'package:bicount/features/settings/presentation/bloc/theme_cubit.dart';
 import 'package:bicount/features/settings/presentation/widgets/settings_delete_account_sheet.dart';
@@ -42,6 +47,37 @@ void showLanguageSettingsSheet(BuildContext context, LocaleState state) {
       labelBuilder: context.localePreferenceLabel,
       onSelected: (value) =>
           context.read<LocaleCubit>().selectPreference(value),
+    ),
+  );
+}
+
+void showCurrencySettingsSheet(BuildContext context, CurrencyState state) {
+  showSettingsSheet(
+    context,
+    SettingsOptionSheet<AppCurrencyEntity>(
+      title: context.l10n.settingsCurrencySheetTitle,
+      description: context.l10n.settingsCurrencySheetDescription,
+      selectedValue: state.config.currencyFor(
+        state.config.referenceCurrencyCode,
+      ),
+      options: state.config.sortedCurrencies,
+      labelBuilder: (value) => '${value.name} (${value.code})',
+      onSelected: (value) async {
+        try {
+          await context.read<CurrencyCubit>().selectReferenceCurrency(
+            value.code,
+          );
+        } catch (error) {
+          final message = error is Failure ? error.message : '$error';
+          if (context.mounted) {
+            NotificationHelper.showFailureNotification(
+              context,
+              localizeRuntimeMessage(context, message),
+            );
+          }
+          rethrow;
+        }
+      },
     ),
   );
 }

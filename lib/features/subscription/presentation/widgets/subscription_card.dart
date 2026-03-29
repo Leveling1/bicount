@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/formated_text.dart';
 import 'meta_pill.dart';
+
 class SubscriptionCard extends StatelessWidget {
   const SubscriptionCard({super.key, required this.item, required this.onTap});
   final SubscriptionListItem item;
@@ -54,7 +55,9 @@ class SubscriptionCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        FormatedText().capitalizeFirstLetter(item.subscription.title),
+                        FormatedText().capitalizeFirstLetter(
+                          item.subscription.title,
+                        ),
                         maxLines: AppDimens.maxLinesShort,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleMedium,
@@ -63,8 +66,7 @@ class SubscriptionCard extends StatelessWidget {
                     const SizedBox(width: AppDimens.spacingSmall),
                     SubscriptionBadge(
                       label: context.subscriptionStatusLabel(
-                        item.subscription.status ??
-                            SubscriptionConst.active,
+                        item.subscription.status ?? SubscriptionConst.active,
                       ),
                       color: statusColor,
                     ),

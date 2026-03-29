@@ -49,7 +49,12 @@ class LoginScreen extends StatelessWidget {
                     AppDimens.spacerLarge,
                     BicountReveal(
                       delay: const Duration(milliseconds: 70),
-                      child: Image.asset(isDark ? AssetPaths.imageLoginDark : AssetPaths.imageLoginLight, height: 220),
+                      child: Image.asset(
+                        isDark
+                            ? AssetPaths.imageLoginDark
+                            : AssetPaths.imageLoginLight,
+                        height: 220,
+                      ),
                     ),
                     AppDimens.spacerLarge,
                     BicountReveal(

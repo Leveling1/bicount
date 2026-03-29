@@ -8,6 +8,7 @@ import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/subscription/presentation/models/subscription_list_item.dart';
 import 'package:bicount/features/subscription/presentation/widgets/subscription_item_list.dart';
 import 'package:flutter/material.dart';
+
 class SubscriptionScreenContent extends StatelessWidget {
   const SubscriptionScreenContent({
     super.key,
@@ -20,10 +21,6 @@ class SubscriptionScreenContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = buildSubscriptionListItems(data);
     final activeCount = items.where((item) => item.isActive).length;
-    final monthlyLoad = items.fold<double>(
-      0,
-      (sum, item) => sum + item.monthlyAmount,
-    );
     final now = DateTime.now();
     final upcomingCount = items.where((item) {
       final next = item.nextBilling;
@@ -63,15 +60,20 @@ class SubscriptionScreenContent extends StatelessWidget {
               ),
               _OverviewCard(
                 label: context.l10n.graphMonthlyLoad,
-                value: NumberFormatUtils.compactCurrency(monthlyLoad),
-                color:
-                    Theme.of(context).extension<OtherTheme>()!.personnalIncome!,
+                value: NumberFormatUtils.compactCurrency(
+                  data.monthlySubscriptionSpend,
+                  currencyCode: data.referenceCurrencyCode,
+                ),
+                color: Theme.of(
+                  context,
+                ).extension<OtherTheme>()!.personnalIncome!,
               ),
               _OverviewCard(
                 label: context.l10n.graphUpcomingCharges,
                 value: '$upcomingCount',
-                color:
-                    Theme.of(context).extension<OtherTheme>()!.companyIncome!,
+                color: Theme.of(
+                  context,
+                ).extension<OtherTheme>()!.companyIncome!,
               ),
             ],
           ),

@@ -71,7 +71,6 @@ class AuthentificationBloc
     );
   }
 
-
   /// For the sign out process
   // Signout
   Future<void> _signOut(

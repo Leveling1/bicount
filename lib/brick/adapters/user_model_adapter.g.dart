@@ -19,6 +19,7 @@ Future<UserModel> _$UserModelFromSupabase(
     personalIncome: data['personal_income'] == null
         ? null
         : data['personal_income'] as double?,
+    referenceCurrencyCode: data['reference_currency_code'] as String?,
     uid: data['uid'] as String?,
   );
 }
@@ -37,6 +38,7 @@ Future<Map<String, dynamic>> _$UserModelToSupabase(
     'balance': instance.balance,
     'company_income': instance.companyIncome,
     'personal_income': instance.personalIncome,
+    'reference_currency_code': instance.referenceCurrencyCode,
     'uid': instance.uid,
   };
 }
@@ -59,6 +61,7 @@ Future<UserModel> _$UserModelFromSqlite(
     personalIncome: data['personal_income'] == null
         ? null
         : data['personal_income'] as double?,
+    referenceCurrencyCode: data['reference_currency_code'] as String?,
     uid: data['uid'] as String,
   )..primaryKey = data['_brick_id'] as int;
 }
@@ -77,6 +80,7 @@ Future<Map<String, dynamic>> _$UserModelToSqlite(
     'balance': instance.balance,
     'company_income': instance.companyIncome,
     'personal_income': instance.personalIncome,
+    'reference_currency_code': instance.referenceCurrencyCode,
     'uid': instance.uid,
   };
 }
@@ -122,6 +126,10 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
     'personalIncome': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'personal_income',
+    ),
+    'referenceCurrencyCode': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'reference_currency_code',
     ),
     'uid': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -187,6 +195,12 @@ class UserModelAdapter extends OfflineFirstWithSupabaseAdapter<UserModel> {
       columnName: 'personal_income',
       iterable: false,
       type: double,
+    ),
+    'referenceCurrencyCode': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'reference_currency_code',
+      iterable: false,
+      type: String,
     ),
     'uid': const RuntimeSqliteColumnDefinition(
       association: false,

@@ -24,6 +24,7 @@ class GraphMetricOverview extends StatelessWidget {
           width: 165.w,
           title: context.l10n.graphNetFlow,
           value: dashboard.netFlow,
+          currencyCode: dashboard.displayCurrencyCode,
           color: dashboard.netFlow >= 0
               ? Theme.of(context).extension<OtherTheme>()!.income!
               : Theme.of(context).extension<OtherTheme>()!.expense!,
@@ -33,6 +34,7 @@ class GraphMetricOverview extends StatelessWidget {
           width: 165.w,
           title: context.l10n.graphIncome,
           value: dashboard.inflow,
+          currencyCode: dashboard.displayCurrencyCode,
           color: Theme.of(context).extension<OtherTheme>()!.income!,
           icon: IconLinks.income,
         ),
@@ -40,6 +42,7 @@ class GraphMetricOverview extends StatelessWidget {
           width: 165.w,
           title: context.l10n.graphExpenses,
           value: dashboard.outflow,
+          currencyCode: dashboard.displayCurrencyCode,
           color: Theme.of(context).extension<OtherTheme>()!.expense!,
           icon: IconLinks.expense,
         ),
@@ -54,6 +57,7 @@ class GraphMetricCard extends StatelessWidget {
     required this.width,
     required this.title,
     required this.value,
+    required this.currencyCode,
     required this.color,
     required this.icon,
   });
@@ -61,6 +65,7 @@ class GraphMetricCard extends StatelessWidget {
   final double width;
   final String title;
   final double value;
+  final String currencyCode;
   final Color color;
   final String icon;
 
@@ -91,7 +96,10 @@ class GraphMetricCard extends StatelessWidget {
               curve: Curves.easeOutCubic,
               builder: (context, animatedValue, _) {
                 return Text(
-                  NumberFormatUtils.formatCurrency(animatedValue),
+                  NumberFormatUtils.formatCurrency(
+                    animatedValue,
+                    currencyCode: currencyCode,
+                  ),
                   style: Theme.of(
                     context,
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),

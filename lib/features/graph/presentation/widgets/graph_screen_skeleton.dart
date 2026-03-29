@@ -21,27 +21,15 @@ class GraphScreenSkeleton extends StatelessWidget {
           AppDimens.spacerSmall,
           BicountSkeletonBox(height: 14, width: 240),
           AppDimens.spacerLarge,
-          BicountSkeletonBox(
-            height: 44,
-            radius: AppDimens.borderRadiusLarge,
-          ),
+          BicountSkeletonBox(height: 44, radius: AppDimens.borderRadiusLarge),
           AppDimens.spacerLarge,
           _GraphMetricSkeleton(),
           AppDimens.spacerLarge,
-          BicountSkeletonBox(
-            height: 240,
-            radius: AppDimens.borderRadiusLarge,
-          ),
+          BicountSkeletonBox(height: 240, radius: AppDimens.borderRadiusLarge),
           AppDimens.spacerLarge,
-          BicountSkeletonBox(
-            height: 220,
-            radius: AppDimens.borderRadiusLarge,
-          ),
+          BicountSkeletonBox(height: 220, radius: AppDimens.borderRadiusLarge),
           AppDimens.spacerLarge,
-          BicountSkeletonBox(
-            height: 200,
-            radius: AppDimens.borderRadiusLarge,
-          ),
+          BicountSkeletonBox(height: 200, radius: AppDimens.borderRadiusLarge),
         ],
       ),
     );

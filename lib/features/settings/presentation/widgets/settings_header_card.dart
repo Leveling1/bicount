@@ -17,7 +17,7 @@ class SettingsHeaderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DetailsCard(
-      isMargin : false,
+      isMargin: false,
       child: Row(
         children: [
           SettingsAvatar(image: user.image, radius: 28),

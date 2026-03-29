@@ -44,7 +44,7 @@ class SettingsOptionSheet<T> extends StatelessWidget {
             },
           ),
         ),
-        AppDimens.spacerMedium
+        AppDimens.spacerMedium,
       ],
     );
   }

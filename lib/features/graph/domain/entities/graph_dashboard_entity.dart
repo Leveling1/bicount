@@ -33,6 +33,7 @@ extension GraphPeriodX on GraphPeriod {
 class GraphDashboardEntity extends Equatable {
   const GraphDashboardEntity({
     required this.period,
+    required this.displayCurrencyCode,
     required this.inflow,
     required this.outflow,
     required this.netFlow,
@@ -46,6 +47,7 @@ class GraphDashboardEntity extends Equatable {
   });
 
   final GraphPeriod period;
+  final String displayCurrencyCode;
   final double inflow;
   final double outflow;
   final double netFlow;
@@ -60,6 +62,7 @@ class GraphDashboardEntity extends Equatable {
   @override
   List<Object?> get props => [
     period,
+    displayCurrencyCode,
     inflow,
     outflow,
     netFlow,

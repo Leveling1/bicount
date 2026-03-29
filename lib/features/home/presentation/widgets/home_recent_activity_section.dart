@@ -49,9 +49,7 @@ class HomeRecentActivitySection extends StatelessWidget {
         const SizedBox(height: AppDimens.spacingSmall),
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.only(
-              bottom: AppDimens.paddingExtraLarge,
-            ),
+            padding: const EdgeInsets.only(bottom: AppDimens.paddingExtraLarge),
             physics: const BouncingScrollPhysics(),
             itemCount: recentItems.length,
             itemBuilder: (context, index) {

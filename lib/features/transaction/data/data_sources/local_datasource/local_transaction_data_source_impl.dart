@@ -5,6 +5,7 @@ import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/brick/repository.dart';
+import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
@@ -15,9 +16,16 @@ import 'package:uuid/uuid.dart';
 import '../../models/transaction.model.dart';
 
 class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
+  LocalTransactionDataSourceImpl({
+    required CurrencyRepositoryImpl currencyRepository,
+    OfflineFinanceLocalService? offlineFinanceLocalService,
+  }) : _currencyRepository = currencyRepository,
+       _offlineFinanceLocalService =
+           offlineFinanceLocalService ?? OfflineFinanceLocalService();
+
   final supabaseInstance = Supabase.instance.client;
-  final OfflineFinanceLocalService _offlineFinanceLocalService =
-      OfflineFinanceLocalService();
+  final CurrencyRepositoryImpl _currencyRepository;
+  final OfflineFinanceLocalService _offlineFinanceLocalService;
 
   String? get _currentUid => supabaseInstance.auth.currentUser?.id;
 
@@ -72,6 +80,10 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     }
 
     try {
+      final quote = await _currencyRepository.resolveCreationQuote(
+        amount: amount,
+        originalCurrencyCode: currency,
+      );
       var type = TransactionTypes.othersCode;
       if (senderId == uid) {
         type = TransactionTypes.expenseCode;
@@ -90,6 +102,12 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         note: note,
         amount: amount,
         currency: currency,
+        referenceCurrencyCode: quote.referenceCurrencyCode,
+        convertedAmount: quote.convertedAmount,
+        amountCdf: quote.amountCdf,
+        rateToCdf: quote.rateToCdf,
+        fxRateDate: quote.fxRateDate,
+        fxSnapshotId: quote.fxSnapshotId,
         image: image,
         frequency: Frequency.oneTime,
         createdAt: DateTime.now().toIso8601String(),
@@ -129,6 +147,10 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     }
 
     try {
+      final quote = await _currencyRepository.resolveCreationQuote(
+        amount: amount,
+        originalCurrencyCode: currency,
+      );
       var type = TransactionTypes.othersCode;
       if (senderId == ownerUid) {
         type = TransactionTypes.expenseCode;
@@ -148,6 +170,12 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         note: note,
         amount: amount,
         currency: currency,
+        referenceCurrencyCode: quote.referenceCurrencyCode,
+        convertedAmount: quote.convertedAmount,
+        amountCdf: quote.amountCdf,
+        rateToCdf: quote.rateToCdf,
+        fxRateDate: quote.fxRateDate,
+        fxSnapshotId: quote.fxSnapshotId,
         image: image,
         frequency: previousTransaction.frequency,
         category: category,
@@ -164,5 +192,4 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       );
     }
   }
-
 }

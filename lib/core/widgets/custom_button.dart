@@ -75,16 +75,18 @@ class CustomGoogleAuthButton extends StatelessWidget {
         onPressed: isLoading ? null : onPressed,
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.tertiaryColorBasic,
-          backgroundColor: Theme.of(context).textTheme.titleLarge!.color!.withValues(alpha: 0.05),
+          backgroundColor: Theme.of(
+            context,
+          ).textTheme.titleLarge!.color!.withValues(alpha: 0.05),
           side: BorderSide(
-            color: Theme.of(context).textTheme.titleLarge!.color!.withValues(alpha: 0.50),
+            color: Theme.of(
+              context,
+            ).textTheme.titleLarge!.color!.withValues(alpha: 0.50),
             width: 1.4,
           ),
           minimumSize: const Size.fromHeight(54),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              AppDimens.radiusMedium,
-            ),
+            borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
           ),
         ),
         child: AnimatedSwitcher(

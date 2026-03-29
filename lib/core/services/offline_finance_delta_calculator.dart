@@ -29,6 +29,7 @@ class OfflineFinanceDeltaCalculator {
         user.personalIncome,
         category == Constants.personal ? direction : 0,
       ),
+      referenceCurrencyCode: user.referenceCurrencyCode,
     );
   }
 
@@ -74,6 +75,7 @@ class OfflineFinanceDeltaCalculator {
       expenses: user.expenses,
       companyIncome: user.companyIncome,
       personalIncome: _sum(user.personalIncome, amount),
+      referenceCurrencyCode: user.referenceCurrencyCode,
     );
   }
 

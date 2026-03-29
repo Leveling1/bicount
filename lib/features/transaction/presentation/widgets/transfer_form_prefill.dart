@@ -18,7 +18,7 @@ extension _TransferFormPrefill on _TransferFormState {
     _name.text = transaction.name;
     _date.text = DateFormat('dd/MM/yyyy').format(transaction.date);
     _amount.text = _formatInitialAmount(transaction.amount);
-    _currency.text = transaction.currency.name;
+    _currency.text = transaction.currency;
     _note.text = transaction.note;
     _sender.text = _partyLabelForId(transaction.sender);
 

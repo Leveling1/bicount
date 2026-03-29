@@ -1,4 +1,5 @@
 import 'package:bicount/brick/repository.dart';
+import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/core/services/recurring_funding_local_service.dart';
 import 'package:bicount/core/services/recurring_funding_schedule_service.dart';
@@ -6,24 +7,27 @@ import 'package:bicount/features/add_fund/data/data_sources/local_datasource/add
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/add_fund/domain/entities/add_account_funding_entity.dart';
-import 'package:brick_core/query.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
   LocalAddFundDataSourceImpl({
+    required CurrencyRepositoryImpl currencyRepository,
     OfflineFinanceLocalService? offlineFinanceLocalService,
     RecurringFundingLocalService? recurringFundingLocalService,
     RecurringFundingScheduleService? scheduleService,
-  }) : _offlineFinanceLocalService =
+  }) : _currencyRepository = currencyRepository,
+       _offlineFinanceLocalService =
            offlineFinanceLocalService ?? OfflineFinanceLocalService(),
        _recurringFundingLocalService =
-           recurringFundingLocalService ?? RecurringFundingLocalService(),
+           recurringFundingLocalService ??
+           RecurringFundingLocalService(currencyRepository: currencyRepository),
        _scheduleService =
            scheduleService ?? const RecurringFundingScheduleService();
 
   final supabaseInstance = Supabase.instance.client;
+  final CurrencyRepositoryImpl _currencyRepository;
   final OfflineFinanceLocalService _offlineFinanceLocalService;
   final RecurringFundingLocalService _recurringFundingLocalService;
   final RecurringFundingScheduleService _scheduleService;
@@ -37,6 +41,10 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
       throw Exception('Authentication failure');
     }
 
+    final quote = await _currencyRepository.resolveCreationQuote(
+      amount: data.amount,
+      originalCurrencyCode: data.currency,
+    );
     final accountFundingData = AccountFundingModel(
       fundingId: const Uuid().v4(),
       sid: sid,
@@ -44,6 +52,12 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
       note: data.note,
       amount: data.amount,
       currency: data.currency,
+      referenceCurrencyCode: quote.referenceCurrencyCode,
+      convertedAmount: quote.convertedAmount,
+      amountCdf: quote.amountCdf,
+      rateToCdf: quote.rateToCdf,
+      fxRateDate: quote.fxRateDate,
+      fxSnapshotId: quote.fxSnapshotId,
       fundingType: data.fundingType,
       category: data.category,
       date: _scheduleService.normalizeDate(data.date),
@@ -89,6 +103,10 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
     }
 
     final normalizedDate = _scheduleService.normalizeDate(data.date);
+    final quote = await _currencyRepository.resolveCreationQuote(
+      amount: data.amount,
+      originalCurrencyCode: data.currency,
+    );
     final updatedFunding = AccountFundingModel(
       fundingId: fundingId,
       sid: data.sid ?? currentFunding.sid,
@@ -96,6 +114,12 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
       note: data.note,
       amount: data.amount,
       currency: data.currency,
+      referenceCurrencyCode: quote.referenceCurrencyCode,
+      convertedAmount: quote.convertedAmount,
+      amountCdf: quote.amountCdf,
+      rateToCdf: quote.rateToCdf,
+      fxRateDate: quote.fxRateDate,
+      fxSnapshotId: quote.fxSnapshotId,
       fundingType: data.fundingType,
       category: data.category,
       date: normalizedDate,

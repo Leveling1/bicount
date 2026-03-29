@@ -1,8 +1,8 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
-import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -22,6 +22,10 @@ class AccountFundingTransactionCard extends StatelessWidget {
         DateTime.tryParse(funding.createdAt ?? '') ??
         DateTime.tryParse(funding.date) ??
         DateTime.now();
+    final amount = NumberFormatUtils.formatCurrency(
+      funding.amount,
+      currencyCode: funding.currency,
+    );
 
     return Material(
       color: Colors.transparent,
@@ -70,7 +74,7 @@ class AccountFundingTransactionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '+ ${funding.amount} ${_resolveCurrencySymbol(funding.currency)}',
+                    '+ $amount',
                     style: const TextStyle(
                       color: AppColors.primaryColorDark,
                       fontWeight: FontWeight.bold,
@@ -88,13 +92,5 @@ class AccountFundingTransactionCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _resolveCurrencySymbol(String currencyCode) {
-    try {
-      return Currency.values.byName(currencyCode).symbol;
-    } catch (_) {
-      return currencyCode;
-    }
   }
 }

@@ -14,11 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AccountFundingForm extends StatefulWidget {
-  const AccountFundingForm({
-    super.key,
-    this.initialFunding,
-    this.onCompleted,
-  });
+  const AccountFundingForm({super.key, this.initialFunding, this.onCompleted});
 
   final AccountFundingModel? initialFunding;
   final VoidCallback? onCompleted;
@@ -42,7 +38,6 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
   @override
   void initState() {
     super.initState();
-    _currency.text = 'USD';
     final funding = widget.initialFunding;
     if (funding != null) {
       hydrateAccountFundingForm(
@@ -66,6 +61,7 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
     _note.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddFundBloc, AddFundState>(
@@ -150,12 +146,12 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
 
   void _onStateChanged(BuildContext context, AddFundState state) {
     if (state is AddFundSaved) {
-          NotificationHelper.showSuccessNotification(
-            context,
-            state.isRecurring
-                ? context.l10n.accountFundingRecurringSavedSuccess
-                : context.l10n.accountFundingSavedSuccess,
-          );
+      NotificationHelper.showSuccessNotification(
+        context,
+        state.isRecurring
+            ? context.l10n.accountFundingRecurringSavedSuccess
+            : context.l10n.accountFundingSavedSuccess,
+      );
       final onCompleted = widget.onCompleted;
       if (onCompleted != null) {
         onCompleted();

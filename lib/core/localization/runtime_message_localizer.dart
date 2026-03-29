@@ -41,6 +41,10 @@ String localizeRuntimeMessage(BuildContext context, String message) {
       return context.l10n.runtimeAccountFundingSaveFailed;
     case 'Unable to save your profile right now.':
       return context.l10n.runtimeProfileSaveFailed;
+    case 'Unable to load the latest exchange rates right now.':
+      return context.l10n.runtimeCurrencyRateLoadFailed;
+    case 'Connect to update this reference currency first.':
+      return context.l10n.runtimeCurrencyOnlineSelectionRequired;
     case 'Unable to request Bicount Pro right now.':
       return context.l10n.runtimeProRequestFailed;
     case 'Unable to delete your account right now.':

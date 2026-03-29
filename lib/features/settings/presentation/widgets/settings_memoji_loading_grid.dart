@@ -22,7 +22,9 @@ class SettingsMemojiLoadingGrid extends StatelessWidget {
         itemCount: itemCount,
         itemBuilder: (_, __) {
           return const Center(
-            child: BicountSkeletonCircle(size: AppDimens.settingsAvatarTileSize),
+            child: BicountSkeletonCircle(
+              size: AppDimens.settingsAvatarTileSize,
+            ),
           );
         },
       ),

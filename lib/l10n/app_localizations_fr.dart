@@ -24,7 +24,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get languageSectionTitle => 'Langue';
 
   @override
-  String get languageSectionDescription => 'Choisissez comment Bicount s\'affiche. Par défaut, l\'application suit la langue de votre appareil.';
+  String get languageSectionDescription =>
+      'Choisissez comment Bicount s\'affiche. Par défaut, l\'application suit la langue de votre appareil.';
 
   @override
   String get languageSheetTitle => 'Choisir une langue';
@@ -123,13 +124,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authAlreadyHaveAccount => 'Vous avez déjà un compte ?';
 
   @override
-  String get authLoginWelcome => 'Retrouvez votre espace pour gérer argent personnel et partagé.';
+  String get authLoginWelcome =>
+      'Retrouvez votre espace pour gérer argent personnel et partagé.';
 
   @override
-  String get authSignupLead => 'Créez votre compte et démarrez avec une vision claire de vos finances.';
+  String get authSignupLead =>
+      'Créez votre compte et démarrez avec une vision claire de vos finances.';
 
   @override
-  String get authSignupDescription => 'Créez votre compte Bicount pour continuer.';
+  String get authSignupDescription =>
+      'Créez votre compte Bicount pour continuer.';
 
   @override
   String get authEmailAddress => 'Adresse e-mail';
@@ -159,28 +163,35 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authCreateGoogleAccount => 'Créer un compte Google';
 
   @override
-  String get authGenericSignInError => 'Impossible de vous connecter pour le moment. Réessayez.';
+  String get authGenericSignInError =>
+      'Impossible de vous connecter pour le moment. Réessayez.';
 
   @override
-  String get authGenericSignUpError => 'Impossible de créer votre compte pour le moment. Réessayez.';
+  String get authGenericSignUpError =>
+      'Impossible de créer votre compte pour le moment. Réessayez.';
 
   @override
-  String get authGenericSignOutError => 'Impossible de vous déconnecter pour le moment.';
+  String get authGenericSignOutError =>
+      'Impossible de vous déconnecter pour le moment.';
 
   @override
   String get authGoogleCancelled => 'La connexion avec Google a été annulée.';
 
   @override
-  String get authGoogleMissingEmail => 'Google n\'a pas renvoyé les informations nécessaires pour créer votre compte.';
+  String get authGoogleMissingEmail =>
+      'Google n\'a pas renvoyé les informations nécessaires pour créer votre compte.';
 
   @override
-  String get authGoogleTimeout => 'La connexion a pris trop de temps. Réessayez.';
+  String get authGoogleTimeout =>
+      'La connexion a pris trop de temps. Réessayez.';
 
   @override
-  String get authNetworkError => 'Problème de réseau. Vérifiez votre connexion Internet.';
+  String get authNetworkError =>
+      'Problème de réseau. Vérifiez votre connexion Internet.';
 
   @override
-  String get authGoogleFailed => 'La connexion avec Google a échoué. Réessayez.';
+  String get authGoogleFailed =>
+      'La connexion avec Google a échoué. Réessayez.';
 
   @override
   String get validationEmailRequired => 'E-mail requis';
@@ -201,43 +212,64 @@ class AppLocalizationsFr extends AppLocalizations {
   String get validationTooShort => 'Trop court';
 
   @override
-  String get validationAmountGreaterThanZero => 'Saisissez un montant supérieur à zéro.';
+  String get validationAmountGreaterThanZero =>
+      'Saisissez un montant supérieur à zéro.';
 
   @override
-  String get runtimeUnexpectedError => 'Une erreur s\'est produite. Veuillez réessayer.';
+  String get runtimeUnexpectedError =>
+      'Une erreur s\'est produite. Veuillez réessayer.';
 
   @override
-  String get runtimeFriendSaveFailed => 'Impossible d\'enregistrer cet ami pour le moment.';
+  String get runtimeFriendSaveFailed =>
+      'Impossible d\'enregistrer cet ami pour le moment.';
 
   @override
-  String get runtimeTransactionSaveFailed => 'La transaction n\'a pas pu être enregistrée.';
+  String get runtimeTransactionSaveFailed =>
+      'La transaction n\'a pas pu être enregistrée.';
 
   @override
-  String get runtimeTransactionUpdateFailed => 'Impossible de mettre à jour cette transaction pour le moment.';
+  String get runtimeTransactionUpdateFailed =>
+      'Impossible de mettre à jour cette transaction pour le moment.';
 
   @override
-  String get runtimeSubscriptionSaveFailed => 'Impossible d\'enregistrer cet abonnement pour le moment.';
+  String get runtimeSubscriptionSaveFailed =>
+      'Impossible d\'enregistrer cet abonnement pour le moment.';
 
   @override
-  String get runtimeSubscriptionUnsubscribeFailed => 'Impossible de mettre à jour cet abonnement pour le moment.';
+  String get runtimeSubscriptionUnsubscribeFailed =>
+      'Impossible de mettre à jour cet abonnement pour le moment.';
 
   @override
-  String get runtimeAccountFundingSaveFailed => 'Impossible d\'enregistrer cette alimentation de compte pour le moment.';
+  String get runtimeAccountFundingSaveFailed =>
+      'Impossible d\'enregistrer cette alimentation de compte pour le moment.';
 
   @override
-  String get runtimeAccountFundingUpdateFailed => 'Impossible de mettre à jour cette alimentation de compte pour le moment.';
+  String get runtimeAccountFundingUpdateFailed =>
+      'Impossible de mettre à jour cette alimentation de compte pour le moment.';
 
   @override
-  String get runtimeProfileSaveFailed => 'Impossible d\'enregistrer votre profil pour le moment.';
+  String get runtimeProfileSaveFailed =>
+      'Impossible d\'enregistrer votre profil pour le moment.';
 
   @override
-  String get runtimeProRequestFailed => 'Impossible d\'envoyer votre demande Bicount Pro pour le moment.';
+  String get runtimeCurrencyRateLoadFailed =>
+      'Impossible de charger les derniers taux de change pour le moment.';
 
   @override
-  String get runtimeDeleteAccountFailed => 'Impossible de supprimer votre compte pour le moment.';
+  String get runtimeCurrencyOnlineSelectionRequired =>
+      'Reconnectez-vous avant de changer votre devise de référence.';
 
   @override
-  String get runtimeDataLoadFailed => 'Impossible de charger vos données pour le moment.';
+  String get runtimeProRequestFailed =>
+      'Impossible d\'envoyer votre demande Bicount Pro pour le moment.';
+
+  @override
+  String get runtimeDeleteAccountFailed =>
+      'Impossible de supprimer votre compte pour le moment.';
+
+  @override
+  String get runtimeDataLoadFailed =>
+      'Impossible de charger vos données pour le moment.';
 
   @override
   String get fieldEnterAmount => 'Saisir un montant';
@@ -249,40 +281,49 @@ class AppLocalizationsFr extends AppLocalizations {
   String get onboardingSharedMoneyBadge => 'Argent partagé';
 
   @override
-  String get onboardingSharedMoneyTitle => 'Suivez facilement chaque paiement partagé';
+  String get onboardingSharedMoneyTitle =>
+      'Suivez facilement chaque paiement partagé';
 
   @override
-  String get onboardingSharedMoneyDescription => 'Suivez ce que vous donnez, ce que les autres reçoivent et ce qui demande encore votre attention, sans notes confuses ni messages sans fin.';
+  String get onboardingSharedMoneyDescription =>
+      'Suivez ce que vous donnez, ce que les autres reçoivent et ce qui demande encore votre attention, sans notes confuses ni messages sans fin.';
 
   @override
   String get onboardingDailyOverviewBadge => 'Vue quotidienne';
 
   @override
-  String get onboardingDailyOverviewTitle => 'Voyez votre argent dans une vue claire et utile';
+  String get onboardingDailyOverviewTitle =>
+      'Voyez votre argent dans une vue claire et utile';
 
   @override
-  String get onboardingDailyOverviewDescription => 'Suivez votre solde, vos abonnements et vos habitudes avec des visuels qui vous aident à décider plus vite.';
+  String get onboardingDailyOverviewDescription =>
+      'Suivez votre solde, vos abonnements et vos habitudes avec des visuels qui vous aident à décider plus vite.';
 
   @override
   String get onboardingProBadge => 'Bicount Pro';
 
   @override
-  String get onboardingProTitle => 'Évoluez plus tard vers la finance d\'équipe et d\'activité';
+  String get onboardingProTitle =>
+      'Évoluez plus tard vers la finance d\'équipe et d\'activité';
 
   @override
-  String get onboardingProDescription => 'Bicount Pro sera notre espace dédié aux équipes et aux activités professionnelles. Il n\'est pas encore actif, mais fait déjà partie de la vision Bicount.';
+  String get onboardingProDescription =>
+      'Bicount Pro sera notre espace dédié aux équipes et aux activités professionnelles. Il n\'est pas encore actif, mais fait déjà partie de la vision Bicount.';
 
   @override
   String get onboardingProHighlight => 'Bientôt disponible';
 
   @override
-  String get onboardingFooterPrimary => 'Bicount vous aide à gérer votre argent personnel et partagé avec clarté dès le premier jour.';
+  String get onboardingFooterPrimary =>
+      'Bicount vous aide à gérer votre argent personnel et partagé avec clarté dès le premier jour.';
 
   @override
-  String get onboardingFooterOverview => 'Une vue claire de votre solde, de vos habitudes et de vos abonnements vous aide à avancer plus vite sans effort inutile.';
+  String get onboardingFooterOverview =>
+      'Une vue claire de votre solde, de vos habitudes et de vos abonnements vous aide à avancer plus vite sans effort inutile.';
 
   @override
-  String get onboardingFooterPro => 'Bicount Pro sera la prochaine étape pour les équipes et la finance d\'activité, mais vous pouvez déjà commencer avec votre flux personnel.';
+  String get onboardingFooterPro =>
+      'Bicount Pro sera la prochaine étape pour les équipes et la finance d\'activité, mais vous pouvez déjà commencer avec votre flux personnel.';
 
   @override
   String get navHome => 'Accueil';
@@ -303,7 +344,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get shellAddFunds => 'Ajouter des fonds';
 
   @override
-  String get networkOfflineMessage => 'Connexion Internet perdue : vous êtes en mode hors ligne';
+  String get networkOfflineMessage =>
+      'Connexion Internet perdue : vous êtes en mode hors ligne';
 
   @override
   String get networkUnstableMessage => 'Connexion Internet instable';
@@ -339,19 +381,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileSeeAll => 'Tout voir';
 
   @override
-  String get profileFirstFriendHint => 'Créez une transaction avec quelqu\'un pour ajouter votre premier ami. Son profil pourra être lié plus tard lorsqu\'il rejoindra Bicount.';
+  String get profileFirstFriendHint =>
+      'Créez une transaction avec quelqu\'un pour ajouter votre premier ami. Son profil pourra être lié plus tard lorsqu\'il rejoindra Bicount.';
 
   @override
   String get profileLanguageTitle => 'Langue de l\'application';
 
   @override
-  String get profileLanguageDescription => 'Changez de langue à tout moment. Si aucune langue n\'est choisie, Bicount suit votre appareil.';
+  String get profileLanguageDescription =>
+      'Changez de langue à tout moment. Si aucune langue n\'est choisie, Bicount suit votre appareil.';
 
   @override
   String get settingsTitle => 'Paramètres';
 
   @override
-  String get settingsHeaderSubtitle => 'Ajustez Bicount selon votre rythme, vos préférences et la sécurité de votre compte.';
+  String get settingsHeaderSubtitle =>
+      'Ajustez Bicount selon votre rythme, vos préférences et la sécurité de votre compte.';
 
   @override
   String get settingsSectionAccount => 'Compte';
@@ -366,7 +411,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsEditProfileTitle => 'Modifier le profil';
 
   @override
-  String get settingsEditProfileDescription => 'Mettez à jour votre nom visible et votre avatar.';
+  String get settingsEditProfileDescription =>
+      'Mettez à jour votre nom visible et votre avatar.';
 
   @override
   String get settingsEditProfileCta => 'Mettre à jour le profil';
@@ -375,19 +421,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsFriendsTitle => 'Amis et liaisons';
 
   @override
-  String get settingsFriendsDescription => 'Consultez vos amis locaux et les profils déjà liés.';
+  String get settingsFriendsDescription =>
+      'Consultez vos amis locaux et les profils déjà liés.';
 
   @override
   String get settingsThemeTitle => 'Thème';
 
   @override
-  String get settingsThemeDescription => 'Choisissez l\'apparence de Bicount dans toute l\'application.';
+  String get settingsThemeDescription =>
+      'Choisissez l\'apparence de Bicount dans toute l\'application.';
 
   @override
   String get settingsThemeSheetTitle => 'Choisir un thème';
 
   @override
-  String get settingsThemeSheetDescription => 'Continuez à suivre votre appareil ou choisissez une apparence fixe.';
+  String get settingsThemeSheetDescription =>
+      'Continuez à suivre votre appareil ou choisissez une apparence fixe.';
 
   @override
   String get settingsThemeSystem => 'Suivre le système';
@@ -402,37 +451,58 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsLanguageTitle => 'Langue';
 
   @override
-  String get settingsLanguageDescription => 'Changez la langue de l\'application à tout moment.';
+  String get settingsLanguageDescription =>
+      'Changez la langue de l\'application à tout moment.';
 
   @override
-  String get settingsLanguageSheetDescription => 'Si aucune langue n\'est choisie, Bicount suit votre appareil puis bascule en anglais si nécessaire.';
+  String get settingsLanguageSheetDescription =>
+      'Si aucune langue n\'est choisie, Bicount suit votre appareil puis bascule en anglais si nécessaire.';
+
+  @override
+  String get settingsCurrencyTitle => 'Devise de référence';
+
+  @override
+  String get settingsCurrencyDescription =>
+      'Choisissez la devise utilisée pour les soldes, les graphiques et les totaux.';
+
+  @override
+  String get settingsCurrencySheetTitle => 'Choisir une devise de référence';
+
+  @override
+  String get settingsCurrencySheetDescription =>
+      'Cette devise est utilisée pour les totaux globaux et les analyses. Ce changement demande une synchronisation en ligne des taux.';
 
   @override
   String get settingsProTitle => 'Passer à Bicount Pro';
 
   @override
-  String get settignsProMessage => 'Le compte pro arrive bientôt ! On finalise cette fonctionnalité pour vous. Merci d\'attendre un peu.';
+  String get settignsProMessage =>
+      'Le compte pro arrive bientôt ! On finalise cette fonctionnalité pour vous. Merci d\'attendre un peu.';
 
   @override
-  String get settingsProDescription => 'Expliquez-nous comment vous souhaitez utiliser Bicount Pro pour votre équipe ou votre activité.';
+  String get settingsProDescription =>
+      'Expliquez-nous comment vous souhaitez utiliser Bicount Pro pour votre équipe ou votre activité.';
 
   @override
   String get settingsProSheetTitle => 'Demander Bicount Pro';
 
   @override
-  String get settingsProSheetDescription => 'Partagez quelques détails pour que nous puissions vous recontacter quand l\'espace Pro sera prêt.';
+  String get settingsProSheetDescription =>
+      'Partagez quelques détails pour que nous puissions vous recontacter quand l\'espace Pro sera prêt.';
 
   @override
   String get settingsProOrganizationLabel => 'Équipe ou entreprise';
 
   @override
-  String get settingsProOrganizationHint => 'Le nom de votre équipe, studio, entreprise ou activité';
+  String get settingsProOrganizationHint =>
+      'Le nom de votre équipe, studio, entreprise ou activité';
 
   @override
   String get settingsProUseCaseLabel => 'Que souhaitez-vous gérer ?';
 
   @override
-  String get settingsProUseCaseHint => 'Décrivez votre fonctionnement, la taille de votre équipe ou vos besoins financiers';
+  String get settingsProUseCaseHint =>
+      'Décrivez votre fonctionnement, la taille de votre équipe ou vos besoins financiers';
 
   @override
   String get settingsProContactEmailLabel => 'E-mail de contact';
@@ -444,7 +514,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsProfileSheetTitle => 'Modifier votre profil';
 
   @override
-  String get settingsProfileSheetDescription => 'Choisissez l\'identité que les autres voient lorsqu\'ils font des transactions avec vous.';
+  String get settingsProfileSheetDescription =>
+      'Choisissez l\'identité que les autres voient lorsqu\'ils font des transactions avec vous.';
 
   @override
   String get settingsProfileNameLabel => 'Nom affiché';
@@ -456,10 +527,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsProfileAvatarLabel => 'Avatar';
 
   @override
-  String get settingsMemojiConnectionTitle => 'Impossible de charger les avatars';
+  String get settingsMemojiConnectionTitle =>
+      'Impossible de charger les avatars';
 
   @override
-  String get settingsMemojiConnectionDescription => 'Vérifiez votre connexion Internet puis réessayez. Si certains avatars ont déjà été chargés, Bicount les garde disponibles en local.';
+  String get settingsMemojiConnectionDescription =>
+      'Vérifiez votre connexion Internet puis réessayez. Si certains avatars ont déjà été chargés, Bicount les garde disponibles en local.';
 
   @override
   String get settingsProfileSave => 'Enregistrer les changements';
@@ -468,13 +541,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsDeleteTitle => 'Supprimer le compte';
 
   @override
-  String get settingsDeleteDescription => 'Demandez la suppression du compte et dites-nous pourquoi vous partez.';
+  String get settingsDeleteDescription =>
+      'Demandez la suppression du compte et dites-nous pourquoi vous partez.';
 
   @override
   String get settingsDeleteConfirmTitle => 'Supprimer ce compte ?';
 
   @override
-  String get settingsDeleteConfirmDescription => 'Nous vous demanderons d\'abord une courte raison avant d\'envoyer la demande de suppression.';
+  String get settingsDeleteConfirmDescription =>
+      'Nous vous demanderons d\'abord une courte raison avant d\'envoyer la demande de suppression.';
 
   @override
   String get settingsDeleteConfirmCta => 'Continuer';
@@ -483,7 +558,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsDeleteSheetTitle => 'Demande de suppression du compte';
 
   @override
-  String get settingsDeleteSheetDescription => 'Aidez-nous à comprendre pourquoi vous souhaitez quitter Bicount.';
+  String get settingsDeleteSheetDescription =>
+      'Aidez-nous à comprendre pourquoi vous souhaitez quitter Bicount.';
 
   @override
   String get settingsDeleteReasonLabel => 'Raison principale';
@@ -492,16 +568,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsDeleteDetailsLabel => 'Détails supplémentaires';
 
   @override
-  String get settingsDeleteDetailsHint => 'Ajoutez tout détail utile pour nous aider à améliorer le produit ou traiter votre demande';
+  String get settingsDeleteDetailsHint =>
+      'Ajoutez tout détail utile pour nous aider à améliorer le produit ou traiter votre demande';
 
   @override
-  String get settingsDeleteReasonMissingFeatures => 'Fonctionnalités manquantes';
+  String get settingsDeleteReasonMissingFeatures =>
+      'Fonctionnalités manquantes';
 
   @override
   String get settingsDeleteReasonTooExpensive => 'Trop cher';
 
   @override
-  String get settingsDeleteReasonPrivacy => 'Préoccupations liées à la confidentialité';
+  String get settingsDeleteReasonPrivacy =>
+      'Préoccupations liées à la confidentialité';
 
   @override
   String get settingsDeleteReasonTooComplex => 'Trop complexe';
@@ -519,31 +598,38 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsSignOutTitle => 'Se déconnecter';
 
   @override
-  String get settingsSignOutDescription => 'Déconnectez cet appareil de votre compte Bicount.';
+  String get settingsSignOutDescription =>
+      'Déconnectez cet appareil de votre compte Bicount.';
 
   @override
   String get settingsProfileUpdatedSuccess => 'Profil mis à jour avec succès.';
 
   @override
-  String get settingsProRequestedSuccess => 'Votre demande Bicount Pro a bien été envoyée.';
+  String get settingsProRequestedSuccess =>
+      'Votre demande Bicount Pro a bien été envoyée.';
 
   @override
   String get settingsSignedOutSuccess => 'Vous avez bien été déconnecté.';
 
   @override
-  String get settingsDeleteRequestedSuccess => 'Votre demande de suppression de compte a bien été envoyée.';
+  String get settingsDeleteRequestedSuccess =>
+      'Votre demande de suppression de compte a bien été envoyée.';
 
   @override
   String get graphOverview => 'Vue d\'ensemble';
 
   @override
-  String get graphOverviewDescription => 'Suivez vos flux, repérez vos dépenses récurrentes et gardez les signaux utiles à portée de vue.';
+  String get graphOverviewDescription =>
+      'Suivez vos flux, repérez vos dépenses récurrentes et gardez les signaux utiles à portée de vue.';
 
   @override
   String get graphUnableToLoad => 'Impossible de charger les analyses';
 
   @override
   String get graphCashflowTrend => 'Tendance des flux';
+
+  @override
+  String get graphIncomeMix => 'Sources d\'entree d\'argent';
 
   @override
   String get graphExpenseMix => 'Répartition des dépenses';
@@ -573,10 +659,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get graphUpcomingCharges => 'Prélèvements à venir';
 
   @override
-  String get graphNoActiveSubscriptions => 'Aucun abonnement actif planifié pour le moment.';
+  String get graphNoActiveSubscriptions =>
+      'Aucun abonnement actif planifié pour le moment.';
 
   @override
   String get graphPeriodAll => 'Tout';
+
+  @override
+  String get graphBreakdownAddFunds => 'Fonds ajoutes';
+
+  @override
+  String get graphBreakdownReceivedTransfers => 'Transferts recus';
 
   @override
   String get graphBreakdownExpenses => 'Dépenses';
@@ -591,10 +684,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get friendsTitle => 'Amis';
 
   @override
-  String get friendsDirectoryIntro => 'Touchez un ami pour consulter l\'historique des transactions en temps réel ou lier un profil local à un vrai compte.';
+  String get friendsDirectoryIntro =>
+      'Touchez un ami pour consulter l\'historique des transactions en temps réel ou lier un profil local à un vrai compte.';
 
   @override
-  String get friendsDirectoryEmpty => 'Créez une transaction avec quelqu\'un et il apparaîtra ici. Lorsqu\'il rejoindra Bicount, ouvrez sa fiche pour partager et lier le profil.';
+  String get friendsDirectoryEmpty =>
+      'Créez une transaction avec quelqu\'un et il apparaîtra ici. Lorsqu\'il rejoindra Bicount, ouvrez sa fiche pour partager et lier le profil.';
 
   @override
   String get friendsTotal => 'Total';
@@ -617,10 +712,12 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get friendScreenIntro => 'Scannez une invitation, consultez les liaisons en attente et suivez les profils partagés en temps réel.';
+  String get friendScreenIntro =>
+      'Scannez une invitation, consultez les liaisons en attente et suivez les profils partagés en temps réel.';
 
   @override
-  String get friendLinkIntro => 'Partagez ce profil d\'ami local quand la personne a créé un compte Bicount afin que le backend puisse relier les deux profils.';
+  String get friendLinkIntro =>
+      'Partagez ce profil d\'ami local quand la personne a créé un compte Bicount afin que le backend puisse relier les deux profils.';
 
   @override
   String friendShareProfileTitle(Object name) {
@@ -628,7 +725,8 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get friendShareProfileDescription => 'Générez un QR code ou un lien pour ce profil d\'ami précis.';
+  String get friendShareProfileDescription =>
+      'Générez un QR code ou un lien pour ce profil d\'ami précis.';
 
   @override
   String friendShareMessage(Object name, Object url) {
@@ -654,13 +752,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get friendSentInvitations => 'Invitations envoyées';
 
   @override
-  String get friendSentEmpty => 'Vous n\'avez pas encore partagé de profil ami.';
+  String get friendSentEmpty =>
+      'Vous n\'avez pas encore partagé de profil ami.';
 
   @override
   String get friendCurrentFriends => 'Amis actuels';
 
   @override
-  String get friendCurrentEmpty => 'Vos contacts acceptés apparaîtront ici en temps réel.';
+  String get friendCurrentEmpty =>
+      'Vos contacts acceptés apparaîtront ici en temps réel.';
 
   @override
   String get friendInvitePreview => 'Aperçu de l\'invitation';
@@ -719,7 +819,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get friendLocalFriend => 'Ami local';
 
   @override
-  String get friendLinkHint => 'Cet ami est encore local à votre compte. Utilisez le bouton de partage pour le lier lorsque la personne aura créé un profil Bicount.';
+  String get friendLinkHint =>
+      'Cet ami est encore local à votre compte. Utilisez le bouton de partage pour le lier lorsque la personne aura créé un profil Bicount.';
 
   @override
   String get friendGiven => 'Donné';
@@ -734,7 +835,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get friendSharedTransactions => 'Transactions partagées';
 
   @override
-  String get friendTransactionsEmpty => 'Les transactions avec cet ami apparaîtront ici en temps réel.';
+  String get friendTransactionsEmpty =>
+      'Les transactions avec cet ami apparaîtront ici en temps réel.';
 
   @override
   String get friendUnableToReadInvite => 'Impossible de lire cette invitation.';
@@ -800,22 +902,27 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transactionSavedSuccess => 'Transaction enregistrée avec succès.';
 
   @override
-  String get transactionUpdatedSuccess => 'Transaction mise à jour avec succès.';
+  String get transactionUpdatedSuccess =>
+      'Transaction mise à jour avec succès.';
 
   @override
-  String get transactionDuplicateBeneficiary => 'Ce bénéficiaire est déjà dans la répartition.';
+  String get transactionDuplicateBeneficiary =>
+      'Ce bénéficiaire est déjà dans la répartition.';
 
   @override
-  String get transactionEditSingleBeneficiaryOnly => 'Modifiez cette transaction avec un seul bénéficiaire.';
+  String get transactionEditSingleBeneficiaryOnly =>
+      'Modifiez cette transaction avec un seul bénéficiaire.';
 
   @override
-  String get transactionAddAtLeastOneBeneficiary => 'Ajoutez au moins un bénéficiaire.';
+  String get transactionAddAtLeastOneBeneficiary =>
+      'Ajoutez au moins un bénéficiaire.';
 
   @override
   String get transactionEnterValidAmount => 'Saisissez un montant valide.';
 
   @override
-  String get transactionPreviewEnterValidTotal => 'Saisissez un montant total valide pour prévisualiser la répartition.';
+  String get transactionPreviewEnterValidTotal =>
+      'Saisissez un montant total valide pour prévisualiser la répartition.';
 
   @override
   String get transactionSplitMethod => 'Méthode de répartition';
@@ -836,22 +943,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transactionSplitModeCustom => 'Personnalisé';
 
   @override
-  String get transactionSplitHelperEqual => 'Bicount répartit le montant total de façon égale entre tous les bénéficiaires.';
+  String get transactionSplitHelperEqual =>
+      'Bicount répartit le montant total de façon égale entre tous les bénéficiaires.';
 
   @override
-  String get transactionSplitHelperPercentage => 'Définissez un pourcentage pour chaque bénéficiaire. Le total doit atteindre 100 %.';
+  String get transactionSplitHelperPercentage =>
+      'Définissez un pourcentage pour chaque bénéficiaire. Le total doit atteindre 100 %.';
 
   @override
-  String get transactionSplitHelperCustom => 'Définissez le montant exact reçu par chaque bénéficiaire.';
+  String get transactionSplitHelperCustom =>
+      'Définissez le montant exact reçu par chaque bénéficiaire.';
 
   @override
-  String get transactionSetPercentageReceived => 'Définissez le pourcentage reçu.';
+  String get transactionSetPercentageReceived =>
+      'Définissez le pourcentage reçu.';
 
   @override
-  String get transactionSetExactAmountReceived => 'Définissez le montant exact reçu.';
+  String get transactionSetExactAmountReceived =>
+      'Définissez le montant exact reçu.';
 
   @override
-  String get transferEnterTransactionName => 'Saisissez le nom de la transaction';
+  String get transferEnterTransactionName =>
+      'Saisissez le nom de la transaction';
 
   @override
   String get transferPaidBy => 'Payé par';
@@ -869,10 +982,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transferEnterBeneficiaryName => 'Saisissez le nom du bénéficiaire';
 
   @override
-  String get transferBeneficiariesHint => 'Ajoutez autant de bénéficiaires que nécessaire. Utilisez Moi si vous recevez aussi une part.';
+  String get transferBeneficiariesHint =>
+      'Ajoutez autant de bénéficiaires que nécessaire. Utilisez Moi si vous recevez aussi une part.';
 
   @override
-  String get subscriptionIntro => 'Enregistrez un paiement récurrent comme un service de streaming, Internet, une salle de sport, un logiciel ou toute dépense répétitive.';
+  String get subscriptionIntro =>
+      'Enregistrez un paiement récurrent comme un service de streaming, Internet, une salle de sport, un logiciel ou toute dépense répétitive.';
 
   @override
   String get subscriptionName => 'Nom de l\'abonnement';
@@ -887,7 +1002,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get subscriptionStartDate => 'Date de début';
 
   @override
-  String get subscriptionNextPaymentDifferent => 'Le prochain paiement aura lieu à une autre date.';
+  String get subscriptionNextPaymentDifferent =>
+      'Le prochain paiement aura lieu à une autre date.';
 
   @override
   String get subscriptionNextBillingDate => 'Date du prochain paiement';
@@ -896,10 +1012,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get subscriptionSavedSuccess => 'Abonnement enregistré avec succès !';
 
   @override
-  String get subscriptionSearchPrompt => 'Recherchez par nom d\'abonnement ou par note.';
+  String get subscriptionSearchPrompt =>
+      'Recherchez par nom d\'abonnement ou par note.';
 
   @override
-  String get subscriptionSearchEmpty => 'Aucun abonnement ne correspond à votre recherche.';
+  String get subscriptionSearchEmpty =>
+      'Aucun abonnement ne correspond à votre recherche.';
 
   @override
   String get subscriptionNextBilling => 'Prochaine échéance';
@@ -917,22 +1035,27 @@ class AppLocalizationsFr extends AppLocalizations {
   String get subscriptionUnsubscribe => 'Se désabonner';
 
   @override
-  String get subscriptionUnsubscribeSuccess => 'Abonnement résilié avec succès.';
+  String get subscriptionUnsubscribeSuccess =>
+      'Abonnement résilié avec succès.';
 
   @override
-  String get accountFundingIntro => 'Enregistrez un apport ponctuel ou un revenu récurrent comme un salaire pour garder votre solde à jour.';
+  String get accountFundingIntro =>
+      'Enregistrez un apport ponctuel ou un revenu récurrent comme un salaire pour garder votre solde à jour.';
 
   @override
   String get accountFundingEnterSource => 'Saisissez la source des fonds';
 
   @override
-  String get accountFundingSavedSuccess => 'Opération d\'alimentation du compte ajoutée avec succès';
+  String get accountFundingSavedSuccess =>
+      'Opération d\'alimentation du compte ajoutée avec succès';
 
   @override
-  String get accountFundingUpdatedSuccess => 'Alimentation du compte mise à jour avec succès';
+  String get accountFundingUpdatedSuccess =>
+      'Alimentation du compte mise à jour avec succès';
 
   @override
-  String get accountFundingRecurringSavedSuccess => 'Revenu récurrent enregistré avec succès';
+  String get accountFundingRecurringSavedSuccess =>
+      'Revenu récurrent enregistré avec succès';
 
   @override
   String get accountFundingEditTitle => 'Modifier l\'ajout de fonds';
@@ -953,7 +1076,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get accountFundingRepeatLabel => 'Répéter ce revenu automatiquement';
 
   @override
-  String get accountFundingFrequencyHint => 'Choisissez le rythme de répétition';
+  String get accountFundingFrequencyHint =>
+      'Choisissez le rythme de répétition';
 
   @override
   String get accountFundingFirstCreditDate => 'Date du premier versement';
@@ -992,14 +1116,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get frequencyOneTime => 'Ponctuel';
 
   @override
-  String get runtimeSplitPercentagePositive => 'Chaque bénéficiaire doit avoir un pourcentage supérieur à zéro.';
+  String get runtimeSplitPercentagePositive =>
+      'Chaque bénéficiaire doit avoir un pourcentage supérieur à zéro.';
 
   @override
-  String get runtimeSplitPercentagesTotal => 'Les pourcentages doivent totaliser 100 %.';
+  String get runtimeSplitPercentagesTotal =>
+      'Les pourcentages doivent totaliser 100 %.';
 
   @override
-  String get runtimeSplitAmountPositive => 'Chaque bénéficiaire doit avoir un montant supérieur à zéro.';
+  String get runtimeSplitAmountPositive =>
+      'Chaque bénéficiaire doit avoir un montant supérieur à zéro.';
 
   @override
-  String get runtimeSplitMismatch => 'La répartition ne correspond pas au montant total. Vérifiez les montants individuels.';
+  String get runtimeSplitMismatch =>
+      'La répartition ne correspond pas au montant total. Vérifiez les montants individuels.';
 }

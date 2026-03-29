@@ -1,5 +1,6 @@
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
+import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/subscription/data/data_sources/local_datasource/subscription_local_datasource.dart';
 import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/subscription/domain/entities/subscription_entity.dart';
@@ -11,11 +12,14 @@ import '../../../../../brick/repository.dart';
 
 class LocalSubscriptionDataSourceImpl implements SubscriptionLocalDataSource {
   LocalSubscriptionDataSourceImpl({
+    required CurrencyRepositoryImpl currencyRepository,
     OfflineFinanceLocalService? offlineFinanceLocalService,
-  }) : _offlineFinanceLocalService =
+  }) : _currencyRepository = currencyRepository,
+       _offlineFinanceLocalService =
            offlineFinanceLocalService ?? OfflineFinanceLocalService();
 
   final supabaseInstance = Supabase.instance.client;
+  final CurrencyRepositoryImpl _currencyRepository;
   final OfflineFinanceLocalService _offlineFinanceLocalService;
 
   String? get _currentUid => supabaseInstance.auth.currentUser?.id;
@@ -30,12 +34,22 @@ class LocalSubscriptionDataSourceImpl implements SubscriptionLocalDataSource {
     }
 
     try {
+      final quote = await _currencyRepository.resolveCreationQuote(
+        amount: subscription.amount,
+        originalCurrencyCode: subscription.currency,
+      );
       final subscriptionAdd = SubscriptionModel(
         subscriptionId: const Uuid().v4(),
         sid: uid,
         title: subscription.title,
         amount: subscription.amount,
         currency: subscription.currency,
+        referenceCurrencyCode: quote.referenceCurrencyCode,
+        convertedAmount: quote.convertedAmount,
+        amountCdf: quote.amountCdf,
+        rateToCdf: quote.rateToCdf,
+        fxRateDate: quote.fxRateDate,
+        fxSnapshotId: quote.fxSnapshotId,
         frequency: subscription.frequency,
         startDate: subscription.startDate,
         nextBillingDate: subscription.nextBillingDate,

@@ -35,6 +35,8 @@ class Repository extends OfflineFirstWithSupabaseRepository {
   static const _sqliteDatabaseName = 'my_repository.sqlite';
   static const _brickMigrationVersionsTableName = 'MigrationVersions';
   static const _recurringFundingSchemaVersion = 20260325165928;
+  static const _currencyFxSchemaVersion = 20260329123000;
+  static const _userReferenceCurrencySchemaVersion = 20260329194500;
   final Map<_RealtimeSubscriptionKey, _RealtimeBinding>
   _sharedRealtimeBindings = {};
 
@@ -106,11 +108,9 @@ class Repository extends OfflineFirstWithSupabaseRepository {
         'RecurringFundingModel',
       );
 
-      if (
-        isRecurringFundingMigrationRecorded &&
-        hasFundingType &&
-        hasRecurringFundingTable
-      ) {
+      if (isRecurringFundingMigrationRecorded &&
+          hasFundingType &&
+          hasRecurringFundingTable) {
         return;
       }
 
@@ -121,12 +121,93 @@ class Repository extends OfflineFirstWithSupabaseRepository {
         definition: 'INTEGER',
       );
       await _ensureRecurringFundingTable(database);
-      await _recordMigrationVersion(
-        database,
-        _recurringFundingSchemaVersion,
-      );
+      await _recordMigrationVersion(database, _recurringFundingSchemaVersion);
       await database.execute(
         'PRAGMA user_version = $_recurringFundingSchemaVersion',
+      );
+    } finally {
+      await database.close();
+    }
+  }
+
+  Future<void> repairCurrencyFxMigrationStateIfNeeded() async {
+    final databasePath = path.join(
+      await _databaseFactory.getDatabasesPath(),
+      _sqliteDatabaseName,
+    );
+    final database = await _databaseFactory.openDatabase(databasePath);
+
+    try {
+      final tables = [
+        'AccountFundingModel',
+        'SubscriptionModel',
+        'TransactionModel',
+      ];
+      if (!(await _tableExists(database, tables.first))) {
+        return;
+      }
+
+      final latestBrickMigrationVersion = await _lastBrickMigrationVersion(
+        database,
+      );
+      final isMigrationRecorded =
+          latestBrickMigrationVersion >= _currencyFxSchemaVersion;
+      final hasAllColumns = await _hasAllCurrencyFxColumns(database, tables);
+
+      if (isMigrationRecorded && hasAllColumns) {
+        return;
+      }
+
+      for (final table in tables) {
+        await _ensureCurrencyFxColumns(database, table);
+      }
+
+      await _recordMigrationVersion(database, _currencyFxSchemaVersion);
+      await database.execute('PRAGMA user_version = $_currencyFxSchemaVersion');
+    } finally {
+      await database.close();
+    }
+  }
+
+  Future<void> repairUserReferenceCurrencyMigrationStateIfNeeded() async {
+    final databasePath = path.join(
+      await _databaseFactory.getDatabasesPath(),
+      _sqliteDatabaseName,
+    );
+    final database = await _databaseFactory.openDatabase(databasePath);
+
+    try {
+      if (!await _tableExists(database, 'UserModel')) {
+        return;
+      }
+
+      final latestBrickMigrationVersion = await _lastBrickMigrationVersion(
+        database,
+      );
+      final isMigrationRecorded =
+          latestBrickMigrationVersion >= _userReferenceCurrencySchemaVersion;
+      final hasColumn = await _columnExists(
+        database,
+        'UserModel',
+        'reference_currency_code',
+      );
+
+      if (isMigrationRecorded && hasColumn) {
+        return;
+      }
+
+      await _ensureColumn(
+        database,
+        tableName: 'UserModel',
+        columnName: 'reference_currency_code',
+        definition: 'TEXT',
+      );
+      await _recordMigrationVersion(
+        database,
+        _userReferenceCurrencySchemaVersion,
+      );
+      await database.execute(
+        'PRAGMA user_version = $_userReferenceCurrencySchemaVersion',
       );
     } finally {
       await database.close();
@@ -467,6 +548,71 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       'CREATE INDEX IF NOT EXISTS `index_RecurringFundingModel_on_uid` '
       'ON `RecurringFundingModel`(`uid`)',
     );
+  }
+
+  Future<void> _ensureCurrencyFxColumns(
+    Database database,
+    String tableName,
+  ) async {
+    await _ensureColumn(
+      database,
+      tableName: tableName,
+      columnName: 'reference_currency_code',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: tableName,
+      columnName: 'converted_amount',
+      definition: 'REAL',
+    );
+    await _ensureColumn(
+      database,
+      tableName: tableName,
+      columnName: 'amount_cdf',
+      definition: 'REAL',
+    );
+    await _ensureColumn(
+      database,
+      tableName: tableName,
+      columnName: 'rate_to_cdf',
+      definition: 'REAL',
+    );
+    await _ensureColumn(
+      database,
+      tableName: tableName,
+      columnName: 'fx_rate_date',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: tableName,
+      columnName: 'fx_snapshot_id',
+      definition: 'TEXT',
+    );
+  }
+
+  Future<bool> _hasAllCurrencyFxColumns(
+    Database database,
+    List<String> tables,
+  ) async {
+    const columns = [
+      'reference_currency_code',
+      'converted_amount',
+      'amount_cdf',
+      'rate_to_cdf',
+      'fx_rate_date',
+      'fx_snapshot_id',
+    ];
+
+    for (final table in tables) {
+      for (final column in columns) {
+        if (!await _columnExists(database, table, column)) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   Future<void> _ensureMigrationVersionsTable(Database database) async {

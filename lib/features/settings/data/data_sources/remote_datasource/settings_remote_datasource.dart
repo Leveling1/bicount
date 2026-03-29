@@ -30,12 +30,7 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
   }) async {
     final requestUri = Uri.parse(
       '${Secrets.projectUrl}/functions/v1/get-memoji',
-    ).replace(
-      queryParameters: {
-        'page': '$page',
-        'limit': '$limit',
-      },
-    );
+    ).replace(queryParameters: {'page': '$page', 'limit': '$limit'});
 
     final httpClient = HttpClient();
     try {

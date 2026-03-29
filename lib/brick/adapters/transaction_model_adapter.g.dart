@@ -17,6 +17,24 @@ Future<TransactionModel> _$TransactionModelFromSupabase(
     note: data['note'] as String,
     amount: data['amount'] as double,
     currency: data['currency'] as String,
+    referenceCurrencyCode: data['reference_currency_code'] == null
+        ? null
+        : data['reference_currency_code'] as String?,
+    convertedAmount: data['converted_amount'] == null
+        ? null
+        : data['converted_amount'] as double?,
+    amountCdf: data['amount_cdf'] == null
+        ? null
+        : data['amount_cdf'] as double?,
+    rateToCdf: data['rate_to_cdf'] == null
+        ? null
+        : data['rate_to_cdf'] as double?,
+    fxRateDate: data['fx_rate_date'] == null
+        ? null
+        : data['fx_rate_date'] as String?,
+    fxSnapshotId: data['fx_snapshot_id'] == null
+        ? null
+        : data['fx_snapshot_id'] as String?,
     image: data['image'] == null ? null : data['image'] as String?,
     frequency: data['frequency'] == null ? null : data['frequency'] as int?,
     category: data['category'] == null ? null : data['category'] as int?,
@@ -43,6 +61,12 @@ Future<Map<String, dynamic>> _$TransactionModelToSupabase(
     'note': instance.note,
     'amount': instance.amount,
     'currency': instance.currency,
+    'reference_currency_code': instance.referenceCurrencyCode,
+    'converted_amount': instance.convertedAmount,
+    'amount_cdf': instance.amountCdf,
+    'rate_to_cdf': instance.rateToCdf,
+    'fx_rate_date': instance.fxRateDate,
+    'fx_snapshot_id': instance.fxSnapshotId,
     'image': instance.image,
     'frequency': instance.frequency,
     'category': instance.category,
@@ -67,6 +91,24 @@ Future<TransactionModel> _$TransactionModelFromSqlite(
     note: data['note'] as String,
     amount: data['amount'] as double,
     currency: data['currency'] as String,
+    referenceCurrencyCode: data['reference_currency_code'] == null
+        ? null
+        : data['reference_currency_code'] as String?,
+    convertedAmount: data['converted_amount'] == null
+        ? null
+        : data['converted_amount'] as double?,
+    amountCdf: data['amount_cdf'] == null
+        ? null
+        : data['amount_cdf'] as double?,
+    rateToCdf: data['rate_to_cdf'] == null
+        ? null
+        : data['rate_to_cdf'] as double?,
+    fxRateDate: data['fx_rate_date'] == null
+        ? null
+        : data['fx_rate_date'] as String?,
+    fxSnapshotId: data['fx_snapshot_id'] == null
+        ? null
+        : data['fx_snapshot_id'] as String?,
     image: data['image'] == null ? null : data['image'] as String?,
     frequency: data['frequency'] == null ? null : data['frequency'] as int?,
     category: data['category'] == null ? null : data['category'] as int?,
@@ -93,6 +135,12 @@ Future<Map<String, dynamic>> _$TransactionModelToSqlite(
     'note': instance.note,
     'amount': instance.amount,
     'currency': instance.currency,
+    'reference_currency_code': instance.referenceCurrencyCode,
+    'converted_amount': instance.convertedAmount,
+    'amount_cdf': instance.amountCdf,
+    'rate_to_cdf': instance.rateToCdf,
+    'fx_rate_date': instance.fxRateDate,
+    'fx_snapshot_id': instance.fxSnapshotId,
     'image': instance.image,
     'frequency': instance.frequency,
     'category': instance.category,
@@ -151,6 +199,30 @@ class TransactionModelAdapter
     'currency': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'currency',
+    ),
+    'referenceCurrencyCode': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'reference_currency_code',
+    ),
+    'convertedAmount': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'converted_amount',
+    ),
+    'amountCdf': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'amount_cdf',
+    ),
+    'rateToCdf': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'rate_to_cdf',
+    ),
+    'fxRateDate': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'fx_rate_date',
+    ),
+    'fxSnapshotId': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'fx_snapshot_id',
     ),
     'image': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -242,6 +314,42 @@ class TransactionModelAdapter
     'currency': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'currency',
+      iterable: false,
+      type: String,
+    ),
+    'referenceCurrencyCode': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'reference_currency_code',
+      iterable: false,
+      type: String,
+    ),
+    'convertedAmount': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'converted_amount',
+      iterable: false,
+      type: double,
+    ),
+    'amountCdf': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'amount_cdf',
+      iterable: false,
+      type: double,
+    ),
+    'rateToCdf': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'rate_to_cdf',
+      iterable: false,
+      type: double,
+    ),
+    'fxRateDate': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'fx_rate_date',
+      iterable: false,
+      type: String,
+    ),
+    'fxSnapshotId': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'fx_snapshot_id',
       iterable: false,
       type: String,
     ),

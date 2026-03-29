@@ -1,5 +1,6 @@
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/themes/app_colors.dart';
+import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,7 +39,10 @@ class TransactionCard extends StatelessWidget {
         : Icons.more_horiz;
 
     String time = TimeOfDay.fromDateTime(transaction.date).format(context);
-    String currency = transaction.currency.symbol;
+    final amount = NumberFormatUtils.formatCurrency(
+      transaction.amount,
+      currencyCode: transaction.currency,
+    );
 
     return Container(
       decoration: BoxDecoration(color: Colors.transparent),
@@ -96,7 +100,7 @@ class TransactionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '$sign ${transaction.amount} $currency',
+                      '$sign $amount',
                       style: TextStyle(
                         color: color,
                         fontWeight: FontWeight.bold,

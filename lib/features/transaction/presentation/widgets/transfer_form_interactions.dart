@@ -80,7 +80,7 @@ extension _TransferFormInteractions on _TransferFormState {
       _name.clear();
       _date.clear();
       _amount.clear();
-      _currency.text = 'USD';
+      _currency.clear();
       _beneficiary.clear();
       _sender.clear();
       _note.clear();

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/themes/app_dimens.dart';
 
 class MetaPill extends StatelessWidget {
-  const MetaPill({super.key,
+  const MetaPill({
+    super.key,
     required this.icon,
     required this.label,
     required this.value,

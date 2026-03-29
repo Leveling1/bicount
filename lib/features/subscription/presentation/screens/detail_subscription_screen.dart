@@ -63,7 +63,10 @@ class DetailSubscription extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppDimens.paddingSmallMedium),
-            Text(friend.username, style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              friend.username,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: AppDimens.paddingExtraSmall),
             Container(
               constraints: const BoxConstraints(minWidth: 70),
@@ -85,7 +88,9 @@ class DetailSubscription extends StatelessWidget {
                     icon: IconLinks.moneyIcon,
                     title: context.l10n.commonAmount,
                     value: subscription.amount,
-                    color: Theme.of(context).extension<OtherTheme>()!.personnalIncome!,
+                    color: Theme.of(
+                      context,
+                    ).extension<OtherTheme>()!.personnalIncome!,
                   ),
                 ),
                 const SizedBox(width: AppDimens.marginMedium),
@@ -100,7 +105,9 @@ class DetailSubscription extends StatelessWidget {
                         : formatedDateTimeNumericFullYear(
                             DateTime.parse(subscription.endDate!),
                           ),
-                    color: Theme.of(context).extension<OtherTheme>()!.companyIncome!,
+                    color: Theme.of(
+                      context,
+                    ).extension<OtherTheme>()!.companyIncome!,
                   ),
                 ),
               ],
@@ -109,7 +116,9 @@ class DetailSubscription extends StatelessWidget {
               icon: IconLinks.frequency,
               title: context.l10n.commonFrequency,
               content: context.frequencyLabel(subscription.frequency),
-              color: Theme.of(context).extension<OtherTheme>()!.personnalIncome!,
+              color: Theme.of(
+                context,
+              ).extension<OtherTheme>()!.personnalIncome!,
             ),
             LinearInfoCard(
               icon: IconLinks.expense,

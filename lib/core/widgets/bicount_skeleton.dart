@@ -34,11 +34,7 @@ class BicountSkeletonBox extends StatelessWidget {
 }
 
 class BicountSkeletonCircle extends StatelessWidget {
-  const BicountSkeletonCircle({
-    super.key,
-    required this.size,
-    this.margin,
-  });
+  const BicountSkeletonCircle({super.key, required this.size, this.margin});
 
   final double size;
   final EdgeInsetsGeometry? margin;

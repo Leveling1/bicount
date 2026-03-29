@@ -32,12 +32,7 @@ class SettingsMemojiModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'url': url,
-      'size': size,
-      'created_at': createdAt,
-    };
+    return {'name': name, 'url': url, 'size': size, 'created_at': createdAt};
   }
 
   SettingsMemojiEntity toEntity() {

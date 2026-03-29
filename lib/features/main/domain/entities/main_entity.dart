@@ -10,6 +10,8 @@ import '../../../authentification/data/models/user.model.dart';
 class MainEntity extends Equatable {
   final UserModel user;
   final int connectionState;
+  final String referenceCurrencyCode;
+  final double monthlySubscriptionSpend;
   final List<FriendsModel> friends;
   final List<SubscriptionModel> subscriptions;
   final List<TransactionModel> transactions;
@@ -18,6 +20,8 @@ class MainEntity extends Equatable {
   const MainEntity({
     required this.user,
     required this.connectionState,
+    required this.referenceCurrencyCode,
+    required this.monthlySubscriptionSpend,
     required this.friends,
     required this.subscriptions,
     required this.transactions,
@@ -27,6 +31,8 @@ class MainEntity extends Equatable {
   @override
   List<Object?> get props => [
     user,
+    referenceCurrencyCode,
+    monthlySubscriptionSpend,
     friends,
     subscriptions,
     transactions,
@@ -45,8 +51,11 @@ class MainEntity extends Equatable {
         balance: 0,
         companyIncome: 0,
         personalIncome: 0,
+        referenceCurrencyCode: 'CDF',
       ),
       connectionState: Constants.disconnected,
+      referenceCurrencyCode: 'CDF',
+      monthlySubscriptionSpend: 0,
       friends: [],
       subscriptions: [],
       transactions: [],

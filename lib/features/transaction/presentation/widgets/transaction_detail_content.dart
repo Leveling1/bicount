@@ -4,11 +4,11 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
+import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_detail_args.dart';
-import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,6 +50,10 @@ class TransactionDetailContent extends StatelessWidget {
     );
     final sender = _resolvePartyName(data.sender, currentUser);
     final beneficiary = _resolvePartyName(data.beneficiary, currentUser);
+    final amount = NumberFormatUtils.formatCurrency(
+      data.amount,
+      currencyCode: data.currency,
+    );
 
     return Column(
       children: [
@@ -97,7 +101,7 @@ class TransactionDetailContent extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
                 Text(
-                  '$sign ${data.amount} ${data.currency.symbol}',
+                  '$sign $amount',
                   style: TextStyle(
                     color: sign == '+'
                         ? AppColors.primaryColorDark

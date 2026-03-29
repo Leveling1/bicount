@@ -22,7 +22,7 @@ class SettingsSection extends StatelessWidget {
       if (entry.key != children.length - 1) {
         yield Divider(
           color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
-          height: 10
+          height: 10,
         );
       }
     }).toList();

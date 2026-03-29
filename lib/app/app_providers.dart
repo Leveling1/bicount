@@ -1,4 +1,5 @@
 import 'package:app_links/app_links.dart';
+import 'package:bicount/app/app_currency_providers.dart';
 import 'package:bicount/app/app_settings_providers.dart';
 import 'package:bicount/core/localization/data/locale_preferences.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
@@ -12,6 +13,7 @@ import 'package:bicount/features/company/data/repositories/company_repository_im
 import 'package:bicount/features/company/presentation/bloc/company_bloc.dart';
 import 'package:bicount/features/company/presentation/bloc/detail_bloc/detail_bloc.dart';
 import 'package:bicount/features/company/presentation/bloc/list_bloc/list_bloc.dart';
+import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/friend/data/data_sources/local_datasource/local_friend_data_source_impl.dart';
 import 'package:bicount/features/friend/data/data_sources/remote_datasource/supabase_friend_remote_data_source.dart';
 import 'package:bicount/features/friend/data/repositories/friend_repository_impl.dart';
@@ -52,6 +54,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
   return [
     RepositoryProvider<LocalePreferences>(create: (_) => LocalePreferences()),
+    ...buildCurrencyRepositoryProviders(),
     RepositoryProvider<AuthentificationRepositoryImpl>(
       create: (_) => AuthentificationRepositoryImpl(
         LocalAuthentification(),
@@ -60,9 +63,10 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
     ),
     ...buildSettingsRepositoryProviders(),
     RepositoryProvider<MainRepositoryImpl>(
-      create: (_) => MainRepositoryImpl(
+      create: (context) => MainRepositoryImpl(
         LocalMainDataSourceImpl(),
         MainRemoteDataSourceImpl(),
+        currencyRepository: context.read<CurrencyRepositoryImpl>(),
       ),
     ),
     RepositoryProvider<HomeRepositoryImpl>(
@@ -72,22 +76,31 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
       ),
     ),
     RepositoryProvider<TransactionRepositoryImpl>(
-      create: (_) =>
-          TransactionRepositoryImpl(LocalTransactionDataSourceImpl()),
+      create: (context) => TransactionRepositoryImpl(
+        LocalTransactionDataSourceImpl(
+          currencyRepository: context.read<CurrencyRepositoryImpl>(),
+        ),
+      ),
     ),
     RepositoryProvider<SubscriptionRepositoryImpl>(
-      create: (_) =>
-          SubscriptionRepositoryImpl(
-            localDataSource: LocalSubscriptionDataSourceImpl(),
-          ),
+      create: (context) => SubscriptionRepositoryImpl(
+        localDataSource: LocalSubscriptionDataSourceImpl(
+          currencyRepository: context.read<CurrencyRepositoryImpl>(),
+        ),
+      ),
     ),
     RepositoryProvider<AddFundRepositoryImpl>(
-      create: (_) => AddFundRepositoryImpl(
-        localDataSource: LocalAddFundDataSourceImpl(),
+      create: (context) => AddFundRepositoryImpl(
+        localDataSource: LocalAddFundDataSourceImpl(
+          currencyRepository: context.read<CurrencyRepositoryImpl>(),
+        ),
       ),
     ),
     RepositoryProvider<GraphRepositoryImpl>(
-      create: (_) => GraphRepositoryImpl(LocalGraphDataSourceImpl()),
+      create: (context) => GraphRepositoryImpl(
+        LocalGraphDataSourceImpl(),
+        currencyRepository: context.read<CurrencyRepositoryImpl>(),
+      ),
     ),
     RepositoryProvider<FriendRepositoryImpl>(
       create: (_) => FriendRepositoryImpl(
@@ -133,6 +146,7 @@ List<BlocProvider> buildBlocProviders(bool enableCompanySurface) {
       create: (context) =>
           LocaleCubit(context.read<LocalePreferences>())..hydrate(),
     ),
+    ...buildCurrencyBlocProviders(),
     ...buildSettingsBlocProviders(),
     BlocProvider<AuthentificationBloc>(
       create: (context) => AuthentificationBloc(

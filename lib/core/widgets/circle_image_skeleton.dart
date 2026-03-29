@@ -14,9 +14,6 @@ class CircleImageSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BicountSkeletonCircle(
-      size: width * 2,
-      margin: EdgeInsets.zero,
-    );
+    return BicountSkeletonCircle(size: width * 2, margin: EdgeInsets.zero);
   }
 }

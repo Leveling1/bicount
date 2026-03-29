@@ -35,12 +35,14 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
                 title: context.l10n.graphMonthlyLoad,
                 value: NumberFormatUtils.formatCurrency(
                   dashboard.monthlySubscriptionSpend,
+                  currencyCode: dashboard.displayCurrencyCode,
                 ),
               ),
               GraphSubscriptionStat(
                 title: context.l10n.graphNext7Days,
                 value: NumberFormatUtils.formatCurrency(
                   dashboard.dueSoonAmount,
+                  currencyCode: dashboard.displayCurrencyCode,
                 ),
               ),
             ],
@@ -101,7 +103,9 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
                           child: Icon(
                             Icons.subscriptions_outlined,
                             size: 20,
-                            color: Theme.of(context).textTheme.bodyMedium!.color!,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium!.color!,
                           ),
                         ),
                         AppDimens.spacerWidthMediumSmall,
@@ -110,7 +114,9 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                              FormatedText().capitalizeFirstLetter(subscription.title),
+                                FormatedText().capitalizeFirstLetter(
+                                  subscription.title,
+                                ),
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(fontWeight: FontWeight.w600),
                               ),
@@ -124,10 +130,12 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
                         ),
                         AppDimens.spacerWidthMediumSmall,
                         Text(
-                          NumberFormatUtils.formatCurrency(subscription.amount),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
+                          NumberFormatUtils.formatCurrency(
+                            subscription.amount,
+                            currencyCode: subscription.currency,
                           ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                       ],
                     ),

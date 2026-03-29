@@ -11,10 +11,7 @@ DateTime? parseFormDate(String rawDate) {
       DateFormat('dd/MM/yyyy').tryParseStrict(value);
 }
 
-DateTime mergeDateWithReferenceTime(
-  DateTime date, {
-  DateTime? reference,
-}) {
+DateTime mergeDateWithReferenceTime(DateTime date, {DateTime? reference}) {
   final source = reference ?? DateTime.now();
   return DateTime(
     date.year,
@@ -28,10 +25,7 @@ DateTime mergeDateWithReferenceTime(
   );
 }
 
-String resolveFormDateToIso(
-  String rawDate, {
-  DateTime? reference,
-}) {
+String resolveFormDateToIso(String rawDate, {DateTime? reference}) {
   final source = reference ?? DateTime.now();
   final parsedDate = parseFormDate(rawDate);
   if (parsedDate == null) {

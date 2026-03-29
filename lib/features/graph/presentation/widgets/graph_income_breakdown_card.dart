@@ -90,7 +90,10 @@ class GraphIncomeBreakdownCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          NumberFormatUtils.formatCurrency(entry.value.value),
+                          NumberFormatUtils.formatCurrency(
+                            entry.value.value,
+                            currencyCode: dashboard.displayCurrencyCode,
+                          ),
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(fontWeight: FontWeight.w600),
                         ),

@@ -62,7 +62,7 @@ void main() {
 
     expect(
       repository.extractInviteCode(
-        'https://preview.bicount.app/friend/invite?code=abc123',
+        'https://bicount.levelingcoder.com/friend/invite?code=abc123',
       ),
       'abc123',
     );

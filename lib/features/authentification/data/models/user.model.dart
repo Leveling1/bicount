@@ -9,7 +9,6 @@ import '../../../../core/constants/tables_name.dart';
   supabaseConfig: SupabaseSerializable(tableName: TablesName.users),
 )
 class UserModel extends OfflineFirstWithSupabaseModel {
-
   @Supabase(name: 'image')
   @Sqlite()
   final String image;
@@ -42,6 +41,10 @@ class UserModel extends OfflineFirstWithSupabaseModel {
   @Sqlite()
   final double? personalIncome;
 
+  @Supabase(name: 'reference_currency_code')
+  @Sqlite()
+  final String? referenceCurrencyCode;
+
   @Supabase(unique: true, name: 'uid')
   @Sqlite(index: true, unique: true)
   final String uid;
@@ -56,6 +59,7 @@ class UserModel extends OfflineFirstWithSupabaseModel {
     this.expenses,
     this.companyIncome,
     this.personalIncome,
+    this.referenceCurrencyCode,
   }) : uid = uid ?? const Uuid().v4(),
        super();
 }

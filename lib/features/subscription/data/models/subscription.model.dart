@@ -29,6 +29,30 @@ class SubscriptionModel extends OfflineFirstWithSupabaseModel {
   @Supabase(name: 'currency')
   final String currency;
 
+  @Sqlite(name: 'reference_currency_code')
+  @Supabase(name: 'reference_currency_code')
+  final String? referenceCurrencyCode;
+
+  @Sqlite(name: 'converted_amount')
+  @Supabase(name: 'converted_amount')
+  final double? convertedAmount;
+
+  @Sqlite(name: 'amount_cdf')
+  @Supabase(name: 'amount_cdf')
+  final double? amountCdf;
+
+  @Sqlite(name: 'rate_to_cdf')
+  @Supabase(name: 'rate_to_cdf')
+  final double? rateToCdf;
+
+  @Sqlite(name: 'fx_rate_date')
+  @Supabase(name: 'fx_rate_date')
+  final String? fxRateDate;
+
+  @Sqlite(name: 'fx_snapshot_id')
+  @Supabase(name: 'fx_snapshot_id')
+  final String? fxSnapshotId;
+
   @Sqlite(name: 'frequency')
   @Supabase(name: 'frequency')
   final int frequency;
@@ -67,6 +91,12 @@ class SubscriptionModel extends OfflineFirstWithSupabaseModel {
     required this.title,
     required this.amount,
     required this.currency,
+    this.referenceCurrencyCode,
+    this.convertedAmount,
+    this.amountCdf,
+    this.rateToCdf,
+    this.fxRateDate,
+    this.fxSnapshotId,
     required this.frequency,
     required this.startDate,
     required this.nextBillingDate,

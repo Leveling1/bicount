@@ -1,5 +1,6 @@
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/authentification/data/data_sources/local_datasource/authentification_local_datasource.dart';
 import 'package:brick_core/query.dart';
 import 'package:dartz/dartz.dart';
@@ -34,6 +35,8 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
         balance: 0.0,
         companyIncome: 0.0,
         personalIncome: 0.0,
+        referenceCurrencyCode:
+            CurrencyConfigEntity.defaultReferenceCurrencyCode,
       );
       await Repository().upsert<UserModel>(user);
       return const Right(null);

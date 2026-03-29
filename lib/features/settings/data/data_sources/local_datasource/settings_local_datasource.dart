@@ -81,6 +81,7 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
           balance: currentUser.balance,
           companyIncome: currentUser.companyIncome,
           personalIncome: currentUser.personalIncome,
+          referenceCurrencyCode: currentUser.referenceCurrencyCode,
         ),
       );
     } catch (_) {

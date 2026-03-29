@@ -1,9 +1,10 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
+import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/services/main_finance_projection_service.dart';
-import 'package:bicount/features/profile/data/models/account_funding.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -66,6 +67,7 @@ void main() {
         ),
       ],
       connectionState: Constants.connected,
+      currencyConfig: CurrencyConfigEntity.fallback(),
     );
 
     expect(result.user.balance, 0);
@@ -124,6 +126,7 @@ void main() {
       ],
       accountFundings: const [],
       connectionState: Constants.connected,
+      currencyConfig: CurrencyConfigEntity.fallback(),
     );
 
     final friend = result.friends.single;

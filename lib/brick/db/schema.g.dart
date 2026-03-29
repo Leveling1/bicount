@@ -1,6 +1,8 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
+part '20260329194500.migration.dart';
+part '20260329123000.migration.dart';
 part '20260325165928.migration.dart';
 part '20251130001532.migration.dart';
 part '20251201154524.migration.dart';
@@ -12,6 +14,8 @@ part '20260322103000.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
+  const Migration20260329194500(),
+  const Migration20260329123000(),
   const Migration20260325165928(),
   const Migration20251130001532(),
   const Migration20251201154524(),
@@ -24,7 +28,7 @@ final migrations = <Migration>{
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  20260325165928,
+  20260329194500,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -64,6 +68,7 @@ final schema = Schema(
         SchemaColumn('balance', Column.Double),
         SchemaColumn('company_income', Column.Double),
         SchemaColumn('personal_income', Column.Double),
+        SchemaColumn('reference_currency_code', Column.varchar),
         SchemaColumn('uid', Column.varchar, unique: true),
       },
       indices: <SchemaIndex>{
@@ -177,6 +182,12 @@ final schema = Schema(
         SchemaColumn('sid', Column.varchar),
         SchemaColumn('amount', Column.Double),
         SchemaColumn('currency', Column.varchar),
+        SchemaColumn('reference_currency_code', Column.varchar),
+        SchemaColumn('converted_amount', Column.Double),
+        SchemaColumn('amount_cdf', Column.Double),
+        SchemaColumn('rate_to_cdf', Column.Double),
+        SchemaColumn('fx_rate_date', Column.varchar),
+        SchemaColumn('fx_snapshot_id', Column.varchar),
         SchemaColumn('category', Column.integer),
         SchemaColumn('funding_type', Column.integer),
         SchemaColumn('source', Column.varchar),
@@ -258,6 +269,12 @@ final schema = Schema(
         SchemaColumn('title', Column.varchar),
         SchemaColumn('amount', Column.Double),
         SchemaColumn('currency', Column.varchar),
+        SchemaColumn('reference_currency_code', Column.varchar),
+        SchemaColumn('converted_amount', Column.Double),
+        SchemaColumn('amount_cdf', Column.Double),
+        SchemaColumn('rate_to_cdf', Column.Double),
+        SchemaColumn('fx_rate_date', Column.varchar),
+        SchemaColumn('fx_snapshot_id', Column.varchar),
         SchemaColumn('frequency', Column.integer),
         SchemaColumn('start_date', Column.varchar),
         SchemaColumn('next_billing_date', Column.varchar),
@@ -291,6 +308,12 @@ final schema = Schema(
         SchemaColumn('note', Column.varchar),
         SchemaColumn('amount', Column.Double),
         SchemaColumn('currency', Column.varchar),
+        SchemaColumn('reference_currency_code', Column.varchar),
+        SchemaColumn('converted_amount', Column.Double),
+        SchemaColumn('amount_cdf', Column.Double),
+        SchemaColumn('rate_to_cdf', Column.Double),
+        SchemaColumn('fx_rate_date', Column.varchar),
+        SchemaColumn('fx_snapshot_id', Column.varchar),
         SchemaColumn('image', Column.varchar),
         SchemaColumn('frequency', Column.integer),
         SchemaColumn('category', Column.integer),

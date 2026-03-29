@@ -26,6 +26,30 @@ class AccountFundingModel extends OfflineFirstWithSupabaseModel {
   @Sqlite()
   final String currency;
 
+  @Supabase(name: 'reference_currency_code')
+  @Sqlite()
+  final String? referenceCurrencyCode;
+
+  @Supabase(name: 'converted_amount')
+  @Sqlite()
+  final double? convertedAmount;
+
+  @Supabase(name: 'amount_cdf')
+  @Sqlite()
+  final double? amountCdf;
+
+  @Supabase(name: 'rate_to_cdf')
+  @Sqlite()
+  final double? rateToCdf;
+
+  @Supabase(name: 'fx_rate_date')
+  @Sqlite()
+  final String? fxRateDate;
+
+  @Supabase(name: 'fx_snapshot_id')
+  @Sqlite()
+  final String? fxSnapshotId;
+
   @Supabase(name: 'category')
   @Sqlite()
   final int category;
@@ -55,6 +79,12 @@ class AccountFundingModel extends OfflineFirstWithSupabaseModel {
     required this.sid,
     required this.amount,
     required this.currency,
+    this.referenceCurrencyCode,
+    this.convertedAmount,
+    this.amountCdf,
+    this.rateToCdf,
+    this.fxRateDate,
+    this.fxSnapshotId,
     required this.category,
     this.fundingType = AccountFundingType.other,
     required this.source,

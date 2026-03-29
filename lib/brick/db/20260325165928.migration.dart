@@ -17,7 +17,11 @@ const List<MigrationCommand> _migration_20260325165928_up = [
   InsertColumn('note', Column.varchar, onTable: 'RecurringFundingModel'),
   InsertColumn('amount', Column.Double, onTable: 'RecurringFundingModel'),
   InsertColumn('currency', Column.varchar, onTable: 'RecurringFundingModel'),
-  InsertColumn('funding_type', Column.integer, onTable: 'RecurringFundingModel'),
+  InsertColumn(
+    'funding_type',
+    Column.integer,
+    onTable: 'RecurringFundingModel',
+  ),
   InsertColumn('frequency', Column.integer, onTable: 'RecurringFundingModel'),
   InsertColumn('start_date', Column.varchar, onTable: 'RecurringFundingModel'),
   InsertColumn(

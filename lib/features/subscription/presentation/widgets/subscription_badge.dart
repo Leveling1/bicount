@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../../core/themes/app_dimens.dart';
 
 class SubscriptionBadge extends StatelessWidget {
-  const SubscriptionBadge({super.key, required this.label, required this.color});
+  const SubscriptionBadge({
+    super.key,
+    required this.label,
+    required this.color,
+  });
   final String label;
   final Color color;
   @override

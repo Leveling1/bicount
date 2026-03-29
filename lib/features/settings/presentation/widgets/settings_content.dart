@@ -2,6 +2,7 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
+import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/friend/presentation/screens/friends_directory_screen.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
@@ -108,6 +109,20 @@ class SettingsContent extends StatelessWidget {
                           ),
                           onTap: () =>
                               showLanguageSettingsSheet(context, localeState),
+                        );
+                      },
+                    ),
+                    BlocBuilder<CurrencyCubit, CurrencyState>(
+                      builder: (context, currencyState) {
+                        return SettingsActionTile(
+                          icon: Icons.currency_exchange_rounded,
+                          title: context.l10n.settingsCurrencyTitle,
+                          subtitle: context.l10n.settingsCurrencyDescription,
+                          value:
+                              '${currencyState.config.referenceCurrencyCode} · '
+                              '${currencyState.config.currencyFor(currencyState.config.referenceCurrencyCode).symbol}',
+                          onTap: () =>
+                              showCurrencySettingsSheet(context, currencyState),
                         );
                       },
                     ),

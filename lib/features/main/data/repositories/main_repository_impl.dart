@@ -1,6 +1,8 @@
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/core/services/recurring_funding_local_service.dart';
+import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
+import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/data_sources/local_datasource/main_local_datasource.dart';
 import 'package:bicount/features/main/data/data_sources/remote_datasource/main_remote_datasource.dart';
@@ -18,13 +20,16 @@ class MainRepositoryImpl implements MainRepository {
   MainRepositoryImpl(
     this.localDataSource,
     this.remoteDataSource, {
+    required this.currencyRepository,
     this.projectionService = const MainFinanceProjectionService(),
     RecurringFundingLocalService? recurringFundingLocalService,
   }) : recurringFundingLocalService =
-           recurringFundingLocalService ?? RecurringFundingLocalService();
+           recurringFundingLocalService ??
+           RecurringFundingLocalService(currencyRepository: currencyRepository);
 
   final MainLocalDataSource localDataSource;
   final MainRemoteDataSource remoteDataSource;
+  final CurrencyRepositoryImpl currencyRepository;
   final MainFinanceProjectionService projectionService;
   final RecurringFundingLocalService recurringFundingLocalService;
 
@@ -47,14 +52,16 @@ class MainRepositoryImpl implements MainRepository {
       final transactionsStream = localDataSource.getTransaction();
       final accountFundingsStream = localDataSource.getAccountFundings();
       final connectionStateStream = remoteDataSource.connectionState();
+      final currencyConfigStream = currencyRepository.watchConfig();
 
-      return Rx.combineLatest6<
+      return Rx.combineLatest7<
             UserModel,
             List<FriendsModel>,
             List<SubscriptionModel>,
             List<TransactionModel>,
             List<AccountFundingModel>,
             int,
+            CurrencyConfigEntity,
             MainEntity
           >(
             userStream,
@@ -63,6 +70,7 @@ class MainRepositoryImpl implements MainRepository {
             transactionsStream,
             accountFundingsStream,
             connectionStateStream,
+            currencyConfigStream,
             (
               user,
               friends,
@@ -70,6 +78,7 @@ class MainRepositoryImpl implements MainRepository {
               transactions,
               accountFundings,
               connectionState,
+              currencyConfig,
             ) {
               return projectionService.project(
                 user: user,
@@ -78,6 +87,7 @@ class MainRepositoryImpl implements MainRepository {
                 transactions: transactions,
                 accountFundings: accountFundings,
                 connectionState: connectionState,
+                currencyConfig: currencyConfig,
               );
             },
           )

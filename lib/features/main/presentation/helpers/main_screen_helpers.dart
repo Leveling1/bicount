@@ -26,6 +26,8 @@ MainEntity prepareMainScreenData(MainEntity data) {
   return MainEntity(
     user: data.user,
     connectionState: data.connectionState,
+    referenceCurrencyCode: data.referenceCurrencyCode,
+    monthlySubscriptionSpend: data.monthlySubscriptionSpend,
     friends: data.friends,
     subscriptions: data.subscriptions,
     transactions: sortedTransactions,

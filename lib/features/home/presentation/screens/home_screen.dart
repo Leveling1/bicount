@@ -26,10 +26,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.sizeOf(context).height;
-    final recurringSpend = data.subscriptions.fold<double>(
-      0,
-      (sum, subscription) => sum + subscription.amount,
-    );
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeError) {
@@ -65,6 +61,7 @@ class HomeScreen extends StatelessWidget {
                         Text(
                           NumberFormatUtils.formatCurrency(
                             data.user.balance ?? 0.0,
+                            currencyCode: data.referenceCurrencyCode,
                           ),
                           style: (data.user.balance ?? 0.0) >= 0
                               ? Theme.of(context).textTheme.titleLarge!
@@ -117,7 +114,7 @@ class HomeScreen extends StatelessWidget {
                           child: CardTypeRevenue(
                             onTap: () => onCardTap?.call(1),
                             label: context.l10n.profileRecurring,
-                            amount: recurringSpend,
+                            amount: data.monthlySubscriptionSpend,
                             icon: SvgPicture.asset(
                               IconLinks.graph,
                               width: AppDimens.iconSizeSmall,

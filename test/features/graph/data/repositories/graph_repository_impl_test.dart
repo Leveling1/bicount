@@ -1,8 +1,13 @@
+import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
+import 'package:bicount/features/currency/data/data_sources/local_datasource/currency_local_datasource.dart';
+import 'package:bicount/features/currency/data/data_sources/remote_datasource/currency_remote_datasource.dart';
+import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
+import 'package:bicount/features/currency/domain/entities/app_currency_entity.dart';
+import 'package:bicount/features/currency/domain/entities/exchange_rate_snapshot_entity.dart';
 import 'package:bicount/features/graph/data/data_sources/local_datasource/graph_local_datasource.dart';
 import 'package:bicount/features/graph/data/repositories/graph_repository_impl.dart';
 import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
-import 'package:bicount/features/profile/data/models/account_funding.model.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
+import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -33,9 +38,58 @@ class _FakeGraphLocalDataSource implements GraphLocalDataSource {
   }
 }
 
+class _FakeCurrencyLocalDataSource implements CurrencyLocalDataSource {
+  @override
+  Future<void> cacheCurrencies(List<AppCurrencyEntity> currencies) async {}
+
+  @override
+  Future<void> cacheSnapshots(Iterable<ExchangeRateSnapshotEntity> snapshots) async {}
+
+  @override
+  Future<List<AppCurrencyEntity>> readCachedCurrencies() async => const [];
+
+  @override
+  Future<Map<String, ExchangeRateSnapshotEntity>> readCachedSnapshots() async {
+    return const {};
+  }
+
+  @override
+  Future<String?> readReferenceCurrencyCode() async => null;
+
+  @override
+  Future<void> saveReferenceCurrencyCode(String code) async {}
+}
+
+class _FakeCurrencyRemoteDataSource implements CurrencyRemoteDataSource {
+  @override
+  Future<List<AppCurrencyEntity>> fetchCurrencies() async => const [];
+
+  @override
+  Future<List<ExchangeRateSnapshotEntity>> fetchLatestSnapshotsForCodes(
+    List<String> codes,
+  ) async {
+    return const [];
+  }
+
+  @override
+  Future<List<ExchangeRateSnapshotEntity>> fetchSnapshotsForDates({
+    required List<String> currencyCodes,
+    required List<String> rateDates,
+  }) async {
+    return const [];
+  }
+
+  @override
+  Stream<List<AppCurrencyEntity>> watchCurrencies() => const Stream.empty();
+}
+
 void main() {
   test('graph repository aggregates cashflow and subscriptions', () async {
     final now = DateTime.now();
+    final currencyRepository = CurrencyRepositoryImpl(
+      localDataSource: _FakeCurrencyLocalDataSource(),
+      remoteDataSource: _FakeCurrencyRemoteDataSource(),
+    );
     final repository = GraphRepositoryImpl(
       _FakeGraphLocalDataSource(
         transactions: [
@@ -105,6 +159,7 @@ void main() {
           ),
         ],
       ),
+      currencyRepository: currencyRepository,
     );
 
     final dashboard = await repository.watchDashboard(GraphPeriod.month30).first;

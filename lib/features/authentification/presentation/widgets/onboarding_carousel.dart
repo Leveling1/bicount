@@ -79,9 +79,7 @@ class OnboardingCarousel extends StatelessWidget {
                 color: isActive
                     ? (isDark ? Colors.white : AppColors.tertiaryColorBasic)
                     : Colors.white.withValues(alpha: isDark ? 0.32 : 0.52),
-                borderRadius: BorderRadius.circular(
-                  AppDimens.borderRadiusFull,
-                ),
+                borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
               ),
             );
           }),

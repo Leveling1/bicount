@@ -6,7 +6,9 @@ import 'package:uuid/uuid.dart';
 import '../../../../core/constants/tables_name.dart';
 
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(tableName: TablesName.companyWithUserLink),
+  supabaseConfig: SupabaseSerializable(
+    tableName: TablesName.companyWithUserLink,
+  ),
 )
 class CompanyWithUserLinkModel extends OfflineFirstWithSupabaseModel {
   @Sqlite(name: 'company_id')

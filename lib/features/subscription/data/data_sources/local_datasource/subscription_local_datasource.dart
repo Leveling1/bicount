@@ -5,6 +5,8 @@ import 'package:dartz/dartz.dart';
 import '../../../../../core/errors/failure.dart';
 
 abstract class SubscriptionLocalDataSource {
-  Future<Either<Failure, void>> addSubscription(SubscriptionEntity subscription);
+  Future<Either<Failure, void>> addSubscription(
+    SubscriptionEntity subscription,
+  );
   Future<Either<Failure, void>> unsubscribe(SubscriptionModel subscription);
 }

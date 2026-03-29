@@ -143,29 +143,25 @@ class ProfileScreen extends StatelessWidget {
                 )
               else
                 Column(
-                  children: visibleFriends
-                      .take(3)
-                      .toList()
-                      .asMap()
-                      .entries
-                      .map((entry) {
-                        final index = entry.key;
-                        final friend = entry.value;
-                        return BicountReveal(
-                          delay: Duration(milliseconds: 240 + (index * 45)),
-                          child: FriendCard(
-                            friend: friend,
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => DetailFriend(friend: friend),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      })
-                      .toList(),
+                  children: visibleFriends.take(3).toList().asMap().entries.map(
+                    (entry) {
+                      final index = entry.key;
+                      final friend = entry.value;
+                      return BicountReveal(
+                        delay: Duration(milliseconds: 240 + (index * 45)),
+                        child: FriendCard(
+                          friend: friend,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => DetailFriend(friend: friend),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ).toList(),
                 ),
             ],
           ),

@@ -72,5 +72,4 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       emit(TransactionError(UnknownFailure()));
     }
   }
-
 }
