@@ -3,8 +3,10 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/constants/tables_name.dart';
+
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(tableName: 'companies'),
+  supabaseConfig: SupabaseSerializable(tableName: TablesName.companies),
 )
 class CompanyModel extends OfflineFirstWithSupabaseModel {
   final String name;
@@ -34,6 +36,6 @@ class CompanyModel extends OfflineFirstWithSupabaseModel {
     this.equipment,
     this.service,
     required this.createdAt,
-  })  : cid = cid ?? const Uuid().v4(),
-        super();
+  }) : cid = cid ?? const Uuid().v4(),
+       super();
 }

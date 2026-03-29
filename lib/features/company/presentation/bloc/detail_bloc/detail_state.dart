@@ -10,6 +10,7 @@ class DetailLoaded extends DetailState {
   final CompanyEntity company;
   DetailLoaded(this.company);
 }
+
 class DetailError extends DetailState {
   final Failure failure;
   DetailError(this.failure);

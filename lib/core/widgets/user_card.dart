@@ -1,8 +1,8 @@
 import 'package:bicount/features/group/domain/entities/member_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 import '../themes/app_dimens.dart';
+import 'app_avatar.dart';
 
 class UserCard extends StatelessWidget {
   final MemberModel user;
@@ -14,7 +14,7 @@ class UserCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge)
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
       ),
       child: Material(
         color: Colors.transparent,
@@ -28,20 +28,13 @@ class UserCard extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Center(
               child: Column(
-                mainAxisSize: MainAxisSize.min,      // pour éviter de prendre tout l’espace vertical
+                mainAxisSize: MainAxisSize
+                    .min, // pour éviter de prendre tout l’espace vertical
                 mainAxisAlignment: MainAxisAlignment.center, // centre vertical
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Avatar
-                  CircleAvatar(
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    radius: 30,
-                    child: SizedBox(
-                      width: 60.w,
-                      height: 60.h,
-                      child: Image.asset(user.image!),
-                    ),
-                  ),
+                  AppAvatar(image: user.image, radius: 30),
                   const SizedBox(height: 12),
 
                   // Name and date
@@ -72,11 +65,10 @@ class UserCardSkeleton extends StatelessWidget {
     return SkeletonItem(
       child: Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge)
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
         ),
       ),
     );
   }
 }
-

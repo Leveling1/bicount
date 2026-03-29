@@ -1,152 +1,171 @@
-import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/icon_links.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/other_theme.dart';
-import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/core/widgets/bicount_reveal.dart';
+import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
+import 'package:bicount/features/friend/presentation/screens/detail_friend.dart';
+import 'package:bicount/features/friend/presentation/screens/friends_directory_screen.dart';
+import 'package:bicount/features/friend/presentation/widgets/friend_card.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
-import 'package:bicount/features/transaction/presentation/screens/detail_subcription.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../../../core/themes/app_dimens.dart';
-import '../../../../core/widgets/custom_bottom_sheet.dart';
-import '../widgets/detail_friend.dart';
-import '../bloc/profile_bloc.dart';
-import '../widgets/friend_card.dart';
+import '../../../../core/widgets/details_card.dart';
 import '../widgets/profile_card.dart';
 
 class ProfileScreen extends StatelessWidget {
-  final MainEntity data;
   const ProfileScreen({super.key, required this.data});
+
+  final MainEntity data;
+  static const _friendViewService = FriendViewService();
 
   @override
   Widget build(BuildContext context) {
-    List<FriendsModel> friends = data.friends;
-    friends.sort(
-      (a, b) => ((b.give ?? 0) - (b.receive ?? 0)).compareTo(
-        (a.give ?? 0) - (a.receive ?? 0),
-      ),
+    final recurringSpend = data.subscriptions.fold<double>(
+      0,
+      (sum, subscription) => sum + subscription.amount,
     );
+    final visibleFriends = _friendViewService.visibleFriends(
+      data.friends,
+      currentUserUid: data.user.uid,
+    );
+
     return Scaffold(
-      body: BlocBuilder<ProfileBloc, ProfileState>(
-        builder: (context, state) {
-          return SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimens.paddingMedium,
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimens.paddingMedium,
+          ),
+          child: Column(
+            children: [
+              BicountReveal(
+                delay: const Duration(milliseconds: 40),
+                child: ProfileCard(
+                  image: data.user.image,
+                  name: data.user.username,
+                  email: data.user.email,
+                  balance: data.user.balance,
+                  onTap: () => context.push('/settings'),
+                ),
               ),
-              child: Column(
-                children: [
-                  ProfileCard(
-                    image: data.user.image,
-                    name: data.user.username,
-                    email: data.user.email,
-                    balance: data.user.balance,
-                    onTap: () {},
+              BicountReveal(
+                delay: const Duration(milliseconds: 100),
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: InfoCardAmount(
+                        icon: IconLinks.income,
+                        title: context.l10n.profileIncome,
+                        value: data.user.incomes!,
+                        color: Theme.of(
+                          context,
+                        ).extension<OtherTheme>()!.income!,
+                      ),
+                    ),
+                    const SizedBox(width: AppDimens.marginMedium),
+                    Flexible(
+                      child: InfoCardAmount(
+                        icon: IconLinks.expense,
+                        title: context.l10n.profileExpense,
+                        value: data.user.expenses!,
+                        color: Theme.of(
+                          context,
+                        ).extension<OtherTheme>()!.expense!,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              BicountReveal(
+                delay: const Duration(milliseconds: 150),
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: InfoCardAmount(
+                        icon: IconLinks.user,
+                        title: context.l10n.profilePersonal,
+                        value: data.user.personalIncome!,
+                        color: Theme.of(
+                          context,
+                        ).extension<OtherTheme>()!.personnalIncome!,
+                      ),
+                    ),
+                    const SizedBox(width: AppDimens.marginMedium),
+                    Flexible(
+                      child: InfoCardAmount(
+                        icon: IconLinks.graph,
+                        title: context.l10n.profileRecurring,
+                        value: recurringSpend,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppDimens.marginMedium),
+              BicountReveal(
+                delay: const Duration(milliseconds: 190),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.l10n.profileFriends,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const FriendsDirectoryScreen(),
+                          ),
+                        );
+                      },
+                      style: Theme.of(context).textButtonTheme.style,
+                      child: Text(
+                        context.l10n.profileSeeAll,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (visibleFriends.isEmpty)
+                BicountReveal(
+                  delay: const Duration(milliseconds: 240),
+                  child: DetailsCard(
+                    child: Text(
+                      context.l10n.profileFirstFriendHint,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                   ),
-                  //const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: InfoCardAmount(
-                          icon: IconLinks.income,
-                          title: 'Income',
-                          value: data.user.incomes!,
-                          color: Theme.of(
-                            context,
-                          ).extension<OtherTheme>()!.income!,
+                )
+              else
+                Column(
+                  children: visibleFriends.take(3).toList().asMap().entries.map(
+                    (entry) {
+                      final index = entry.key;
+                      final friend = entry.value;
+                      return BicountReveal(
+                        delay: Duration(milliseconds: 240 + (index * 45)),
+                        child: FriendCard(
+                          friend: friend,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => DetailFriend(friend: friend),
+                              ),
+                            );
+                          },
                         ),
-                      ),
-                      const SizedBox(width: AppDimens.marginMedium),
-                      Flexible(
-                        flex: 1,
-                        child: InfoCardAmount(
-                          icon: IconLinks.expense,
-                          title: 'Expense',
-                          value: data.user.expenses!,
-                          color: Theme.of(
-                            context,
-                          ).extension<OtherTheme>()!.expense!,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: InfoCardAmount(
-                          icon: IconLinks.user,
-                          title: 'Personal',
-                          value: data.user.personalIncome!,
-                          color: Theme.of(
-                            context,
-                          ).extension<OtherTheme>()!.personnalIncome!,
-                        ),
-                      ),
-                      const SizedBox(width: AppDimens.marginMedium),
-                      Flexible(
-                        flex: 1,
-                        child: InfoCardAmount(
-                          icon: IconLinks.company,
-                          title: 'Company',
-                          value: data.user.companyIncome!,
-                          color: Theme.of(
-                            context,
-                          ).extension<OtherTheme>()!.companyIncome!,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppDimens.marginMedium),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Friends",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        style: Theme.of(context).textButtonTheme.style,
-                        child: Text(
-                          "show more",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: friends.take(3).map((friend) {
-                      if (friend.uid == data.user.uid) {
-                        return const SizedBox.shrink();
-                      }
-                      return FriendCard(
-                        friend: friend,
-                        onTap: () {
-                          showCustomBottomSheet(
-                            context: context,
-                            minHeight: 0.70,
-                            color: null,
-                            child:
-                                friend.relationType == FriendConst.subscription
-                                ? DetailSubscription(
-                                    friend: friend,
-                                    subscription: data.subscriptions.firstWhere(
-                                      (sub) => sub.subscriptionId == friend.sid,
-                                    ),
-                                  )
-                                : DetailFriend(friend: friend),
-                          );
-                        },
                       );
-                    }).toList(),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+                    },
+                  ).toList(),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -266,59 +266,6 @@ class CRUD {
     }
   }
 
-  String _getMimeType(String fileName) {
-    const _mimeTypeMap = {
-      // Documents
-      'pdf': 'application/pdf',
-      'doc': 'application/msword',
-      'docx':
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'xls': 'application/vnd.ms-excel',
-      'xlsx':
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'ppt': 'application/vnd.ms-powerpoint',
-      'pptx':
-          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      'txt': 'text/plain',
-      'rtf': 'application/rtf',
-      'csv': 'text/csv',
-      'odt': 'application/vnd.oasis.opendocument.text',
-
-      // Images
-      'jpg': 'image/jpeg',
-      'jpeg': 'image/jpeg',
-      'png': 'image/png',
-      'gif': 'image/gif',
-      'svg': 'image/svg+xml',
-      'webp': 'image/webp',
-      'bmp': 'image/bmp',
-
-      // Audio/Vidéo
-      'mp3': 'audio/mpeg',
-      'wav': 'audio/wav',
-      'mp4': 'video/mp4',
-      'mov': 'video/quicktime',
-      'avi': 'video/x-msvideo',
-      'mkv': 'video/x-matroska',
-
-      // Archives
-      'zip': 'application/zip',
-      'rar': 'application/x-rar-compressed',
-      'tar': 'application/x-tar',
-      'gz': 'application/gzip',
-      '7z': 'application/x-7z-compressed',
-
-      // Autres
-      'html': 'text/html',
-      'css': 'text/css',
-      'js': 'text/javascript',
-      'json': 'application/json',
-      'xml': 'application/xml',
-    };
-    final extension = fileName.split('.').last.toLowerCase();
-    return _mimeTypeMap[extension] ?? 'application/octet-stream';
-  }
-
   Future<String?> uploadFileMergeFile(
     String bucket,
     String id_document,

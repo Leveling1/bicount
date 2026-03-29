@@ -16,7 +16,8 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
   late String uid = supabaseInstance.auth.currentUser!.id;
 
   /// For the all company
-  final BehaviorSubject<List<CompanyModel>> _company = BehaviorSubject<List<CompanyModel>>.seeded([]);
+  final BehaviorSubject<List<CompanyModel>> _company =
+      BehaviorSubject<List<CompanyModel>>.seeded([]);
   StreamSubscription<List<CompanyModel>>? _realtimeSubscription;
   bool _isInitialized = false;
 
@@ -31,16 +32,20 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
 
   void _initializeRealtimeSubscription() {
     try {
-      _realtimeSubscription = Repository().subscribeToRealtime<CompanyModel>().listen(
+      _realtimeSubscription = Repository()
+          .subscribeToRealtime<CompanyModel>()
+          .listen(
             (members) {
-          _company.add(members);
-        },
-        onError: (error) {
-          _company.addError(
-            MessageFailure(message: "Une erreur s'est produite : ${error.toString()}"),
+              _company.add(members);
+            },
+            onError: (error) {
+              _company.addError(
+                MessageFailure(
+                  message: "Une erreur s'est produite : ${error.toString()}",
+                ),
+              );
+            },
           );
-        },
-      );
       _isInitialized = true;
     } catch (e) {
       _company.addError(
@@ -51,7 +56,8 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
 
   /// For detail company
   final Map<String, BehaviorSubject<CompanyModel>> _companyDetailsCache = {};
-  final Map<String, StreamSubscription<List<CompanyModel>>> _companyDetailsSubscriptions = {};
+  final Map<String, StreamSubscription<List<CompanyModel>>>
+  _companyDetailsSubscriptions = {};
 
   @override
   Stream<CompanyModel> getCompanyDetails(String companyId) {
@@ -66,28 +72,36 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
       _companyDetailsCache[companyId] = companyDetailsController;
 
       // CORRECTION: Le type de subscription est StreamSubscription<List<CompanyModel>>
-      final StreamSubscription<List<CompanyModel>> subscription =
-      Repository().subscribeToRealtime<CompanyModel>(
-          query: Query(where: [Where.exact('cid', companyId)])
-      ).listen((List<CompanyModel> companies) { // Spécifier le type List<CompanyModel>
-        if (companies.isNotEmpty) {
-          // Prendre le premier élément de la liste
-          companyDetailsController.add(companies.first);
-        } else {
-          companyDetailsController.addError(
-              MessageFailure(message: "Entreprise non trouvée")
+      final StreamSubscription<List<CompanyModel>> subscription = Repository()
+          .subscribeToRealtime<CompanyModel>(
+            query: Query(where: [Where.exact('cid', companyId)]),
+          )
+          .listen(
+            (List<CompanyModel> companies) {
+              // Spécifier le type List<CompanyModel>
+              if (companies.isNotEmpty) {
+                // Prendre le premier élément de la liste
+                companyDetailsController.add(companies.first);
+              } else {
+                companyDetailsController.addError(
+                  MessageFailure(message: "Entreprise non trouvée"),
+                );
+              }
+            },
+            onError: (error) {
+              companyDetailsController.addError(error);
+            },
           );
-        }
-      }, onError: (error) {
-        companyDetailsController.addError(error);
-      });
 
       _companyDetailsSubscriptions[companyId] = subscription;
 
       return companyDetailsController.stream;
     } catch (e) {
       return Stream.error(
-        MessageFailure(message: "Erreur lors de la récupération des détails: ${e.toString()}"),
+        MessageFailure(
+          message:
+              "Erreur lors de la récupération des détails: ${e.toString()}",
+        ),
       );
     }
   }
@@ -120,8 +134,10 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
   }
 
   /// For the projects company
-  final Map<String, BehaviorSubject<List<ProjectModel>>> _projectCompanyCache = {};
-  final Map<String, StreamSubscription<List<ProjectModel>>> _projectCompanySubscriptions = {};
+  final Map<String, BehaviorSubject<List<ProjectModel>>> _projectCompanyCache =
+      {};
+  final Map<String, StreamSubscription<List<ProjectModel>>>
+  _projectCompanySubscriptions = {};
 
   @override
   Stream<List<ProjectModel>> getCompanyProjects(String cid) {
@@ -136,30 +152,38 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
       _projectCompanyCache[cid] = projectsController;
 
       // S'abonner aux projets de l'entreprise
-      final StreamSubscription<List<ProjectModel>> subscription =
-      Repository().subscribeToRealtime<ProjectModel>(
-          query: Query(where: [Where.exact('cid', cid)])
-      ).listen((List<ProjectModel> projects) { // projects est déjà une List<ProjectModel>
-        // CORRECTION: Ajouter la liste complète des projets, pas juste le premier
-        projectsController.add(projects);
-      }, onError: (error) {
-        projectsController.addError(error);
-      });
+      final StreamSubscription<List<ProjectModel>> subscription = Repository()
+          .subscribeToRealtime<ProjectModel>(
+            query: Query(where: [Where.exact('cid', cid)]),
+          )
+          .listen(
+            (List<ProjectModel> projects) {
+              // projects est déjà une List<ProjectModel>
+              // CORRECTION: Ajouter la liste complète des projets, pas juste le premier
+              projectsController.add(projects);
+            },
+            onError: (error) {
+              projectsController.addError(error);
+            },
+          );
 
       _projectCompanySubscriptions[cid] = subscription;
 
       return projectsController.stream;
     } catch (e) {
       return Stream.error(
-        MessageFailure(message: "Erreur lors de la récupération des projets: ${e.toString()}"),
+        MessageFailure(
+          message:
+              "Erreur lors de la récupération des projets: ${e.toString()}",
+        ),
       );
     }
   }
 
-
   /// For the groups company
   final Map<String, BehaviorSubject<List<GroupModel>>> _groupCompanyCache = {};
-  final Map<String, StreamSubscription<List<GroupModel>>> _groupCompanySubscriptions = {};
+  final Map<String, StreamSubscription<List<GroupModel>>>
+  _groupCompanySubscriptions = {};
 
   @override
   Stream<List<GroupModel>> getCompanyGroups(String cid) {
@@ -171,21 +195,28 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
       final groupsController = BehaviorSubject<List<GroupModel>>.seeded([]);
       _groupCompanyCache[cid] = groupsController;
 
-      final StreamSubscription<List<GroupModel>> subscription =
-      Repository().subscribeToRealtime<GroupModel>(
-          query: Query(where: [Where.exact('cid', cid)])
-      ).listen((List<GroupModel> groups) {
-        groupsController.add(groups);
-      }, onError: (error) {
-        groupsController.addError(error);
-      });
+      final StreamSubscription<List<GroupModel>> subscription = Repository()
+          .subscribeToRealtime<GroupModel>(
+            query: Query(where: [Where.exact('cid', cid)]),
+          )
+          .listen(
+            (List<GroupModel> groups) {
+              groupsController.add(groups);
+            },
+            onError: (error) {
+              groupsController.addError(error);
+            },
+          );
 
       _groupCompanySubscriptions[cid] = subscription;
 
       return groupsController.stream;
     } catch (e) {
       return Stream.error(
-        MessageFailure(message: "Erreur lors de la récupération des groupes: ${e.toString()}"),
+        MessageFailure(
+          message:
+              "Erreur lors de la récupération des groupes: ${e.toString()}",
+        ),
       );
     }
   }
@@ -209,7 +240,9 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
         return _linksController!.stream;
       }
 
-      _linksController = BehaviorSubject<List<CompanyWithUserLinkModel>>.seeded([]);
+      _linksController = BehaviorSubject<List<CompanyWithUserLinkModel>>.seeded(
+        [],
+      );
 
       Repository().subscribeToRealtime<CompanyWithUserLinkModel>().listen(
         (List<CompanyWithUserLinkModel> links) {
@@ -223,7 +256,9 @@ class LocalCompanyDataSourceImpl implements CompanyLocalDataSource {
       return _linksController!.stream;
     } catch (e) {
       return Stream.error(
-        MessageFailure(message: "Erreur lors de la récupération des liens: ${e.toString()}"),
+        MessageFailure(
+          message: "Erreur lors de la récupération des liens: ${e.toString()}",
+        ),
       );
     }
   }

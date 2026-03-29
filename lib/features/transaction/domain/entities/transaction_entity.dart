@@ -1,42 +1,12 @@
 import 'dart:convert';
 
+import 'package:bicount/core/utils/number_format_utils.dart';
+
 import '../../data/models/transaction.model.dart';
 
 enum TransactionFrequency { cyclic, fixe }
 
-enum Currency { USD, EUR, CDF }
-
-extension CurrencySymbol on Currency {
-  String get symbol {
-    switch (this) {
-      case Currency.USD:
-        return '\$';
-      case Currency.EUR:
-        return '€';
-      case Currency.CDF:
-        return 'FC';
-    }
-  }
-}
-
-
 class TransactionEntity {
-  final String? id;
-  final String tid;
-  final String gtid;
-  final String? uid;
-  final String name;
-  final int type;
-  final DateTime date;
-  final DateTime? createdAt;
-  final double amount;
-  final Currency currency;
-  final String? image;
-  final int? frequency;
-  final String sender;
-  final String beneficiary;
-  final String note;
-
   const TransactionEntity({
     this.id,
     this.uid,
@@ -55,47 +25,62 @@ class TransactionEntity {
     required this.note,
   });
 
+  final String? id;
+  final String tid;
+  final String gtid;
+  final String? uid;
+  final String name;
+  final int type;
+  final DateTime date;
+  final DateTime? createdAt;
+  final double amount;
+  final String currency;
+  final String? image;
+  final int? frequency;
+  final String sender;
+  final String beneficiary;
+  final String note;
+
+  String get currencySymbol => NumberFormatUtils.resolveSymbol(currency);
+
   factory TransactionEntity.fromJson(Map<String, dynamic> data) {
     return TransactionEntity(
-      id: data["id"] ?? '',
-      uid: data["uid"] ?? '',
-      tid: data["tid"] ?? '',
-      gtid: data["gtid"] ?? '',
-      name: data["name"] ?? '',
-      type: data['type'],
-      date: data["date"] is DateTime
-          ? data["date"]
-          : DateTime.tryParse(data["date"] ?? '') ?? DateTime.now(),
-      createdAt: data["created_at"] is DateTime
-          ? data["created_at"]
-          : DateTime.tryParse(data["created_at"] ?? '') ?? DateTime.now(),
-      amount: (data["amount"] is double)
-          ? data["amount"]
-          : double.tryParse(data["amount"].toString()) ?? 0.0,
-      currency: Currency.values.firstWhere((e) => e.name == data['currency']),
-      image: data["image"],
-      frequency: data["frequency"],
-      sender: data["sender"]?['name'] ?? '',
-      beneficiary: data["beneficiary"] is Map<String, dynamic>
-          ? data["beneficiary"]
-          : {"name": data["beneficiary"]?['name'] ?? ''},
-      note: data["note"] ?? '',
+      id: data['id'] as String? ?? '',
+      uid: data['uid'] as String? ?? '',
+      tid: data['tid'] as String? ?? '',
+      gtid: data['gtid'] as String? ?? '',
+      name: data['name'] as String? ?? '',
+      type: data['type'] as int? ?? 0,
+      date: data['date'] is DateTime
+          ? data['date'] as DateTime
+          : DateTime.tryParse('${data['date'] ?? ''}') ?? DateTime.now(),
+      createdAt: data['created_at'] is DateTime
+          ? data['created_at'] as DateTime
+          : DateTime.tryParse('${data['created_at'] ?? ''}'),
+      amount: (data['amount'] as num?)?.toDouble() ?? 0,
+      currency: '${data['currency'] ?? 'CDF'}',
+      image: data['image'] as String?,
+      frequency: data['frequency'] as int?,
+      sender: data['sender']?['name'] ?? '',
+      beneficiary: data['beneficiary'] is Map<String, dynamic>
+          ? jsonEncode(data['beneficiary'])
+          : data['beneficiary']?['name'] ?? '',
+      note: data['note'] as String? ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-
-      "name": name,
-      "type": type,
-      "date": date.toIso8601String(),
-      "amount": amount,
-      "currency": currency.name,
-      "image": image,
-      "frequency": frequency,
-      "sender": sender,
-      "beneficiary": jsonEncode(beneficiary),
-      "note": note,
+      'name': name,
+      'type': type,
+      'date': date.toIso8601String(),
+      'amount': amount,
+      'currency': currency,
+      'image': image,
+      'frequency': frequency,
+      'sender': sender,
+      'beneficiary': jsonEncode(beneficiary),
+      'note': note,
     };
   }
 
@@ -106,10 +91,10 @@ class TransactionEntity {
       tid: transaction.tid!,
       gtid: transaction.gtid,
       type: transaction.type,
-      date: DateTime.tryParse(transaction.date)!,
+      date: DateTime.tryParse(transaction.date) ?? DateTime.now(),
       createdAt: DateTime.tryParse(transaction.createdAt ?? ''),
       amount: transaction.amount,
-      currency: Currency.values.byName(transaction.currency),
+      currency: transaction.currency,
       image: transaction.image,
       frequency: transaction.frequency,
       sender: transaction.senderId,

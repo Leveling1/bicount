@@ -1,15 +1,1 @@
-class AddAccountFundingEntity {
-  final String source;
-  final String? note;
-  final double amount;
-  final String currency;
-  final String date;
-
-  AddAccountFundingEntity({
-    required this.source,
-    required this.amount,
-    required this.currency,
-    this.note,
-    required this.date,
-  });
-}
+export 'package:bicount/features/add_fund/domain/entities/add_account_funding_entity.dart';

@@ -43,10 +43,19 @@ const List<MigrationCommand> _migration_20251130001532_up = [
   InsertColumn('service', Column.Double, onTable: 'CompanyModel'),
   InsertColumn('created_at', Column.varchar, onTable: 'CompanyModel'),
   InsertColumn('cid', Column.varchar, onTable: 'CompanyModel', unique: true),
-  InsertColumn('company_id', Column.varchar, onTable: 'CompanyWithUserLinkModel'),
+  InsertColumn(
+    'company_id',
+    Column.varchar,
+    onTable: 'CompanyWithUserLinkModel',
+  ),
   InsertColumn('user_id', Column.varchar, onTable: 'CompanyWithUserLinkModel'),
   InsertColumn('role', Column.varchar, onTable: 'CompanyWithUserLinkModel'),
-  InsertColumn('lid', Column.varchar, onTable: 'CompanyWithUserLinkModel', unique: true),
+  InsertColumn(
+    'lid',
+    Column.varchar,
+    onTable: 'CompanyWithUserLinkModel',
+    unique: true,
+  ),
   InsertColumn('cid', Column.varchar, onTable: 'GroupModel'),
   InsertColumn('name', Column.varchar, onTable: 'GroupModel'),
   InsertColumn('description', Column.varchar, onTable: 'GroupModel'),
@@ -89,15 +98,24 @@ const List<MigrationCommand> _migration_20251130001532_up = [
   InsertColumn('frequency', Column.varchar, onTable: 'TransactionModel'),
   InsertColumn('category', Column.integer, onTable: 'TransactionModel'),
   InsertColumn('created_at', Column.varchar, onTable: 'TransactionModel'),
-  InsertColumn('tid', Column.varchar, onTable: 'TransactionModel', unique: true),
+  InsertColumn(
+    'tid',
+    Column.varchar,
+    onTable: 'TransactionModel',
+    unique: true,
+  ),
   CreateIndex(columns: ['mid'], onTable: 'MemojiModel', unique: true),
   CreateIndex(columns: ['sid'], onTable: 'UserModel', unique: true),
   CreateIndex(columns: ['cid'], onTable: 'CompanyModel', unique: true),
-  CreateIndex(columns: ['lid'], onTable: 'CompanyWithUserLinkModel', unique: true),
+  CreateIndex(
+    columns: ['lid'],
+    onTable: 'CompanyWithUserLinkModel',
+    unique: true,
+  ),
   CreateIndex(columns: ['gid'], onTable: 'GroupModel', unique: true),
   CreateIndex(columns: ['sid'], onTable: 'FriendsModel', unique: true),
   CreateIndex(columns: ['pid'], onTable: 'ProjectModel', unique: true),
-  CreateIndex(columns: ['tid'], onTable: 'TransactionModel', unique: true)
+  CreateIndex(columns: ['tid'], onTable: 'TransactionModel', unique: true),
 ];
 
 const List<MigrationCommand> _migration_20251130001532_down = [
@@ -188,7 +206,7 @@ const List<MigrationCommand> _migration_20251130001532_down = [
   DropIndex('index_GroupModel_on_gid'),
   DropIndex('index_FriendsModel_on_sid'),
   DropIndex('index_ProjectModel_on_pid'),
-  DropIndex('index_TransactionModel_on_tid')
+  DropIndex('index_TransactionModel_on_tid'),
 ];
 
 //

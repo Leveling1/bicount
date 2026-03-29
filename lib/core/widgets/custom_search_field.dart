@@ -5,7 +5,11 @@ class CustomSearchField extends StatefulWidget {
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
 
-  const CustomSearchField({super.key, required this.controller, this.onChanged});
+  const CustomSearchField({
+    super.key,
+    required this.controller,
+    this.onChanged,
+  });
 
   @override
   _CustomSearchFieldState createState() => _CustomSearchFieldState();
@@ -40,18 +44,15 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           hintText: "Search",
-          hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
-                color: AppColors.inactiveColorDark,
-              ),
+          hintStyle: Theme.of(
+            context,
+          ).textTheme.titleSmall!.copyWith(color: AppColors.inactiveColorDark),
           prefixIcon: Icon(
             Icons.search,
             color: Theme.of(context).iconTheme.color,
           ),
           suffixIcon: widget.controller!.text.isNotEmpty
-              ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: _clearText,
-                )
+              ? IconButton(icon: const Icon(Icons.clear), onPressed: _clearText)
               : null,
         ),
       ),

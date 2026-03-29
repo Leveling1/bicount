@@ -16,6 +16,7 @@ class CompanyLoaded extends CompanyState {
   final List<CompanyEntity> companies;
   CompanyLoaded(this.companies);
 }
+
 class CompanyError extends CompanyState {
   final Failure failure;
   CompanyError(this.failure);

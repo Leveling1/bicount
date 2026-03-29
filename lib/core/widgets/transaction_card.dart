@@ -1,13 +1,14 @@
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/themes/app_colors.dart';
+import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../themes/app_dimens.dart';
+import '../utils/formated_text.dart';
 
 class TransactionCard extends StatelessWidget {
   final TransactionEntity transaction;
@@ -24,8 +25,25 @@ class TransactionCard extends StatelessWidget {
         : transaction.beneficiary == uid
         ? '+'
         : '';
+
+    Color? color = sign == "+"
+        ? AppColors.primaryColorDark
+        : sign == "-"
+        ? AppColors.negativeColorDark
+        : Theme.of(context).textTheme.bodyMedium!.color;
+
+    IconData transactionIcon = sign == "+"
+        ? Icons.arrow_upward
+        : sign == "-"
+        ? Icons.arrow_downward
+        : Icons.more_horiz;
+
     String time = TimeOfDay.fromDateTime(transaction.date).format(context);
-    String currency = transaction.currency.symbol;
+    final amount = NumberFormatUtils.formatCurrency(
+      transaction.amount,
+      currencyCode: transaction.currency,
+    );
+
     return Container(
       decoration: BoxDecoration(color: Colors.transparent),
       child: Material(
@@ -47,18 +65,15 @@ class TransactionCard extends StatelessWidget {
                   child: SizedBox(
                     width: 30.w,
                     height: 30.h,
-                    child: transaction.type == TransactionTypes.subscriptionCode
-                        ? Icon(
-                            Icons.subscriptions,
-                            color: Theme.of(context).primaryColor,
-                          )
-                        : CachedNetworkImage(
-                            imageUrl: transaction.image!,
-                            fit: BoxFit.cover,
-                          ),
+                    child: Icon(
+                      transaction.type == TransactionTypes.subscriptionCode
+                          ? Icons.subscriptions
+                          : transactionIcon,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                AppDimens.spacerWidthMediumSmall,
 
                 // Name and date
                 Expanded(
@@ -66,10 +81,9 @@ class TransactionCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        transaction.name,
+                        FormatedText().capitalizeFirstLetter(transaction.name),
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      const SizedBox(height: 4),
                       Text(
                         time,
                         style: TextStyle(
@@ -86,13 +100,9 @@ class TransactionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '$sign ${transaction.amount} $currency',
+                      '$sign $amount',
                       style: TextStyle(
-                        color: sign == "+"
-                            ? AppColors.primaryColorDark
-                            : sign == "-"
-                            ? AppColors.negativeColorDark
-                            : Theme.of(context).textTheme.bodyMedium!.color,
+                        color: color,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
@@ -135,7 +145,7 @@ class TransactionCardSkeleton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            const SizedBox(width: 12),
+            AppDimens.spacerMediumSmall,
 
             // 🟢 Name + Date placeholder
             Expanded(
@@ -172,7 +182,7 @@ class TransactionCardSkeleton extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-                const SizedBox(height: 8),
+                AppDimens.spacerSmall,
                 SkeletonLine(
                   style: SkeletonLineStyle(
                     height: 12,

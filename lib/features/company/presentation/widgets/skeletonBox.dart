@@ -5,6 +5,7 @@ import '../../../../core/themes/app_dimens.dart';
 
 Widget _spacerHeight() => const SizedBox(height: AppDimens.marginMedium);
 Widget _spacerWidth() => const SizedBox(width: AppDimens.marginMedium);
+
 class SkeletonBox extends StatelessWidget {
   const SkeletonBox({super.key});
 
@@ -168,7 +169,9 @@ class GroupCardSkeleton extends StatelessWidget {
             SkeletonItem(
               child: CircleAvatar(
                 radius: radius,
-                backgroundColor: Theme.of(context).cardColor.withValues(alpha: 0.3),
+                backgroundColor: Theme.of(
+                  context,
+                ).cardColor.withValues(alpha: 0.3),
               ),
             ),
             const SizedBox(height: 8),
@@ -201,4 +204,3 @@ class GroupCardSkeleton extends StatelessWidget {
     );
   }
 }
-

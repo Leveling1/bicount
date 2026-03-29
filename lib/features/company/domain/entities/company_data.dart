@@ -12,9 +12,6 @@ class CompanyData extends Equatable {
   List<Object?> get props => [companies, links];
 
   factory CompanyData.fromEmpty() {
-    return CompanyData(
-      companies: [],
-      links: [],
-    );
+    return CompanyData(companies: [], links: []);
   }
 }

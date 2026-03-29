@@ -15,14 +15,14 @@ const List<MigrationCommand> _migration_20251203002105_up = [
   InsertColumn('relation_type', Column.integer, onTable: 'FriendsModel'),
   InsertColumn('category', Column.integer, onTable: 'SubscriptionModel'),
   InsertColumn('type', Column.integer, onTable: 'TransactionModel'),
-  InsertColumn('frequency', Column.integer, onTable: 'TransactionModel')
+  InsertColumn('frequency', Column.integer, onTable: 'TransactionModel'),
 ];
 
 const List<MigrationCommand> _migration_20251203002105_down = [
   DropColumn('relation_type', onTable: 'FriendsModel'),
   DropColumn('category', onTable: 'SubscriptionModel'),
   DropColumn('type', onTable: 'TransactionModel'),
-  DropColumn('frequency', onTable: 'TransactionModel')
+  DropColumn('frequency', onTable: 'TransactionModel'),
 ];
 
 //

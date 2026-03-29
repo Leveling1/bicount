@@ -18,7 +18,9 @@ class _CustomPickImageState extends State<CustomPickImage> {
   File? get selectedImage => widget.selectedImage ?? _localSelectedImage;
 
   Future<void> pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
 
     if (pickedFile != null) {
       final imageFile = File(pickedFile.path);
@@ -46,28 +48,26 @@ class _CustomPickImageState extends State<CustomPickImage> {
           hoverColor: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(12),
           splashColor: Colors.transparent,
-          highlightColor: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.color
-              ?.withValues(alpha: 0.2),
+          highlightColor: Theme.of(
+            context,
+          ).textTheme.titleMedium?.color?.withValues(alpha: 0.2),
           onTap: pickImage,
           child: Center(
             child: selectedImage == null
                 ? Icon(
-              Icons.image,
-              size: 25,
-              color: Theme.of(context).textTheme.titleMedium?.color,
-            )
+                    Icons.image,
+                    size: 25,
+                    color: Theme.of(context).textTheme.titleMedium?.color,
+                  )
                 : ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.file(
-                selectedImage!,
-                height: 55,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.file(
+                      selectedImage!,
+                      height: 55,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
           ),
         ),
       ),

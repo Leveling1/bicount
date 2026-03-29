@@ -1,14 +1,9 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_form_date_field.dart';
 
 class CustomFormTextField extends StatefulWidget {
-  final ValueChanged<String>? onChanged;
-  final String hintText;
-  final TextInputType? inputType;
-  final TextEditingController? controller;
-  final String? Function(String?)? validator;
-
   const CustomFormTextField({
     super.key,
     this.onChanged,
@@ -17,6 +12,12 @@ class CustomFormTextField extends StatefulWidget {
     this.controller,
     this.validator,
   });
+
+  final ValueChanged<String>? onChanged;
+  final String hintText;
+  final TextInputType? inputType;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
 
   @override
   State<CustomFormTextField> createState() => _CustomFormTextFieldState();
@@ -57,13 +58,6 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
 }
 
 class CustomFormField extends StatelessWidget {
-  final String label;
-  final String hint;
-  final TextEditingController? controller;
-  final TextInputType? inputType;
-  final String? message;
-  final bool? enableValidator;
-  final bool isDate;
   const CustomFormField({
     super.key,
     this.controller,
@@ -74,8 +68,19 @@ class CustomFormField extends StatelessWidget {
     this.enableValidator = true,
     this.isDate = false,
   });
-  String? _validator(String? value) {
-    if (value == null || value.isEmpty) return message ?? 'This field is required';
+
+  final String label;
+  final String hint;
+  final TextEditingController? controller;
+  final TextInputType? inputType;
+  final String? message;
+  final bool? enableValidator;
+  final bool isDate;
+
+  String? _validator(BuildContext context, String? value) {
+    if (value == null || value.isEmpty) {
+      return message ?? context.l10n.validationFieldRequired;
+    }
     return null;
   }
 
@@ -89,7 +94,9 @@ class CustomFormField extends StatelessWidget {
             ? CustomFormDateField(
                 hintText: hint,
                 validator: enableValidator!
-                    ? (value) => value == null ? 'This field is required' : null
+                    ? (value) => value == null
+                          ? context.l10n.validationFieldRequired
+                          : null
                     : null,
                 controller: controller,
               )
@@ -97,7 +104,9 @@ class CustomFormField extends StatelessWidget {
                 controller: controller,
                 hintText: hint,
                 inputType: inputType,
-                validator: enableValidator! ? _validator : null,
+                validator: enableValidator!
+                    ? (value) => _validator(context, value)
+                    : null,
               ),
       ],
     );

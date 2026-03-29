@@ -1,4 +1,3 @@
-
 abstract class TransactionRemoteDataSource {
   // Add your remote data source interface here
 }

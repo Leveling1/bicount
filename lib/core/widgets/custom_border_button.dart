@@ -7,9 +7,9 @@ class CustomBorderButton extends StatelessWidget {
     required this.text,
     required this.logoPath,
     required this.onPressed,
-  });
-  VoidCallback onPressed;
-  WidgetStatesController statesController = WidgetStatesController();
+  }) : statesController = WidgetStatesController();
+  final VoidCallback onPressed;
+  final WidgetStatesController statesController;
   final String text;
   final String logoPath;
   @override
@@ -22,10 +22,7 @@ class CustomBorderButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: AppDimens.spacingSmall,
-          children: [
-            Image.asset(logoPath, width: 20, height: 20),
-            Text(text),
-          ],
+          children: [Image.asset(logoPath, width: 20, height: 20), Text(text)],
         ),
       ),
     );

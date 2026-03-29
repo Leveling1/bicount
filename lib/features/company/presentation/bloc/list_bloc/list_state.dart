@@ -16,6 +16,7 @@ class ListLoaded extends ListState {
   final CompanyData companies;
   ListLoaded(this.companies);
 }
+
 class ListError extends ListState {
   final Failure failure;
   ListError(this.failure);

@@ -1,6 +1,8 @@
+import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/authentification/data/data_sources/local_datasource/authentification_local_datasource.dart';
-import 'package:brick_core/core.dart';
+import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
+import 'package:brick_core/query.dart';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -8,66 +10,76 @@ import '../../../../../brick/repository.dart';
 import '../../models/user.model.dart';
 
 class LocalAuthentification implements AuthentificationLocalDataSource {
-  final supabaseInstance = Supabase.instance.client;
-  late String uid = supabaseInstance.auth.currentUser!.id;
+  final SupabaseClient _supabaseClient = Supabase.instance.client;
 
-  /// For the local sign up process
-  @override
-  Future<Either<Failure, void>> signUp(
-    String name,
-    String email,
-    String password,
-  ) async {
-    try {
-      final user = UserModel(
-        sid: uid,
-        uid: uid,
-        image: 'assets/memoji/memoji_1.png',
-        email: email,
-        username: name,
-        incomes: 0.0,
-        expenses: 0.0,
-        balance: 0.0,
-        companyIncome: 0.0,
-        personalIncome: 0.0,
-      );
-      await Repository().upsert<UserModel>(user);
-      return const Right(null);
-    } catch (e) {
-      return Left(AuthenticationFailure(message: e.toString()));
-    }
-  }
+  String? get _currentUid => _supabaseClient.auth.currentUser?.id;
 
-  /// For the sign in process
   @override
-  Future<Either<Failure, void>> signIn() async {
+  Future<Either<Failure, void>> ensureCurrentUserProfile({
+    String? emailHint,
+  }) async {
     try {
-      await Repository().get<UserModel>(
+      final uid = _currentUid;
+      if (uid == null) {
+        return Left(AuthenticationFailure(message: 'Authentication failure'));
+      }
+
+      final users = await Repository().get<UserModel>(
         query: Query(where: [Where.exact('uid', uid)]),
       );
+      if (users.isNotEmpty) {
+        return const Right(null);
+      }
+
+      final email =
+          _supabaseClient.auth.currentUser?.email?.trim() ??
+          emailHint?.trim() ??
+          '';
+      final username = _deriveUsername(email);
+
+      await Repository().upsert<UserModel>(
+        UserModel(
+          uid: uid,
+          image: Constants.memojiDefault,
+          email: email,
+          username: username,
+          incomes: 0.0,
+          expenses: 0.0,
+          balance: 0.0,
+          companyIncome: 0.0,
+          personalIncome: 0.0,
+          referenceCurrencyCode:
+              CurrencyConfigEntity.defaultReferenceCurrencyCode,
+        ),
+      );
+
       return const Right(null);
     } catch (e) {
       return Left(AuthenticationFailure(message: e.toString()));
     }
   }
 
-  /// For the sign out process
   @override
   Future<Either<Failure, void>> signOut() async {
     try {
-      final repo = Repository(); // ton Repository global
-
-      // 1️⃣ Vider le cache mémoire
-      repo.memoryCacheProvider.reset();
-
-      // 2️⃣ Vider la base SQLite
-      await repo.sqliteProvider.resetDb();
-
-      return right(null);
+      await Repository().clearLocalSessionData();
+      return const Right(null);
     } catch (e) {
-      return left(
-        AuthenticationFailure(message: "Échec de la déconnexion locale : $e"),
-      );
+      return Left(AuthenticationFailure(message: 'Local sign out failed: $e'));
     }
+  }
+
+  String _deriveUsername(String email) {
+    final normalizedEmail = email.trim();
+    if (normalizedEmail.isEmpty) {
+      return 'Bicount';
+    }
+
+    final localPart = normalizedEmail.split('@').first.trim();
+    if (localPart.isEmpty) {
+      return 'Bicount';
+    }
+
+    return localPart;
   }
 }

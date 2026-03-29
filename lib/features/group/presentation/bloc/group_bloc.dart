@@ -16,18 +16,26 @@ class GroupBloc extends Bloc<GroupEvent, GroupState> {
     on<GetAllGroupDetails>(_onGetAllGroupDetails);
   }
 
-  Future<void> _onCreateGroup(CreateGroupEvent event, Emitter<GroupState> emit) async {
+  Future<void> _onCreateGroup(
+    CreateGroupEvent event,
+    Emitter<GroupState> emit,
+  ) async {
     emit(GroupLoading());
     try {
-      final createdGroup =
-      await repository.createGroup(event.group, event.logoFile);
+      final createdGroup = await repository.createGroup(
+        event.group,
+        event.logoFile,
+      );
       emit(GroupCreated(createdGroup));
     } catch (e) {
       emit(GroupError(e is Failure ? e : UnknownFailure()));
     }
   }
 
-  Future<void> _onGetAllGroupDetails(GetAllGroupDetails event, Emitter<GroupState> emit) async {
+  Future<void> _onGetAllGroupDetails(
+    GetAllGroupDetails event,
+    Emitter<GroupState> emit,
+  ) async {
     emit(GroupDetailsLoading());
     try {
       final members = await repository.getAllGroupDetails(event.group);

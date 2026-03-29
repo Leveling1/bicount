@@ -6,7 +6,6 @@ import '../widgets/company_choice_handler.dart';
 import 'add_company.dart';
 import 'join_company.dart';
 
-
 class CompanyHandler extends StatefulWidget {
   const CompanyHandler({super.key});
 
@@ -29,14 +28,11 @@ class _CompanyHandlerState extends State<CompanyHandler> {
                 Navigator.of(context).pop();
               },
             ),
-            Text(
-              'Add',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Text('Add', style: Theme.of(context).textTheme.headlineMedium),
             SizedBox(width: 48.w), // Pour équilibrer l'IconButton
           ],
         ),
-        SizedBox(height: 20.h,),
+        SizedBox(height: 20.h),
         CompanyChoiceHandler(
           title: 'Start a new company',
           content: 'Create a new company from scratch',
@@ -51,13 +47,12 @@ class _CompanyHandlerState extends State<CompanyHandler> {
               child: const AddCompany(),
             );
           },
-
         ),
-        SizedBox(height: 15.h,),
+        SizedBox(height: 15.h),
         CompanyChoiceHandler(
           title: 'Join a company',
           content: 'Use the invitation link to join a company',
-          color:  Colors.blue,
+          color: Colors.blue,
           icon: Icons.link,
           onTap: () {
             Navigator.of(context).pop();
@@ -68,8 +63,7 @@ class _CompanyHandlerState extends State<CompanyHandler> {
               child: const JoinCompany(),
             );
           },
-
-        )
+        ),
       ],
     );
   }

@@ -35,24 +35,24 @@ class ProjectCard extends StatelessWidget {
                 radius: 30,
                 child: ClipOval(
                   child: project.image != null && project.image != ""
-                  ? CachedNetworkImage(
-                    imageUrl: project.image!,
-                    width: 60.w,
-                    height: 60.h,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => CircleImageSkeleton(
-                        width: 60.w,
-                        height: 60.h
-                    ),
-                    errorWidget: (context, url, error) => const Icon(Icons.error),
-                  ) : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(
-                      Icons.lightbulb,
-                      size: 30,
-                      color: AppColors.inactiveColorDark,
-                    ),
-                  ),
+                      ? CachedNetworkImage(
+                          imageUrl: project.image!,
+                          width: 60.w,
+                          height: 60.h,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                              CircleImageSkeleton(width: 60.w, height: 60.h),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.lightbulb,
+                            size: 30,
+                            color: AppColors.inactiveColorDark,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -69,7 +69,10 @@ class ProjectCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       "Initiated by ${project.initiator}",
-                      style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
@@ -87,11 +90,13 @@ class ProjectCard extends StatelessWidget {
                     NumberFormatUtils.formatCurrency(project.profit as num),
                     style: TextStyle(
                       color: project.profit == 0.0
-                        ? Theme.of(context).textTheme.bodySmall!.color
-                        : project.profit! > 0.0
+                          ? Theme.of(context).textTheme.bodySmall!.color
+                          : project.profit! > 0.0
                           ? AppColors.primaryColorDark
                           : AppColors.negativeColorDark,
-                      fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                      fontSize: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium!.fontSize,
                     ),
                   ),
                 ],

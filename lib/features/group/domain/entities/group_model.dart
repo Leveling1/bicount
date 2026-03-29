@@ -1,4 +1,3 @@
-
 class GroupEntity {
   final int? id;
   final String cid;

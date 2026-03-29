@@ -1,3 +1,4 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 
@@ -7,16 +8,13 @@ class NotificationHelper {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       context: context,
       title: Text(
-        'Success',
+        context.l10n.commonSuccess,
         style: TextStyle(
           color: Theme.of(context).textTheme.headlineSmall!.color,
           fontWeight: FontWeight.bold,
         ),
       ),
-      description: Text(
-        message,
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
+      description: Text(message, style: Theme.of(context).textTheme.bodySmall),
       type: ToastificationType.success,
       alignment: Alignment.topCenter,
       direction: TextDirection.ltr,
@@ -29,16 +27,13 @@ class NotificationHelper {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       context: context,
       title: Text(
-        'Error',
+        context.l10n.commonError,
         style: TextStyle(
           color: Theme.of(context).textTheme.headlineSmall!.color,
           fontWeight: FontWeight.bold,
         ),
       ),
-      description: Text(
-        message,
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
+      description: Text(message, style: Theme.of(context).textTheme.bodySmall),
       type: ToastificationType.error,
       alignment: Alignment.topCenter,
       direction: TextDirection.ltr,

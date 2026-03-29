@@ -1,26 +1,34 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
+part '20260329194500.migration.dart';
+part '20260329123000.migration.dart';
+part '20260325165928.migration.dart';
 part '20251130001532.migration.dart';
 part '20251201154524.migration.dart';
 part '20251201172247.migration.dart';
 part '20251202023307.migration.dart';
 part '20251202215424.migration.dart';
 part '20251203002105.migration.dart';
+part '20260322103000.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
+  const Migration20260329194500(),
+  const Migration20260329123000(),
+  const Migration20260325165928(),
   const Migration20251130001532(),
   const Migration20251201154524(),
   const Migration20251201172247(),
   const Migration20251202023307(),
   const Migration20251202215424(),
   const Migration20251203002105(),
+  const Migration20260322103000(),
 };
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  20251203002105,
+  20260329194500,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -52,7 +60,6 @@ final schema = Schema(
           nullable: false,
           isPrimaryKey: true,
         ),
-        SchemaColumn('uid', Column.varchar),
         SchemaColumn('image', Column.varchar),
         SchemaColumn('username', Column.varchar),
         SchemaColumn('email', Column.varchar),
@@ -61,10 +68,11 @@ final schema = Schema(
         SchemaColumn('balance', Column.Double),
         SchemaColumn('company_income', Column.Double),
         SchemaColumn('personal_income', Column.Double),
-        SchemaColumn('sid', Column.varchar, unique: true),
+        SchemaColumn('reference_currency_code', Column.varchar),
+        SchemaColumn('uid', Column.varchar, unique: true),
       },
       indices: <SchemaIndex>{
-        SchemaIndex(columns: ['sid'], unique: true),
+        SchemaIndex(columns: ['uid'], unique: true),
       },
     ),
     SchemaTable(
@@ -174,7 +182,14 @@ final schema = Schema(
         SchemaColumn('sid', Column.varchar),
         SchemaColumn('amount', Column.Double),
         SchemaColumn('currency', Column.varchar),
+        SchemaColumn('reference_currency_code', Column.varchar),
+        SchemaColumn('converted_amount', Column.Double),
+        SchemaColumn('amount_cdf', Column.Double),
+        SchemaColumn('rate_to_cdf', Column.Double),
+        SchemaColumn('fx_rate_date', Column.varchar),
+        SchemaColumn('fx_snapshot_id', Column.varchar),
         SchemaColumn('category', Column.integer),
+        SchemaColumn('funding_type', Column.integer),
         SchemaColumn('source', Column.varchar),
         SchemaColumn('note', Column.varchar),
         SchemaColumn('date', Column.varchar),
@@ -182,6 +197,35 @@ final schema = Schema(
       },
       indices: <SchemaIndex>{
         SchemaIndex(columns: ['funding_id'], unique: true),
+      },
+    ),
+    SchemaTable(
+      'RecurringFundingModel',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('recurring_funding_id', Column.varchar, unique: true),
+        SchemaColumn('uid', Column.varchar),
+        SchemaColumn('source', Column.varchar),
+        SchemaColumn('note', Column.varchar),
+        SchemaColumn('amount', Column.Double),
+        SchemaColumn('currency', Column.varchar),
+        SchemaColumn('funding_type', Column.integer),
+        SchemaColumn('frequency', Column.integer),
+        SchemaColumn('start_date', Column.varchar),
+        SchemaColumn('next_funding_date', Column.varchar),
+        SchemaColumn('last_processed_at', Column.varchar),
+        SchemaColumn('status', Column.integer),
+        SchemaColumn('created_at', Column.varchar),
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(columns: ['recurring_funding_id'], unique: true),
+        SchemaIndex(columns: ['uid'], unique: false),
       },
     ),
     SchemaTable(
@@ -225,6 +269,12 @@ final schema = Schema(
         SchemaColumn('title', Column.varchar),
         SchemaColumn('amount', Column.Double),
         SchemaColumn('currency', Column.varchar),
+        SchemaColumn('reference_currency_code', Column.varchar),
+        SchemaColumn('converted_amount', Column.Double),
+        SchemaColumn('amount_cdf', Column.Double),
+        SchemaColumn('rate_to_cdf', Column.Double),
+        SchemaColumn('fx_rate_date', Column.varchar),
+        SchemaColumn('fx_snapshot_id', Column.varchar),
         SchemaColumn('frequency', Column.integer),
         SchemaColumn('start_date', Column.varchar),
         SchemaColumn('next_billing_date', Column.varchar),
@@ -258,6 +308,12 @@ final schema = Schema(
         SchemaColumn('note', Column.varchar),
         SchemaColumn('amount', Column.Double),
         SchemaColumn('currency', Column.varchar),
+        SchemaColumn('reference_currency_code', Column.varchar),
+        SchemaColumn('converted_amount', Column.Double),
+        SchemaColumn('amount_cdf', Column.Double),
+        SchemaColumn('rate_to_cdf', Column.Double),
+        SchemaColumn('fx_rate_date', Column.varchar),
+        SchemaColumn('fx_snapshot_id', Column.varchar),
         SchemaColumn('image', Column.varchar),
         SchemaColumn('frequency', Column.integer),
         SchemaColumn('category', Column.integer),

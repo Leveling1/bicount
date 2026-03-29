@@ -1,35 +1,22 @@
+import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../data_sources/local_datasource/authentification_local_datasource.dart';
 import '/core/errors/failure.dart';
-import '/features/authentification/domain/repositories/authentification_repository.dart';
 import '/features/authentification/data/data_sources/remote_datasource/authentification_remote_datasource.dart';
-import '/features/authentification/domain/entities/user.dart' as entity;
-import 'package:dartz/dartz.dart';
+import '/features/authentification/domain/repositories/authentification_repository.dart';
+import '../data_sources/local_datasource/authentification_local_datasource.dart';
 
 class AuthentificationRepositoryImpl implements AuthentificationRepository {
+  AuthentificationRepositoryImpl(this.localDataSource, this.remoteDataSource);
+
   final AuthenticationRemoteDataSource remoteDataSource;
   final AuthentificationLocalDataSource localDataSource;
 
-  AuthentificationRepositoryImpl(this.localDataSource, this.remoteDataSource);
-
   @override
-  Future<Either<Failure, entity.UserEntity>> signInWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
+  Future<Either<Failure, void>> requestEmailOtp(String email) async {
     try {
-      final user = await remoteDataSource.signInWithEmailAndPassword(
-        email,
-        password,
-      );
-
-      final localSignIn = await localDataSource.signIn();
-      if (localSignIn.isLeft()) {
-        await remoteDataSource.signOut();
-        return Left(AuthenticationFailure(message: "An error occurred during the sign in."));
-      }
-      return Right(user);
+      await remoteDataSource.requestEmailOtp(email);
+      return const Right(null);
     } catch (e) {
       if (e is AuthApiException) {
         return Left(AuthenticationFailure(message: e.message));
@@ -39,22 +26,66 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
   }
 
   @override
-  Future<Either<Failure, entity.UserEntity>> signUp(
-    String username,
+  Future<Either<Failure, void>> verifyEmailOtp(
     String email,
-    String password,
+    String code,
   ) async {
     try {
-      final user = await remoteDataSource.signUp(email, password);
-      final localUser = await localDataSource.signUp(username, email, password);
-
-      if (localUser.isLeft()) {
+      await remoteDataSource.verifyEmailOtp(email, code);
+      final localProfile = await localDataSource.ensureCurrentUserProfile(
+        emailHint: email,
+      );
+      if (localProfile.isLeft()) {
         await remoteDataSource.signOut();
-        return Left(AuthenticationFailure(message: "An error occurred during registration."));
+        return Left(
+          AuthenticationFailure(
+            message: 'An error occurred while preparing your account.',
+          ),
+        );
+      }
+      return const Right(null);
+    } catch (e) {
+      if (e is AuthApiException) {
+        return Left(AuthenticationFailure(message: e.message));
+      }
+      return Left(AuthenticationFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> authWithGoogle() async {
+    try {
+      final remoteUser = await remoteDataSource.authWithGoogle();
+
+      if (remoteUser.isLeft()) {
+        final failure = remoteUser.swap().getOrElse(() => throw Exception());
+        return Left(
+          AuthenticationFailure(message: 'Erreur : ${failure.message}'),
+        );
       }
 
-      return Right(user);
+      return const Right(null);
     } catch (e) {
+      if (e is AuthApiException) {
+        return Left(AuthenticationFailure(message: e.message));
+      }
+      return Left(
+        AuthenticationFailure(
+          message: 'Erreur lors de l\'authentification : $e',
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> authWithApple() async {
+    try {
+      await remoteDataSource.authWithApple();
+      return const Right(null);
+    } catch (e) {
+      if (e is AuthApiException) {
+        return Left(AuthenticationFailure(message: e.message));
+      }
       return Left(AuthenticationFailure(message: e.toString()));
     }
   }
@@ -62,31 +93,17 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
   @override
   Future<Either<Failure, void>> signOut() async {
     try {
-      final localSignOut = await localDataSource.signOut();
-      if (localSignOut.isLeft()) {
-        return Left(AuthenticationFailure(message: "An error occurred during sign out."));
-      }
       await remoteDataSource.signOut();
+      final localSignOut = await localDataSource.signOut();
+
+      if (localSignOut.isLeft()) {
+        return Left(
+          AuthenticationFailure(message: 'An error occurred during sign out.'),
+        );
+      }
       return const Right(null);
     } catch (e) {
       return Left(AuthenticationFailure(message: e.toString()));
     }
-  }
-
-  @override
-  Future<Either<Failure, void>> sendPasswordResetEmail(String email) async {
-    try {
-      await remoteDataSource.sendPasswordResetEmail(email);
-      return const Right(null);
-    } catch (e) {
-      return Left(AuthenticationFailure(message: e.toString()));
-    }
-  }
-
-  // For the authentification with google process
-  @override
-  Future<Either<Failure, void>> authWithGoogle() {
-    // TODO: implement authWithGoogle
-    throw UnimplementedError();
   }
 }

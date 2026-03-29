@@ -3,16 +3,14 @@ part of 'transaction_bloc.dart';
 abstract class TransactionEvent {}
 
 class CreateTransactionEvent extends TransactionEvent {
-  final Map<String, dynamic> transaction;
   CreateTransactionEvent(this.transaction);
+
+  final CreateTransactionRequestEntity transaction;
 }
 
-class AddSubscriptionEvent extends TransactionEvent {
-  final SubscriptionEntity subscription;
-  AddSubscriptionEvent(this.subscription);
-}
+class UpdateTransactionEvent extends TransactionEvent {
+  UpdateTransactionEvent(this.previousTransaction, this.transaction);
 
-class UnsubscribeEvent extends TransactionEvent {
-  final SubscriptionModel subscription;
-  UnsubscribeEvent(this.subscription);
+  final TransactionEntity previousTransaction;
+  final CreateTransactionRequestEntity transaction;
 }

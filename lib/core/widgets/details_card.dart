@@ -1,17 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../themes/app_dimens.dart';
 
 class DetailsCard extends StatelessWidget {
   final Widget child;
-  const DetailsCard({super.key, required this.child});
+  final bool isMargin;
+  const DetailsCard({super.key, required this.child, this.isMargin = true});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(top: AppDimens.marginMedium),
+      margin: isMargin ? EdgeInsets.only(top: AppDimens.marginMedium) : null,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(10),

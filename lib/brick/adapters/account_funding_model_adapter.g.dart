@@ -11,7 +11,26 @@ Future<AccountFundingModel> _$AccountFundingModelFromSupabase(
     sid: data['sid'] as String,
     amount: data['amount'] as double,
     currency: data['currency'] as String,
+    referenceCurrencyCode: data['reference_currency_code'] == null
+        ? null
+        : data['reference_currency_code'] as String?,
+    convertedAmount: data['converted_amount'] == null
+        ? null
+        : data['converted_amount'] as double?,
+    amountCdf: data['amount_cdf'] == null
+        ? null
+        : data['amount_cdf'] as double?,
+    rateToCdf: data['rate_to_cdf'] == null
+        ? null
+        : data['rate_to_cdf'] as double?,
+    fxRateDate: data['fx_rate_date'] == null
+        ? null
+        : data['fx_rate_date'] as String?,
+    fxSnapshotId: data['fx_snapshot_id'] == null
+        ? null
+        : data['fx_snapshot_id'] as String?,
     category: data['category'] as int,
+    fundingType: data['funding_type'] as int,
     source: data['source'] as String,
     note: data['note'] == null ? null : data['note'] as String?,
     date: data['date'] as String,
@@ -31,7 +50,14 @@ Future<Map<String, dynamic>> _$AccountFundingModelToSupabase(
     'sid': instance.sid,
     'amount': instance.amount,
     'currency': instance.currency,
+    'reference_currency_code': instance.referenceCurrencyCode,
+    'converted_amount': instance.convertedAmount,
+    'amount_cdf': instance.amountCdf,
+    'rate_to_cdf': instance.rateToCdf,
+    'fx_rate_date': instance.fxRateDate,
+    'fx_snapshot_id': instance.fxSnapshotId,
     'category': instance.category,
+    'funding_type': instance.fundingType,
     'source': instance.source,
     'note': instance.note,
     'date': instance.date,
@@ -49,7 +75,26 @@ Future<AccountFundingModel> _$AccountFundingModelFromSqlite(
     sid: data['sid'] as String,
     amount: data['amount'] as double,
     currency: data['currency'] as String,
+    referenceCurrencyCode: data['reference_currency_code'] == null
+        ? null
+        : data['reference_currency_code'] as String?,
+    convertedAmount: data['converted_amount'] == null
+        ? null
+        : data['converted_amount'] as double?,
+    amountCdf: data['amount_cdf'] == null
+        ? null
+        : data['amount_cdf'] as double?,
+    rateToCdf: data['rate_to_cdf'] == null
+        ? null
+        : data['rate_to_cdf'] as double?,
+    fxRateDate: data['fx_rate_date'] == null
+        ? null
+        : data['fx_rate_date'] as String?,
+    fxSnapshotId: data['fx_snapshot_id'] == null
+        ? null
+        : data['fx_snapshot_id'] as String?,
     category: data['category'] as int,
+    fundingType: data['funding_type'] as int,
     source: data['source'] as String,
     note: data['note'] == null ? null : data['note'] as String?,
     date: data['date'] as String,
@@ -69,7 +114,14 @@ Future<Map<String, dynamic>> _$AccountFundingModelToSqlite(
     'sid': instance.sid,
     'amount': instance.amount,
     'currency': instance.currency,
+    'reference_currency_code': instance.referenceCurrencyCode,
+    'converted_amount': instance.convertedAmount,
+    'amount_cdf': instance.amountCdf,
+    'rate_to_cdf': instance.rateToCdf,
+    'fx_rate_date': instance.fxRateDate,
+    'fx_snapshot_id': instance.fxSnapshotId,
     'category': instance.category,
+    'funding_type': instance.fundingType,
     'source': instance.source,
     'note': instance.note,
     'date': instance.date,
@@ -104,9 +156,37 @@ class AccountFundingModelAdapter
       association: false,
       columnName: 'currency',
     ),
+    'referenceCurrencyCode': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'reference_currency_code',
+    ),
+    'convertedAmount': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'converted_amount',
+    ),
+    'amountCdf': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'amount_cdf',
+    ),
+    'rateToCdf': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'rate_to_cdf',
+    ),
+    'fxRateDate': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'fx_rate_date',
+    ),
+    'fxSnapshotId': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'fx_snapshot_id',
+    ),
     'category': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'category',
+    ),
+    'fundingType': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'funding_type',
     ),
     'source': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -161,9 +241,51 @@ class AccountFundingModelAdapter
       iterable: false,
       type: String,
     ),
+    'referenceCurrencyCode': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'reference_currency_code',
+      iterable: false,
+      type: String,
+    ),
+    'convertedAmount': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'converted_amount',
+      iterable: false,
+      type: double,
+    ),
+    'amountCdf': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'amount_cdf',
+      iterable: false,
+      type: double,
+    ),
+    'rateToCdf': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'rate_to_cdf',
+      iterable: false,
+      type: double,
+    ),
+    'fxRateDate': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'fx_rate_date',
+      iterable: false,
+      type: String,
+    ),
+    'fxSnapshotId': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'fx_snapshot_id',
+      iterable: false,
+      type: String,
+    ),
     'category': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'category',
+      iterable: false,
+      type: int,
+    ),
+    'fundingType': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'funding_type',
       iterable: false,
       type: int,
     ),

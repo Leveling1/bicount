@@ -65,6 +65,11 @@ class AppDimens {
   static const double modalDetailDiscountHeight = 350.0;
   static const double marketStatisticsChartHeight = 380.0;
   static const double videosMaxHeight = 400.0;
+  static const double settingsAvatarPickerHeight = 312.0;
+  static const double settingsAvatarPreviewRadius = 34.0;
+  static const double settingsAvatarTileRadius = 22.0;
+  static const double settingsAvatarTileSize = 64.0;
+  static const double skeletonTileHeight = 14.0;
 
   // Aspect ratios
   static const double aspectRatioWide = 18 / 9;
@@ -99,7 +104,10 @@ class AppDimens {
     vertical: 20,
     horizontal: 32,
   );
-  static const paddingSmallCard = EdgeInsets.symmetric(vertical: 12, horizontal: 8);
+  static const paddingSmallCard = EdgeInsets.symmetric(
+    vertical: 12,
+    horizontal: 8,
+  );
 
   // Only
   static const paddingTopExtraSmallBottomSmall = EdgeInsets.only(
@@ -125,4 +133,34 @@ class AppDimens {
   static const double iconSizeSmall = 16.0;
   static const double iconSizeMedium = 24.0;
   static const double iconSizeLarge = 32.0;
+
+  // *** SPACER *** //
+  // Spacer Height
+  static const spacerUltraSmall = SizedBox(height: 2);
+  static const spacerMini = SizedBox(height: 5);
+  static const spacerSmall = SizedBox(height: 8);
+  static const spacerMediumSmall = SizedBox(height: 12);
+  static const spacerMediumSmallLarge = SizedBox(height: 15);
+  static const spacerMedium = SizedBox(height: 16);
+  static const spacerMediumLarge = SizedBox(height: 20);
+  static const spacerLarge = SizedBox(height: 24);
+  static const spacerExtraLarge = SizedBox(height: 32);
+  static const spacerXXLarge = SizedBox(height: 40);
+  static const spacerXXXLarge = SizedBox(height: 48);
+  static const spacerXXXXLarge = SizedBox(height: 56);
+  static const spacerExtraXXXLarge = SizedBox(height: 64);
+  static const spacerExtraXXXXLarge = SizedBox(height: 72);
+  static const endSpacerHeight = SizedBox(height: 110);
+
+  // Spacer width
+  static const spacerWidthMini = SizedBox(width: 5);
+  static const spacerWidthSmall = SizedBox(width: 8);
+  static const spacerWidthMediumSmall = SizedBox(width: 12);
+  static const spacerWidthMedium = SizedBox(width: 16);
+  static const spacerWidthLarge = SizedBox(width: 24);
+  static const spacerWidthExtraLarge = SizedBox(width: 32);
+  static const spacerWidthXXLarge = SizedBox(width: 40);
+  static const spacerWidthXXXLarge = SizedBox(width: 48);
+  static const spacerWidthXXXXLarge = SizedBox(width: 56);
+  static const spacerWidthExtraXXXLarge = SizedBox(width: 64);
 }

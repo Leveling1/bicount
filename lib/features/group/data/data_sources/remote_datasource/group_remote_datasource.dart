@@ -1,4 +1,3 @@
-
 abstract class GroupRemoteDataSource {
   // Add your remote data source interface here
 }

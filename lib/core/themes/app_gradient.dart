@@ -21,8 +21,16 @@ class AppGradients extends ThemeExtension<AppGradients> {
   AppGradients lerp(ThemeExtension<AppGradients>? other, double t) {
     if (other is! AppGradients) return this;
     return AppGradients(
-      primaryGradient: LinearGradient.lerp(primaryGradient, other.primaryGradient, t),
-      secondaryGradient: LinearGradient.lerp(secondaryGradient, other.secondaryGradient, t),
+      primaryGradient: LinearGradient.lerp(
+        primaryGradient,
+        other.primaryGradient,
+        t,
+      ),
+      secondaryGradient: LinearGradient.lerp(
+        secondaryGradient,
+        other.secondaryGradient,
+        t,
+      ),
     );
   }
 }

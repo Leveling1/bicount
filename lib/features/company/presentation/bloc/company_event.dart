@@ -10,6 +10,5 @@ class CreateCompanyEvent extends CompanyEvent {
 
 class ExampleCompanyEvent extends CompanyEvent {}
 
-
 // For stream app with screen
 class GetAllCompany extends CompanyEvent {}

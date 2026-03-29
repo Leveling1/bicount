@@ -3,8 +3,10 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/constants/tables_name.dart';
+
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(tableName: 'groups'),
+  supabaseConfig: SupabaseSerializable(tableName: TablesName.groups),
 )
 class GroupModel extends OfflineFirstWithSupabaseModel {
   final String cid;
@@ -26,6 +28,6 @@ class GroupModel extends OfflineFirstWithSupabaseModel {
     this.number,
     this.image,
     required this.createdAt,
-  })  : gid = gid ?? const Uuid().v4(),
-        super();
+  }) : gid = gid ?? const Uuid().v4(),
+       super();
 }

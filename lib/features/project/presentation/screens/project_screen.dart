@@ -12,9 +12,7 @@ class ProjectScreen extends StatelessWidget {
     return Scaffold(
       body: BlocBuilder<ProjectBloc, ProjectState>(
         builder: (context, state) {
-          return const Center(
-            child: Text('Project Screen'),
-          );
+          return const Center(child: Text('Project Screen'));
         },
       ),
     );

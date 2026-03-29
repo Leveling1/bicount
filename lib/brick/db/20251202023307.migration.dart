@@ -11,7 +11,12 @@ part of 'schema.g.dart';
 
 const List<MigrationCommand> _migration_20251202023307_up = [
   InsertTable('SubscriptionModel'),
-  InsertColumn('subscription_id', Column.varchar, onTable: 'SubscriptionModel', unique: true),
+  InsertColumn(
+    'subscription_id',
+    Column.varchar,
+    onTable: 'SubscriptionModel',
+    unique: true,
+  ),
   InsertColumn('sid', Column.varchar, onTable: 'SubscriptionModel'),
   InsertColumn('title', Column.varchar, onTable: 'SubscriptionModel'),
   InsertColumn('amount', Column.Double, onTable: 'SubscriptionModel'),
@@ -22,7 +27,11 @@ const List<MigrationCommand> _migration_20251202023307_up = [
   InsertColumn('notes', Column.varchar, onTable: 'SubscriptionModel'),
   InsertColumn('created_at', Column.varchar, onTable: 'SubscriptionModel'),
   InsertColumn('status', Column.integer, onTable: 'SubscriptionModel'),
-  CreateIndex(columns: ['subscription_id'], onTable: 'SubscriptionModel', unique: true)
+  CreateIndex(
+    columns: ['subscription_id'],
+    onTable: 'SubscriptionModel',
+    unique: true,
+  ),
 ];
 
 const List<MigrationCommand> _migration_20251202023307_down = [
@@ -38,7 +47,7 @@ const List<MigrationCommand> _migration_20251202023307_down = [
   DropColumn('notes', onTable: 'SubscriptionModel'),
   DropColumn('created_at', onTable: 'SubscriptionModel'),
   DropColumn('status', onTable: 'SubscriptionModel'),
-  DropIndex('index_SubscriptionModel_on_subscription_id')
+  DropIndex('index_SubscriptionModel_on_subscription_id'),
 ];
 
 //

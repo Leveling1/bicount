@@ -1,336 +1,128 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/friend_const.dart';
-import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/errors/failure.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/localization/runtime_message_localizer.dart';
+import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/utils/form_date_utils.dart';
+import 'package:bicount/core/widgets/custom_amount_field.dart';
+import 'package:bicount/core/widgets/custom_button.dart';
+import 'package:bicount/core/widgets/custom_form_text_field.dart';
+import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:bicount/features/transaction/domain/services/transaction_split_resolver.dart';
+import 'package:bicount/features/transaction/presentation/widgets/split_input_row.dart';
+import 'package:bicount/features/transaction/presentation/widgets/split_preview_result.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_beneficiaries_section.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_beneficiary_list.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_party_section.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_preview_card.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_split_mode_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
-import '../../../../core/services/notification_helper.dart';
-import '../../../../core/widgets/custom_amount_field.dart';
-import '../../../../core/widgets/custom_button.dart';
-import '../../../../core/widgets/custom_form_text_field.dart';
-import '../../../../core/widgets/custom_suggestion_text_field.dart';
+import '../../../../core/themes/app_dimens.dart';
 import '../bloc/transaction_bloc.dart';
 
+part 'transfer_form_helpers.dart';
+part 'transfer_form_interactions.dart';
+part 'transfer_form_prefill.dart';
+part 'transfer_form_sections.dart';
+part 'transfer_form_split_logic.dart';
+part 'transfer_form_submission.dart';
+
 class TransferForm extends StatefulWidget {
+  const TransferForm({
+    super.key,
+    required this.user,
+    required this.friends,
+    this.initialTransaction,
+    this.onCompleted,
+  });
+
   final UserModel? user;
   final List<FriendsModel> friends;
-  const TransferForm({super.key, required this.user, required this.friends});
+  final TransactionEntity? initialTransaction;
+  final VoidCallback? onCompleted;
 
   @override
   State<TransferForm> createState() => _TransferFormState();
 }
 
 class _TransferFormState extends State<TransferForm> {
-  final TextEditingController _name = TextEditingController(),
-      _type = TextEditingController(),
-      _date = TextEditingController(),
-      _amount = TextEditingController(),
-      _currency = TextEditingController(),
-      _beneficiary = TextEditingController(),
-      _sender = TextEditingController(),
-      _note = TextEditingController();
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _date = TextEditingController();
+  final TextEditingController _amount = TextEditingController();
+  final TextEditingController _currency = TextEditingController();
+  final TextEditingController _beneficiary = TextEditingController();
+  final TextEditingController _sender = TextEditingController();
+  final TextEditingController _note = TextEditingController();
 
   final List<FriendsModel> _beneficiaryList = [];
-  bool loading = false;
+  final Map<String, TextEditingController> _splitControllers = {};
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TransactionSplitResolver _splitResolver =
+      const TransactionSplitResolver();
 
-  final _formKey = GlobalKey<FormState>();
+  TransactionSplitMode _splitMode = TransactionSplitMode.equal;
+  bool _didPrefillInitialTransaction = false;
 
-  void _removeItem(int index) {
-    setState(() {
-      _beneficiaryList.removeAt(index);
-    });
+  @override
+  void initState() => super.initState();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _prefillInitialTransactionIfNeeded();
+  }
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _date.dispose();
+    _amount.dispose();
+    _currency.dispose();
+    _beneficiary.dispose();
+    _sender.dispose();
+    _note.dispose();
+    for (final controller in _splitControllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final friendNames = widget.friends
+        .map((friend) => friend.username)
+        .toList();
+    final splitPreview = _buildPreview();
+
     return BlocConsumer<TransactionBloc, TransactionState>(
-      listener: (context, state) {
-        if (state is TransactionCreated) {
-          NotificationHelper.showSuccessNotification(context, state.toString());
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            clearForm();
-          });
-        } else if (state is TransactionError) {
-          NotificationHelper.showFailureNotification(
-            context,
-            state.failure.message,
-          );
-        }
-      },
+      listenWhen: (previous, current) =>
+          current is TransactionCreated ||
+          current is TransactionUpdated ||
+          current is TransactionError,
+      listener: _onTransactionStateChanged,
       builder: (context, state) {
-        List<String> friends = [];
-        if (widget.friends.isNotEmpty) {
-          friends = widget.friends.map((user) => user.username).toList();
-        }
-
         return Form(
           key: _formKey,
-          child: Column(
-            children: [
-              CustomFormField(
-                controller: _name,
-                label: "Title",
-                hint: 'Enter transaction name',
-              ),
-              const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Amount",
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  CustomAmountField(amount: _amount, currency: _currency),
-                ],
-              ),
-              const SizedBox(height: 16),
-              CustomFormField(
-                controller: _note,
-                label: "Note",
-                hint: 'Add a note (optional)',
-                enableValidator: false,
-              ),
-              const SizedBox(height: 16),
-              IntrinsicHeight(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Paid by",
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          CustomSuggestionTextField(
-                            controller: _sender,
-                            hintText: 'Enter sender name',
-                            options: friends,
-                            isVisible: false,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomFormField(
-                            controller: _date,
-                            hint: 'DD/MM/YYYY',
-                            inputType: TextInputType.datetime,
-                            isDate: true,
-                            label: 'When',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              CheckboxListTile(
-                value: _sender.text.trim().toLowerCase() == 'me',
-                onChanged: (checked) {
-                  setState(() {
-                    if (checked == true) {
-                      _sender.text = 'Me';
-
-                    } else {
-                      _sender.clear();
-                    }
-                  });
-                },
-                title: Text(
-                  "It's me the payer",
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 0,
-                  horizontal: 0,
-                ), // Reduced padding
-              ),
-              const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Beneficiary",
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  CustomSuggestionTextField(
-                    controller: _beneficiary,
-                    onAdd: () {
-                      if (_beneficiary.text.trim().isEmpty) return;
-                      final beneficiarySid =
-                          _beneficiary.text.trim().toLowerCase() == 'me'
-                          ? FriendsModel(
-                              sid: widget.user!.sid,
-                              username: widget.user!.username,
-                              uid: widget.user!.uid,
-                              image: widget.user!.image,
-                              email: widget.user!.email,
-                              relationType: FriendConst.friend,
-                            )
-                          : widget.friends.firstWhere(
-                              (user) =>
-                                  user.username.toLowerCase() ==
-                                  _beneficiary.text.trim().toLowerCase(),
-                              orElse: () => FriendsModel(
-                                sid: '',
-                                username: _beneficiary.text.trim(),
-                                uid: '',
-                                image: '',
-                                email: '',
-                                relationType: FriendConst.friend,
-                              ),
-                            );
-
-                      setState(() {
-                        _beneficiaryList.add(beneficiarySid);
-                        _beneficiary.clear();
-                      });
-                    },
-                    isVisible: true,
-                    hintText: 'Enter beneficiary name',
-                    options: friends,
-                  ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'If your are a beneficiary, please add "me".',
-                      style: Theme.of(context).textTheme.bodySmall,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                ],
-              ),
-
-              _beneficiaryList.isNotEmpty
-                  ? Column(
-                      children: _beneficiaryList.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        TextEditingController controller =
-                            TextEditingController(text: entry.value.username);
-
-                        return SizedBox(
-                          width: double.infinity,
-                          child: ListTile(
-                            title: Text(
-                                controller.text.isNotEmpty
-                                  ? controller.text
-                                  : 'No text',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.close, color: Colors.red),
-                              onPressed: () => _removeItem(index),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    )
-                  : const SizedBox.shrink(),
-              const SizedBox(height: 32),
-              CustomButton(
-                text: 'Save',
-                loading: state is TransactionLoading,
-                onPressed: _submit,
-              ),
-              const SizedBox(height: 32),
-            ],
+          child: _buildFormBody(
+            context,
+            state: state,
+            friendNames: friendNames,
+            splitPreview: splitPreview,
           ),
         );
       },
     );
   }
 
-  void _submit() {
-    if (_formKey.currentState?.validate() ?? false) {
-      bool senderIsMe = _sender.text.trim().toLowerCase() == 'me' ? true : false;
-      if (_beneficiaryList.isEmpty && _beneficiary.text != '') {
-      bool beneficiaryIsMe = _beneficiary.text.trim().toLowerCase() == 'me' ? true : false;
-      _type.text = TransactionTypes.income;
-        final beneficiarySid = beneficiaryIsMe
-            ? FriendsModel(
-                sid: widget.user!.sid,
-                username: widget.user!.username,
-                uid: widget.user!.uid,
-                image: widget.user!.image,
-                email: widget.user!.email,
-                relationType: FriendConst.friend,
-              )
-            : widget.friends.firstWhere(
-                (user) =>
-                    user.username.toLowerCase() ==
-                    _beneficiary.text.trim().toLowerCase(),
-                orElse: () => FriendsModel(
-                  sid: '',
-                  username: _beneficiary.text.trim(),
-                  uid: '',
-                  image: Constants.memojiDefault,
-                  email: '',
-                  relationType: FriendConst.friend,
-                ),
-              );
-        _beneficiaryList.add(beneficiarySid);
-      }
-
-      final senderModel = senderIsMe
-          ? FriendsModel(
-              sid: widget.user!.sid,
-              username: widget.user!.username,
-              uid: widget.user!.uid,
-              image: widget.user!.image,
-              email: widget.user!.email,
-              relationType: FriendConst.friend,
-            )
-          : widget.friends.firstWhere(
-              (user) =>
-                  user.username.toLowerCase() ==
-                  _sender.text.trim().toLowerCase(),
-              orElse: () => FriendsModel(
-                sid: '',
-                username: _sender.text.trim(),
-                uid: '',
-                image: Constants.memojiDefault,
-                email: '',
-                relationType: FriendConst.friend,
-              ),
-            );
-
-      final transaction = {
-        "name": _name.text,
-        "type": _type.text,
-        "date": DateTime.now().toIso8601String(),
-        "amount": double.parse(_amount.text),
-        "currency": 'USD',
-        "sender": senderModel,
-        "beneficiaryList": _beneficiaryList,
-        "note": _note.text,
-      };
-      context.read<TransactionBloc>().add(CreateTransactionEvent(transaction));
-    }
-  }
-
-  void clearForm() {
-    _name.clear();
-    _type.clear();
-    _date.clear();
-    _amount.clear();
-    _currency.clear();
-    _beneficiary.clear();
-    _sender.clear();
-    _note.clear();
-    _beneficiaryList.clear();
+  void _update(VoidCallback callback) {
+    setState(callback);
   }
 }

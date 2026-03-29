@@ -10,11 +10,15 @@ part of 'schema.g.dart';
 // The migration version must **always** mirror the file name
 
 const List<MigrationCommand> _migration_20251202215424_up = [
-  InsertColumn('next_billing_date', Column.varchar, onTable: 'SubscriptionModel')
+  InsertColumn(
+    'next_billing_date',
+    Column.varchar,
+    onTable: 'SubscriptionModel',
+  ),
 ];
 
 const List<MigrationCommand> _migration_20251202215424_down = [
-  DropColumn('next_billing_date', onTable: 'SubscriptionModel')
+  DropColumn('next_billing_date', onTable: 'SubscriptionModel'),
 ];
 
 //

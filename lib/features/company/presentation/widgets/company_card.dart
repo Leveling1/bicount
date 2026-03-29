@@ -26,7 +26,7 @@ class CompanyCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
           splashColor: Colors.transparent,
           highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-          onTap: (){
+          onTap: () {
             context.push('/companyDetail', extra: company.cid);
           },
           child: Padding(
@@ -34,11 +34,7 @@ class CompanyCard extends StatelessWidget {
             child: Row(
               children: [
                 // Avatar
-                CompanyProfil(
-                  width: 60,
-                  height: 60,
-                  image: company.image,
-                ),
+                CompanyProfil(width: 60, height: 60, image: company.image),
                 const SizedBox(width: 12),
 
                 // Name and date
@@ -52,17 +48,21 @@ class CompanyCard extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       company.description != null && company.description != ""
-                        ? const SizedBox(height: 4) : const SizedBox.shrink(),
+                          ? const SizedBox(height: 4)
+                          : const SizedBox.shrink(),
                       company.description != null && company.description != ""
-                        ? Text(
-                        company.description!,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: Theme.of(context).textTheme.bodySmall!.fontSize!
-                        ),
-                      ) : const SizedBox.shrink(),
+                          ? Text(
+                              company.description!,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: Theme.of(
+                                  context,
+                                ).textTheme.bodySmall!.fontSize!,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
                     ],
                   ),
                 ),
@@ -72,12 +72,12 @@ class CompanyCard extends StatelessWidget {
                   NumberFormatUtils.formatCurrency(company.profit!),
                   style: TextStyle(
                     color: company.profit! == 0.0
-                      ? Theme.of(context).iconTheme.color
-                      : company.profit! < 0
+                        ? Theme.of(context).iconTheme.color
+                        : company.profit! < 0
                         ? Colors.red
                         : Colors.green,
                     fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],

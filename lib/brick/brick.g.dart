@@ -9,13 +9,29 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 // ignore: unused_import, unused_shown_name, unnecessary_import
 import 'package:brick_supabase/brick_supabase.dart';
 // ignore: unused_import, unused_shown_name, unnecessary_import
-import 'package:uuid/uuid.dart';// GENERATED CODE DO NOT EDIT
+import 'package:uuid/uuid.dart';
+// ignore: unused_import, unused_shown_name, unnecessary_import
+import '../../../../core/constants/tables_name.dart';
+// ignore: unused_import, unused_shown_name, unnecessary_import
+import '../../../../core/constants/account_funding_const.dart';
 // ignore: unused_import
 import 'dart:convert';
-import 'package:brick_sqlite/brick_sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition, SqliteProvider;
-import 'package:brick_supabase/brick_supabase.dart' show SupabaseProvider, SupabaseModel, SupabaseAdapter, SupabaseModelDictionary;
+import 'package:brick_sqlite/brick_sqlite.dart'
+    show
+        SqliteModel,
+        SqliteAdapter,
+        SqliteModelDictionary,
+        RuntimeSqliteColumnDefinition,
+        SqliteProvider;
+import 'package:brick_supabase/brick_supabase.dart'
+    show
+        SupabaseProvider,
+        SupabaseModel,
+        SupabaseAdapter,
+        SupabaseModelDictionary;
 // ignore: unused_import, unused_shown_name
-import 'package:brick_offline_first/brick_offline_first.dart' show RuntimeOfflineFirstDefinition;
+import 'package:brick_offline_first/brick_offline_first.dart'
+    show RuntimeOfflineFirstDefinition;
 // ignore: unused_import, unused_shown_name
 import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;
 
@@ -26,6 +42,7 @@ import '../features/company/data/models/company_with_user_link.model.dart';
 import '../features/group/data/models/group.model.dart';
 import '../features/main/data/models/friends.model.dart';
 import '../features/profile/data/models/account_funding.model.dart';
+import '../features/profile/data/models/recurring_funding.model.dart';
 import '../features/project/data/models/project.model.dart';
 import '../features/transaction/data/models/subscription.model.dart';
 import '../features/transaction/data/models/transaction.model.dart';
@@ -37,6 +54,7 @@ part 'adapters/company_with_user_link_model_adapter.g.dart';
 part 'adapters/group_model_adapter.g.dart';
 part 'adapters/friends_model_adapter.g.dart';
 part 'adapters/account_funding_model_adapter.g.dart';
+part 'adapters/recurring_funding_model_adapter.g.dart';
 part 'adapters/project_model_adapter.g.dart';
 part 'adapters/subscription_model_adapter.g.dart';
 part 'adapters/transaction_model_adapter.g.dart';
@@ -50,9 +68,10 @@ final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
   GroupModel: GroupModelAdapter(),
   FriendsModel: FriendsModelAdapter(),
   AccountFundingModel: AccountFundingModelAdapter(),
+  RecurringFundingModel: RecurringFundingModelAdapter(),
   ProjectModel: ProjectModelAdapter(),
   SubscriptionModel: SubscriptionModelAdapter(),
-  TransactionModel: TransactionModelAdapter()
+  TransactionModel: TransactionModelAdapter(),
 };
 final supabaseModelDictionary = SupabaseModelDictionary(supabaseMappings);
 
@@ -65,8 +84,9 @@ final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   GroupModel: GroupModelAdapter(),
   FriendsModel: FriendsModelAdapter(),
   AccountFundingModel: AccountFundingModelAdapter(),
+  RecurringFundingModel: RecurringFundingModelAdapter(),
   ProjectModel: ProjectModelAdapter(),
   SubscriptionModel: SubscriptionModelAdapter(),
-  TransactionModel: TransactionModelAdapter()
+  TransactionModel: TransactionModelAdapter(),
 };
 final sqliteModelDictionary = SqliteModelDictionary(sqliteMappings);

@@ -15,11 +15,16 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
     on<CreateCompanyEvent>(_onCreateCompany);
   }
 
-  Future<void> _onCreateCompany(CreateCompanyEvent event, Emitter<CompanyState> emit) async {
+  Future<void> _onCreateCompany(
+    CreateCompanyEvent event,
+    Emitter<CompanyState> emit,
+  ) async {
     emit(CompanyLoading());
     try {
-      final createdCompany =
-      await repository.createCompany(event.company, event.logoFile);
+      final createdCompany = await repository.createCompany(
+        event.company,
+        event.logoFile,
+      );
       emit(CompanyCreated(createdCompany));
       add(GetAllCompany());
     } catch (e) {

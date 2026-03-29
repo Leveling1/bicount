@@ -2,32 +2,21 @@ part of 'authentification_bloc.dart';
 
 abstract class AuthentificationEvent {}
 
-class SignUpEvent extends AuthentificationEvent {
-  final String username;
-  final String email;
-  final String password;
+class RequestEmailOtpEvent extends AuthentificationEvent {
+  RequestEmailOtpEvent({required this.email});
 
-  SignUpEvent({
-    required this.username,
-    required this.email,
-    required this.password
-  });
+  final String email;
 }
 
-class SignInEvent extends AuthentificationEvent {
-  final String email;
-  final String password;
+class VerifyEmailOtpEvent extends AuthentificationEvent {
+  VerifyEmailOtpEvent({required this.email, required this.code});
 
-  SignInEvent({required this.email, required this.password});
+  final String email;
+  final String code;
 }
 
-class SignOutEvent extends AuthentificationEvent {}
-
-class SendPasswordResetEmailEvent extends AuthentificationEvent {
-  final String email;
-  SendPasswordResetEmailEvent({required this.email});
-}
-
-// Authentification with google
 class AuthWithGoogleEvent extends AuthentificationEvent {}
 
+class AuthWithAppleEvent extends AuthentificationEvent {}
+
+class SignOutEvent extends AuthentificationEvent {}

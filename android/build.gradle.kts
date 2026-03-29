@@ -5,15 +5,27 @@ allprojects {
     }
 }
 
-val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build").get()
-rootProject.layout.buildDirectory.value(newBuildDir)
+val canonicalFlutterProjectDir = rootDir.parentFile.canonicalFile
+val canonicalBuildDir = canonicalFlutterProjectDir.resolve("build")
+rootProject.layout.buildDirectory.set(canonicalBuildDir)
 
 subprojects {
-    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
-    project.layout.buildDirectory.value(newSubprojectBuildDir)
+    project.layout.buildDirectory.set(canonicalBuildDir.resolve(project.name))
 }
 subprojects {
     project.evaluationDependsOn(":app")
+}
+
+subprojects {
+    configurations.configureEach {
+        resolutionStrategy.force(
+            "androidx.core:core:1.15.0",
+            "androidx.core:core-ktx:1.15.0",
+            "androidx.activity:activity:1.10.1",
+            "androidx.activity:activity-ktx:1.10.1",
+            "androidx.browser:browser:1.8.0",
+        )
+    }
 }
 
 tasks.register<Delete>("clean") {

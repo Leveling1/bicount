@@ -10,8 +10,7 @@ class TransactionTypes {
   static const String subscriptionText = 'Subscription';
   static const String addFundText = 'Add a fund';
 
-  static const personal = 3;
-  static const business = 4;
+  static const personal = 99;
 
   /// List of all transaction types
   static const List<String> allTypes = [
@@ -21,7 +20,6 @@ class TransactionTypes {
     'Subscription',
     'Other',
     'Personal',
-    'Business',
   ];
 
   static const List<int> allTypesInt = [
@@ -31,7 +29,6 @@ class TransactionTypes {
     subscriptionCode,
     othersCode,
     personal,
-    business,
   ];
 
   static const String income = "Income";
@@ -45,7 +42,6 @@ class TransactionTypes {
   static const int subscriptionCode = 4;
 
   static const int personalIncome = 0;
-  static const int companyIncome = 1;
 
   static String getTypeText(int type) {
     switch (type) {

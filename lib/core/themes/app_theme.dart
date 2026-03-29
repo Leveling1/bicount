@@ -143,7 +143,7 @@ class AppTheme {
       shadowColor: Colors.black.withValues(alpha: 0.2),
       elevation: 0,
 
-      // En-tête du calendrier
+      // En-tÃªte du calendrier
       headerBackgroundColor: Colors.transparent,
       headerForegroundColor: AppColors.textColorLight,
       headerHeadlineStyle: const TextStyle(
@@ -158,7 +158,7 @@ class AppTheme {
         fontSize: 18,
       ),
 
-      // Dividers/séparateurs
+      // Dividers/sÃ©parateurs
       dividerColor: AppColors.textColorLight.withValues(alpha: 0.1),
 
       // Style du jour aujourd'hui
@@ -179,7 +179,7 @@ class AppTheme {
         width: 1,
       ),
 
-      // Style du jour sélectionné
+      // Style du jour sÃ©lectionnÃ©
       dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return AppColors.primaryColorLight;
@@ -219,14 +219,14 @@ class AppTheme {
         color: AppColors.textColorLight,
       ),
 
-      // Style des en-têtes des jours
+      // Style des en-tÃªtes des jours
       weekdayStyle: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w500,
         color: AppColors.textColorLight.withValues(alpha: 0.7),
       ),
 
-      // Style des années
+      // Style des annÃ©es
       yearStyle: const TextStyle(
         fontWeight: FontWeight.w400,
         color: AppColors.textColorLight,
@@ -290,12 +290,9 @@ class AppTheme {
         ),
       ),
 
-      // Forme générale des éléments
+      // Forme gÃ©nÃ©rale des Ã©lÃ©ments
       dayShape: WidgetStateProperty.all(CircleBorder()),
       yearShape: WidgetStateProperty.all(CircleBorder()),
-
-      // Localisation et format
-      locale: const Locale('en', 'EN'),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.cardColorLight,
@@ -387,6 +384,24 @@ class AppTheme {
       selectionHandleColor: AppColors.primaryColorLight,
     ),
 
+    dialogTheme: DialogThemeData(
+      backgroundColor: AppColors.cardColorLight,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusExtraLarge),
+      ),
+      titleTextStyle: TextStyle(
+        color: AppColors.textColorLight,
+        fontSize: AppDimens.textSizeLarge.sp,
+        fontWeight: FontWeight.w700,
+      ),
+      contentTextStyle: TextStyle(
+        color: AppColors.secondaryTextColorLight,
+        fontSize: AppDimens.textSizeMedium.sp,
+        height: 1.45,
+      ),
+    ),
+
     /// Extensions light
     extensions: <ThemeExtension<dynamic>>[
       AppGradients(
@@ -460,6 +475,24 @@ class AppTheme {
       cursorColor: AppColors.primaryColorDark,
       selectionColor: AppColors.primaryColorDark,
       selectionHandleColor: AppColors.primaryColorDark,
+    ),
+
+    dialogTheme: DialogThemeData(
+      backgroundColor: AppColors.cardColorDark,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusExtraLarge),
+      ),
+      titleTextStyle: TextStyle(
+        color: AppColors.textColorDark,
+        fontSize: AppDimens.textSizeLarge.sp,
+        fontWeight: FontWeight.w700,
+      ),
+      contentTextStyle: TextStyle(
+        color: AppColors.secondaryTextColorDark,
+        fontSize: AppDimens.textSizeMedium.sp,
+        height: 1.45,
+      ),
     ),
 
     /// Text button theme dark
@@ -552,22 +585,22 @@ class AppTheme {
       shadowColor: Colors.black.withValues(alpha: 0.2),
       elevation: 0,
 
-      // En-tête du calendrier - MODIFIÉ POUR AGRANDIR
+      // En-tÃªte du calendrier - MODIFIÃ‰ POUR AGRANDIR
       headerBackgroundColor: Colors.transparent,
       headerForegroundColor: AppColors.textColorDark,
       headerHeadlineStyle: const TextStyle(
         fontWeight: FontWeight.bold,
         color: AppColors.textColorDark,
-        fontSize: 28, // Taille plus grande pour une meilleure visibilité
+        fontSize: 28, // Taille plus grande pour une meilleure visibilitÃ©
         height: 1.2, // Espacement des lignes
       ),
       headerHelpStyle: const TextStyle(
         fontWeight: FontWeight.bold,
         color: AppColors.textColorDark,
-        fontSize: 18, // Augmenté aussi
+        fontSize: 18, // AugmentÃ© aussi
       ),
 
-      // Dividers/séparateurs
+      // Dividers/sÃ©parateurs
       dividerColor: AppColors.textColorDark.withValues(alpha: 0.1),
 
       // Style du jour aujourd'hui
@@ -588,7 +621,7 @@ class AppTheme {
         width: 1,
       ),
 
-      // Style du jour sélectionné
+      // Style du jour sÃ©lectionnÃ©
       dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
           return AppColors.primaryColorDark;
@@ -628,14 +661,14 @@ class AppTheme {
         color: AppColors.textColorDark,
       ),
 
-      // Style des en-têtes des jours de la semaine (L M M J V S D)
+      // Style des en-tÃªtes des jours de la semaine (L M M J V S D)
       weekdayStyle: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w500,
         color: AppColors.textColorDark.withValues(alpha: 0.7),
       ),
 
-      // Style des années dans la vue année
+      // Style des annÃ©es dans la vue annÃ©e
       yearStyle: const TextStyle(
         fontWeight: FontWeight.w400,
         color: AppColors.textColorDark,
@@ -668,7 +701,7 @@ class AppTheme {
         return Colors.transparent;
       }),
 
-      // Boutons de confirmation/annulation (si utilisés)
+      // Boutons de confirmation/annulation (si utilisÃ©s)
       confirmButtonStyle: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(AppColors.primaryColorDark),
         foregroundColor: WidgetStateProperty.all(Colors.white),
@@ -699,12 +732,9 @@ class AppTheme {
         ),
       ),
 
-      // Forme générale des éléments
+      // Forme gÃ©nÃ©rale des Ã©lÃ©ments
       dayShape: WidgetStateProperty.all(CircleBorder()),
       yearShape: WidgetStateProperty.all(CircleBorder()),
-
-      // Localisation et format
-      locale: const Locale('en', 'EN'),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.cardColorDark,

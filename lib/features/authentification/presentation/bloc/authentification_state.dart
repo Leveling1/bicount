@@ -3,42 +3,57 @@ part of 'authentification_bloc.dart';
 abstract class AuthentificationState {}
 
 class AuthentificationInitial extends AuthentificationState {}
-class AuthentificationFailure extends AuthentificationState {}
-class AuthentificationLoading extends AuthentificationState {}
-class AuthentificationSuccess extends AuthentificationState {}
 
-class SignUpLoading extends AuthentificationLoading {}
-class SignUpSuccess extends AuthentificationSuccess {}
-class SignUpFailure extends AuthentificationFailure {
-  final String error;
-  SignUpFailure({required this.error});
+class RequestEmailOtpLoading extends AuthentificationState {}
+
+class RequestEmailOtpSuccess extends AuthentificationState {
+  RequestEmailOtpSuccess({required this.email});
+
+  final String email;
 }
 
-class SignInLoading extends AuthentificationLoading {}
-class SignInSuccess extends AuthentificationSuccess {}
-class SignInFailure extends AuthentificationState {
+class RequestEmailOtpFailure extends AuthentificationState {
+  RequestEmailOtpFailure({required this.error});
+
   final String error;
-  SignInFailure({required this.error});
 }
 
-class SignOutLoading extends AuthentificationLoading {}
-class SignOutSuccess extends AuthentificationSuccess {}
-class SignOutFailure extends AuthentificationFailure {
+class VerifyEmailOtpLoading extends AuthentificationState {}
+
+class VerifyEmailOtpSuccess extends AuthentificationState {}
+
+class VerifyEmailOtpFailure extends AuthentificationState {
+  VerifyEmailOtpFailure({required this.error});
+
   final String error;
-  SignOutFailure({required this.error});
 }
 
-class SendPasswordResetEmailLoading extends AuthentificationLoading {}
-class SendPasswordResetEmailSuccess extends AuthentificationState {}
-class SendPasswordResetEmailFailure extends AuthentificationFailure {
-  final String error;
-  SendPasswordResetEmailFailure({required this.error});
-}
+class AuthWithGoogleLoading extends AuthentificationState {}
 
-// For authentification with google process
-class AuthWithGoogleLoading extends AuthentificationLoading {}
-class AuthWithGoogleSuccess extends AuthentificationSuccess {}
-class AuthWithGoogleFailure extends AuthentificationFailure {
-  final String error;
+class AuthWithGoogleSuccess extends AuthentificationState {}
+
+class AuthWithGoogleFailure extends AuthentificationState {
   AuthWithGoogleFailure({required this.error});
+
+  final String error;
+}
+
+class AuthWithAppleLoading extends AuthentificationState {}
+
+class AuthWithAppleSuccess extends AuthentificationState {}
+
+class AuthWithAppleFailure extends AuthentificationState {
+  AuthWithAppleFailure({required this.error});
+
+  final String error;
+}
+
+class SignOutLoading extends AuthentificationState {}
+
+class SignOutSuccess extends AuthentificationState {}
+
+class SignOutFailure extends AuthentificationState {
+  SignOutFailure({required this.error});
+
+  final String error;
 }

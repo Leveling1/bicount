@@ -3,14 +3,12 @@ import 'package:brick_sqlite/brick_sqlite.dart';
 import 'package:brick_supabase/brick_supabase.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/constants/tables_name.dart';
+
 @ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(tableName: 'users'),
+  supabaseConfig: SupabaseSerializable(tableName: TablesName.users),
 )
 class UserModel extends OfflineFirstWithSupabaseModel {
-  @Supabase(name: 'uid')
-  @Sqlite()
-  final String uid;
-
   @Supabase(name: 'image')
   @Sqlite()
   final String image;
@@ -43,13 +41,16 @@ class UserModel extends OfflineFirstWithSupabaseModel {
   @Sqlite()
   final double? personalIncome;
 
-  @Supabase(unique: true, name: 'sid')
+  @Supabase(name: 'reference_currency_code')
+  @Sqlite()
+  final String? referenceCurrencyCode;
+
+  @Supabase(unique: true, name: 'uid')
   @Sqlite(index: true, unique: true)
-  final String sid;
+  final String uid;
 
   UserModel({
-    String? sid,
-    required this.uid,
+    String? uid,
     required this.image,
     required this.username,
     required this.email,
@@ -58,6 +59,7 @@ class UserModel extends OfflineFirstWithSupabaseModel {
     this.expenses,
     this.companyIncome,
     this.personalIncome,
-  }) : sid = sid ?? const Uuid().v4(),
+    this.referenceCurrencyCode,
+  }) : uid = uid ?? const Uuid().v4(),
        super();
 }
