@@ -1,64 +1,51 @@
 import 'package:bicount/features/authentification/domain/repositories/authentification_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 part 'authentification_event.dart';
 part 'authentification_state.dart';
 
 class AuthentificationBloc
     extends Bloc<AuthentificationEvent, AuthentificationState> {
-  final AuthentificationRepository authentificationRepository;
-
   AuthentificationBloc({required this.authentificationRepository})
     : super(AuthentificationInitial()) {
-    // For the sign up process
-    on<SignUpEvent>(_signUp);
-
-    // For the sign in process
-    on<SignInEvent>(_signIn);
-
-    // For the authentification with google process
+    on<RequestEmailOtpEvent>(_requestEmailOtp);
+    on<VerifyEmailOtpEvent>(_verifyEmailOtp);
     on<AuthWithGoogleEvent>(_authWithGoogle);
-
-    // For the sign out process
+    on<AuthWithAppleEvent>(_authWithApple);
     on<SignOutEvent>(_signOut);
   }
 
-  /// For the sign in process
-  // With email and password
-  Future<void> _signUp(
-    SignUpEvent event,
+  final AuthentificationRepository authentificationRepository;
+
+  Future<void> _requestEmailOtp(
+    RequestEmailOtpEvent event,
     Emitter<AuthentificationState> emit,
   ) async {
-    emit(SignUpLoading());
-    final result = await authentificationRepository.signUp(
-      event.username,
+    emit(RequestEmailOtpLoading());
+    final result = await authentificationRepository.requestEmailOtp(
       event.email,
-      event.password,
     );
     result.fold(
-      (failure) => emit(SignUpFailure(error: failure.message)),
-      (user) => emit(SignUpSuccess()),
+      (failure) => emit(RequestEmailOtpFailure(error: failure.message)),
+      (_) => emit(RequestEmailOtpSuccess(email: event.email)),
     );
   }
 
-  /// For the login process
-  // With email and password
-  Future<void> _signIn(
-    SignInEvent event,
+  Future<void> _verifyEmailOtp(
+    VerifyEmailOtpEvent event,
     Emitter<AuthentificationState> emit,
   ) async {
-    emit(SignInLoading());
-    final result = await authentificationRepository.signInWithEmailAndPassword(
+    emit(VerifyEmailOtpLoading());
+    final result = await authentificationRepository.verifyEmailOtp(
       event.email,
-      event.password,
+      event.code,
     );
     result.fold(
-      (failure) => emit(SignInFailure(error: failure.message)),
-      (user) => emit(SignInSuccess()),
+      (failure) => emit(VerifyEmailOtpFailure(error: failure.message)),
+      (_) => emit(VerifyEmailOtpSuccess()),
     );
   }
 
-  /// For the authentification process
-  // With Google
   Future<void> _authWithGoogle(
     AuthWithGoogleEvent event,
     Emitter<AuthentificationState> emit,
@@ -67,12 +54,22 @@ class AuthentificationBloc
     final result = await authentificationRepository.authWithGoogle();
     result.fold(
       (failure) => emit(AuthWithGoogleFailure(error: failure.message)),
-      (user) => emit(AuthWithGoogleSuccess()),
+      (_) => emit(AuthWithGoogleSuccess()),
     );
   }
 
-  /// For the sign out process
-  // Signout
+  Future<void> _authWithApple(
+    AuthWithAppleEvent event,
+    Emitter<AuthentificationState> emit,
+  ) async {
+    emit(AuthWithAppleLoading());
+    final result = await authentificationRepository.authWithApple();
+    result.fold(
+      (failure) => emit(AuthWithAppleFailure(error: failure.message)),
+      (_) => emit(AuthWithAppleSuccess()),
+    );
+  }
+
   Future<void> _signOut(
     SignOutEvent event,
     Emitter<AuthentificationState> emit,
@@ -81,7 +78,7 @@ class AuthentificationBloc
     final result = await authentificationRepository.signOut();
     result.fold(
       (failure) => emit(SignOutFailure(error: failure.message)),
-      (user) => emit(SignOutSuccess()),
+      (_) => emit(SignOutSuccess()),
     );
   }
 }

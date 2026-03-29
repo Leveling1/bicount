@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:bicount/core/constants/app_config.dart';
-import 'package:bicount/features/authentification/presentation/screens/login_screen.dart';
-import 'package:bicount/features/authentification/presentation/screens/onboarding_screen.dart';
-import 'package:bicount/features/authentification/presentation/screens/signup_screen.dart';
+import 'package:bicount/features/authentification/presentation/screens/auth_email_code_screen.dart';
+import 'package:bicount/features/authentification/presentation/screens/auth_screen.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_invite_landing_screen.dart';
 import 'package:bicount/features/settings/presentation/screens/settings_screen.dart';
 import 'package:bicount/features/subscription/presentation/screens/subscription_screen.dart';
@@ -30,9 +29,20 @@ class AppRouter {
         routes: [
           GoRoute(path: '/', builder: (context, state) => MainScreen()),
           GoRoute(
-            path: '/onboarding',
+            path: '/auth',
             pageBuilder: (context, state) => buildFadeSlideTransitionPage(
-              child: const OnboardingScreen(),
+              child: AuthScreen(
+                initialEmail: state.uri.queryParameters['email'],
+              ),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/auth/email-code',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: AuthEmailCodeScreen(
+                email: state.uri.queryParameters['email'] ?? '',
+              ),
               state: state,
             ),
           ),
@@ -61,20 +71,6 @@ class AppRouter {
               child: FriendInviteLandingScreen(
                 inviteCode: state.uri.queryParameters['code'] ?? '',
               ),
-              state: state,
-            ),
-          ),
-          GoRoute(
-            path: '/login',
-            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
-              child: LoginScreen(),
-              state: state,
-            ),
-          ),
-          GoRoute(
-            path: '/signUp',
-            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
-              child: SignUpScreen(),
               state: state,
             ),
           ),
@@ -125,9 +121,8 @@ class AppRouter {
           final isLoggedIn = session != null;
           final path = state.uri.path;
           final isPublicPath =
-              path == '/onboarding' ||
-              path == '/login' ||
-              path == '/signUp' ||
+              path == '/auth' ||
+              path == '/auth/email-code' ||
               path == '/friend/invite';
 
           if (!AppConfig.exposeCompanySurface &&
@@ -144,17 +139,22 @@ class AppRouter {
             return '/';
           }
 
+          if (path == '/auth/email-code' &&
+              (state.uri.queryParameters['email'] ?? '').isEmpty) {
+            return '/auth';
+          }
+
           if (!isLoggedIn) {
             if (path == '/') {
-              return '/onboarding';
+              return '/auth';
             }
             if (!isPublicPath) {
-              return '/onboarding';
+              return '/auth';
             }
             return null;
           }
 
-          if (path == '/onboarding' || path == '/login' || path == '/signUp') {
+          if (path == '/auth' || path == '/auth/email-code') {
             return '/';
           }
           return null;

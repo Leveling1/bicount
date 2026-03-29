@@ -1,20 +1,10 @@
 import '/core/errors/failure.dart';
 import 'package:dartz/dartz.dart';
-import '../entities/user.dart';
 
 abstract class AuthentificationRepository {
-  Future<Either<Failure, UserEntity>> signInWithEmailAndPassword(
-    String email,
-    String password,
-  );
-  Future<Either<Failure, UserEntity>> signUp(
-    String username,
-    String email,
-    String password,
-  );
+  Future<Either<Failure, void>> requestEmailOtp(String email);
+  Future<Either<Failure, void>> verifyEmailOtp(String email, String code);
   Future<Either<Failure, void>> signOut();
-  Future<Either<Failure, void>> sendPasswordResetEmail(String email);
-
-  // For the authentification with google process
   Future<Either<Failure, void>> authWithGoogle();
+  Future<Either<Failure, void>> authWithApple();
 }

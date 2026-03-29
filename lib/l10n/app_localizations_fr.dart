@@ -194,6 +194,64 @@ class AppLocalizationsFr extends AppLocalizations {
       'La connexion avec Google a échoué. Réessayez.';
 
   @override
+  String get authUnifiedTitle => 'Gérez votre argent avec Bicount';
+
+  @override
+  String get authUnifiedSubtitle =>
+      'Un seul accès simple et sécurisé pour votre argent perso et partagé.';
+
+  @override
+  String get authContinueWithApple => 'Continuer avec Apple';
+
+  @override
+  String get authContinueWithEmail => 'Continuer avec l\'e-mail';
+
+  @override
+  String get authEmailPlaceholder => 'E-mail personnel ou professionnel';
+
+  @override
+  String get authOr => 'OU';
+
+  @override
+  String get authCheckYourEmailTitle =>
+      'Vérifiez votre e-mail pour terminer la connexion';
+
+  @override
+  String authCheckYourEmailDescription(Object email) {
+    return 'Nous avons envoyé votre code à $email';
+  }
+
+  @override
+  String get authCodeFieldHint => 'Code';
+
+  @override
+  String get authCodeHelper => 'Entrez le code reçu par e-mail pour continuer.';
+
+  @override
+  String get authChangeEmailAddress => 'Changer l\'adresse e-mail';
+
+  @override
+  String get authVerifyCode => 'Vérifier le code';
+
+  @override
+  String get authLegalByContinuing => 'En continuant, vous acceptez les';
+
+  @override
+  String get authLegalAnd => 'et la';
+
+  @override
+  String get authLegalAcknowledge => 'et reconnaissez la';
+
+  @override
+  String get authConsumerTerms => 'Consumer Terms';
+
+  @override
+  String get authUsagePolicy => 'Usage Policy';
+
+  @override
+  String get authPrivacyPolicy => 'Privacy Policy';
+
+  @override
   String get validationEmailRequired => 'E-mail requis';
 
   @override

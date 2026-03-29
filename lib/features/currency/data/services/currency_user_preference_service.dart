@@ -41,20 +41,15 @@ class CurrencyUserPreferenceService {
       return const Stream.empty();
     }
 
-    return _client
-        .from('users')
-        .stream(primaryKey: ['uid'])
-        .eq('uid', uid)
-        .map((users) {
-          if (users.isEmpty) {
-            return null;
-          }
-          final value = users.first['reference_currency_code']
-              ?.toString()
-              .trim();
-          return value == null || value.isEmpty ? null : value;
-        })
-        .distinct();
+    return _client.from('users').stream(primaryKey: ['uid']).eq('uid', uid).map(
+      (users) {
+        if (users.isEmpty) {
+          return null;
+        }
+        final value = users.first['reference_currency_code']?.toString().trim();
+        return value == null || value.isEmpty ? null : value;
+      },
+    ).distinct();
   }
 
   Future<void> persistCurrentUserReferenceCurrency(String currencyCode) async {

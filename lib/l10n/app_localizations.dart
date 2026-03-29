@@ -446,6 +446,114 @@ abstract class AppLocalizations {
   /// **'Google sign-in failed. Please try again.'**
   String get authGoogleFailed;
 
+  /// No description provided for @authUnifiedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your money with Bicount'**
+  String get authUnifiedTitle;
+
+  /// No description provided for @authUnifiedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with one secure sign-in for personal and shared money.'**
+  String get authUnifiedSubtitle;
+
+  /// No description provided for @authContinueWithApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get authContinueWithApple;
+
+  /// No description provided for @authContinueWithEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with email'**
+  String get authContinueWithEmail;
+
+  /// No description provided for @authEmailPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal or work email'**
+  String get authEmailPlaceholder;
+
+  /// No description provided for @authOr.
+  ///
+  /// In en, this message translates to:
+  /// **'OR'**
+  String get authOr;
+
+  /// No description provided for @authCheckYourEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email to finish signing in'**
+  String get authCheckYourEmailTitle;
+
+  /// No description provided for @authCheckYourEmailDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent your code to {email}'**
+  String authCheckYourEmailDescription(Object email);
+
+  /// No description provided for @authCodeFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get authCodeFieldHint;
+
+  /// No description provided for @authCodeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the code from your email to continue.'**
+  String get authCodeHelper;
+
+  /// No description provided for @authChangeEmailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Change email address'**
+  String get authChangeEmailAddress;
+
+  /// No description provided for @authVerifyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify code'**
+  String get authVerifyCode;
+
+  /// No description provided for @authLegalByContinuing.
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing, you agree to Bicount\'s'**
+  String get authLegalByContinuing;
+
+  /// No description provided for @authLegalAnd.
+  ///
+  /// In en, this message translates to:
+  /// **'and'**
+  String get authLegalAnd;
+
+  /// No description provided for @authLegalAcknowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'and acknowledge the'**
+  String get authLegalAcknowledge;
+
+  /// No description provided for @authConsumerTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Consumer Terms'**
+  String get authConsumerTerms;
+
+  /// No description provided for @authUsagePolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage Policy'**
+  String get authUsagePolicy;
+
+  /// No description provided for @authPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get authPrivacyPolicy;
+
   /// No description provided for @validationEmailRequired.
   ///
   /// In en, this message translates to:

@@ -191,6 +191,63 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authGoogleFailed => 'Google sign-in failed. Please try again.';
 
   @override
+  String get authUnifiedTitle => 'Manage your money with Bicount';
+
+  @override
+  String get authUnifiedSubtitle =>
+      'Start with one secure sign-in for personal and shared money.';
+
+  @override
+  String get authContinueWithApple => 'Continue with Apple';
+
+  @override
+  String get authContinueWithEmail => 'Continue with email';
+
+  @override
+  String get authEmailPlaceholder => 'Personal or work email';
+
+  @override
+  String get authOr => 'OR';
+
+  @override
+  String get authCheckYourEmailTitle => 'Check your email to finish signing in';
+
+  @override
+  String authCheckYourEmailDescription(Object email) {
+    return 'We sent your code to $email';
+  }
+
+  @override
+  String get authCodeFieldHint => 'Code';
+
+  @override
+  String get authCodeHelper => 'Enter the code from your email to continue.';
+
+  @override
+  String get authChangeEmailAddress => 'Change email address';
+
+  @override
+  String get authVerifyCode => 'Verify code';
+
+  @override
+  String get authLegalByContinuing => 'By continuing, you agree to Bicount\'s';
+
+  @override
+  String get authLegalAnd => 'and';
+
+  @override
+  String get authLegalAcknowledge => 'and acknowledge the';
+
+  @override
+  String get authConsumerTerms => 'Consumer Terms';
+
+  @override
+  String get authUsagePolicy => 'Usage Policy';
+
+  @override
+  String get authPrivacyPolicy => 'Privacy Policy';
+
+  @override
   String get validationEmailRequired => 'Email required';
 
   @override

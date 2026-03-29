@@ -54,41 +54,24 @@ class CustomButton extends StatelessWidget {
   }
 }
 
-class CustomGoogleAuthButton extends StatelessWidget {
-  const CustomGoogleAuthButton({
-    super.key,
-    this.isLogin = false,
-    this.isLoading = false,
-    required this.onPressed,
-  });
 
-  final bool isLogin;
+/// Provider button for Google and Apple.
+enum AuthProviderType { google, apple }
+class _ProviderButton extends StatelessWidget {
+  const _ProviderButton({required this.isLoading, required this.onPressed, required this.label, required this.provider, required this.icon});
   final bool isLoading;
   final VoidCallback onPressed;
+  final String label;
+  final String icon;
+  final AuthProviderType provider;
+
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
-      child: OutlinedButton(
+      child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.tertiaryColorBasic,
-          backgroundColor: Theme.of(
-            context,
-          ).textTheme.titleLarge!.color!.withValues(alpha: 0.05),
-          side: BorderSide(
-            color: Theme.of(
-              context,
-            ).textTheme.titleLarge!.color!.withValues(alpha: 0.50),
-            width: 1.4,
-          ),
-          minimumSize: const Size.fromHeight(54),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
-          ),
-        ),
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 180),
           switchInCurve: Curves.easeOutCubic,
@@ -100,47 +83,132 @@ class CustomGoogleAuthButton extends StatelessWidget {
               child: ScaleTransition(scale: scale, child: child),
             );
           },
-          child: isLoading
-              ? SizedBox(
-                  key: const ValueKey('google_loading'),
-                  height: 32,
-                  child: LoadingAnimationWidget.horizontalRotatingDots(
-                    color: Theme.of(context).textTheme.titleLarge!.color!,
-                    size: 38,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 11,
+            ),
+            child: isLoading
+                ? SizedBox(
+              key: const ValueKey('provider_loading'),
+              height: 32,
+              child: LoadingAnimationWidget.horizontalRotatingDots(
+                color: Theme.of(context).textTheme.titleLarge!.color!,
+                size: 38,
+              ),
+            )
+                : Row(
+              key: const ValueKey('provider_content'),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceColorDark,
+                    borderRadius: BorderRadius.circular(
+                      AppDimens.borderRadiusMedium,
+                    ),
                   ),
-                )
-              : Row(
-                  key: const ValueKey('google_content'),
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(
-                          AppDimens.borderRadiusMedium,
-                        ),
-                      ),
-                      padding: const EdgeInsets.all(8),
-                      child: SvgPicture.asset(IconLinks.googleIcon),
-                    ),
-                    AppDimens.spacerWidthMedium,
-                    Flexible(
-                      child: Text(
-                        isLogin
-                            ? context.l10n.authContinueWithGoogle
-                            : context.l10n.authCreateGoogleAccount,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: Theme.of(context).textTheme.titleLarge?.color!,
-                        ),
-                      ),
-                    ),
-                  ],
+                  padding: const EdgeInsets.all(8),
+                  child: SvgPicture.asset(icon),
                 ),
+                AppDimens.spacerWidthMedium,
+                Flexible(
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 }
+
+
+class CustomGoogleAuthButton extends StatelessWidget {
+  const CustomGoogleAuthButton({
+    super.key,
+    this.isLoading = false,
+    required this.onPressed,
+  });
+
+  final bool isLoading;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return _ProviderButton(
+      isLoading: isLoading,
+      onPressed: onPressed,
+      label: context.l10n.authContinueWithGoogle,
+      icon: IconLinks.googleIcon,
+      provider: AuthProviderType.google,
+    );
+  }
+}
+
+class CustomAppleAuthButton extends StatelessWidget {
+  const CustomAppleAuthButton({super.key, required this.isLoading, required this.onPressed});
+  final bool isLoading;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return _ProviderButton(
+      isLoading: isLoading,
+      onPressed: onPressed,
+      label: context.l10n.authContinueWithApple,
+      icon: IconLinks.appleIcon,
+      provider: AuthProviderType.apple,
+    );
+  }
+}
+
+
+class CustomAuthIconButton extends StatelessWidget {
+  const CustomAuthIconButton({super.key, required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}),
+        borderRadius: BorderRadius.circular(
+          AppDimens.borderRadiusMedium,
+        ),
+      ),
+      margin: EdgeInsets.only(
+        right: AppDimens.marginExtraSmall,
+        top: AppDimens.marginExtraSmall,
+        bottom: AppDimens.marginExtraSmall,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          hoverColor: Theme.of(context).cardColor.withValues(alpha: 0.6),
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+          onTap: onPressed,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Icon(
+              Icons.arrow_forward,
+              color: Theme.of(context).cardColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+

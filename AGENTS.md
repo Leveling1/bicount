@@ -127,8 +127,8 @@ Visible routes:
 - /graphs
 - /transaction
 - /friend/invite
-- /login
-- /signUp
+- /auth
+- /auth/email-code
 
 Hidden-by-default routes:
 
@@ -139,8 +139,8 @@ Hidden-by-default routes:
 
 Guard behavior:
 
-- unauthenticated users are redirected to /login
-- logged-in users trying to access login or signUp are redirected to /
+- unauthenticated users are redirected to /auth
+- logged-in users trying to access auth routes are redirected to /
 - hidden company routes redirect to /graphs
 - detail routes without state.extra redirect to /
 
@@ -210,13 +210,19 @@ This sync is triggered from lib/features/main/presentation/bloc/main_bloc.dart.
 
 Purpose:
 
-- email auth flow
+- unified auth entry flow
+- email OTP verification
+- Google auth
+- Apple auth on Apple devices
 - session-aware app entry
 
 Notes:
 
 - Firebase is initialized for notifications
 - Supabase auth remains the session source of truth
+- the public auth flow no longer uses separate onboarding, login, and signup screens
+- the user-facing public auth flow is now `Auth` then `email code` when email is chosen
+- Apple auth returns through the Bicount app link on `/auth`
 
 ### main
 
@@ -733,29 +739,17 @@ Expected behavior now:
 - `Share link` and `Copy` become usable without waiting for Supabase realtime
 - the existing UI choices remain in place, including `CustomAppBar` and opening `FriendScreen` in `showCustomBottomSheet`
 
-## Onboarding Update (2026-03-22)
+## Unified Auth Refresh (2026-03-29)
 
-The authentication entry flow now starts with a dedicated onboarding experience for unauthenticated users.
-
-Rules:
-- default unauthenticated entry should land on `/onboarding`
-- `/login` and `/signUp` stay directly reachable from onboarding CTAs
-- onboarding copy must stay user-facing, not technical
-- the third onboarding step introduces `Bicount Pro` as a coming-soon product direction for teams and business activity
-- onboarding visuals live in `assets/images/` as transparent PNG illustrations and should stay aligned with the app primary color family
-- keep CTA buttons on one row, with a clear primary action for sign up and a secondary action for log in
-
-## Onboarding Visual Refresh (2026-03-22)
-
-The onboarding illustration system now uses theme-specific transparent PNG assets.
+The public authentication flow no longer uses onboarding, login, or signup as separate public screens.
 
 Rules:
-- onboarding illustrations must exist in both `light` and `dark` variants
-- do not place text inside onboarding illustrations
-- keep the visual language minimal, rounded, product-like, and close to premium mobile onboarding references
-- prefer soft depth, clean geometry, and restrained accent colors over busy scenes
-- onboarding and auth transitions should use lightweight fade/slide motion only
-- common CTA buttons should animate loading and content switches with short `AnimatedSwitcher` transitions
+- default unauthenticated entry must land on `/auth`
+- the email auth experience is passwordless and uses `/auth/email-code`
+- do not recreate public onboarding, login, or signup routes without an explicit product request
+- Google auth is an existing production path and must stay stable
+- Apple auth returns through the Bicount app-link on `/auth`
+- auth legal links target `https://bicount.levelingcoder.com/consumer-terms`, `/usage-policy`, and `/privacy-policy`
 
 ## Auth Layout Stability Update (2026-03-22)
 
@@ -851,13 +845,11 @@ Loading rules:
 
 ## Locale And Feedback Stability Update (2026-03-22)
 
-Recent behavior fixes now define the expected UX for locale fallback, onboarding motion, and transaction feedback.
+Recent behavior fixes now define the expected UX for locale fallback and transaction feedback.
 
 Rules:
 - if the saved locale is absent and the device locale is unsupported or cannot be resolved cleanly, the app must fall back to English
 - keep the app locale resolution deterministic; do not leave locale behavior ambiguous when system matching fails
-- onboarding can auto-advance, but only after a real reading delay; keep it soft, short, and easy to interrupt by manual swipe
-- when a user manually changes onboarding page, reset the auto-slide timer instead of forcing an immediate second movement
 - transaction success and error toasts must have a single owner for each flow; do not listen to the same `TransactionBloc` success state in both the container screen and the form if both can toast
 - prefer form-level success handling for create/edit flows when the confirmation belongs to the action the user just submitted
 - shared notification helpers must stay localized; do not reintroduce hardcoded English toast titles in visible V1 flows

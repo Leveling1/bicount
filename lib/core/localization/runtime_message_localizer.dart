@@ -75,19 +75,24 @@ String localizeRuntimeMessage(BuildContext context, String message) {
       return context.l10n.authGenericSignUpError;
     case 'An error occurred during sign out.':
       return context.l10n.authGenericSignOutError;
-    case 'Échec de la connexion avec Google.':
-    case 'Échec de l\'authentification avec Google':
+    case 'Google sign-in failed.':
+    case 'Echec de la connexion avec Google.':
+    case 'Echec de l\'authentification avec Google':
       return context.l10n.authGoogleFailed;
-    case 'Aucun jeton d\'identification trouvé.':
+    case 'No Google ID token found.':
+    case 'Google did not return the email needed for Bicount.':
+    case 'Aucun jeton d\'identification trouve.':
     case 'Email non fourni par Google':
       return context.l10n.authGoogleMissingEmail;
-    case 'Délai de connexion dépassé. Veuillez réessayer.':
+    case 'Google sign-in timed out. Please try again.':
+    case 'Delai de connexion depasse. Veuillez reessayer.':
       return context.l10n.authGoogleTimeout;
-    case 'Connexion Google annulée':
+    case 'Google sign-in cancelled.':
+    case 'Connexion Google annulee':
       return context.l10n.authGoogleCancelled;
   }
 
-  if (normalized.toLowerCase().contains('réseau') ||
+  if (normalized.toLowerCase().contains('reseau') ||
       normalized.toLowerCase().contains('network')) {
     return context.l10n.authNetworkError;
   }
