@@ -1,7 +1,9 @@
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
+import '../../../../core/constants/icon_links.dart';
 import '../../../../core/constants/path.dart';
 
 class AuthBrandMark extends StatelessWidget {
@@ -18,10 +20,12 @@ class AuthBrandMark extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset(
-            isDark ? AssetPaths.appIconDark : AssetPaths.appIconLight,
-            width: 100, height: 100
+        SvgPicture.asset(
+          isDark ? IconLinks.appIconDark : IconLinks.appIconLight,
+          width: 40,
+          height: 40,
         ),
+        AppDimens.spacerWidthSmall,
         Text(
           'Bicount',
           style: theme.textTheme.titleLarge?.copyWith(

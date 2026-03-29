@@ -1,4 +1,6 @@
 class IconLinks {
+  static const String appIconLight = 'assets/icons/logo_icon_light.svg';
+  static const String appIconDark = 'assets/icons/logo_icon_dark.svg';
   static const String home = 'assets/icons/home.svg';
   static const String company = 'assets/icons/company.svg';
   static const String graph = 'assets/icons/up_and_down.svg';
