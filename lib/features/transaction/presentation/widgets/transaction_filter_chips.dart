@@ -1,10 +1,11 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 
 class TransactionFilterChips extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onTap;
-  final List<String> filters;
+  final List<int> filters;
 
   const TransactionFilterChips({
     super.key,
@@ -42,7 +43,7 @@ class TransactionFilterChips extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Text(
-                  filters[index],
+                  context.transactionFilterLabel(index),
                   style: TextStyle(
                     color: isSelected ? Colors.black : Colors.grey[700],
                     fontWeight: FontWeight.w500,

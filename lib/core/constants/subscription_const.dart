@@ -1,33 +1,23 @@
 import 'package:flutter/material.dart';
 
+import 'state_app.dart';
+
 class SubscriptionConst {
-  static const int active = 0;
-  static const int paused = 1;
-  static const int unsubscribed = 2;
+  static const int active = AppSubscriptionState.subscribed;
+  static const int unsubscribed = AppSubscriptionState.unsubscribed;
 
-  static const String activeString = "Active";
-  static const String pausedString = "Paused";
-  static const String unsubscribedString = "Unsubscribed";
+  static bool isActive(int? status) {
+    return AppSubscriptionState.isSubscribed(status);
+  }
 
-  static String getStatusString(int status) {
-    switch (status) {
-      case active:
-        return activeString;
-      case paused:
-        return pausedString;
-      case unsubscribed:
-        return unsubscribedString;
-      default:
-        return "";
-    }
+  static int normalize(int? status) {
+    return AppSubscriptionState.normalize(status);
   }
 
   static Color getStatusColor(int status, BuildContext context) {
-    switch (status) {
+    switch (normalize(status)) {
       case active:
         return Theme.of(context).primaryColor;
-      case paused:
-        return Colors.orange;
       case unsubscribed:
         return Colors.red;
       default:

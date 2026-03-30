@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/features/notification/data/data_sources/local_datasource/notification_local_datasource.dart';
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/notification_remote_datasource.dart';
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
@@ -50,6 +51,11 @@ class NotificationRepositoryImpl implements NotificationRepository {
   @override
   Future<void> syncSubscriptions(List<SubscriptionModel> subscriptions) async {
     for (final subscription in subscriptions) {
+      final subscriptionId = subscription.subscriptionId ?? subscription.sid;
+      await localDataSource.cancelSubscriptionReminder(subscriptionId);
+      if (!SubscriptionConst.isActive(subscription.status)) {
+        continue;
+      }
       await localDataSource.scheduleSubscriptionReminder(subscription);
     }
   }

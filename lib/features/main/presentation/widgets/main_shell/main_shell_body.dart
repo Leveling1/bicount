@@ -56,7 +56,7 @@ class MainShellBody extends StatelessWidget {
                 ? TransactionFilterChips(
                     selectedIndex: selectedTransactionIndex,
                     onTap: onTransactionFilterTap,
-                    filters: TransactionTypes.allTypes,
+                    filters: TransactionTypes.allTypesInt,
                   )
                 : const SizedBox.shrink(),
           ),

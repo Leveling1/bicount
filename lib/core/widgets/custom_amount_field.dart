@@ -89,10 +89,10 @@ class CurrencyField extends StatelessWidget {
           dropdownMenuEntries: currencies
               .map(
                 (currency) => DropdownMenuEntry<String>(
-              value: currency.code,
-              label: currency.code,
-            ),
-          )
+                  value: currency.code,
+                  label: currency.code,
+                ),
+              )
               .toList(growable: false),
           onSelected: (value) {
             controller.text = value ?? fallbackCode;

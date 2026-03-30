@@ -929,3 +929,14 @@ Migration rule:
 - Brick tracks applied migrations in the `MigrationVersions` table, not only with `PRAGMA user_version`; if you repair a partially migrated local database, also mark the migration version there or Brick may replay the same `ALTER TABLE` commands
 - keep the temporary AndroidX forcing block in `android/build.gradle.kts` unless AGP is upgraded; it prevents transitive AndroidX updates from requiring a newer Android Gradle plugin than the project currently uses
 - keep Android build paths and `flutter.source` aligned on the canonical project directory; this project may be opened through a Windows junction during AI work, and Flutter assets can disappear from the APK if Gradle builds from one path while Flutter bundles from another
+
+## State And Cross-Device Update (2026-03-30)
+
+Rules:
+- persisted business states must be numeric and centralized in `lib/core/constants/state_app.dart`
+- avoid introducing new text-based status payloads such as `active`, `inactive`, or `paused` in mobile persistence contracts
+- if a backend state contract changes, update the shared backend memo in `docs/backend_followup_actions.md`
+- transaction search screens must rebuild from controller changes instead of mutating controllers during build
+- startup data recovery on a fresh device must explicitly hydrate user finance tables before relying on realtime streams alone
+- subscription unsubscribe must be a real status update with an end date, not a no-op upsert
+- notification sync for subscriptions must cancel old reminders before scheduling active subscriptions again

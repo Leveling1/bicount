@@ -1,4 +1,5 @@
 class SubscriptionEntity {
+  final String? subscriptionId;
   final String title;
   final double amount;
   final String currency;
@@ -10,8 +11,10 @@ class SubscriptionEntity {
   final int category;
   final String? sid;
   final String createdAt;
+  final String? endDate;
 
   SubscriptionEntity({
+    this.subscriptionId,
     required this.title,
     required this.amount,
     required this.currency,
@@ -23,5 +26,6 @@ class SubscriptionEntity {
     required this.createdAt,
     this.category = 0,
     this.sid,
+    this.endDate,
   });
 }

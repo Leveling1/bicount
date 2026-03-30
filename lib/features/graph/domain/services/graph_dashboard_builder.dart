@@ -141,9 +141,7 @@ class GraphDashboardBuilder {
   ) {
     final activeSubscriptions = subscriptions
         .where(
-          (subscription) =>
-              (subscription.status ?? SubscriptionConst.active) ==
-              SubscriptionConst.active,
+          (subscription) => SubscriptionConst.isActive(subscription.status),
         )
         .toList();
 

@@ -19,7 +19,7 @@ class SubscriptionListItem {
   final DateTime? nextBilling;
   final DateTime? endDate;
 
-  bool get isActive => subscription.status == SubscriptionConst.active;
+  bool get isActive => SubscriptionConst.isActive(subscription.status);
 
   String get searchText =>
       '${subscription.title} ${friend.username} ${subscription.notes ?? ''}'

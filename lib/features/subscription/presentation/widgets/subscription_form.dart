@@ -1,21 +1,23 @@
 import 'package:bicount/core/constants/dropdown_menu_entry.dart';
-import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/services/smooth_insert.dart';
-import 'package:bicount/core/utils/form_date_utils.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_dropdown_menu.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';
-import 'package:bicount/features/subscription/domain/entities/subscription_entity.dart';
+import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/subscription/presentation/bloc/subscription_bloc.dart';
+import 'package:bicount/features/subscription/presentation/helpers/subscription_form_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SubscriptionForm extends StatefulWidget {
-  const SubscriptionForm({super.key});
+  const SubscriptionForm({super.key, this.initialSubscription, this.onCompleted});
+
+  final SubscriptionModel? initialSubscription;
+  final VoidCallback? onCompleted;
 
   @override
   State<SubscriptionForm> createState() => _SubscriptionFormState();
@@ -32,9 +34,26 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
   final TextEditingController _note = TextEditingController();
 
   bool isDifferentDate = false;
+  bool get _isEditing => widget.initialSubscription != null;
 
   @override
-  void initState() => super.initState();
+  void initState() {
+    super.initState();
+    final initialSubscription = widget.initialSubscription;
+    if (initialSubscription != null) {
+      hydrateSubscriptionForm(
+        subscription: initialSubscription,
+        nameController: _name,
+        amountController: _amount,
+        currencyController: _currency,
+        frequencyController: _frequency,
+        startDateController: _startDate,
+        nextBillingDateController: _nextBillingDate,
+        noteController: _note,
+        onDifferentDate: (value) => isDifferentDate = value,
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -55,9 +74,16 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
         if (state is SubscriptionSaved) {
           NotificationHelper.showSuccessNotification(
             context,
-            context.l10n.subscriptionSavedSuccess,
+            state.isUpdated
+                ? context.l10n.subscriptionUpdatedSuccess
+                : context.l10n.subscriptionSavedSuccess,
           );
-          Navigator.pop(context);
+          final onCompleted = widget.onCompleted;
+          if (onCompleted != null) {
+            onCompleted();
+          } else {
+            Navigator.pop(context);
+          }
         } else if (state is SubscriptionFailure) {
           NotificationHelper.showFailureNotification(
             context,
@@ -72,7 +98,9 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                context.l10n.subscriptionIntro,
+                _isEditing
+                    ? context.l10n.subscriptionEditTitle
+                    : context.l10n.subscriptionIntro,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 16),
@@ -161,28 +189,19 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
       return;
     }
 
-    final now = DateTime.now();
-    final nextBillingDate = isDifferentDate
-        ? _resolveSubscriptionDate(_nextBillingDate.text)
-        : _resolveSubscriptionDate(_startDate.text);
-    context.read<SubscriptionBloc>().add(
-      AddSubscriptionRequested(
-        SubscriptionEntity(
-          title: _name.text,
-          amount: double.parse(_amount.text),
-          currency: _currency.text,
-          frequency: int.parse(_frequency.text),
-          startDate: _resolveSubscriptionDate(_startDate.text),
-          nextBillingDate: nextBillingDate,
-          note: _note.text,
-          status: SubscriptionConst.active,
-          createdAt: now.toIso8601String(),
-        ),
-      ),
+    final payload = buildSubscriptionPayload(
+      initialSubscription: widget.initialSubscription,
+      title: _name.text,
+      amount: _amount.text,
+      currency: _currency.text,
+      frequency: _frequency.text,
+      startDate: _startDate.text,
+      nextBillingDate: isDifferentDate
+          ? _nextBillingDate.text
+          : _startDate.text,
+      note: _note.text,
     );
-  }
-
-  String _resolveSubscriptionDate(String rawDate) {
-    return resolveFormDateToIso(rawDate);
+    final event = _isEditing ? UpdateSubscriptionRequested(payload) : AddSubscriptionRequested(payload);
+    context.read<SubscriptionBloc>().add(event);
   }
 }

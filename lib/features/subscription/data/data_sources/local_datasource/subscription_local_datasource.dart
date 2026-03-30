@@ -8,5 +8,8 @@ abstract class SubscriptionLocalDataSource {
   Future<Either<Failure, void>> addSubscription(
     SubscriptionEntity subscription,
   );
+  Future<Either<Failure, void>> updateSubscription(
+    SubscriptionEntity subscription,
+  );
   Future<Either<Failure, void>> unsubscribe(SubscriptionModel subscription);
 }

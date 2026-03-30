@@ -51,8 +51,6 @@ extension L10nBuildContextX on BuildContext {
         return l10n.transactionTypeExpense;
       case TransactionTypes.subscriptionCode:
         return l10n.transactionTypeSubscription;
-      case TransactionTypes.addFund:
-        return l10n.transactionTypeAddFund;
       default:
         return l10n.transactionTypeOther;
     }
@@ -85,11 +83,9 @@ extension L10nBuildContextX on BuildContext {
   }
 
   String subscriptionStatusLabel(int status) {
-    switch (status) {
+    switch (SubscriptionConst.normalize(status)) {
       case SubscriptionConst.active:
         return l10n.graphActive;
-      case SubscriptionConst.paused:
-        return l10n.statusPaused;
       case SubscriptionConst.unsubscribed:
         return l10n.statusUnsubscribed;
       default:

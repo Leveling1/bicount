@@ -26,14 +26,41 @@ class TransactionScreen extends StatefulWidget {
 
 class _TransactionScreenState extends State<TransactionScreen> {
   @override
-  Widget build(BuildContext context) {
-    if (!widget.showSearchBar) {
+  void initState() {
+    super.initState();
+    widget.searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant TransactionScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.searchController != widget.searchController) {
+      oldWidget.searchController.removeListener(_onSearchChanged);
+      widget.searchController.addListener(_onSearchChanged);
+    }
+    if (oldWidget.showSearchBar && !widget.showSearchBar) {
       widget.searchController.clear();
     }
+  }
+
+  @override
+  void dispose() {
+    widget.searchController.removeListener(_onSearchChanged);
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final feed = buildTransactionFeed(widget.data);
     final filteredFeed = filterTransactionFeed(
       source: feed,
-      query: widget.searchController.text,
+      query: widget.showSearchBar ? widget.searchController.text : '',
       selectedIndex: widget.selectedIndexTransaction,
     );
     final grouped = groupTransactionFeedByDate(context, filteredFeed);

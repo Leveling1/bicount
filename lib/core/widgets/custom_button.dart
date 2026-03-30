@@ -193,9 +193,12 @@ class CustomAuthIconButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          hoverColor: Theme.of(
-            context,
-          ).elevatedButtonTheme.style?.backgroundColor?.resolve({})?.withValues(alpha: 0.4),
+          hoverColor: Theme.of(context)
+              .elevatedButtonTheme
+              .style
+              ?.backgroundColor
+              ?.resolve({})
+              ?.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
           onTap: onPressed,
           child: Padding(

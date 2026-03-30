@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
@@ -108,7 +109,7 @@ class TransactionCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      TransactionTypes.getTypeText(transaction.type),
+                      context.transactionTypeLabel(transaction.type),
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],

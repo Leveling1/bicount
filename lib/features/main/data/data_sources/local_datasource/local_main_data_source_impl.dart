@@ -13,6 +13,8 @@ import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supab
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'main_local_hydration.dart';
+
 class LocalMainDataSourceImpl implements MainLocalDataSource {
   LocalMainDataSourceImpl() {
     _activeUserId = supabaseInstance.auth.currentUser?.id;
@@ -57,11 +59,11 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     try {
       final subject = BehaviorSubject<UserModel>();
       _userSubject = subject;
+      final query = Query(where: [Where.exact('uid', uid)]);
 
+      unawaited(primeUserSubject(subject, query));
       _userSubscription = Repository()
-          .subscribeToRealtime<UserModel>(
-            query: Query(where: [Where.exact('uid', uid)]),
-          )
+          .subscribeToRealtime<UserModel>(query: query)
           .listen((users) {
             if (users.isEmpty) {
               return;
@@ -85,6 +87,7 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       getSubscription: () => _friendsSubscription,
       setSubscription: (subscription) => _friendsSubscription = subscription,
       errorLabel: 'friends',
+      query: Query(where: [Where.exact('fid', uid)]),
     );
   }
 
@@ -97,6 +100,7 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       setSubscription: (subscription) =>
           _transactionsSubscription = subscription,
       errorLabel: 'transactions',
+      query: Query(where: [Where.exact('uid', uid)]),
     );
   }
 
@@ -109,6 +113,7 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       setSubscription: (subscription) =>
           _subscriptionsSubscription = subscription,
       errorLabel: 'subscriptions',
+      query: Query(where: [Where.exact('sid', uid)]),
     );
   }
 
@@ -121,6 +126,7 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       setSubscription: (subscription) =>
           _accountFundingsSubscription = subscription,
       errorLabel: 'account fundings',
+      query: Query(where: [Where.exact('sid', uid)]),
     );
   }
 
@@ -142,6 +148,7 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       final subject = BehaviorSubject<List<T>>.seeded(const []);
       setSubject(subject);
 
+      unawaited(primeListSubject(subject, query));
       final subscription = Repository()
           .subscribeToRealtime<T>(query: query)
           .listen(subject.add, onError: subject.addError);

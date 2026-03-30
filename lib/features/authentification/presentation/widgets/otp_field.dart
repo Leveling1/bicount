@@ -10,7 +10,6 @@ class OtpField extends StatelessWidget {
   final String? Function(String?) validateCode;
   final void Function() submit;
 
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -32,18 +31,22 @@ class OtpField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
             borderSide: BorderSide(
-              color: Theme.of(
-                context,
-              ).elevatedButtonTheme.style!.backgroundColor!.resolve({})?.withValues(alpha: 0.7) ?? Colors.grey,
+              color:
+                  Theme.of(context).elevatedButtonTheme.style!.backgroundColor!
+                      .resolve({})
+                      ?.withValues(alpha: 0.7) ??
+                  Colors.grey,
               width: 1.2,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
             borderSide: BorderSide(
-              color: Theme.of(
-                context,
-              ).elevatedButtonTheme.style?.backgroundColor?.resolve({})?.withValues(alpha: 0.7) ?? Colors.grey,
+              color:
+                  Theme.of(context).elevatedButtonTheme.style?.backgroundColor
+                      ?.resolve({})
+                      ?.withValues(alpha: 0.7) ??
+                  Colors.grey,
               width: 1.8,
             ),
           ),

@@ -3,5 +3,6 @@ import 'package:bicount/features/subscription/domain/entities/subscription_entit
 
 abstract class SubscriptionRepository {
   Future<void> addSubscription(SubscriptionEntity subscription);
+  Future<void> updateSubscription(SubscriptionEntity subscription);
   Future<void> unsubscribe(SubscriptionModel subscription);
 }

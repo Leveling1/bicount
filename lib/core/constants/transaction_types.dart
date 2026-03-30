@@ -12,16 +12,6 @@ class TransactionTypes {
 
   static const personal = 99;
 
-  /// List of all transaction types
-  static const List<String> allTypes = [
-    'All',
-    'Income',
-    'Expense',
-    'Subscription',
-    'Other',
-    'Personal',
-  ];
-
   static const List<int> allTypesInt = [
     0,
     incomeCode,
@@ -31,32 +21,12 @@ class TransactionTypes {
     personal,
   ];
 
-  static const String income = "Income";
-  static const String expense = "Expense";
-  static const String others = "Other";
-  static const String subscriptionTitle = "Subscription";
-
   static const int incomeCode = 1;
   static const int expenseCode = 2;
   static const int othersCode = 3;
   static const int subscriptionCode = 4;
 
   static const int personalIncome = 0;
-
-  static String getTypeText(int type) {
-    switch (type) {
-      case incomeCode:
-        return income;
-      case expenseCode:
-        return expense;
-      case othersCode:
-        return others;
-      case subscriptionCode:
-        return subscriptionTitle;
-      default:
-        return others;
-    }
-  }
 
   static String frequencyToString(int frequency) {
     switch (frequency) {

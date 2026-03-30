@@ -10,6 +10,12 @@ class AddSubscriptionRequested extends SubscriptionEvent {
   final SubscriptionEntity subscription;
 }
 
+class UpdateSubscriptionRequested extends SubscriptionEvent {
+  const UpdateSubscriptionRequested(this.subscription);
+
+  final SubscriptionEntity subscription;
+}
+
 class UnsubscribeRequested extends SubscriptionEvent {
   const UnsubscribeRequested(this.subscription);
 
