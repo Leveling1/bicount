@@ -81,36 +81,39 @@ class SubscriptionDetailView extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ),
-        Row(
-          children: [
-            Flexible(
-              child: InfoCardAmount(
-                icon: IconLinks.moneyIcon,
-                title: context.l10n.commonAmount,
-                value: subscription.amount,
-                color: Theme.of(
-                  context,
-                ).extension<OtherTheme>()!.personnalIncome!,
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: InfoCardAmount(
+                  icon: IconLinks.moneyIcon,
+                  title: context.l10n.commonAmount,
+                  value: subscription.amount,
+                  color: Theme.of(
+                    context,
+                  ).extension<OtherTheme>()!.personnalIncome!,
+                ),
               ),
-            ),
-            const SizedBox(width: AppDimens.marginMedium),
-            Flexible(
-              child: InfoCard(
-                icon: IconLinks.calendar,
-                title: SubscriptionConst.isActive(normalizedStatus)
-                    ? context.l10n.subscriptionNextBilling
-                    : context.l10n.subscriptionBillingStop,
-                content: SubscriptionConst.isActive(normalizedStatus)
-                    ? getNextMonthSameDay(subscription.nextBillingDate)
-                    : formatedDateTimeNumericFullYear(
-                        DateTime.parse(subscription.endDate!),
-                      ),
-                color: Theme.of(
-                  context,
-                ).extension<OtherTheme>()!.companyIncome!,
+              const SizedBox(width: AppDimens.marginMedium),
+              Expanded(
+                child: InfoCard(
+                  icon: IconLinks.calendar,
+                  title: SubscriptionConst.isActive(normalizedStatus)
+                      ? context.l10n.subscriptionNextBilling
+                      : context.l10n.subscriptionBillingStop,
+                  content: SubscriptionConst.isActive(normalizedStatus)
+                      ? getNextMonthSameDay(subscription.nextBillingDate)
+                      : formatedDateTimeNumericFullYear(
+                          DateTime.parse(subscription.endDate!),
+                        ),
+                  color: Theme.of(
+                    context,
+                  ).extension<OtherTheme>()!.companyIncome!,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         LinearInfoCard(
           icon: IconLinks.frequency,
@@ -149,6 +152,7 @@ class SubscriptionDetailView extends StatelessWidget {
             onPressed: onUnsubscribePressed,
           ),
         ],
+        AppDimens.spacerLarge,
       ],
     );
   }
