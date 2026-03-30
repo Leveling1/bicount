@@ -4,7 +4,6 @@ import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/utils/formated_text.dart';
@@ -23,29 +22,38 @@ class GraphSubscriptionInsightCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Wrap(
-            spacing: AppDimens.spacingSmall,
-            runSpacing: AppDimens.spacingSmall,
-            children: [
-              GraphSubscriptionStat(
-                title: context.l10n.graphActive,
-                value: '${dashboard.activeSubscriptionCount}',
-              ),
-              GraphSubscriptionStat(
-                title: context.l10n.graphMonthlyLoad,
-                value: NumberFormatUtils.formatCurrency(
-                  dashboard.monthlySubscriptionSpend,
-                  currencyCode: dashboard.displayCurrencyCode,
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: GraphSubscriptionStat(
+                    title: context.l10n.graphActive,
+                    value: '${dashboard.activeSubscriptionCount}',
+                  ),
                 ),
-              ),
-              GraphSubscriptionStat(
-                title: context.l10n.graphNext7Days,
-                value: NumberFormatUtils.formatCurrency(
-                  dashboard.dueSoonAmount,
-                  currencyCode: dashboard.displayCurrencyCode,
+                const SizedBox(width: AppDimens.spacingSmall),
+                Expanded(
+                  child: GraphSubscriptionStat(
+                    title: context.l10n.graphMonthlyLoad,
+                    value: NumberFormatUtils.formatCurrency(
+                      dashboard.monthlySubscriptionSpend,
+                      currencyCode: dashboard.displayCurrencyCode,
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(width: AppDimens.spacingSmall),
+                Expanded(
+                  child: GraphSubscriptionStat(
+                    title: context.l10n.graphNext7Days,
+                    value: NumberFormatUtils.formatCurrency(
+                      dashboard.dueSoonAmount,
+                      currencyCode: dashboard.displayCurrencyCode,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           if (dashboard.upcomingSubscriptions.isNotEmpty) ...[
             AppDimens.spacerLarge,
@@ -169,7 +177,6 @@ class GraphSubscriptionStat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 100.w,
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
       decoration: BoxDecoration(
         color: Theme.of(
@@ -180,10 +187,17 @@ class GraphSubscriptionStat extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: Theme.of(context).textTheme.bodySmall),
+          Text(
+            title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
           AppDimens.spacerMini,
           Text(
             value,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),

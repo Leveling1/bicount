@@ -4,12 +4,13 @@ import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/graph/presentation/bloc/graph_bloc.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_expense_breakdown_card.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_income_breakdown_card.dart';
-import 'package:bicount/features/graph/presentation/widgets/graph_metric_card.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_period_selector.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_screen_skeleton.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_subscription_insight_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../widgets/graph_metric_overview.dart';
 
 class GraphScreen extends StatelessWidget {
   const GraphScreen({super.key});

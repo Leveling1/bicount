@@ -9,48 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class GraphMetricOverview extends StatelessWidget {
-  const GraphMetricOverview({super.key, required this.dashboard});
-
-  final GraphDashboardEntity dashboard;
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: AppDimens.spacingMedium,
-      runSpacing: AppDimens.spacingMedium,
-      children: [
-        GraphMetricCard(
-          width: 165.w,
-          title: context.l10n.graphNetFlow,
-          value: dashboard.netFlow,
-          currencyCode: dashboard.displayCurrencyCode,
-          color: dashboard.netFlow >= 0
-              ? Theme.of(context).extension<OtherTheme>()!.income!
-              : Theme.of(context).extension<OtherTheme>()!.expense!,
-          icon: IconLinks.graph,
-        ),
-        GraphMetricCard(
-          width: 165.w,
-          title: context.l10n.graphIncome,
-          value: dashboard.inflow,
-          currencyCode: dashboard.displayCurrencyCode,
-          color: Theme.of(context).extension<OtherTheme>()!.income!,
-          icon: IconLinks.income,
-        ),
-        GraphMetricCard(
-          width: 165.w,
-          title: context.l10n.graphExpenses,
-          value: dashboard.outflow,
-          currencyCode: dashboard.displayCurrencyCode,
-          color: Theme.of(context).extension<OtherTheme>()!.expense!,
-          icon: IconLinks.expense,
-        ),
-      ],
-    );
-  }
-}
-
 class GraphMetricCard extends StatelessWidget {
   const GraphMetricCard({
     super.key,
