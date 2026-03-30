@@ -4,9 +4,14 @@ import '../../../../core/localization/l10n_extensions.dart';
 import '../../../../core/themes/app_dimens.dart';
 
 class OtpField extends StatelessWidget {
-  OtpField({super.key, required this.validateCode, required this.submit});
+  const OtpField({
+    super.key,
+    required this.controller,
+    required this.validateCode,
+    required this.submit,
+  });
 
-  final TextEditingController codeController = TextEditingController();
+  final TextEditingController controller;
   final String? Function(String?) validateCode;
   final void Function() submit;
 
@@ -15,7 +20,7 @@ class OtpField extends StatelessWidget {
     return SizedBox(
       height: 50,
       child: TextFormField(
-        controller: codeController,
+        controller: controller,
         keyboardType: TextInputType.number,
         maxLength: 6,
         validator: validateCode,

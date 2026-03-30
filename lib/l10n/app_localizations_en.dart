@@ -266,6 +266,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get runtimeFriendSaveFailed => 'Unable to save this friend right now.';
 
   @override
+  String get runtimeFriendUpdateFailed => 'Unable to update this friend right now.';
+
+  @override
   String get runtimeTransactionSaveFailed => 'The transaction could not be saved.';
 
   @override
@@ -821,6 +824,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get friendUnableToReadInvite => 'Unable to read this invitation.';
+
+  @override
+  String get friendEditTitle => 'Edit friend';
+
+  @override
+  String get friendEditDescription => 'Update the local name and avatar you use for this friend.';
+
+  @override
+  String get friendProfileUpdated => 'Friend updated.';
 
   @override
   String get statusPending => 'Pending';

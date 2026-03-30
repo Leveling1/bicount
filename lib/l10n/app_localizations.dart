@@ -605,6 +605,12 @@ abstract class AppLocalizations {
   /// **'Unable to save this friend right now.'**
   String get runtimeFriendSaveFailed;
 
+  /// No description provided for @runtimeFriendUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update this friend right now.'**
+  String get runtimeFriendUpdateFailed;
+
   /// No description provided for @runtimeTransactionSaveFailed.
   ///
   /// In en, this message translates to:
@@ -1690,6 +1696,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to read this invitation.'**
   String get friendUnableToReadInvite;
+
+  /// No description provided for @friendEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit friend'**
+  String get friendEditTitle;
+
+  /// No description provided for @friendEditDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Update the local name and avatar you use for this friend.'**
+  String get friendEditDescription;
+
+  /// No description provided for @friendProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend updated.'**
+  String get friendProfileUpdated;
 
   /// No description provided for @statusPending.
   ///

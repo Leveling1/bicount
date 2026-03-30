@@ -1,8 +1,14 @@
+import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/constants/app_config.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:brick_core/query.dart';
 import 'package:bicount/features/friend/data/data_sources/local_datasource/friend_local_datasource.dart';
 import 'package:bicount/features/friend/data/data_sources/remote_datasource/friend_remote_datasource.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:bicount/features/friend/domain/repositories/friend_repository.dart';
+import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -121,6 +127,44 @@ class FriendRepositoryImpl implements FriendRepository {
     }
 
     await remoteDataSource.rejectInvite(inviteCode, currentUserId);
+  }
+
+  @override
+  Future<void> updateFriendProfile({
+    required FriendsModel friend,
+    required String username,
+    required String image,
+  }) async {
+    if ((friend.uid ?? '').isNotEmpty ||
+        friend.relationType == FriendConst.subscription) {
+      throw MessageFailure(message: 'Unable to update this friend right now.');
+    }
+
+    try {
+      final currentFriends = await Repository().get<FriendsModel>(
+        policy: OfflineFirstGetPolicy.localOnly,
+        query: Query(where: [Where.exact('sid', friend.sid)]),
+      );
+      final currentFriend = currentFriends.isEmpty ? friend : currentFriends.first;
+
+      final updatedFriend = FriendsModel(
+        sid: currentFriend.sid,
+        uid: currentFriend.uid,
+        fid: currentFriend.fid,
+        image: image.isEmpty ? currentFriend.image : image,
+        username: username.trim(),
+        email: currentFriend.email,
+        give: currentFriend.give,
+        receive: currentFriend.receive,
+        relationType: currentFriend.relationType,
+        personalIncome: currentFriend.personalIncome,
+        companyIncome: currentFriend.companyIncome,
+      )..primaryKey = currentFriend.primaryKey;
+
+      await Repository().upsert<FriendsModel>(updatedFriend);
+    } catch (_) {
+      throw MessageFailure(message: 'Unable to update this friend right now.');
+    }
   }
 
   @override

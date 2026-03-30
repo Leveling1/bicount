@@ -1,4 +1,5 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
@@ -10,6 +11,7 @@ import 'package:bicount/features/friend/presentation/widgets/detail_friend_skele
 import 'package:bicount/features/friend/presentation/widgets/detail_friend_header.dart';
 import 'package:bicount/features/friend/presentation/widgets/detail_friend_metrics.dart';
 import 'package:bicount/features/friend/presentation/widgets/detail_friend_transaction_section.dart';
+import 'package:bicount/features/friend/presentation/widgets/friend_profile_sheet.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +37,11 @@ class DetailFriend extends StatelessWidget {
           appBar: CustomAppBar(
             title: currentFriend.username,
             actions: [
+              if (detail != null && detail.canShareProfile)
+                IconButton(
+                  onPressed: () => _openEditFlow(context, currentFriend),
+                  icon: const Icon(Icons.edit_outlined),
+                ),
               if (detail != null && detail.canShareProfile)
                 IconButton(
                   onPressed: () => _openShareFlow(context, currentFriend),
@@ -119,5 +126,22 @@ class DetailFriend extends StatelessWidget {
         selectedFriend: currentFriend,
       ),
     );
+  }
+
+  Future<void> _openEditFlow(
+    BuildContext context,
+    FriendsModel currentFriend,
+  ) async {
+    final updated = await showCustomBottomSheet<bool>(
+      context: context,
+      minHeight: 0.8,
+      child: FriendProfileSheet(friend: currentFriend),
+    );
+    if (updated == true && context.mounted) {
+      NotificationHelper.showSuccessNotification(
+        context,
+        context.l10n.friendProfileUpdated,
+      );
+    }
   }
 }

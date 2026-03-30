@@ -266,6 +266,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get runtimeFriendSaveFailed => 'Impossible d\'enregistrer cet ami pour le moment.';
 
   @override
+  String get runtimeFriendUpdateFailed => 'Impossible de mettre a jour cet ami pour le moment.';
+
+  @override
   String get runtimeTransactionSaveFailed => 'La transaction n\'a pas pu être enregistrée.';
 
   @override
@@ -821,6 +824,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get friendUnableToReadInvite => 'Impossible de lire cette invitation.';
+
+  @override
+  String get friendEditTitle => 'Modifier l\'ami';
+
+  @override
+  String get friendEditDescription => 'Mettez a jour le nom local et l\'avatar utilises pour cet ami.';
+
+  @override
+  String get friendProfileUpdated => 'Ami mis a jour.';
 
   @override
   String get statusPending => 'En attente';

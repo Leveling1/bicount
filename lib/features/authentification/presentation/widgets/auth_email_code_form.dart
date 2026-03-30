@@ -42,7 +42,11 @@ class _AuthEmailCodeFormState extends State<AuthEmailCodeForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          OtpField(validateCode: _validateCode, submit: _submit),
+          OtpField(
+            controller: _codeController,
+            validateCode: _validateCode,
+            submit: _submit,
+          ),
           const SizedBox(height: AppDimens.spacingExtraSmall),
           Text(
             context.l10n.authCodeHelper,
