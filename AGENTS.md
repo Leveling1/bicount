@@ -943,6 +943,8 @@ Rules:
 - keep `lib/core/constants/app_config.dart` aligned with the live invite domain unless the user explicitly switches environments
 - Android app-link host in `android/app/src/main/AndroidManifest.xml` must match the same domain
 - iOS associated domains entitlement in `ios/Runner/Runner.entitlements` must match the same domain
+- keep `docs/invite_domain_hosting_setup.md` updated with the currently valid Android SHA-256 fingerprint and the current iOS Team ID expectation
+- the current Android project signs `release` with the debug signing config, so app-link hosting must use that fingerprint until a real release keystore replaces it
 - when the invite domain changes, also refresh the hosting instructions and the `.well-known` files served by the website
 
 ## Recurring Funding Update (2026-03-25)
