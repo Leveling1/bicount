@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/features/graph/data/data_sources/local_datasource/graph_local_datasource.dart';
 import 'package:bicount/features/profile/data/models/account_funding.model.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../../../subscription/data/models/subscription.model.dart';
 
 class LocalGraphDataSourceImpl implements GraphLocalDataSource {
   LocalGraphDataSourceImpl() {

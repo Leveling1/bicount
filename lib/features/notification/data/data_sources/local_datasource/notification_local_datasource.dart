@@ -1,5 +1,6 @@
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
+
+import '../../../../subscription/data/models/subscription.model.dart';
 
 abstract class NotificationLocalDataSource {
   Future<void> initialize(

@@ -6,9 +6,10 @@ import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.da
 import 'package:bicount/features/graph/domain/repositories/graph_repository.dart';
 import 'package:bicount/features/graph/domain/services/graph_dashboard_builder.dart';
 import 'package:bicount/features/profile/data/models/account_funding.model.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:rxdart/rxdart.dart';
+
+import '../../../subscription/data/models/subscription.model.dart';
 
 class GraphRepositoryImpl implements GraphRepository {
   GraphRepositoryImpl(

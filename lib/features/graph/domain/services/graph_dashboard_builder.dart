@@ -5,7 +5,8 @@ import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/graph/data/models/graph_source_data.dart';
 import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
 import 'package:bicount/features/graph/domain/services/graph_time_series_builder.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
+
+import '../../../subscription/data/models/subscription.model.dart';
 
 class GraphDashboardBuilder {
   const GraphDashboardBuilder({

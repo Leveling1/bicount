@@ -4,9 +4,10 @@ import 'package:bicount/core/routes/app_router.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
 import 'package:bicount/features/notification/domain/repositories/notification_repository.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../subscription/data/models/subscription.model.dart';
 
 part 'notification_event.dart';
 part 'notification_state.dart';

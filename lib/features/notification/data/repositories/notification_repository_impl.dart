@@ -5,7 +5,8 @@ import 'package:bicount/features/notification/data/data_sources/local_datasource
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/notification_remote_datasource.dart';
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
 import 'package:bicount/features/notification/domain/repositories/notification_repository.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
+
+import '../../../subscription/data/models/subscription.model.dart';
 
 class NotificationRepositoryImpl implements NotificationRepository {
   NotificationRepositoryImpl({

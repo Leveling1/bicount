@@ -17,7 +17,6 @@ import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/profile/data/models/account_funding.model.dart';
 import 'package:bicount/features/profile/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/project/data/models/project.model.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
@@ -26,6 +25,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/constants/secrets.dart';
+import '../features/subscription/data/models/subscription.model.dart';
 import 'brick.g.dart';
 import 'db/schema.g.dart';
 

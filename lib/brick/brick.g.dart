@@ -44,7 +44,7 @@ import '../features/main/data/models/friends.model.dart';
 import '../features/profile/data/models/account_funding.model.dart';
 import '../features/profile/data/models/recurring_funding.model.dart';
 import '../features/project/data/models/project.model.dart';
-import '../features/transaction/data/models/subscription.model.dart';
+import '../features/subscription/data/models/subscription.model.dart';
 import '../features/transaction/data/models/transaction.model.dart';
 
 part 'adapters/memoji_model_adapter.g.dart';

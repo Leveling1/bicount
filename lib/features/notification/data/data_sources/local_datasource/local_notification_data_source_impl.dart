@@ -1,9 +1,10 @@
 import 'package:bicount/features/notification/data/data_sources/local_datasource/notification_local_datasource.dart';
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
-import 'package:bicount/features/transaction/data/models/subscription.model.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+
+import '../../../../subscription/data/models/subscription.model.dart';
 
 class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
   LocalNotificationDataSourceImpl(this.plugin);
