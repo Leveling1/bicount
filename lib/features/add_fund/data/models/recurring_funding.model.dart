@@ -58,6 +58,14 @@ class RecurringFundingModel extends OfflineFirstWithSupabaseModel {
   @Sqlite()
   final int status;
 
+  @Supabase(name: 'salary_processing_mode')
+  @Sqlite()
+  final int salaryProcessingMode;
+
+  @Supabase(name: 'salary_reminder_status')
+  @Sqlite()
+  final int salaryReminderStatus;
+
   @Supabase(name: 'created_at')
   @Sqlite()
   final String? createdAt;
@@ -75,6 +83,8 @@ class RecurringFundingModel extends OfflineFirstWithSupabaseModel {
     required this.nextFundingDate,
     this.lastProcessedAt,
     this.status = RecurringFundingStatus.active,
+    this.salaryProcessingMode = SalaryProcessingMode.automatic,
+    this.salaryReminderStatus = SalaryReminderStatus.enabled,
     this.createdAt,
   }) : recurringFundingId = recurringFundingId ?? const Uuid().v4(),
        super();

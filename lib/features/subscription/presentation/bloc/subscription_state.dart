@@ -8,6 +8,8 @@ class SubscriptionInitial extends SubscriptionState {}
 
 class SubscriptionSaving extends SubscriptionState {}
 
+class SubscriptionDeleting extends SubscriptionState {}
+
 class SubscriptionSaved extends SubscriptionState {
   const SubscriptionSaved({this.isUpdated = false});
 
@@ -15,6 +17,8 @@ class SubscriptionSaved extends SubscriptionState {
 }
 
 class SubscriptionUnsubscribing extends SubscriptionState {}
+
+class SubscriptionDeleted extends SubscriptionState {}
 
 class SubscriptionUnsubscribed extends SubscriptionState {}
 

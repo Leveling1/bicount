@@ -15,6 +15,8 @@ class AddFundSaved extends AddFundState {
   final bool isUpdated;
 }
 
+class AddFundDeleted extends AddFundState {}
+
 class AddFundFailure extends AddFundState {
   const AddFundFailure(this.message);
 

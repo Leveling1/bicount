@@ -37,4 +37,8 @@ class RecurringFundingScheduleService {
         return value;
     }
   }
+
+  String occurrenceFundingId(String recurringFundingId, DateTime value) {
+    return '$recurringFundingId-${DateFormat('yyyyMMdd').format(value)}';
+  }
 }

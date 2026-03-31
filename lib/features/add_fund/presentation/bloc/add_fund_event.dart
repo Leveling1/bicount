@@ -15,3 +15,9 @@ class AddFundUpdated extends AddFundEvent {
 
   final AddAccountFundingEntity data;
 }
+
+class AddFundDeleteRequested extends AddFundEvent {
+  const AddFundDeleteRequested({required this.funding});
+
+  final AccountFundingModel funding;
+}

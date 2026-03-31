@@ -33,6 +33,8 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
   bool _isRecurring = false;
   int _selectedFundingType = AccountFundingType.other;
   int? _selectedFrequency;
+  int _salaryProcessingMode = SalaryProcessingMode.confirmationRequired;
+  int _salaryReminderStatus = SalaryReminderStatus.enabled;
   bool get _isEditing => widget.initialFunding != null;
 
   @override
@@ -80,6 +82,10 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
                 selectedFundingType: _selectedFundingType,
                 isRecurring: _isRecurring,
                 selectedFrequency: _selectedFrequency,
+                salaryProcessingMode: _salaryProcessingMode,
+                salaryReminderEnabled: SalaryReminderStatus.isEnabled(
+                  _salaryReminderStatus,
+                ),
                 allowRecurring: !_isEditing,
                 onFundingTypeChanged: (value) {
                   if (value != null) {
@@ -94,6 +100,16 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
                 },
                 onFrequencyChanged: (value) {
                   setState(() => _selectedFrequency = value);
+                },
+                onSalaryProcessingModeChanged: (value) {
+                  setState(() => _salaryProcessingMode = value);
+                },
+                onSalaryReminderChanged: (value) {
+                  setState(
+                    () => _salaryReminderStatus = value
+                        ? SalaryReminderStatus.enabled
+                        : SalaryReminderStatus.disabled,
+                  );
                 },
               ),
               const SizedBox(height: 16),
@@ -188,6 +204,8 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
       fundingType: _selectedFundingType,
       isRecurring: _isRecurring,
       frequency: _selectedFrequency,
+      salaryProcessingMode: _salaryProcessingMode,
+      salaryReminderStatus: _salaryReminderStatus,
     );
     context.read<AddFundBloc>().add(event);
   }

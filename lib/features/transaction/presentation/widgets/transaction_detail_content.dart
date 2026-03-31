@@ -9,21 +9,28 @@ import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_detail_args.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_actions.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/utils/formated_text.dart';
+
 class TransactionDetailContent extends StatelessWidget {
   const TransactionDetailContent({
     super.key,
     required this.transaction,
-    required this.canEdit,
+    required this.canManage,
+    required this.isLoading,
+    this.onDeletePressed,
     this.onEditPressed,
   });
 
   final TransactionDetailArgs transaction;
-  final bool canEdit;
+  final bool canManage;
+  final bool isLoading;
+  final VoidCallback? onDeletePressed;
   final VoidCallback? onEditPressed;
 
   @override
@@ -62,19 +69,12 @@ class TransactionDetailContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (canEdit)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                        onPressed: onEditPressed,
-                        icon: Icon(
-                          Icons.edit,
-                          color: Theme.of(context).iconTheme.color,
-                          size: iconSize,
-                        ),
-                      ),
-                    ],
+                if (canManage)
+                  TransactionDetailActions(
+                    iconSize: iconSize,
+                    isLoading: isLoading,
+                    onDeletePressed: onDeletePressed,
+                    onEditPressed: onEditPressed,
                   ),
                 CircleAvatar(
                   backgroundColor: Theme.of(context).cardColor,
@@ -97,7 +97,7 @@ class TransactionDetailContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  data.name,
+                  FormatedText().capitalizeFirstLetter(data.name),
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
                 Text(

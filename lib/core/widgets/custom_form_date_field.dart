@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../utils/date_format_utils.dart';
+import '../utils/form_date_utils.dart';
 
 class CustomFormDateField extends StatefulWidget {
   final ValueChanged<DateTime>? onChanged;
@@ -33,11 +34,26 @@ class _CustomFormDateFieldState extends State<CustomFormDateField> {
   @override
   void initState() {
     super.initState();
-    _selectedDate = widget.initialDate;
     _controller = widget.controller ?? TextEditingController();
+    _selectedDate = widget.initialDate ?? _resolveControllerDate();
+    _controller.addListener(_syncSelectedDateFromController);
     if (_selectedDate != null) {
-      _controller.text = formatDate(_selectedDate!);
+      if (_controller.text.trim().isEmpty) {
+        _controller.text = formatDate(_selectedDate!);
+      }
     }
+  }
+
+  DateTime? _resolveControllerDate() {
+    final rawValue = widget.controller?.text.trim() ?? '';
+    if (rawValue.isEmpty) {
+      return null;
+    }
+    return parseFormDate(rawValue);
+  }
+
+  void _syncSelectedDateFromController() {
+    _selectedDate = parseFormDate(_controller.text);
   }
 
   Future<void> _pickDate() async {

@@ -10,24 +10,33 @@ import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
 import 'package:bicount/features/subscription/data/models/subscription.model.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../core/utils/formated_text.dart';
 
 class SubscriptionDetailView extends StatelessWidget {
   const SubscriptionDetailView({
     super.key,
+    required this.canManage,
+    required this.isDeleting,
     required this.friend,
     required this.subscription,
     required this.isUnsubscribing,
-    required this.onUnsubscribePressed,
+    this.onDeletePressed,
     this.onEditPressed,
+    this.onUnsubscribePressed,
   });
 
+  final bool canManage;
+  final bool isDeleting;
   final FriendsModel friend;
   final SubscriptionModel subscription;
   final bool isUnsubscribing;
-  final VoidCallback onUnsubscribePressed;
+  final VoidCallback? onDeletePressed;
   final VoidCallback? onEditPressed;
+  final VoidCallback? onUnsubscribePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -39,19 +48,14 @@ class SubscriptionDetailView extends StatelessWidget {
 
     return Column(
       children: [
-        if (SubscriptionConst.isActive(normalizedStatus))
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                onPressed: onEditPressed,
-                icon: Icon(
-                  Icons.edit,
-                  color: Theme.of(context).iconTheme.color,
-                  size: 20,
-                ),
-              ),
-            ],
+        if (canManage)
+          TransactionDetailActions(
+            iconSize: 20,
+            isLoading: isDeleting || isUnsubscribing,
+            onDeletePressed: onDeletePressed,
+            onEditPressed: SubscriptionConst.isActive(normalizedStatus)
+                ? onEditPressed
+                : null,
           ),
         CircleAvatar(
           backgroundColor: Theme.of(context).cardColor,
@@ -66,7 +70,10 @@ class SubscriptionDetailView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppDimens.paddingSmallMedium),
-        Text(friend.username, style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          FormatedText().capitalizeFirstLetter(friend.username),
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: AppDimens.paddingExtraSmall),
         Container(
           constraints: const BoxConstraints(minWidth: 70),
@@ -144,12 +151,13 @@ class SubscriptionDetailView extends StatelessWidget {
           title: context.l10n.commonCreatedAt,
           value: formatedDate(DateTime.parse(subscription.createdAt!)),
         ),
-        if (SubscriptionConst.isActive(normalizedStatus)) ...[
+        if (SubscriptionConst.isActive(normalizedStatus) &&
+            onUnsubscribePressed != null) ...[
           const SizedBox(height: AppDimens.marginMedium),
           CustomButton(
             text: context.l10n.subscriptionUnsubscribe,
             loading: isUnsubscribing,
-            onPressed: onUnsubscribePressed,
+            onPressed: onUnsubscribePressed!,
           ),
         ],
         AppDimens.spacerLarge,

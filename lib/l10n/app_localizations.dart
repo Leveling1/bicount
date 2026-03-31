@@ -62,7 +62,8 @@ import 'app_localizations_fr.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,17 +84,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('fr')
+    Locale('fr'),
   ];
 
   /// No description provided for @appName.
@@ -280,6 +283,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get commonRetry;
+
+  /// No description provided for @commonItems.
+  ///
+  /// In en, this message translates to:
+  /// **'items'**
+  String get commonItems;
 
   /// No description provided for @commonSuccess.
   ///
@@ -617,11 +626,23 @@ abstract class AppLocalizations {
   /// **'The transaction could not be saved.'**
   String get runtimeTransactionSaveFailed;
 
+  /// No description provided for @runtimeTransactionDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to delete this transaction right now.'**
+  String get runtimeTransactionDeleteFailed;
+
   /// No description provided for @runtimeTransactionUpdateFailed.
   ///
   /// In en, this message translates to:
   /// **'Unable to update this transaction right now.'**
   String get runtimeTransactionUpdateFailed;
+
+  /// No description provided for @runtimeSubscriptionDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to delete this subscription right now.'**
+  String get runtimeSubscriptionDeleteFailed;
 
   /// No description provided for @runtimeSubscriptionSaveFailed.
   ///
@@ -634,6 +655,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to update this subscription right now.'**
   String get runtimeSubscriptionUnsubscribeFailed;
+
+  /// No description provided for @runtimeAccountFundingDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to delete this account funding right now.'**
+  String get runtimeAccountFundingDeleteFailed;
 
   /// No description provided for @runtimeAccountFundingSaveFailed.
   ///
@@ -1751,6 +1778,18 @@ abstract class AppLocalizations {
   /// **'Unsubscribed'**
   String get statusUnsubscribed;
 
+  /// No description provided for @statusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get statusActive;
+
+  /// No description provided for @statusInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get statusInactive;
+
   /// No description provided for @transactionNoTransactionsFound.
   ///
   /// In en, this message translates to:
@@ -1835,11 +1874,35 @@ abstract class AppLocalizations {
   /// **'Transaction saved successfully.'**
   String get transactionSavedSuccess;
 
+  /// No description provided for @transactionDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction deleted successfully.'**
+  String get transactionDeletedSuccess;
+
   /// No description provided for @transactionUpdatedSuccess.
   ///
   /// In en, this message translates to:
   /// **'Transaction updated successfully.'**
   String get transactionUpdatedSuccess;
+
+  /// No description provided for @transactionDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this transaction?'**
+  String get transactionDeleteConfirmTitle;
+
+  /// No description provided for @transactionDeleteConfirmDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This action removes the transaction from your history and syncs the deletion when possible.'**
+  String get transactionDeleteConfirmDescription;
+
+  /// No description provided for @transactionDeleteConfirmCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete transaction'**
+  String get transactionDeleteConfirmCta;
 
   /// No description provided for @transactionDuplicateBeneficiary.
   ///
@@ -2039,6 +2102,12 @@ abstract class AppLocalizations {
   /// **'Subscription updated successfully.'**
   String get subscriptionUpdatedSuccess;
 
+  /// No description provided for @subscriptionDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription deleted successfully.'**
+  String get subscriptionDeletedSuccess;
+
   /// No description provided for @subscriptionSearchPrompt.
   ///
   /// In en, this message translates to:
@@ -2087,6 +2156,24 @@ abstract class AppLocalizations {
   /// **'Subscription cancelled successfully.'**
   String get subscriptionUnsubscribeSuccess;
 
+  /// No description provided for @subscriptionDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this subscription?'**
+  String get subscriptionDeleteConfirmTitle;
+
+  /// No description provided for @subscriptionDeleteConfirmDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This action removes the subscription and its linked generated entries from your history.'**
+  String get subscriptionDeleteConfirmDescription;
+
+  /// No description provided for @subscriptionDeleteConfirmCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete subscription'**
+  String get subscriptionDeleteConfirmCta;
+
   /// No description provided for @accountFundingIntro.
   ///
   /// In en, this message translates to:
@@ -2111,11 +2198,35 @@ abstract class AppLocalizations {
   /// **'Account funding updated successfully'**
   String get accountFundingUpdatedSuccess;
 
+  /// No description provided for @accountFundingDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Account funding deleted successfully.'**
+  String get accountFundingDeletedSuccess;
+
   /// No description provided for @accountFundingRecurringSavedSuccess.
   ///
   /// In en, this message translates to:
   /// **'Recurring income saved successfully'**
   String get accountFundingRecurringSavedSuccess;
+
+  /// No description provided for @accountFundingDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this added fund?'**
+  String get accountFundingDeleteConfirmTitle;
+
+  /// No description provided for @accountFundingDeleteConfirmDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This action removes the added fund from your history and updates your projections.'**
+  String get accountFundingDeleteConfirmDescription;
+
+  /// No description provided for @accountFundingDeleteConfirmCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete added fund'**
+  String get accountFundingDeleteConfirmCta;
 
   /// No description provided for @accountFundingEditTitle.
   ///
@@ -2164,6 +2275,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'First credit date'**
   String get accountFundingFirstCreditDate;
+
+  /// No description provided for @salaryConfirmBeforeCountingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm each salary before counting it'**
+  String get salaryConfirmBeforeCountingTitle;
+
+  /// No description provided for @salaryConfirmBeforeCountingHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this when your employer can pay late and you only want confirmed money to affect your balance.'**
+  String get salaryConfirmBeforeCountingHelper;
+
+  /// No description provided for @salaryReminderToggleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me on payday'**
+  String get salaryReminderToggleTitle;
+
+  /// No description provided for @salaryReminderToggleHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Bicount will ask if the salary has been received when the due date arrives.'**
+  String get salaryReminderToggleHelper;
+
+  /// No description provided for @salaryTrackingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary tracking'**
+  String get salaryTrackingTitle;
+
+  /// No description provided for @salaryEmptyState.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a recurring salary from Add funds to start tracking expected payments and arrears.'**
+  String get salaryEmptyState;
+
+  /// No description provided for @salaryAttentionSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs confirmation'**
+  String get salaryAttentionSectionTitle;
+
+  /// No description provided for @salaryPlansTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary plans'**
+  String get salaryPlansTitle;
+
+  /// No description provided for @salaryRecentPaymentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent confirmed payments'**
+  String get salaryRecentPaymentsTitle;
+
+  /// No description provided for @salaryOverdueTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrears'**
+  String get salaryOverdueTitle;
+
+  /// No description provided for @salaryDueTodayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Due today'**
+  String get salaryDueTodayTitle;
+
+  /// No description provided for @salaryNextPaydayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Next payday'**
+  String get salaryNextPaydayTitle;
+
+  /// No description provided for @salaryModeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm first'**
+  String get salaryModeConfirm;
+
+  /// No description provided for @salaryModeAutomatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get salaryModeAutomatic;
+
+  /// No description provided for @salaryStatusUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get salaryStatusUpcoming;
+
+  /// No description provided for @salaryStatusDueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Due today'**
+  String get salaryStatusDueToday;
+
+  /// No description provided for @salaryStatusOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get salaryStatusOverdue;
+
+  /// No description provided for @salaryStatusReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get salaryStatusReceived;
+
+  /// No description provided for @salaryExpectedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected on {date}'**
+  String salaryExpectedOn(Object date);
+
+  /// No description provided for @salaryReceivedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Received on {date}'**
+  String salaryReceivedOn(Object date);
+
+  /// No description provided for @salaryNextPaydayValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Next payday: {date}'**
+  String salaryNextPaydayValue(Object date);
+
+  /// No description provided for @salaryReminderStatusValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders: {status}'**
+  String salaryReminderStatusValue(Object status);
+
+  /// No description provided for @salaryArrearsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrears: {amount}'**
+  String salaryArrearsValue(Object amount);
+
+  /// No description provided for @salaryConfirmPaymentCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm payment received'**
+  String get salaryConfirmPaymentCta;
+
+  /// No description provided for @salaryKeepAutomaticCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop reminders and keep automatic credits'**
+  String get salaryKeepAutomaticCta;
+
+  /// No description provided for @salaryAutomaticModeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Future salaries will go back to the current automatic process.'**
+  String get salaryAutomaticModeHelper;
+
+  /// No description provided for @salaryReminderDisabledHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders are already disabled for this salary.'**
+  String get salaryReminderDisabledHelper;
+
+  /// No description provided for @salaryPaymentConfirmedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary payment confirmed successfully.'**
+  String get salaryPaymentConfirmedSuccess;
+
+  /// No description provided for @salaryAutomaticModeEnabledSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary tracking switched back to automatic mode.'**
+  String get salaryAutomaticModeEnabledSuccess;
+
+  /// No description provided for @salaryHomeCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary follow-up'**
+  String get salaryHomeCardTitle;
+
+  /// No description provided for @salaryHomeCardAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrears waiting: {amount}'**
+  String salaryHomeCardAttention(Object amount);
+
+  /// No description provided for @salaryHomeCardNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next salary expected on {date}'**
+  String salaryHomeCardNext(Object date);
+
+  /// No description provided for @salaryHomeCardCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} payments need attention'**
+  String salaryHomeCardCount(Object count);
+
+  /// No description provided for @salaryPlansCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} active salary plans'**
+  String salaryPlansCount(Object count);
+
+  /// No description provided for @runtimeSalaryConfirmFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to confirm this salary payment right now.'**
+  String get runtimeSalaryConfirmFailed;
+
+  /// No description provided for @runtimeSalaryTrackingSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update this salary tracking right now.'**
+  String get runtimeSalaryTrackingSaveFailed;
 
   /// No description provided for @transactionTypeTransfer.
   ///
@@ -2256,7 +2583,8 @@ abstract class AppLocalizations {
   String get runtimeSplitMismatch;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -2265,25 +2593,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'fr'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'fr'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'fr': return AppLocalizationsFr();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'fr':
+      return AppLocalizationsFr();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

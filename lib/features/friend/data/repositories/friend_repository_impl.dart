@@ -145,7 +145,9 @@ class FriendRepositoryImpl implements FriendRepository {
         policy: OfflineFirstGetPolicy.localOnly,
         query: Query(where: [Where.exact('sid', friend.sid)]),
       );
-      final currentFriend = currentFriends.isEmpty ? friend : currentFriends.first;
+      final currentFriend = currentFriends.isEmpty
+          ? friend
+          : currentFriends.first;
 
       final updatedFriend = FriendsModel(
         sid: currentFriend.sid,

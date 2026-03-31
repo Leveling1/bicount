@@ -1,6 +1,7 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
+part '20260331113000.migration.dart';
 part '20260329194500.migration.dart';
 part '20260329123000.migration.dart';
 part '20260325165928.migration.dart';
@@ -14,6 +15,7 @@ part '20260322103000.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
+  const Migration20260331113000(),
   const Migration20260329194500(),
   const Migration20260329123000(),
   const Migration20260325165928(),
@@ -28,7 +30,7 @@ final migrations = <Migration>{
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  20260329194500,
+  20260331113000,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -221,6 +223,8 @@ final schema = Schema(
         SchemaColumn('next_funding_date', Column.varchar),
         SchemaColumn('last_processed_at', Column.varchar),
         SchemaColumn('status', Column.integer),
+        SchemaColumn('salary_processing_mode', Column.integer),
+        SchemaColumn('salary_reminder_status', Column.integer),
         SchemaColumn('created_at', Column.varchar),
       },
       indices: <SchemaIndex>{

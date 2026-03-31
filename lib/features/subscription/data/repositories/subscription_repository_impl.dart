@@ -24,6 +24,20 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
   }
 
   @override
+  Future<void> deleteSubscription(SubscriptionModel subscription) async {
+    try {
+      final result = await localDataSource.deleteSubscription(subscription);
+      await result.fold(_throwFailure, (_) async => null);
+    } on Failure {
+      rethrow;
+    } catch (_) {
+      throw MessageFailure(
+        message: 'Unable to delete this subscription right now.',
+      );
+    }
+  }
+
+  @override
   Future<void> updateSubscription(SubscriptionEntity subscription) async {
     try {
       final result = await localDataSource.updateSubscription(subscription);

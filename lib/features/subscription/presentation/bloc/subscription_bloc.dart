@@ -11,6 +11,7 @@ part 'subscription_state.dart';
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   SubscriptionBloc(this.repository) : super(SubscriptionInitial()) {
     on<AddSubscriptionRequested>(_onAddSubscription);
+    on<DeleteSubscriptionRequested>(_onDeleteSubscription);
     on<UpdateSubscriptionRequested>(_onUpdateSubscription);
     on<UnsubscribeRequested>(_onUnsubscribe);
   }
@@ -32,6 +33,26 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       emit(SubscriptionFailure(error.message));
     } catch (_) {
       emit(SubscriptionFailure('An unexpected error occurred.'));
+    }
+  }
+
+  Future<void> _onDeleteSubscription(
+    DeleteSubscriptionRequested event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    emit(SubscriptionDeleting());
+
+    try {
+      await repository.deleteSubscription(event.subscription);
+      emit(SubscriptionDeleted());
+    } on MessageFailure catch (error) {
+      emit(SubscriptionFailure(error.message));
+    } on Failure catch (error) {
+      emit(SubscriptionFailure(error.message));
+    } catch (_) {
+      emit(
+        SubscriptionFailure('Unable to delete this subscription right now.'),
+      );
     }
   }
 

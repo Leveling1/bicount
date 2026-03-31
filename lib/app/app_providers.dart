@@ -37,6 +37,9 @@ import 'package:bicount/features/notification/data/repositories/notification_rep
 import 'package:bicount/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:bicount/features/project/data/repositories/project_repository_impl.dart';
 import 'package:bicount/features/project/presentation/bloc/project_bloc.dart';
+import 'package:bicount/features/salary/data/data_sources/local_datasource/local_salary_data_source_impl.dart';
+import 'package:bicount/features/salary/data/repositories/salary_repository_impl.dart';
+import 'package:bicount/features/salary/presentation/bloc/salary_bloc.dart';
 import 'package:bicount/features/add_fund/data/data_sources/local_datasource/local_add_fund_data_source_impl.dart';
 import 'package:bicount/features/add_fund/data/repositories/add_fund_repository_impl.dart';
 import 'package:bicount/features/add_fund/presentation/bloc/add_fund_bloc.dart';
@@ -92,6 +95,13 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
     RepositoryProvider<AddFundRepositoryImpl>(
       create: (context) => AddFundRepositoryImpl(
         localDataSource: LocalAddFundDataSourceImpl(
+          currencyRepository: context.read<CurrencyRepositoryImpl>(),
+        ),
+      ),
+    ),
+    RepositoryProvider<SalaryRepositoryImpl>(
+      create: (context) => SalaryRepositoryImpl(
+        localDataSource: LocalSalaryDataSourceImpl(
           currencyRepository: context.read<CurrencyRepositoryImpl>(),
         ),
       ),
@@ -170,6 +180,9 @@ List<BlocProvider> buildBlocProviders(bool enableCompanySurface) {
     ),
     BlocProvider<AddFundBloc>(
       create: (context) => AddFundBloc(context.read<AddFundRepositoryImpl>()),
+    ),
+    BlocProvider<SalaryBloc>(
+      create: (context) => SalaryBloc(context.read<SalaryRepositoryImpl>()),
     ),
     BlocProvider<GraphBloc>(
       create: (context) =>

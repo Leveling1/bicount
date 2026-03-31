@@ -17,3 +17,30 @@ class RecurringFundingStatus {
     return AppRecurringFundingState.normalize(status);
   }
 }
+
+class SalaryProcessingMode {
+  static const int confirmationRequired =
+      AppSalaryProcessingMode.confirmationRequired;
+  static const int automatic = AppSalaryProcessingMode.automatic;
+
+  static int normalize(int? mode) {
+    return AppSalaryProcessingMode.normalize(mode);
+  }
+
+  static bool requiresConfirmation(int? mode) {
+    return AppSalaryProcessingMode.requiresConfirmation(mode);
+  }
+}
+
+class SalaryReminderStatus {
+  static const int enabled = AppSalaryReminderState.enabled;
+  static const int disabled = AppSalaryReminderState.disabled;
+
+  static int normalize(int? status) {
+    return AppSalaryReminderState.normalize(status);
+  }
+
+  static bool isEnabled(int? status) {
+    return AppSalaryReminderState.isEnabled(status);
+  }
+}

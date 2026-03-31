@@ -66,6 +66,7 @@ void main() {
           date: '2026-03-23',
         ),
       ],
+      recurringFundings: const [],
       connectionState: Constants.connected,
       currencyConfig: CurrencyConfigEntity.fallback(),
     );
@@ -125,6 +126,7 @@ void main() {
         ),
       ],
       accountFundings: const [],
+      recurringFundings: const [],
       connectionState: Constants.connected,
       currencyConfig: CurrencyConfigEntity.fallback(),
     );

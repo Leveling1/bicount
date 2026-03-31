@@ -37,6 +37,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
   static const _recurringFundingSchemaVersion = 20260325165928;
   static const _currencyFxSchemaVersion = 20260329123000;
   static const _userReferenceCurrencySchemaVersion = 20260329194500;
+  static const _salaryTrackingSchemaVersion = 20260331113000;
   final Map<_RealtimeSubscriptionKey, _RealtimeBinding>
   _sharedRealtimeBindings = {};
 
@@ -208,6 +209,59 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       );
       await database.execute(
         'PRAGMA user_version = $_userReferenceCurrencySchemaVersion',
+      );
+    } finally {
+      await database.close();
+    }
+  }
+
+  Future<void> repairSalaryTrackingMigrationStateIfNeeded() async {
+    final databasePath = path.join(
+      await _databaseFactory.getDatabasesPath(),
+      _sqliteDatabaseName,
+    );
+    final database = await _databaseFactory.openDatabase(databasePath);
+
+    try {
+      if (!await _tableExists(database, 'RecurringFundingModel')) {
+        return;
+      }
+
+      final latestBrickMigrationVersion = await _lastBrickMigrationVersion(
+        database,
+      );
+      final isMigrationRecorded =
+          latestBrickMigrationVersion >= _salaryTrackingSchemaVersion;
+      final hasProcessingMode = await _columnExists(
+        database,
+        'RecurringFundingModel',
+        'salary_processing_mode',
+      );
+      final hasReminderStatus = await _columnExists(
+        database,
+        'RecurringFundingModel',
+        'salary_reminder_status',
+      );
+
+      if (isMigrationRecorded && hasProcessingMode && hasReminderStatus) {
+        return;
+      }
+
+      await _ensureColumn(
+        database,
+        tableName: 'RecurringFundingModel',
+        columnName: 'salary_processing_mode',
+        definition: 'INTEGER',
+      );
+      await _ensureColumn(
+        database,
+        tableName: 'RecurringFundingModel',
+        columnName: 'salary_reminder_status',
+        definition: 'INTEGER',
+      );
+      await _recordMigrationVersion(database, _salaryTrackingSchemaVersion);
+      await database.execute(
+        'PRAGMA user_version = $_salaryTrackingSchemaVersion',
       );
     } finally {
       await database.close();
@@ -456,6 +510,8 @@ class Repository extends OfflineFirstWithSupabaseRepository {
         `next_funding_date` TEXT,
         `last_processed_at` TEXT,
         `status` INTEGER,
+        `salary_processing_mode` INTEGER,
+        `salary_reminder_status` INTEGER,
         `created_at` TEXT
       )
     ''');
@@ -530,6 +586,18 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       database,
       tableName: 'RecurringFundingModel',
       columnName: 'status',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'salary_processing_mode',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringFundingModel',
+      columnName: 'salary_reminder_status',
       definition: 'INTEGER',
     );
     await _ensureColumn(

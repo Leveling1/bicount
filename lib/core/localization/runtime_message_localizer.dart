@@ -30,15 +30,25 @@ String localizeRuntimeMessage(BuildContext context, String message) {
       return context.l10n.runtimeFriendSaveFailed;
     case 'The transaction could not be saved.':
       return context.l10n.runtimeTransactionSaveFailed;
+    case 'Unable to delete this transaction right now.':
+      return context.l10n.runtimeTransactionDeleteFailed;
     case 'Unable to update this transaction right now.':
       return context.l10n.runtimeTransactionUpdateFailed;
+    case 'Unable to delete this subscription right now.':
+      return context.l10n.runtimeSubscriptionDeleteFailed;
     case 'Unable to save this subscription right now.':
       return context.l10n.runtimeSubscriptionSaveFailed;
     case 'Unable to update this subscription right now.':
       return context.l10n.runtimeSubscriptionUnsubscribeFailed;
+    case 'Unable to delete this account funding right now.':
+      return context.l10n.runtimeAccountFundingDeleteFailed;
     case 'Unable to save this account funding right now.':
     case 'Unable to update this account funding right now.':
       return context.l10n.runtimeAccountFundingSaveFailed;
+    case 'Unable to confirm this salary payment right now.':
+      return context.l10n.runtimeSalaryConfirmFailed;
+    case 'Unable to update this salary tracking right now.':
+      return context.l10n.runtimeSalaryTrackingSaveFailed;
     case 'Unable to save your profile right now.':
       return context.l10n.runtimeProfileSaveFailed;
     case 'Unable to load the latest exchange rates right now.':

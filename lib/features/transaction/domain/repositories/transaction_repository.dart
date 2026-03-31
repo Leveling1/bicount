@@ -3,6 +3,7 @@ import 'package:bicount/features/transaction/domain/entities/transaction_entity.
 
 abstract class TransactionRepository {
   Future<void> createTransaction(CreateTransactionRequestEntity transaction);
+  Future<void> deleteTransaction(TransactionEntity transaction);
   Future<void> updateTransaction(
     TransactionEntity previousTransaction,
     CreateTransactionRequestEntity transaction,

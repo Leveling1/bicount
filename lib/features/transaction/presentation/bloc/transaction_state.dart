@@ -8,6 +8,8 @@ class TransactionLoading extends TransactionState {}
 
 class TransactionCreated extends TransactionState {}
 
+class TransactionDeleted extends TransactionState {}
+
 class TransactionUpdated extends TransactionState {}
 
 class TransactionError extends TransactionState {

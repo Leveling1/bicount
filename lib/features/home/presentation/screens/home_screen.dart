@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/icon_links.dart';
+import 'package:bicount/core/constants/account_funding_const.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
@@ -7,9 +8,11 @@ import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/home/presentation/widgets/card_type_revenue.dart';
 import 'package:bicount/features/home/presentation/widgets/home_recent_activity_section.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
+import 'package:bicount/features/salary/presentation/widgets/home_salary_status_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/localization/l10n_extensions.dart';
 import '../../../../core/services/notification_helper.dart';
@@ -132,6 +135,16 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              if (data.recurringFundings.any(
+                (item) => item.fundingType == AccountFundingType.salary,
+              ))
+                BicountReveal(
+                  delay: const Duration(milliseconds: 150),
+                  child: HomeSalaryStatusCard(
+                    data: data,
+                    onTap: () => context.push('/salary'),
+                  ),
+                ),
               Expanded(
                 child: HomeRecentActivitySection(
                   data: data,

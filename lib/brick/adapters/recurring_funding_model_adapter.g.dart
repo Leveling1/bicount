@@ -21,6 +21,12 @@ Future<RecurringFundingModel> _$RecurringFundingModelFromSupabase(
         ? null
         : data['last_processed_at'] as String?,
     status: data['status'] as int,
+    salaryProcessingMode: data['salary_processing_mode'] == null
+        ? SalaryProcessingMode.automatic
+        : data['salary_processing_mode'] as int,
+    salaryReminderStatus: data['salary_reminder_status'] == null
+        ? SalaryReminderStatus.enabled
+        : data['salary_reminder_status'] as int,
     createdAt: data['created_at'] == null
         ? null
         : data['created_at'] as String?,
@@ -45,6 +51,8 @@ Future<Map<String, dynamic>> _$RecurringFundingModelToSupabase(
     'next_funding_date': instance.nextFundingDate,
     'last_processed_at': instance.lastProcessedAt,
     'status': instance.status,
+    'salary_processing_mode': instance.salaryProcessingMode,
+    'salary_reminder_status': instance.salaryReminderStatus,
     'created_at': instance.createdAt,
   };
 }
@@ -69,6 +77,12 @@ Future<RecurringFundingModel> _$RecurringFundingModelFromSqlite(
         ? null
         : data['last_processed_at'] as String?,
     status: data['status'] as int,
+    salaryProcessingMode: data['salary_processing_mode'] == null
+        ? SalaryProcessingMode.automatic
+        : data['salary_processing_mode'] as int,
+    salaryReminderStatus: data['salary_reminder_status'] == null
+        ? SalaryReminderStatus.enabled
+        : data['salary_reminder_status'] as int,
     createdAt: data['created_at'] == null
         ? null
         : data['created_at'] as String?,
@@ -93,6 +107,8 @@ Future<Map<String, dynamic>> _$RecurringFundingModelToSqlite(
     'next_funding_date': instance.nextFundingDate,
     'last_processed_at': instance.lastProcessedAt,
     'status': instance.status,
+    'salary_processing_mode': instance.salaryProcessingMode,
+    'salary_reminder_status': instance.salaryReminderStatus,
     'created_at': instance.createdAt,
   };
 }
@@ -155,6 +171,14 @@ class RecurringFundingModelAdapter
     'status': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'status',
+    ),
+    'salaryProcessingMode': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'salary_processing_mode',
+    ),
+    'salaryReminderStatus': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'salary_reminder_status',
     ),
     'createdAt': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -242,6 +266,18 @@ class RecurringFundingModelAdapter
     'status': const RuntimeSqliteColumnDefinition(
       association: false,
       columnName: 'status',
+      iterable: false,
+      type: int,
+    ),
+    'salaryProcessingMode': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'salary_processing_mode',
+      iterable: false,
+      type: int,
+    ),
+    'salaryReminderStatus': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'salary_reminder_status',
       iterable: false,
       type: int,
     ),

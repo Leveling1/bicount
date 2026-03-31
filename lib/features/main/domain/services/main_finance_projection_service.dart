@@ -2,6 +2,7 @@ import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
+import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
@@ -21,6 +22,7 @@ class MainFinanceProjectionService {
     required List<SubscriptionModel> subscriptions,
     required List<TransactionModel> transactions,
     required List<AccountFundingModel> accountFundings,
+    required List<RecurringFundingModel> recurringFundings,
     required int connectionState,
     required CurrencyConfigEntity currencyConfig,
   }) {
@@ -46,6 +48,7 @@ class MainFinanceProjectionService {
       subscriptions: subscriptions,
       transactions: transactions,
       accountFundings: accountFundings,
+      recurringFundings: recurringFundings,
     );
   }
 

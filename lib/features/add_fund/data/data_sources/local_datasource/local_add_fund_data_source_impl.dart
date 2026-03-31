@@ -80,6 +80,8 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
           frequency: frequency,
           startDate: accountFundingData.date,
           nextFundingDate: accountFundingData.date,
+          salaryProcessingMode: data.salaryProcessingMode,
+          salaryReminderStatus: data.salaryReminderStatus,
           createdAt: DateTime.now().toIso8601String(),
         ),
       );
@@ -88,6 +90,16 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
 
     await Repository().upsert<AccountFundingModel>(accountFundingData);
     await _offlineFinanceLocalService.applyFundingEffects(accountFundingData);
+  }
+
+  @override
+  Future<void> deleteAccountFunding(AccountFundingModel funding) async {
+    final currentFunding = await _findFunding(funding.fundingId);
+    if (currentFunding == null) {
+      throw Exception('Account funding not found.');
+    }
+
+    await Repository().delete<AccountFundingModel>(currentFunding);
   }
 
   @override

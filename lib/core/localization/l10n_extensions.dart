@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/account_funding_const.dart';
+import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
@@ -109,6 +110,20 @@ extension L10nBuildContextX on BuildContext {
         return l10n.transactionFilterPersonal;
       default:
         return l10n.transactionFilterAll;
+    }
+  }
+
+  String salaryOccurrenceStateLabel(int state) {
+    switch (AppSalaryOccurrenceState.normalize(state)) {
+      case AppSalaryOccurrenceState.dueToday:
+        return l10n.salaryStatusDueToday;
+      case AppSalaryOccurrenceState.overdue:
+        return l10n.salaryStatusOverdue;
+      case AppSalaryOccurrenceState.received:
+        return l10n.salaryStatusReceived;
+      case AppSalaryOccurrenceState.upcoming:
+      default:
+        return l10n.salaryStatusUpcoming;
     }
   }
 

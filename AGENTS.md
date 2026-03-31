@@ -23,6 +23,7 @@ Core user value:
 - track money in and out
 - manage shared transactions between the current user and friends
 - follow subscriptions and account funding
+- track salary due dates, confirmations, and arrears
 - view useful analytics
 - share a profile through QR code or invite link
 - receive push notifications and local reminders
@@ -73,6 +74,7 @@ Main layout:
 
 - lib/core
 - lib/brick
+- lib/features/add_fund
 - lib/features/authentification
 - lib/features/company
 - lib/features/friend
@@ -83,6 +85,8 @@ Main layout:
 - lib/features/notification
 - lib/features/profile
 - lib/features/project
+- lib/features/salary
+- lib/features/subscription
 - lib/features/transaction
 
 Layer intent:
@@ -114,7 +118,7 @@ Dependency wiring:
 
 - repositories are registered with MultiRepositoryProvider
 - blocs are registered with MultiBlocProvider
-- active visible V1 blocs include AuthentificationBloc, MainBloc, HomeBloc, TransactionBloc, ProfileBloc, GraphBloc, FriendBloc, and NotificationBloc
+- active visible V1 blocs include AuthentificationBloc, MainBloc, HomeBloc, TransactionBloc, SubscriptionBloc, AddFundBloc, SalaryBloc, GraphBloc, FriendBloc, and NotificationBloc
 
 The router lives in lib/core/routes/app_router.dart.
 The app theme lives in lib/core/themes/app_theme.dart.
@@ -125,6 +129,7 @@ Visible routes:
 
 - /
 - /graphs
+- /salary
 - /transaction
 - /friend/invite
 - /auth
@@ -328,6 +333,33 @@ Responsive UI note:
 - the selected transaction type should use a lightweight sliding thumb that matches the segment shape instead of snapping only the text background
 - the scrollable transaction type selector should keep small masked side insets so clipped labels or thumb edges do not show abruptly at the viewport bounds
 
+### add_fund
+
+Purpose:
+
+- create one-time account funding
+- create recurring funding such as salary or other recurring income
+
+Important boundary:
+
+- actual received money stays represented by `AccountFundingModel`
+- recurring salary setup starts here, but salary due tracking and confirmation belong to the dedicated `salary` feature
+
+### salary
+
+Purpose:
+
+- dedicated follow-up for recurring salaries
+- surface expected salary dates, due-today items, overdue arrears, and confirmed payments
+- let the user confirm a salary payment before it affects the balance
+- let the user switch a salary back to the old automatic process
+
+Important boundary:
+
+- salary occurrences are derived from `RecurringFundingModel` schedules and deterministic `AccountFundingModel.fundingId`
+- a confirmation-mode salary must not create a concrete `account_funding` row until the user confirms receipt
+- the salary screen should read from MainBloc aggregated data instead of introducing a duplicate fetch path
+
 ### profile
 
 Purpose:
@@ -431,14 +463,18 @@ Additional backend expectations introduced during V1 finishing work:
 - friend_invites
 - device_tokens
 - notification_events
+- recurring_fundings.salary_processing_mode
+- recurring_fundings.salary_reminder_status
 - RPC accept_friend_invite
 - FCM push dispatch function
 - realtime enabled for friend and finance tables
+- salary payday notifications routed to `/salary`
 
 Reference documents:
 
 - docs/SUPABASE_V1_HANDOFF.md
 - docs/BICOUNT_V1_BACKEND_ALIGNMENT_FR.md
+- docs/salary_tracking_backend_actions.md
 
 Invite link config lives in lib/core/constants/app_config.dart.
 Default invite base URL is https://bicount.levelingcoder.com.
@@ -568,6 +604,7 @@ Current state of the codebase:
 
 - V1 visible flow is coherent without company
 - graphs, friends, notifications, and grouped splits are implemented
+- transaction, subscription, add_fund, and salary now have separate active feature ownership
 - offline-first and realtime scaffolding is stronger than at project start
 - backend still needs to match the documented contracts for full production behavior
 - device-level QA remains important before external prospect distribution
@@ -940,3 +977,12 @@ Rules:
 - startup data recovery on a fresh device must explicitly hydrate user finance tables before relying on realtime streams alone
 - subscription unsubscribe must be a real status update with an end date, not a no-op upsert
 - notification sync for subscriptions must cancel old reminders before scheduling active subscriptions again
+
+## Salary Tracking Update (2026-03-31)
+
+Rules:
+- recurring salaries with confirmation enabled must stay out of `AccountFundingModel` until the user confirms the payment
+- only confirmed salary money may impact global balances, graphs, or income totals
+- salary due dates and arrears are derived from `RecurringFundingModel` schedules and deterministic `funding_id` values, so do not break that id contract when touching recurring income logic
+- the dedicated salary follow-up flow belongs to `lib/features/salary`, not back inside `add_fund`
+- backend salary reminders should deep link to `/salary` with `recurringFundingId` and `expectedDate` so the app can open the correct confirmation context

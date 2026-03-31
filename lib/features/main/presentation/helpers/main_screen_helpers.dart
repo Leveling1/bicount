@@ -32,5 +32,6 @@ MainEntity prepareMainScreenData(MainEntity data) {
     subscriptions: data.subscriptions,
     transactions: sortedTransactions,
     accountFundings: sortedAccountFundings,
+    recurringFundings: data.recurringFundings,
   );
 }

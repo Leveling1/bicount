@@ -74,6 +74,38 @@ class LocalSubscriptionDataSourceImpl implements SubscriptionLocalDataSource {
   }
 
   @override
+  Future<Either<Failure, void>> deleteSubscription(
+    SubscriptionModel subscription,
+  ) async {
+    try {
+      final subscriptionId = subscription.subscriptionId;
+      if (subscriptionId == null || subscriptionId.isEmpty) {
+        return Left(
+          MessageFailure(message: 'Subscription identifier is missing.'),
+        );
+      }
+
+      final currentSubscription = await findSubscription(subscriptionId);
+      if (currentSubscription == null) {
+        return Left(MessageFailure(message: 'Subscription not found.'));
+      }
+
+      await deleteSubscriptionCompanions(
+        currentUserId: currentSubscription.sid,
+        subscriptionId: subscriptionId,
+      );
+      await Repository().delete<SubscriptionModel>(currentSubscription);
+      return const Right(null);
+    } catch (_) {
+      return Left(
+        MessageFailure(
+          message: 'Unable to delete this subscription right now.',
+        ),
+      );
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> updateSubscription(
     SubscriptionEntity subscription,
   ) async {

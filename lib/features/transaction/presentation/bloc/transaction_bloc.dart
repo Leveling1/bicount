@@ -11,6 +11,7 @@ part 'transaction_state.dart';
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   TransactionBloc(this.repository) : super(TransactionInitial()) {
     on<CreateTransactionEvent>(_onCreateTransaction);
+    on<DeleteTransactionEvent>(_onDeleteTransaction);
     on<UpdateTransactionEvent>(_onUpdateTransaction);
   }
 
@@ -34,6 +35,24 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
       await repository.createTransaction(event.transaction);
       emit(TransactionCreated());
+    } on MessageFailure catch (error) {
+      emit(TransactionError(error));
+    } on Failure catch (error) {
+      emit(TransactionError(error));
+    } catch (_) {
+      emit(TransactionError(UnknownFailure()));
+    }
+  }
+
+  Future<void> _onDeleteTransaction(
+    DeleteTransactionEvent event,
+    Emitter<TransactionState> emit,
+  ) async {
+    emit(TransactionLoading());
+
+    try {
+      await repository.deleteTransaction(event.transaction);
+      emit(TransactionDeleted());
     } on MessageFailure catch (error) {
       emit(TransactionError(error));
     } on Failure catch (error) {

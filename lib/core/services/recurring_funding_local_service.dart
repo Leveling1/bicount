@@ -5,7 +5,6 @@ import 'package:bicount/features/currency/data/repositories/currency_repository_
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
-import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'offline_finance_local_service.dart';
@@ -63,44 +62,46 @@ class RecurringFundingLocalService {
       DateTime? lastProcessedDate;
 
       while (!_scheduleService.startOfDay(currentDate).isAfter(today)) {
-        final quote = await _currencyRepository.resolveCreationQuote(
-          amount: recurringFunding.amount,
-          originalCurrencyCode: recurringFunding.currency,
-        );
-        final occurrenceFunding = AccountFundingModel(
-          fundingId: _occurrenceFundingId(
-            recurringFunding.recurringFundingId,
-            currentDate,
-          ),
-          sid: uid,
-          amount: recurringFunding.amount,
-          currency: recurringFunding.currency,
-          referenceCurrencyCode: quote.referenceCurrencyCode,
-          convertedAmount: quote.convertedAmount,
-          amountCdf: quote.amountCdf,
-          rateToCdf: quote.rateToCdf,
-          fxRateDate: quote.fxRateDate,
-          fxSnapshotId: quote.fxSnapshotId,
-          category: Constants.personal,
-          fundingType: recurringFunding.fundingType,
-          source: recurringFunding.source,
-          note: recurringFunding.note,
-          date: currentDate.toIso8601String(),
-          createdAt: DateTime.now().toIso8601String(),
-        );
-
-        final existingFunding = await Repository().get<AccountFundingModel>(
-          policy: OfflineFirstGetPolicy.localOnly,
-          query: Query(
-            where: [Where.exact('fundingId', occurrenceFunding.fundingId)],
-          ),
-        );
-
-        if (existingFunding.isEmpty) {
-          await Repository().upsert<AccountFundingModel>(occurrenceFunding);
-          await _offlineFinanceLocalService.applyFundingEffects(
-            occurrenceFunding,
+        if (_shouldCreateConcreteFunding(recurringFunding)) {
+          final quote = await _currencyRepository.resolveCreationQuote(
+            amount: recurringFunding.amount,
+            originalCurrencyCode: recurringFunding.currency,
           );
+          final occurrenceFunding = AccountFundingModel(
+            fundingId: _scheduleService.occurrenceFundingId(
+              recurringFunding.recurringFundingId,
+              currentDate,
+            ),
+            sid: uid,
+            amount: recurringFunding.amount,
+            currency: recurringFunding.currency,
+            referenceCurrencyCode: quote.referenceCurrencyCode,
+            convertedAmount: quote.convertedAmount,
+            amountCdf: quote.amountCdf,
+            rateToCdf: quote.rateToCdf,
+            fxRateDate: quote.fxRateDate,
+            fxSnapshotId: quote.fxSnapshotId,
+            category: Constants.personal,
+            fundingType: recurringFunding.fundingType,
+            source: recurringFunding.source,
+            note: recurringFunding.note,
+            date: currentDate.toIso8601String(),
+            createdAt: DateTime.now().toIso8601String(),
+          );
+
+          final existingFunding = await Repository().get<AccountFundingModel>(
+            policy: OfflineFirstGetPolicy.localOnly,
+            query: Query(
+              where: [Where.exact('fundingId', occurrenceFunding.fundingId)],
+            ),
+          );
+
+          if (existingFunding.isEmpty) {
+            await Repository().upsert<AccountFundingModel>(occurrenceFunding);
+            await _offlineFinanceLocalService.applyFundingEffects(
+              occurrenceFunding,
+            );
+          }
         }
 
         lastProcessedDate = currentDate;
@@ -131,13 +132,22 @@ class RecurringFundingLocalService {
               lastProcessedDate?.toIso8601String() ??
               recurringFunding.lastProcessedAt,
           status: recurringFunding.status,
+          salaryProcessingMode: recurringFunding.salaryProcessingMode,
+          salaryReminderStatus: recurringFunding.salaryReminderStatus,
           createdAt: recurringFunding.createdAt,
         ),
       );
     }
   }
 
-  String _occurrenceFundingId(String recurringFundingId, DateTime value) {
-    return '$recurringFundingId-${DateFormat('yyyyMMdd').format(value)}';
+  bool _shouldCreateConcreteFunding(RecurringFundingModel recurringFunding) {
+    if (recurringFunding.fundingType != AccountFundingType.salary) {
+      return true;
+    }
+
+    return SalaryProcessingMode.normalize(
+          recurringFunding.salaryProcessingMode,
+        ) ==
+        SalaryProcessingMode.automatic;
   }
 }

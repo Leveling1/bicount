@@ -13,6 +13,8 @@ class AddAccountFundingEntity {
   final int fundingType;
   final bool isRecurring;
   final int? frequency;
+  final int salaryProcessingMode;
+  final int salaryReminderStatus;
 
   AddAccountFundingEntity({
     this.fundingId,
@@ -26,5 +28,7 @@ class AddAccountFundingEntity {
     this.fundingType = AccountFundingType.other,
     this.isRecurring = false,
     this.frequency,
+    this.salaryProcessingMode = SalaryProcessingMode.automatic,
+    this.salaryReminderStatus = SalaryReminderStatus.enabled,
   });
 }

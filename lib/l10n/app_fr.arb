@@ -31,6 +31,7 @@
   "commonSearch": "Rechercher",
   "commonOr": "ou",
   "commonRetry": "Réessayer",
+  "commonItems": "éléments",
   "commonSuccess": "Succès",
   "commonError": "Erreur",
   "authBrandSubtitle": "Argent perso et partagé, en toute clarté.",
@@ -92,9 +93,12 @@
   "runtimeFriendSaveFailed": "Impossible d'enregistrer cet ami pour le moment.",
   "runtimeFriendUpdateFailed": "Impossible de mettre a jour cet ami pour le moment.",
   "runtimeTransactionSaveFailed": "La transaction n'a pas pu être enregistrée.",
+  "runtimeTransactionDeleteFailed": "Impossible de supprimer cette transaction pour le moment.",
   "runtimeTransactionUpdateFailed": "Impossible de mettre à jour cette transaction pour le moment.",
+  "runtimeSubscriptionDeleteFailed": "Impossible de supprimer cet abonnement pour le moment.",
   "runtimeSubscriptionSaveFailed": "Impossible d'enregistrer cet abonnement pour le moment.",
   "runtimeSubscriptionUnsubscribeFailed": "Impossible de mettre à jour cet abonnement pour le moment.",
+  "runtimeAccountFundingDeleteFailed": "Impossible de supprimer cette alimentation de compte pour le moment.",
   "runtimeAccountFundingSaveFailed": "Impossible d'enregistrer cette alimentation de compte pour le moment.",
   "runtimeAccountFundingUpdateFailed": "Impossible de mettre à jour cette alimentation de compte pour le moment.",
   "runtimeProfileSaveFailed": "Impossible d'enregistrer votre profil pour le moment.",
@@ -288,6 +292,8 @@
   "statusExpired": "Expirée",
   "statusPaused": "En pause",
   "statusUnsubscribed": "Désabonné",
+  "statusActive": "Actif",
+  "statusInactive": "Inactif",
   "transactionNoTransactionsFound": "Aucune transaction trouvée",
   "transactionToday": "Aujourd'hui",
   "transactionYesterday": "Hier",
@@ -302,7 +308,11 @@
   "transactionNewSubscriptionTitle": "Nouvel abonnement",
   "transactionAddFundsTitle": "Ajouter des fonds à votre compte",
   "transactionSavedSuccess": "Transaction enregistrée avec succès.",
+  "transactionDeletedSuccess": "Transaction supprimée avec succès.",
   "transactionUpdatedSuccess": "Transaction mise à jour avec succès.",
+  "transactionDeleteConfirmTitle": "Supprimer cette transaction ?",
+  "transactionDeleteConfirmDescription": "Cette action retire la transaction de votre historique et synchronise la suppression dès que possible.",
+  "transactionDeleteConfirmCta": "Supprimer la transaction",
   "transactionDuplicateBeneficiary": "Ce bénéficiaire est déjà dans la répartition.",
   "transactionEditSingleBeneficiaryOnly": "Modifiez cette transaction avec un seul bénéficiaire.",
   "transactionAddAtLeastOneBeneficiary": "Ajoutez au moins un bénéficiaire.",
@@ -336,6 +346,7 @@
   "subscriptionEditTitle": "Modifier l'abonnement",
   "subscriptionSavedSuccess": "Abonnement enregistré avec succès !",
   "subscriptionUpdatedSuccess": "Abonnement modifié avec succès.",
+  "subscriptionDeletedSuccess": "Abonnement supprimé avec succès.",
   "subscriptionSearchPrompt": "Recherchez par nom d'abonnement ou par note.",
   "subscriptionSearchEmpty": "Aucun abonnement ne correspond à votre recherche.",
   "subscriptionNextBilling": "Prochaine échéance",
@@ -344,11 +355,18 @@
   "subscriptionSubscribedOn": "Abonné depuis le",
   "subscriptionUnsubscribe": "Se désabonner",
   "subscriptionUnsubscribeSuccess": "Abonnement résilié avec succès.",
+  "subscriptionDeleteConfirmTitle": "Supprimer cet abonnement ?",
+  "subscriptionDeleteConfirmDescription": "Cette action retire l'abonnement et ses entrées générées liées de votre historique.",
+  "subscriptionDeleteConfirmCta": "Supprimer l'abonnement",
   "accountFundingIntro": "Enregistrez un apport ponctuel ou un revenu récurrent comme un salaire pour garder votre solde à jour.",
   "accountFundingEnterSource": "Saisissez la source des fonds",
   "accountFundingSavedSuccess": "Opération d'alimentation du compte ajoutée avec succès",
   "accountFundingUpdatedSuccess": "Alimentation du compte mise à jour avec succès",
+  "accountFundingDeletedSuccess": "Alimentation du compte supprimée avec succès.",
   "accountFundingRecurringSavedSuccess": "Revenu récurrent enregistré avec succès",
+  "accountFundingDeleteConfirmTitle": "Supprimer cet ajout de fonds ?",
+  "accountFundingDeleteConfirmDescription": "Cette action retire l'ajout de fonds de votre historique et met à jour vos projections.",
+  "accountFundingDeleteConfirmCta": "Supprimer l'ajout de fonds",
   "accountFundingEditTitle": "Modifier l'ajout de fonds",
   "accountFundingTypeTitle": "Type de revenu",
   "accountFundingTypeHint": "Choisissez un type de revenu",
@@ -357,6 +375,87 @@
   "accountFundingRepeatLabel": "Répéter ce revenu automatiquement",
   "accountFundingFrequencyHint": "Choisissez le rythme de répétition",
   "accountFundingFirstCreditDate": "Date du premier versement",
+  "salaryConfirmBeforeCountingTitle": "Confirmer chaque salaire avant de le compter",
+  "salaryConfirmBeforeCountingHelper": "Utilisez cette option si votre employeur peut payer en retard et que vous voulez seulement compter l'argent réellement reçu.",
+  "salaryReminderToggleTitle": "Me rappeler le jour de paie",
+  "salaryReminderToggleHelper": "Bicount vous demandera si le salaire a bien été reçu à la date prévue.",
+  "salaryTrackingTitle": "Suivi des salaires",
+  "salaryEmptyState": "Créez un salaire récurrent depuis Ajouter des fonds pour suivre les paiements attendus et les arriérés.",
+  "salaryAttentionSectionTitle": "À confirmer",
+  "salaryPlansTitle": "Plans de salaire",
+  "salaryRecentPaymentsTitle": "Paiements confirmés récents",
+  "salaryOverdueTitle": "Arriérés",
+  "salaryDueTodayTitle": "Prévu aujourd'hui",
+  "salaryNextPaydayTitle": "Prochaine paie",
+  "salaryModeConfirm": "Confirmation",
+  "salaryModeAutomatic": "Automatique",
+  "salaryStatusUpcoming": "À venir",
+  "salaryStatusDueToday": "Aujourd'hui",
+  "salaryStatusOverdue": "En retard",
+  "salaryStatusReceived": "Reçu",
+  "salaryExpectedOn": "Prévu le {date}",
+  "@salaryExpectedOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "salaryReceivedOn": "Reçu le {date}",
+  "@salaryReceivedOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "salaryNextPaydayValue": "Prochaine paie : {date}",
+  "@salaryNextPaydayValue": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "salaryReminderStatusValue": "Rappels : {status}",
+  "@salaryReminderStatusValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "salaryArrearsValue": "Arriérés : {amount}",
+  "@salaryArrearsValue": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "salaryConfirmPaymentCta": "Confirmer la réception",
+  "salaryKeepAutomaticCta": "Stopper les rappels et reprendre l'automatique",
+  "salaryAutomaticModeHelper": "Les prochains salaires reviendront au processus automatique actuel.",
+  "salaryReminderDisabledHelper": "Les rappels sont déjà désactivés pour ce salaire.",
+  "salaryPaymentConfirmedSuccess": "Paiement de salaire confirmé avec succès.",
+  "salaryAutomaticModeEnabledSuccess": "Le suivi du salaire est repassé en mode automatique.",
+  "salaryHomeCardTitle": "Suivi salaire",
+  "salaryHomeCardAttention": "Arriérés en attente : {amount}",
+  "@salaryHomeCardAttention": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "salaryHomeCardNext": "Prochain salaire prévu le {date}",
+  "@salaryHomeCardNext": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "salaryHomeCardCount": "{count} paiements demandent votre attention",
+  "@salaryHomeCardCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "salaryPlansCount": "{count} plans de salaire actifs",
+  "@salaryPlansCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "runtimeSalaryConfirmFailed": "Impossible de confirmer ce paiement de salaire pour le moment.",
+  "runtimeSalaryTrackingSaveFailed": "Impossible de mettre à jour ce suivi de salaire pour le moment.",
   "transactionTypeTransfer": "Transfert",
   "transactionTypeSubscription": "Abonnement",
   "transactionTypeAddFund": "Ajouter des fonds",

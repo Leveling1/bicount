@@ -4,6 +4,7 @@ import 'package:bicount/core/constants/app_config.dart';
 import 'package:bicount/features/authentification/presentation/screens/auth_email_code_screen.dart';
 import 'package:bicount/features/authentification/presentation/screens/auth_screen.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_invite_landing_screen.dart';
+import 'package:bicount/features/salary/presentation/screens/salary_screen.dart';
 import 'package:bicount/features/settings/presentation/screens/settings_screen.dart';
 import 'package:bicount/features/subscription/presentation/screens/subscription_screen.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,17 @@ class AppRouter {
             path: '/subscriptions',
             pageBuilder: (context, state) => buildFadeSlideTransitionPage(
               child: const SubscriptionScreen(),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/salary',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: SalaryScreen(
+                focusRecurringFundingId:
+                    state.uri.queryParameters['recurringFundingId'],
+                focusExpectedDate: state.uri.queryParameters['expectedDate'],
+              ),
               state: state,
             ),
           ),

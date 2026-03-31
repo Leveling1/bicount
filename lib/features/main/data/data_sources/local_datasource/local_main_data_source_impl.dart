@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
+import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/data_sources/local_datasource/main_local_datasource.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
@@ -46,6 +47,10 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
 
   BehaviorSubject<List<AccountFundingModel>>? _accountFundingsSubject;
   StreamSubscription<List<AccountFundingModel>>? _accountFundingsSubscription;
+
+  BehaviorSubject<List<RecurringFundingModel>>? _recurringFundingsSubject;
+  StreamSubscription<List<RecurringFundingModel>>?
+  _recurringFundingsSubscription;
 
   String get uid => supabaseInstance.auth.currentUser!.id;
 
@@ -130,6 +135,19 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     );
   }
 
+  @override
+  Stream<List<RecurringFundingModel>> getRecurringFundings() {
+    return _cachedListStream<RecurringFundingModel>(
+      getSubject: () => _recurringFundingsSubject,
+      setSubject: (subject) => _recurringFundingsSubject = subject,
+      getSubscription: () => _recurringFundingsSubscription,
+      setSubscription: (subscription) =>
+          _recurringFundingsSubscription = subscription,
+      errorLabel: 'recurring fundings',
+      query: Query(where: [Where.exact('uid', uid)]),
+    );
+  }
+
   Stream<List<T>> _cachedListStream<T extends OfflineFirstWithSupabaseModel>({
     required BehaviorSubject<List<T>>? Function() getSubject,
     required void Function(BehaviorSubject<List<T>> subject) setSubject,
@@ -167,24 +185,28 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     _transactionsSubscription?.cancel();
     _subscriptionsSubscription?.cancel();
     _accountFundingsSubscription?.cancel();
+    _recurringFundingsSubscription?.cancel();
 
     _userSubject?.close();
     _friendsSubject?.close();
     _transactionsSubject?.close();
     _subscriptionsSubject?.close();
     _accountFundingsSubject?.close();
+    _recurringFundingsSubject?.close();
 
     _userSubscription = null;
     _friendsSubscription = null;
     _transactionsSubscription = null;
     _subscriptionsSubscription = null;
     _accountFundingsSubscription = null;
+    _recurringFundingsSubscription = null;
 
     _userSubject = null;
     _friendsSubject = null;
     _transactionsSubject = null;
     _subscriptionsSubject = null;
     _accountFundingsSubject = null;
+    _recurringFundingsSubject = null;
   }
 
   void dispose() {

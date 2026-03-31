@@ -31,6 +31,7 @@
   "commonSearch": "Search",
   "commonOr": "or",
   "commonRetry": "Retry",
+  "commonItems": "items",
   "commonSuccess": "Success",
   "commonError": "Error",
   "authBrandSubtitle": "Personal and shared money, made calm.",
@@ -92,9 +93,12 @@
   "runtimeFriendSaveFailed": "Unable to save this friend right now.",
   "runtimeFriendUpdateFailed": "Unable to update this friend right now.",
   "runtimeTransactionSaveFailed": "The transaction could not be saved.",
+  "runtimeTransactionDeleteFailed": "Unable to delete this transaction right now.",
   "runtimeTransactionUpdateFailed": "Unable to update this transaction right now.",
+  "runtimeSubscriptionDeleteFailed": "Unable to delete this subscription right now.",
   "runtimeSubscriptionSaveFailed": "Unable to save this subscription right now.",
   "runtimeSubscriptionUnsubscribeFailed": "Unable to update this subscription right now.",
+  "runtimeAccountFundingDeleteFailed": "Unable to delete this account funding right now.",
   "runtimeAccountFundingSaveFailed": "Unable to save this account funding right now.",
   "runtimeAccountFundingUpdateFailed": "Unable to update this account funding right now.",
   "runtimeProfileSaveFailed": "Unable to save your profile right now.",
@@ -288,6 +292,8 @@
   "statusExpired": "Expired",
   "statusPaused": "Paused",
   "statusUnsubscribed": "Unsubscribed",
+  "statusActive": "Active",
+  "statusInactive": "Inactive",
   "transactionNoTransactionsFound": "No transactions found",
   "transactionToday": "Today",
   "transactionYesterday": "Yesterday",
@@ -302,7 +308,11 @@
   "transactionNewSubscriptionTitle": "New subscription",
   "transactionAddFundsTitle": "Add funds to your account",
   "transactionSavedSuccess": "Transaction saved successfully.",
+  "transactionDeletedSuccess": "Transaction deleted successfully.",
   "transactionUpdatedSuccess": "Transaction updated successfully.",
+  "transactionDeleteConfirmTitle": "Delete this transaction?",
+  "transactionDeleteConfirmDescription": "This action removes the transaction from your history and syncs the deletion when possible.",
+  "transactionDeleteConfirmCta": "Delete transaction",
   "transactionDuplicateBeneficiary": "This beneficiary is already in the split.",
   "transactionEditSingleBeneficiaryOnly": "Edit this transaction with one beneficiary only.",
   "transactionAddAtLeastOneBeneficiary": "Add at least one beneficiary.",
@@ -336,6 +346,7 @@
   "subscriptionEditTitle": "Edit subscription",
   "subscriptionSavedSuccess": "Subscription saved successfully!",
   "subscriptionUpdatedSuccess": "Subscription updated successfully.",
+  "subscriptionDeletedSuccess": "Subscription deleted successfully.",
   "subscriptionSearchPrompt": "Search by subscription name or note.",
   "subscriptionSearchEmpty": "No subscription matches your search.",
   "subscriptionNextBilling": "Next billing",
@@ -344,11 +355,18 @@
   "subscriptionSubscribedOn": "Subscribed on",
   "subscriptionUnsubscribe": "Unsubscribe",
   "subscriptionUnsubscribeSuccess": "Subscription cancelled successfully.",
+  "subscriptionDeleteConfirmTitle": "Delete this subscription?",
+  "subscriptionDeleteConfirmDescription": "This action removes the subscription and its linked generated entries from your history.",
+  "subscriptionDeleteConfirmCta": "Delete subscription",
   "accountFundingIntro": "Record a one-time deposit or set up a recurring income like salary so your balance stays up to date.",
   "accountFundingEnterSource": "Enter source of funds",
   "accountFundingSavedSuccess": "Account funding transaction added successfully",
   "accountFundingUpdatedSuccess": "Account funding updated successfully",
+  "accountFundingDeletedSuccess": "Account funding deleted successfully.",
   "accountFundingRecurringSavedSuccess": "Recurring income saved successfully",
+  "accountFundingDeleteConfirmTitle": "Delete this added fund?",
+  "accountFundingDeleteConfirmDescription": "This action removes the added fund from your history and updates your projections.",
+  "accountFundingDeleteConfirmCta": "Delete added fund",
   "accountFundingEditTitle": "Edit added funds",
   "accountFundingTypeTitle": "Income type",
   "accountFundingTypeHint": "Choose an income type",
@@ -357,6 +375,87 @@
   "accountFundingRepeatLabel": "Repeat this income automatically",
   "accountFundingFrequencyHint": "Choose how often it repeats",
   "accountFundingFirstCreditDate": "First credit date",
+  "salaryConfirmBeforeCountingTitle": "Confirm each salary before counting it",
+  "salaryConfirmBeforeCountingHelper": "Use this when your employer can pay late and you only want confirmed money to affect your balance.",
+  "salaryReminderToggleTitle": "Remind me on payday",
+  "salaryReminderToggleHelper": "Bicount will ask if the salary has been received when the due date arrives.",
+  "salaryTrackingTitle": "Salary tracking",
+  "salaryEmptyState": "Create a recurring salary from Add funds to start tracking expected payments and arrears.",
+  "salaryAttentionSectionTitle": "Needs confirmation",
+  "salaryPlansTitle": "Salary plans",
+  "salaryRecentPaymentsTitle": "Recent confirmed payments",
+  "salaryOverdueTitle": "Arrears",
+  "salaryDueTodayTitle": "Due today",
+  "salaryNextPaydayTitle": "Next payday",
+  "salaryModeConfirm": "Confirm first",
+  "salaryModeAutomatic": "Automatic",
+  "salaryStatusUpcoming": "Upcoming",
+  "salaryStatusDueToday": "Due today",
+  "salaryStatusOverdue": "Overdue",
+  "salaryStatusReceived": "Received",
+  "salaryExpectedOn": "Expected on {date}",
+  "@salaryExpectedOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "salaryReceivedOn": "Received on {date}",
+  "@salaryReceivedOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "salaryNextPaydayValue": "Next payday: {date}",
+  "@salaryNextPaydayValue": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "salaryReminderStatusValue": "Reminders: {status}",
+  "@salaryReminderStatusValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "salaryArrearsValue": "Arrears: {amount}",
+  "@salaryArrearsValue": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "salaryConfirmPaymentCta": "Confirm payment received",
+  "salaryKeepAutomaticCta": "Stop reminders and keep automatic credits",
+  "salaryAutomaticModeHelper": "Future salaries will go back to the current automatic process.",
+  "salaryReminderDisabledHelper": "Reminders are already disabled for this salary.",
+  "salaryPaymentConfirmedSuccess": "Salary payment confirmed successfully.",
+  "salaryAutomaticModeEnabledSuccess": "Salary tracking switched back to automatic mode.",
+  "salaryHomeCardTitle": "Salary follow-up",
+  "salaryHomeCardAttention": "Arrears waiting: {amount}",
+  "@salaryHomeCardAttention": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "salaryHomeCardNext": "Next salary expected on {date}",
+  "@salaryHomeCardNext": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "salaryHomeCardCount": "{count} payments need attention",
+  "@salaryHomeCardCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "salaryPlansCount": "{count} active salary plans",
+  "@salaryPlansCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "runtimeSalaryConfirmFailed": "Unable to confirm this salary payment right now.",
+  "runtimeSalaryTrackingSaveFailed": "Unable to update this salary tracking right now.",
   "transactionTypeTransfer": "Transfer",
   "transactionTypeSubscription": "Subscription",
   "transactionTypeAddFund": "Add funds",

@@ -8,6 +8,12 @@ class CreateTransactionEvent extends TransactionEvent {
   final CreateTransactionRequestEntity transaction;
 }
 
+class DeleteTransactionEvent extends TransactionEvent {
+  DeleteTransactionEvent(this.transaction);
+
+  final TransactionEntity transaction;
+}
+
 class UpdateTransactionEvent extends TransactionEvent {
   UpdateTransactionEvent(this.previousTransaction, this.transaction);
 

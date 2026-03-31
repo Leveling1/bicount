@@ -14,7 +14,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SubscriptionForm extends StatefulWidget {
-  const SubscriptionForm({super.key, this.initialSubscription, this.onCompleted});
+  const SubscriptionForm({
+    super.key,
+    this.initialSubscription,
+    this.onCompleted,
+  });
 
   final SubscriptionModel? initialSubscription;
   final VoidCallback? onCompleted;
@@ -124,6 +128,7 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
               CustomDropdownMenu(
                 title: context.l10n.commonFrequency,
                 hintText: context.l10n.subscriptionFrequencyHint,
+                initialValue: int.tryParse(_frequency.text),
                 onChanged: (value) =>
                     setState(() => _frequency.text = '$value'),
                 menuEntries: DropdownMenuEntryConstants.frequencyEntries(
@@ -201,7 +206,9 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
           : _startDate.text,
       note: _note.text,
     );
-    final event = _isEditing ? UpdateSubscriptionRequested(payload) : AddSubscriptionRequested(payload);
+    final event = _isEditing
+        ? UpdateSubscriptionRequested(payload)
+        : AddSubscriptionRequested(payload);
     context.read<SubscriptionBloc>().add(event);
   }
 }

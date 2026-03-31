@@ -1,3 +1,4 @@
+import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
@@ -5,9 +6,11 @@ import 'package:bicount/features/transaction/domain/entities/create_transaction_
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:bicount/features/transaction/domain/services/transaction_split_resolver.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/errors/failure.dart';
+import '../models/transaction.model.dart';
 
 class TransactionRepositoryImpl extends TransactionRepository {
   TransactionRepositoryImpl(
@@ -50,6 +53,30 @@ class TransactionRepositoryImpl extends TransactionRepository {
       rethrow;
     } catch (_) {
       throw UnknownFailure();
+    }
+  }
+
+  @override
+  Future<void> deleteTransaction(TransactionEntity transaction) async {
+    try {
+      final currentTransactions = await Repository().get<TransactionModel>(
+        policy: OfflineFirstGetPolicy.localOnly,
+        query: Query(where: [Where.exact('tid', transaction.tid)]),
+      );
+
+      if (currentTransactions.isEmpty) {
+        throw MessageFailure(
+          message: 'Unable to delete this transaction right now.',
+        );
+      }
+
+      await Repository().delete<TransactionModel>(currentTransactions.first);
+    } on Failure {
+      rethrow;
+    } catch (_) {
+      throw MessageFailure(
+        message: 'Unable to delete this transaction right now.',
+      );
     }
   }
 

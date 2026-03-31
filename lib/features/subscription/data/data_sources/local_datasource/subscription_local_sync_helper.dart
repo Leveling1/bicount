@@ -14,6 +14,24 @@ Future<SubscriptionModel?> findSubscription(String subscriptionId) async {
   return items.isEmpty ? null : items.first;
 }
 
+Future<void> deleteSubscriptionCompanions({
+  required String currentUserId,
+  required String subscriptionId,
+}) async {
+  final existingFriend = await _findFriend(subscriptionId);
+  if (existingFriend != null) {
+    await Repository().delete<FriendsModel>(existingFriend);
+  }
+
+  final existingTransaction = await _findSubscriptionTransaction(
+    currentUserId,
+    subscriptionId,
+  );
+  if (existingTransaction != null) {
+    await Repository().delete<TransactionModel>(existingTransaction);
+  }
+}
+
 Future<void> syncSubscriptionCompanions({
   required String currentUserId,
   required SubscriptionModel subscription,

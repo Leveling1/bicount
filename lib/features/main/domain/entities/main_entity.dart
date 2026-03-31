@@ -1,5 +1,6 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
+import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:bicount/features/subscription/data/models/subscription.model.dart';
@@ -16,6 +17,7 @@ class MainEntity extends Equatable {
   final List<SubscriptionModel> subscriptions;
   final List<TransactionModel> transactions;
   final List<AccountFundingModel> accountFundings;
+  final List<RecurringFundingModel> recurringFundings;
 
   const MainEntity({
     required this.user,
@@ -26,6 +28,7 @@ class MainEntity extends Equatable {
     required this.subscriptions,
     required this.transactions,
     required this.accountFundings,
+    required this.recurringFundings,
   });
 
   @override
@@ -37,6 +40,7 @@ class MainEntity extends Equatable {
     subscriptions,
     transactions,
     accountFundings,
+    recurringFundings,
   ];
 
   factory MainEntity.fromEmpty() {
@@ -60,6 +64,7 @@ class MainEntity extends Equatable {
       subscriptions: [],
       transactions: [],
       accountFundings: [],
+      recurringFundings: [],
     );
   }
 }

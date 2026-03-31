@@ -1,5 +1,6 @@
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
+import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/core/services/recurring_funding_local_service.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
@@ -51,15 +52,17 @@ class MainRepositoryImpl implements MainRepository {
       final subscriptionsStream = localDataSource.getSubscriptions();
       final transactionsStream = localDataSource.getTransaction();
       final accountFundingsStream = localDataSource.getAccountFundings();
+      final recurringFundingsStream = localDataSource.getRecurringFundings();
       final connectionStateStream = remoteDataSource.connectionState();
       final currencyConfigStream = currencyRepository.watchConfig();
 
-      return Rx.combineLatest7<
+      return Rx.combineLatest8<
             UserModel,
             List<FriendsModel>,
             List<SubscriptionModel>,
             List<TransactionModel>,
             List<AccountFundingModel>,
+            List<RecurringFundingModel>,
             int,
             CurrencyConfigEntity,
             MainEntity
@@ -69,6 +72,7 @@ class MainRepositoryImpl implements MainRepository {
             subscriptionsStream,
             transactionsStream,
             accountFundingsStream,
+            recurringFundingsStream,
             connectionStateStream,
             currencyConfigStream,
             (
@@ -77,6 +81,7 @@ class MainRepositoryImpl implements MainRepository {
               subscriptions,
               transactions,
               accountFundings,
+              recurringFundings,
               connectionState,
               currencyConfig,
             ) {
@@ -86,6 +91,7 @@ class MainRepositoryImpl implements MainRepository {
                 subscriptions: subscriptions,
                 transactions: transactions,
                 accountFundings: accountFundings,
+                recurringFundings: recurringFundings,
                 connectionState: connectionState,
                 currencyConfig: currencyConfig,
               );

@@ -35,6 +35,8 @@ AddAccountFundingEntity buildAccountFundingPayload({
   required int fundingType,
   required bool isRecurring,
   required int? frequency,
+  required int salaryProcessingMode,
+  required int salaryReminderStatus,
 }) {
   return AddAccountFundingEntity(
     fundingId: initialFunding?.fundingId,
@@ -48,6 +50,8 @@ AddAccountFundingEntity buildAccountFundingPayload({
     fundingType: fundingType,
     isRecurring: isRecurring,
     frequency: frequency,
+    salaryProcessingMode: salaryProcessingMode,
+    salaryReminderStatus: salaryReminderStatus,
   );
 }
 
@@ -61,6 +65,8 @@ AddFundEvent buildAddFundEvent({
   required int fundingType,
   required bool isRecurring,
   required int? frequency,
+  required int salaryProcessingMode,
+  required int salaryReminderStatus,
 }) {
   final payload = buildAccountFundingPayload(
     initialFunding: initialFunding,
@@ -72,6 +78,8 @@ AddFundEvent buildAddFundEvent({
     fundingType: fundingType,
     isRecurring: isRecurring,
     frequency: frequency,
+    salaryProcessingMode: salaryProcessingMode,
+    salaryReminderStatus: salaryReminderStatus,
   );
 
   return initialFunding != null
