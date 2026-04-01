@@ -77,10 +77,15 @@ class CurrencyConfigEntity extends Equatable {
     required String rateDate,
   }) {
     final normalizedCode = _normalizeCode(currencyCode);
+    final cachedSnapshot =
+        snapshotsByKey['${_normalizeDate(rateDate)}|$normalizedCode'];
+    if (cachedSnapshot != null) {
+      return cachedSnapshot;
+    }
     if (normalizedCode == defaultReferenceCurrencyCode) {
       return ExchangeRateSnapshotEntity.cdf(_normalizeDate(rateDate));
     }
-    return snapshotsByKey['${_normalizeDate(rateDate)}|$normalizedCode'];
+    return null;
   }
 
   double? latestRateToCdf(String currencyCode) {
@@ -89,17 +94,23 @@ class CurrencyConfigEntity extends Equatable {
 
   ExchangeRateSnapshotEntity? latestSnapshot(String currencyCode) {
     final normalizedCode = _normalizeCode(currencyCode);
-    if (normalizedCode == defaultReferenceCurrencyCode) {
-      return null;
-    }
-
     final candidates =
         snapshotsByKey.values
             .where((snapshot) => snapshot.currencyCode == normalizedCode)
             .toList()
           ..sort((left, right) => right.rateDate.compareTo(left.rateDate));
 
-    return candidates.isEmpty ? null : candidates.first;
+    if (candidates.isNotEmpty) {
+      return candidates.first;
+    }
+
+    if (normalizedCode == defaultReferenceCurrencyCode) {
+      return ExchangeRateSnapshotEntity.cdf(
+        DateTime.now().toIso8601String().substring(0, 10),
+      );
+    }
+
+    return null;
   }
 
   Set<String> missingRateDates({

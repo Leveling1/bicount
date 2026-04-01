@@ -988,3 +988,17 @@ Rules:
 - salary due dates and arrears are derived from `RecurringFundingModel` schedules and deterministic `funding_id` values, so do not break that id contract when touching recurring income logic
 - the dedicated salary follow-up flow belongs to `lib/features/salary`, not back inside `add_fund`
 - backend salary reminders should deep link to `/salary` with `recurringFundingId` and `expectedDate` so the app can open the correct confirmation context
+
+## FX Snapshot Contract Update (2026-04-01)
+
+Rules:
+- when persisting `fx_snapshot_id`, prefer the real backend `exchange_rate_snapshots.snapshot_id` for every currency, including `CDF`
+- synthetic local CDF snapshots may still be used as a calculation fallback, but they must not persist a fake id like `cdf-YYYY-MM-DD`
+- if a real CDF snapshot is unavailable, the safe fallback is a null `fx_snapshot_id`, never a non-UUID synthetic value
+
+## Invite Domain Deployment Update (2026-04-01)
+
+Rules:
+- the public invite-link website deployment must preserve hidden files so `dist/.well-known/*` is actually published
+- if GitHub `actions/upload-artifact@v4` is used in the website pipeline, keep `include-hidden-files: true` enabled or app-link files will disappear before the FTP deploy step
+- if invite links open the website instead of the app, verify the live production responses of `/.well-known/assetlinks.json` and `/.well-known/apple-app-site-association` before changing Flutter routing

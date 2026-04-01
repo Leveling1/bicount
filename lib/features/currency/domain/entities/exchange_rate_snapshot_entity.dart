@@ -54,7 +54,7 @@ class ExchangeRateSnapshotEntity extends Equatable {
 
   static ExchangeRateSnapshotEntity cdf(String rateDate) {
     return ExchangeRateSnapshotEntity(
-      snapshotId: 'cdf-$rateDate',
+      snapshotId: null,
       currencyCode: 'CDF',
       rateDate: rateDate,
       rateToCdf: 1,

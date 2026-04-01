@@ -177,26 +177,22 @@ class CurrencyRepositoryImpl {
   Future<List<ExchangeRateSnapshotEntity>> _refreshLatestSnapshots(
     Set<String> codes,
   ) async {
+    final normalizedCodes = codes
+        .map(CurrencyConfigEntity.normalizeCode)
+        .where((code) => code.isNotEmpty)
+        .toSet();
     try {
       final remoteSnapshots = await _remoteDataSource
-          .fetchLatestSnapshotsForCodes(codes.toList(growable: false));
+          .fetchLatestSnapshotsForCodes(normalizedCodes.toList(growable: false));
       await _mergeSnapshots(remoteSnapshots);
       return remoteSnapshots;
     } catch (_) {
-      final cachedSnapshots = codes
-          .where(
-            (code) => code != CurrencyConfigEntity.defaultReferenceCurrencyCode,
-          )
+      final cachedSnapshots = normalizedCodes
           .map(currentConfig.latestSnapshot)
           .whereType<ExchangeRateSnapshotEntity>()
           .toList(growable: false);
 
-      final needsRemoteCount = codes
-          .where(
-            (code) => code != CurrencyConfigEntity.defaultReferenceCurrencyCode,
-          )
-          .length;
-      if (cachedSnapshots.length == needsRemoteCount) {
+      if (cachedSnapshots.length == normalizedCodes.length) {
         return cachedSnapshots;
       }
       rethrow;
@@ -208,6 +204,17 @@ class CurrencyRepositoryImpl {
     List<ExchangeRateSnapshotEntity> remoteSnapshots,
   ) {
     final normalizedCode = CurrencyConfigEntity.normalizeCode(currencyCode);
+    for (final snapshot in remoteSnapshots) {
+      if (snapshot.currencyCode == normalizedCode) {
+        return snapshot;
+      }
+    }
+
+    final cachedSnapshot = currentConfig.latestSnapshot(normalizedCode);
+    if (cachedSnapshot != null) {
+      return cachedSnapshot;
+    }
+
     if (normalizedCode == CurrencyConfigEntity.defaultReferenceCurrencyCode) {
       final referenceDate = remoteSnapshots.isEmpty
           ? DateTime.now().toIso8601String().substring(0, 10)
@@ -215,8 +222,8 @@ class CurrencyRepositoryImpl {
       return ExchangeRateSnapshotEntity.cdf(referenceDate);
     }
 
-    return remoteSnapshots.firstWhere(
-      (snapshot) => snapshot.currencyCode == normalizedCode,
+    throw MessageFailure(
+      message: 'Unable to load the latest exchange rates right now.',
     );
   }
 

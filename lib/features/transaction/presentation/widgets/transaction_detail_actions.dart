@@ -27,7 +27,7 @@ class TransactionDetailActions extends StatelessWidget {
             onPressed: isLoading ? null : onEditPressed,
             icon: Icon(
               Icons.edit,
-              color: Theme.of(context).iconTheme.color,
+              color: Theme.of(context).textTheme.bodyMedium!.color,
               size: iconSize,
             ),
           ),

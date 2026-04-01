@@ -17,7 +17,9 @@ The current web-side blockers are:
 
 1. Android app-link verification only works if the deployed `/.well-known/assetlinks.json` uses the exact fingerprint of the installed app.
 2. iOS universal links are currently blocked because `public/.well-known/apple-app-site-association` still contains the placeholder `REPLACE_WITH_APPLE_TEAM_ID`.
-3. The fallback page `/friend/invite` currently shows the invite code, but it does not itself force-open the app.
+3. The public production domain returned `404` for both `/.well-known/assetlinks.json` and `/.well-known/apple-app-site-association` during verification on 2026-04-01, even though those files exist in the website repository and in `dist/.well-known`.
+4. The website deployment workflow was uploading the `dist` artifact without hidden files, which drops the `.well-known` directory before the FTP deploy step.
+5. The fallback page `/friend/invite` currently shows the invite code, but it does not itself force-open the app.
 
 Important product note:
 - if the user already landed inside the browser on `/friend/invite`, the website alone cannot reliably force Safari or Chrome to reopen the app through the same universal link
@@ -172,6 +174,11 @@ For now, the correct web mission is:
 - keep `/friend/invite` as a clean fallback page
 
 ## Deployment Checklist
+
+Important deployment fix already applied in the website repository:
+- `.github/workflows/ci-cd.yml` now sets `include-hidden-files: true` on `actions/upload-artifact@v4`
+- this is required because `.well-known` is a hidden directory and was previously missing from the uploaded artifact
+- without this flag, the FTP deploy step publishes the site without `assetlinks.json` and `apple-app-site-association`
 
 The web developer should verify all of these after deployment:
 

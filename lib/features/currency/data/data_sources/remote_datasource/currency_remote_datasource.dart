@@ -116,7 +116,7 @@ class CurrencyRemoteDataSourceImpl implements CurrencyRemoteDataSource {
   Set<String> _normalizeCodes(List<String> values) {
     return values
         .map((value) => value.trim().toUpperCase())
-        .where((value) => value.isNotEmpty && value != 'CDF')
+        .where((value) => value.isNotEmpty)
         .toSet();
   }
 }
