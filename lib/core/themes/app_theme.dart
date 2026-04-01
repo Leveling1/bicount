@@ -434,6 +434,26 @@ class AppTheme {
       ),
     ),
 
+    /// Switch list tile theme dark
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith<Color?>((
+        Set<WidgetState> states,
+      ) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.backgroundColorLight;
+        }
+        return AppColors.backgroundColorLight;
+      }),
+      trackColor: WidgetStateProperty.resolveWith<Color?>((
+        Set<WidgetState> states,
+      ) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.primaryColorLight;
+        }
+        return AppColors.textColorLight;
+      }),
+    ),
+
     /// Extensions light
     extensions: <ThemeExtension<dynamic>>[
       AppGradients(
@@ -877,6 +897,26 @@ class AppTheme {
         fontSize: AppDimens.textSizeMedium.sp,
         fontFamily: 'Poppins',
       ),
+    ),
+
+    /// Switch list tile theme dark
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith<Color?>((
+        Set<WidgetState> states,
+      ) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.backgroundColorDark;
+        }
+        return AppColors.backgroundColorDark;
+      }),
+      trackColor: WidgetStateProperty.resolveWith<Color?>((
+        Set<WidgetState> states,
+      ) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.primaryColorDark;
+        }
+        return AppColors.textColorDark;
+      }),
     ),
 
     /// Extensions dark

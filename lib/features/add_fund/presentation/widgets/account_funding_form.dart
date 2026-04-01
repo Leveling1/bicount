@@ -13,6 +13,10 @@ import 'package:bicount/features/add_fund/presentation/widgets/account_funding_s
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/constants/dropdown_menu_entry.dart';
+import '../../../../core/themes/app_dimens.dart';
+import '../../../../core/widgets/custom_dropdown_menu.dart';
+
 class AccountFundingForm extends StatefulWidget {
   const AccountFundingForm({super.key, this.initialFunding, this.onCompleted});
 
@@ -35,6 +39,7 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
   int? _selectedFrequency;
   int _salaryProcessingMode = SalaryProcessingMode.confirmationRequired;
   int _salaryReminderStatus = SalaryReminderStatus.enabled;
+
   bool get _isEditing => widget.initialFunding != null;
 
   @override
@@ -77,7 +82,56 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
                 context.l10n.accountFundingIntro,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
+              AppDimens.spacerMedium,
+              CustomDropdownMenu(
+                title: context.l10n.accountFundingTypeTitle,
+                hintText: context.l10n.accountFundingTypeHint,
+                initialValue: _selectedFundingType,
+                menuEntries:
+                    DropdownMenuEntryConstants.accountFundingTypeEntries(
+                      context,
+                    ),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() => _selectedFundingType = value);
+                  }
+                },
+              ),
+              AppDimens.spacerMedium,
+              CustomFormField(
+                controller: _source,
+                label: context.l10n.commonSource,
+                hint: context.l10n.accountFundingEnterSource,
+              ),
               const SizedBox(height: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.l10n.commonAmount,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  CustomAmountField(amount: _amount, currency: _currency),
+                ],
+              ),
+              AppDimens.spacerMedium,
+              CustomFormField(
+                controller: _note,
+                label: context.l10n.commonNote,
+                hint: context.l10n.commonPlaceholderNote,
+                enableValidator: false,
+              ),
+              AppDimens.spacerMedium,
+              CustomFormField(
+                controller: _date,
+                hint: context.l10n.commonDateHint,
+                inputType: TextInputType.datetime,
+                isDate: true,
+                label: _isRecurring
+                    ? context.l10n.accountFundingFirstCreditDate
+                    : context.l10n.commonWhen,
+              ),
+              AppDimens.spacerMedium,
               AccountFundingSelectorsSection(
                 selectedFundingType: _selectedFundingType,
                 isRecurring: _isRecurring,
@@ -112,47 +166,13 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
                   );
                 },
               ),
-              const SizedBox(height: 16),
-              CustomFormField(
-                controller: _source,
-                label: context.l10n.commonSource,
-                hint: context.l10n.accountFundingEnterSource,
-              ),
-              const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    context.l10n.commonAmount,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  CustomAmountField(amount: _amount, currency: _currency),
-                ],
-              ),
-              const SizedBox(height: 16),
-              CustomFormField(
-                controller: _note,
-                label: context.l10n.commonNote,
-                hint: context.l10n.commonPlaceholderNote,
-                enableValidator: false,
-              ),
-              const SizedBox(height: 16),
-              CustomFormField(
-                controller: _date,
-                hint: context.l10n.commonDateHint,
-                inputType: TextInputType.datetime,
-                isDate: true,
-                label: _isRecurring
-                    ? context.l10n.accountFundingFirstCreditDate
-                    : context.l10n.commonWhen,
-              ),
-              const SizedBox(height: 32),
+              AppDimens.spacerExtraLarge,
               CustomButton(
                 text: context.l10n.commonSave,
                 loading: state is AddFundSaving,
                 onPressed: _submit,
               ),
-              const SizedBox(height: 32),
+              AppDimens.spacerExtraLarge,
             ],
           ),
         );

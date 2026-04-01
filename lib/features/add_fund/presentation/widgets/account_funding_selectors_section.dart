@@ -4,6 +4,8 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/widgets/custom_dropdown_menu.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/themes/app_dimens.dart';
+
 class AccountFundingSelectorsSection extends StatelessWidget {
   const AccountFundingSelectorsSection({
     super.key,
@@ -42,16 +44,6 @@ class AccountFundingSelectorsSection extends StatelessWidget {
 
     return Column(
       children: [
-        CustomDropdownMenu(
-          title: context.l10n.accountFundingTypeTitle,
-          hintText: context.l10n.accountFundingTypeHint,
-          initialValue: selectedFundingType,
-          menuEntries: DropdownMenuEntryConstants.accountFundingTypeEntries(
-            context,
-          ),
-          onChanged: onFundingTypeChanged,
-        ),
-        const SizedBox(height: 16),
         if (allowRecurring)
           CheckboxListTile(
             value: isRecurring,
@@ -64,7 +56,7 @@ class AccountFundingSelectorsSection extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
           ),
         if (isRecurring) ...[
-          const SizedBox(height: 8),
+          AppDimens.spacerSmall,
           CustomDropdownMenu(
             title: context.l10n.commonFrequency,
             hintText: context.l10n.accountFundingFrequencyHint,
@@ -73,7 +65,7 @@ class AccountFundingSelectorsSection extends StatelessWidget {
             onChanged: onFrequencyChanged,
           ),
           if (showSalaryControls) ...[
-            const SizedBox(height: 16),
+            AppDimens.spacerMedium,
             SwitchListTile.adaptive(
               value: requiresConfirmation,
               onChanged: (value) => onSalaryProcessingModeChanged(
@@ -81,16 +73,28 @@ class AccountFundingSelectorsSection extends StatelessWidget {
                     ? SalaryProcessingMode.confirmationRequired
                     : SalaryProcessingMode.automatic,
               ),
-              title: Text(context.l10n.salaryConfirmBeforeCountingTitle),
-              subtitle: Text(context.l10n.salaryConfirmBeforeCountingHelper),
+              title: Text(
+                context.l10n.salaryConfirmBeforeCountingTitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              subtitle: Text(
+                context.l10n.salaryConfirmBeforeCountingHelper,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
               contentPadding: EdgeInsets.zero,
             ),
             if (requiresConfirmation)
               SwitchListTile.adaptive(
                 value: salaryReminderEnabled,
                 onChanged: onSalaryReminderChanged,
-                title: Text(context.l10n.salaryReminderToggleTitle),
-                subtitle: Text(context.l10n.salaryReminderToggleHelper),
+                title: Text(
+                  context.l10n.salaryReminderToggleTitle,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                subtitle: Text(
+                  context.l10n.salaryReminderToggleHelper,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
                 contentPadding: EdgeInsets.zero,
               ),
           ],

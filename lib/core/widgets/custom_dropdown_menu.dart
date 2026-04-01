@@ -1,6 +1,8 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
+import '../themes/app_dimens.dart';
+
 class CustomDropdownMenu extends StatefulWidget {
   const CustomDropdownMenu({
     super.key,
@@ -35,8 +37,7 @@ class _CustomDropdownMenuState extends State<CustomDropdownMenu> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.title, style: Theme.of(context).textTheme.titleSmall),
-        const SizedBox(height: 8),
+        Text(widget.title, style: Theme.of(context).textTheme.titleMedium),
         DropdownMenuFormField<int>(
           width: double.infinity,
           hintText: widget.hintText,
