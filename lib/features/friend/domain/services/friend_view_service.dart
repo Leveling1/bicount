@@ -28,27 +28,15 @@ class FriendViewService {
                 _resolveSortDate(right).compareTo(_resolveSortDate(left)),
           );
 
-    final totalGiven = transactions
-        .where(
-          (transaction) =>
-              transaction.senderId == data.user.uid &&
-              transaction.beneficiaryId == friend.sid,
-        )
-        .fold<double>(0, (sum, transaction) => sum + transaction.amount);
-
-    final totalReceived = transactions
-        .where(
-          (transaction) =>
-              transaction.senderId == friend.sid &&
-              transaction.beneficiaryId == data.user.uid,
-        )
-        .fold<double>(0, (sum, transaction) => sum + transaction.amount);
+    final totalGiven = friend.give ?? 0;
+    final totalReceived = friend.receive ?? 0;
 
     final canShareProfile = isShareableFriend(friend);
 
     return FriendDetailEntity(
       friend: friend,
       transactions: transactions,
+      displayCurrencyCode: data.referenceCurrencyCode,
       totalGiven: totalGiven,
       totalReceived: totalReceived,
       netBalance: totalReceived - totalGiven,

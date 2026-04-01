@@ -90,7 +90,13 @@ class CurrencyRepositoryImpl {
 
   Future<void> selectReferenceCurrency(String currencyCode) async {
     final normalizedCode = CurrencyConfigEntity.normalizeCode(currencyCode);
-    await refreshCurrencies();
+    try {
+      await refreshCurrencies();
+    } catch (_) {
+      if (!currentConfig.containsCurrency(normalizedCode)) {
+        rethrow;
+      }
+    }
     await ensureReferenceHistory(normalizedCode, includeStoredDates: true);
     await _userPreferenceService.persistCurrentUserReferenceCurrency(
       normalizedCode,
@@ -120,18 +126,15 @@ class CurrencyRepositoryImpl {
       return;
     }
 
-    final snapshots = await _remoteDataSource.fetchSnapshotsForDates(
-      currencyCodes: [normalizedCode],
-      rateDates: missingDates.toList(growable: false),
-    );
-    await _mergeSnapshots(snapshots);
-
-    if (currentConfig
-        .missingRateDates(currencyCode: normalizedCode, rateDates: missingDates)
-        .isNotEmpty) {
-      throw MessageFailure(
-        message: 'Connect to update this reference currency first.',
+    try {
+      final snapshots = await _remoteDataSource.fetchSnapshotsForDates(
+        currencyCodes: [normalizedCode],
+        rateDates: missingDates.toList(growable: false),
       );
+      await _mergeSnapshots(snapshots);
+    } catch (_) {
+      // Keep the existing latest/cached snapshot support and allow the app
+      // to convert with the history already available locally.
     }
   }
 

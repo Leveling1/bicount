@@ -9,12 +9,14 @@ class InfoCardAmount extends StatelessWidget {
     required this.title,
     required this.value,
     required this.color,
+    this.currencyCode,
   });
 
   final String icon;
   final String title;
   final double value;
   final Color color;
+  final String? currencyCode;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class InfoCardAmount extends StatelessWidget {
       title: title,
       color: color,
       child: Text(
-        NumberFormatUtils.formatCurrency(value),
+        NumberFormatUtils.formatCurrency(value, currencyCode: currencyCode),
         style: TextStyle(
           fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
           fontWeight: FontWeight.bold,

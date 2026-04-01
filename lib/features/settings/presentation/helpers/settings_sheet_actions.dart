@@ -75,7 +75,6 @@ void showCurrencySettingsSheet(BuildContext context, CurrencyState state) {
               localizeRuntimeMessage(context, message),
             );
           }
-          rethrow;
         }
       },
     ),

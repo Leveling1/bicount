@@ -6,6 +6,7 @@ class FriendDetailEntity extends Equatable {
   const FriendDetailEntity({
     required this.friend,
     required this.transactions,
+    required this.displayCurrencyCode,
     required this.totalGiven,
     required this.totalReceived,
     required this.netBalance,
@@ -15,6 +16,7 @@ class FriendDetailEntity extends Equatable {
 
   final FriendsModel friend;
   final List<TransactionModel> transactions;
+  final String displayCurrencyCode;
   final double totalGiven;
   final double totalReceived;
   final double netBalance;
@@ -25,6 +27,7 @@ class FriendDetailEntity extends Equatable {
   List<Object?> get props => [
     friend,
     transactions,
+    displayCurrencyCode,
     totalGiven,
     totalReceived,
     netBalance,

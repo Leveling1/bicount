@@ -22,6 +22,7 @@ class DetailFriendMetrics extends StatelessWidget {
                 icon: IconLinks.expense,
                 title: context.l10n.friendGiven,
                 value: detail.totalGiven,
+                currencyCode: detail.displayCurrencyCode,
                 color: Theme.of(context).extension<OtherTheme>()!.expense!,
               ),
             ),
@@ -31,6 +32,7 @@ class DetailFriendMetrics extends StatelessWidget {
                 icon: IconLinks.income,
                 title: context.l10n.friendReceived,
                 value: detail.totalReceived,
+                currencyCode: detail.displayCurrencyCode,
                 color: Theme.of(context).extension<OtherTheme>()!.income!,
               ),
             ),
@@ -43,6 +45,7 @@ class DetailFriendMetrics extends StatelessWidget {
                 icon: IconLinks.user,
                 title: context.l10n.profilePersonal,
                 value: detail.friend.personalIncome ?? 0,
+                currencyCode: detail.displayCurrencyCode,
                 color: Theme.of(
                   context,
                 ).extension<OtherTheme>()!.personnalIncome!,
@@ -54,6 +57,7 @@ class DetailFriendMetrics extends StatelessWidget {
                 icon: IconLinks.wallet,
                 title: context.l10n.friendNet,
                 value: detail.netBalance,
+                currencyCode: detail.displayCurrencyCode,
                 color: detail.netBalance >= 0
                     ? Theme.of(context).extension<OtherTheme>()!.income!
                     : Theme.of(context).extension<OtherTheme>()!.expense!,

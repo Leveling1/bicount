@@ -1002,3 +1002,21 @@ Rules:
 - the public invite-link website deployment must preserve hidden files so `dist/.well-known/*` is actually published
 - if GitHub `actions/upload-artifact@v4` is used in the website pipeline, keep `include-hidden-files: true` enabled or app-link files will disappear before the FTP deploy step
 - if invite links open the website instead of the app, verify the live production responses of `/.well-known/assetlinks.json` and `/.well-known/apple-app-site-association` before changing Flutter routing
+
+## Friend Detail Currency Update (2026-04-01)
+
+Rules:
+- friend overview cards in the detail screen must use the projected friend aggregates already converted in `MainFinanceProjectionService`, not raw `transaction.amount` sums
+- when formatting friend overview amounts, pass the current display/reference currency explicitly instead of relying on an implicit formatter default
+
+## Currency Settings Error Handling Update (2026-04-02)
+
+Rules:
+- when a settings sheet action already converts a repository failure into a user-facing toast, do not rethrow it from the UI callback unless a higher-level handler is explicitly expecting it
+- `SettingsOptionSheet` callbacks run directly from `onTap`; uncaught async rethrows there surface as unhandled exceptions even if the error was already shown to the user
+
+## Reference Currency Fallback Update (2026-04-02)
+
+Rules:
+- changing the reference currency should try to refresh live FX data first, but it must still use cached allowed currencies and cached/latest snapshots when they are already present locally
+- missing historical target snapshots for some old record dates should no longer block the reference-currency switch if the app already has enough current FX data to format and project with graceful fallbacks
