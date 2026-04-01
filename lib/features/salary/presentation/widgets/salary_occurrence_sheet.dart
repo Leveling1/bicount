@@ -7,6 +7,8 @@ import 'package:bicount/features/salary/domain/entities/salary_occurrence_entity
 import 'package:bicount/features/salary/presentation/widgets/salary_status_badge.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/custom_button.dart';
+
 class SalaryOccurrenceSheet extends StatelessWidget {
   const SalaryOccurrenceSheet({
     super.key,
@@ -71,20 +73,16 @@ class SalaryOccurrenceSheet extends StatelessWidget {
         ),
         if (occurrence.needsAttention && occurrence.requiresConfirmation) ...[
           const SizedBox(height: AppDimens.spacingMedium),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: isLoading ? null : onConfirmPressed,
-              child: Text(context.l10n.salaryConfirmPaymentCta),
-            ),
+          CustomButton(
+            text: context.l10n.salaryConfirmPaymentCta,
+            onPressed: onConfirmPressed,
+            loading: isLoading,
           ),
           const SizedBox(height: AppDimens.spacingSmall),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: isLoading ? null : onAutomaticModePressed,
-              child: Text(context.l10n.salaryKeepAutomaticCta),
-            ),
+          CustomOutlinedButton(
+            onPressed: onAutomaticModePressed,
+            text: context.l10n.salaryKeepAutomaticCta,
+            loading: isLoading,
           ),
           const SizedBox(height: AppDimens.spacingSmall),
           Text(
@@ -94,6 +92,7 @@ class SalaryOccurrenceSheet extends StatelessWidget {
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
+        AppDimens.spacerMedium,
       ],
     );
   }

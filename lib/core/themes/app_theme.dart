@@ -94,6 +94,38 @@ class AppTheme {
       ),
     ),
 
+    /// Outlined button theme light
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>((
+          Set<WidgetState> states,
+        ) {
+          if (states.contains(WidgetState.pressed)) {
+            return Colors.grey[300]!; // light grey when pressed
+          } else if (states.contains(WidgetState.hovered)) {
+            return const Color.fromARGB(255, 208, 208, 208);
+          }
+          return AppColors.surfaceColorLight.withValues(alpha: 0.1);
+        }),
+        elevation: WidgetStateProperty.resolveWith<double>((states) => 0.0),
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+            side: BorderSide(color: AppColors.surfaceColorLight, width: 2),
+          ),
+        ),
+        foregroundColor: WidgetStateProperty.all<Color>(
+          AppColors.surfaceColorLight,
+        ),
+        textStyle: WidgetStateProperty.all<TextStyle>(
+          TextStyle(
+            color: AppColors.surfaceColorLight,
+            fontSize: AppDimens.textSizeMedium.sp,
+          ),
+        ),
+      ),
+    ),
+
     /// Text theme light
     textTheme: TextTheme(
       titleSmall: TextStyle(
@@ -529,6 +561,38 @@ class AppTheme {
         textStyle: WidgetStateProperty.all<TextStyle>(
           TextStyle(
             color: AppColors.textColorLight,
+            fontSize: AppDimens.textSizeMedium.sp,
+          ),
+        ),
+      ),
+    ),
+
+    /// Outlined button theme light
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>((
+          Set<WidgetState> states,
+        ) {
+          if (states.contains(WidgetState.pressed)) {
+            return Colors.grey[800]!; // darker grey when pressed
+          } else if (states.contains(WidgetState.hovered)) {
+            return Colors.grey[700]!; // dark grey when hovered
+          }
+          return AppColors.surfaceColorDark.withValues(alpha: 0.1);
+        }),
+        elevation: WidgetStateProperty.resolveWith<double>((states) => 0.0),
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+            side: BorderSide(color: AppColors.surfaceColorDark, width: 2),
+          ),
+        ),
+        foregroundColor: WidgetStateProperty.all<Color>(
+          AppColors.surfaceColorDark,
+        ),
+        textStyle: WidgetStateProperty.all<TextStyle>(
+          TextStyle(
+            color: AppColors.surfaceColorDark,
             fontSize: AppDimens.textSizeMedium.sp,
           ),
         ),

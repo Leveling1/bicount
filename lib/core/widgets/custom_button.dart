@@ -54,6 +54,53 @@ class CustomButton extends StatelessWidget {
   }
 }
 
+class CustomOutlinedButton extends StatelessWidget {
+  CustomOutlinedButton({
+    super.key,
+    required this.onPressed,
+    required this.text,
+    required this.loading,
+  });
+
+  final VoidCallback onPressed;
+  final WidgetStatesController statesController = WidgetStatesController();
+  final String text;
+  final bool loading;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 180),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeOutCubic,
+          transitionBuilder: (child, animation) {
+            final scale = Tween(begin: 0.98, end: 1.0).animate(animation);
+            return FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(scale: scale, child: child),
+            );
+          },
+          child: loading
+              ? SizedBox(
+                  key: const ValueKey('button_loading'),
+                  height: 32,
+                  child: LoadingAnimationWidget.horizontalRotatingDots(
+                    color: Theme.of(context).cardColor,
+                    size: 38,
+                  ),
+                )
+              : Text(text, key: ValueKey(text), textAlign: TextAlign.center),
+        ),
+      ),
+    );
+  }
+}
+
 /// Provider button for Google and Apple.
 enum AuthProviderType { google, apple }
 
@@ -65,6 +112,7 @@ class _ProviderButton extends StatelessWidget {
     required this.provider,
     required this.icon,
   });
+
   final bool isLoading;
   final VoidCallback onPressed;
   final String label;
@@ -154,6 +202,7 @@ class CustomAppleAuthButton extends StatelessWidget {
     required this.isLoading,
     required this.onPressed,
   });
+
   final bool isLoading;
   final VoidCallback onPressed;
 
