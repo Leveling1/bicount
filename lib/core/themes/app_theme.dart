@@ -893,7 +893,7 @@ class AppTheme {
         income: AppColors.incomeColorDark,
         expense: AppColors.expensesColorDark,
         personnalIncome: Color(0xFF2196F3),
-        companyIncome: Colors.purple,
+        companyIncome: Colors.purpleAccent,
         salary: AppColors.salaryColorDark,
         equipment: AppColors.equipmentColorDark,
         service: AppColors.serviceColorDark,
