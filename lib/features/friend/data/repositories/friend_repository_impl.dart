@@ -27,7 +27,7 @@ class FriendRepositoryImpl implements FriendRepository {
   Future<void> acceptInvite(String inviteCode) async {
     final currentUserId = _currentUserId;
     if (currentUserId == null) {
-      throw AuthException('You must be logged in to accept an invitation.');
+      throw MessageFailure(message: 'Sign in to accept this invitation.');
     }
 
     await remoteDataSource.acceptInvite(inviteCode, currentUserId);
@@ -83,7 +83,9 @@ class FriendRepositoryImpl implements FriendRepository {
 
     final uri = Uri.tryParse(trimmed);
     if (uri != null) {
-      final code = uri.queryParameters['code'];
+      final code =
+          uri.queryParameters[AppConfig.inviteCodeQueryParam] ??
+          uri.queryParameters['code'];
       if (code != null && code.isNotEmpty) {
         return code;
       }
@@ -123,7 +125,7 @@ class FriendRepositoryImpl implements FriendRepository {
   Future<void> rejectInvite(String inviteCode) async {
     final currentUserId = _currentUserId;
     if (currentUserId == null) {
-      throw AuthException('You must be logged in to reject an invitation.');
+      throw MessageFailure(message: 'Sign in to reject this invitation.');
     }
 
     await remoteDataSource.rejectInvite(inviteCode, currentUserId);

@@ -10,8 +10,8 @@ Reference date:
 ## Current Diagnosis
 
 The mobile app is already configured to handle:
-- `https://bicount.levelingcoder.com/friend/invite?code=<invite_code>` on Android
-- `https://bicount.levelingcoder.com/friend/invite?code=<invite_code>` on iOS
+- `https://bicount.levelingcoder.com/friend/invite?inviteCode=<invite_code>` on Android
+- `https://bicount.levelingcoder.com/friend/invite?inviteCode=<invite_code>` on iOS
 
 The current web-side blockers are:
 
@@ -24,7 +24,7 @@ The current web-side blockers are:
 Important product note:
 - if the user already landed inside the browser on `/friend/invite`, the website alone cannot reliably force Safari or Chrome to reopen the app through the same universal link
 - the normal expected behavior is that the first tap from Messages, WhatsApp, Gmail, Telegram, etc. opens the app directly once domain association is valid
-- if product later wants a real `Open in Bicount` fallback button from the webpage itself, mobile will also need a dedicated custom URI scheme, not only universal/app links
+- Bicount now also supports a dedicated custom URI scheme fallback for invite links: `bicount://friend/invite?inviteCode=<invite_code>`
 
 ## Mobile Contract
 
@@ -32,9 +32,10 @@ The app expects:
 - domain: `https://bicount.levelingcoder.com`
 - invite route: `/friend/invite`
 - query parameter: `code`
+- custom fallback scheme: `bicount://friend/invite?inviteCode=<invite_code>`
 
 Examples:
-- `https://bicount.levelingcoder.com/friend/invite?code=test123`
+- `https://bicount.levelingcoder.com/friend/invite?inviteCode=test123`
 
 Android package name:
 - `com.youngsolver.bicount`
@@ -139,13 +140,14 @@ The file must:
 ## Invite Page Requirements
 
 The public fallback page is:
-- `https://bicount.levelingcoder.com/friend/invite?code=<invite_code>`
+- `https://bicount.levelingcoder.com/friend/invite?inviteCode=<invite_code>`
 
 What the page should do:
 - stay public
 - stay `noindex`
 - preserve the `code` query parameter
 - render a lightweight fallback experience if the app did not open
+- on mobile, it may try opening `bicount://friend/invite?inviteCode=...`
 - show the invite code clearly
 - provide a download CTA
 
@@ -161,17 +163,13 @@ The web page cannot by itself guarantee that a user who is already inside Safari
 What should work once domain association is correct:
 - tapping the invite link from an external app should open Bicount directly
 
-What is not guaranteed with the current mobile contract:
-- landing on the website first and then having the website forcibly reopen Bicount
+What is still not guaranteed:
+- every browser will always leave the web page for the app without user interaction
 
-If product wants that later, mobile must add a custom scheme like:
-- `bicount://friend/invite?code=...`
-
-Then the web fallback page could expose a true `Open Bicount` button.
-
-For now, the correct web mission is:
+Current Bicount fallback behavior:
 - fix domain association
 - keep `/friend/invite` as a clean fallback page
+- expose an `Open Bicount` path through the custom scheme fallback when the user is already on the website
 
 ## Deployment Checklist
 
@@ -184,7 +182,7 @@ The web developer should verify all of these after deployment:
 
 1. `https://bicount.levelingcoder.com/.well-known/assetlinks.json` returns `200` with the exact JSON above.
 2. `https://bicount.levelingcoder.com/.well-known/apple-app-site-association` returns `200` without redirect.
-3. `/friend/invite?code=test123` keeps the query parameter and renders the fallback page.
+3. `/friend/invite?inviteCode=test123` keeps the query parameter and renders the fallback page.
 4. No CDN, framework, or hosting rule rewrites the `.well-known` files into HTML.
 5. No redirect strips `?code=...`.
 

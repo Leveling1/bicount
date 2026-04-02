@@ -62,9 +62,15 @@ void main() {
 
     expect(
       repository.extractInviteCode(
-        'https://bicount.levelingcoder.com/friend/invite?code=abc123',
+        'https://bicount.levelingcoder.com/friend/invite?inviteCode=abc123',
       ),
       'abc123',
+    );
+    expect(
+      repository.extractInviteCode(
+        'https://bicount.levelingcoder.com/friend/invite?code=legacy123',
+      ),
+      'legacy123',
     );
     expect(repository.extractInviteCode(' invite-code '), 'invite-code');
     expect(repository.extractInviteCode(''), isNull);
@@ -88,7 +94,7 @@ void main() {
       sourceFriendImage: '',
     );
 
-    expect(share.inviteUrl, contains('/friend/invite?code='));
+    expect(share.inviteUrl, contains('/friend/invite?inviteCode='));
     expect(local.cachedShare?.inviteCode, share.inviteCode);
     expect(remote.createdShare?.inviteCode, share.inviteCode);
   });

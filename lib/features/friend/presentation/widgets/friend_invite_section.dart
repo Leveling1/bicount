@@ -34,10 +34,10 @@ class FriendInviteSection extends StatelessWidget {
                         : invite.senderName;
                     final subtitle = invite.isFriendProfileInvite
                         ? context.l10n.friendSharedBy(
-                            context.friendInviteStatusLabel(invite.status),
+                            context.friendInviteStatusLabel(invite.statusId),
                             invite.senderName,
                           )
-                        : context.friendInviteStatusLabel(invite.status);
+                        : context.friendInviteStatusLabel(invite.statusId);
                     final avatar = invite.isFriendProfileInvite
                         ? invite.sourceFriendImage
                         : invite.senderImage;

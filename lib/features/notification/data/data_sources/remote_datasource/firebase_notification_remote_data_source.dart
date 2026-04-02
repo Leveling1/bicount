@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
+import 'package:bicount/core/constants/app_config.dart';
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/notification_remote_datasource.dart';
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -145,7 +146,7 @@ class FirebaseNotificationRemoteDataSource
         data['route'] ??
         (category == AppNotificationCategory.friendInvite &&
                 data['invite_code'] != null
-            ? '/friend/invite?code=${data['invite_code']}'
+            ? '/friend/invite?${AppConfig.inviteCodeQueryParam}=${data['invite_code']}'
             : null);
 
     return AppNotificationEntity(
@@ -159,14 +160,23 @@ class FirebaseNotificationRemoteDataSource
   }
 
   AppNotificationEntity _mapUriToNotification(Uri uri) {
-    final query = uri.hasQuery ? '?${uri.query}' : '';
+    final route = _resolveRouteFromUri(uri);
     return AppNotificationEntity(
       category: AppNotificationCategory.deepLink,
       source: AppNotificationSource.deepLink,
       title: 'Bicount',
       body: uri.toString(),
       data: uri.queryParameters.map((key, value) => MapEntry(key, value)),
-      route: '${uri.path}$query',
+      route: route,
     );
+  }
+
+  String _resolveRouteFromUri(Uri uri) {
+    final query = uri.hasQuery ? '?${uri.query}' : '';
+    if (uri.scheme == AppConfig.appScheme) {
+      final basePath = uri.host.isEmpty ? uri.path : '/${uri.host}${uri.path}';
+      return '$basePath$query';
+    }
+    return '${uri.path}$query';
   }
 }

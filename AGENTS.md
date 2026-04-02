@@ -403,7 +403,9 @@ Supported flows:
 Backend expectation:
 
 - table friend_invites
-- optional RPC accept_friend_invite
+- table friend_invites_statut
+- Edge Function friend-invite-preview
+- Edge Function accept-friend-invite
 
 ### notification
 
@@ -461,11 +463,13 @@ Do not expose real credentials.
 Additional backend expectations introduced during V1 finishing work:
 
 - friend_invites
+- friend_invites_statut
 - device_tokens
 - notification_events
 - recurring_fundings.salary_processing_mode
 - recurring_fundings.salary_reminder_status
-- RPC accept_friend_invite
+- Edge Function friend-invite-preview
+- Edge Function accept-friend-invite
 - FCM push dispatch function
 - realtime enabled for friend and finance tables
 - salary payday notifications routed to `/salary`
@@ -475,10 +479,11 @@ Reference documents:
 - docs/SUPABASE_V1_HANDOFF.md
 - docs/BICOUNT_V1_BACKEND_ALIGNMENT_FR.md
 - docs/salary_tracking_backend_actions.md
+- docs/friend_invite_backend_actions.md
 
 Invite link config lives in lib/core/constants/app_config.dart.
 Default invite base URL is https://bicount.levelingcoder.com.
-Expected route format is /friend/invite?code=INVITE_CODE.
+Expected route format is /friend/invite?inviteCode=INVITE_CODE.
 
 User identity contract:
 
@@ -1002,6 +1007,17 @@ Rules:
 - the public invite-link website deployment must preserve hidden files so `dist/.well-known/*` is actually published
 - if GitHub `actions/upload-artifact@v4` is used in the website pipeline, keep `include-hidden-files: true` enabled or app-link files will disappear before the FTP deploy step
 - if invite links open the website instead of the app, verify the live production responses of `/.well-known/assetlinks.json` and `/.well-known/apple-app-site-association` before changing Flutter routing
+
+## Invite Scheme Fallback Update (2026-04-02)
+
+Rules:
+- Bicount invite links now have two layers: HTTPS app/universal links first, and a custom-scheme fallback `bicount://friend/invite?inviteCode=...` when the user is already on the website
+- if custom-scheme deep links are added in mobile, keep Android intent filters, iOS URL schemes, website fallback logic, and URI-to-route parsing aligned together
+- when parsing a custom-scheme URI like `bicount://friend/invite?inviteCode=...`, map it back to the app route `/friend/invite?inviteCode=...` before handing it to the router
+- keep backward parsing support for old invite links that still use `?code=...`, but never generate new invite URLs with that query parameter because Supabase auth can interpret it as an OAuth PKCE callback code
+- previewing an invite from a deep link must go through the backend Edge Function instead of a direct public `select` on `friend_invites`
+- accepting an invite must go through the backend Edge Function and should fail clearly when the user is offline or not authenticated
+- the friend deep-link landing should only show pending invites in the `Pending requests` section and should not strand the user on the invite hub after the same invite has already been accepted
 
 ## Friend Detail Currency Update (2026-04-01)
 

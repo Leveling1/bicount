@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/features/friend/data/data_sources/local_datasource/friend_local_datasource.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,7 +42,7 @@ class LocalFriendDataSourceImpl implements FriendLocalDataSource {
             'sender_image': invite.senderImage,
             'receiver_uid': invite.receiverUid,
             'receiver_name': invite.receiverName,
-            'status': invite.status.value,
+            'status_id': invite.statusId,
             'created_at': invite.createdAt.toIso8601String(),
             'expires_at': invite.expiresAt.toIso8601String(),
             'source_friend_sid': invite.sourceFriendSid,
@@ -97,7 +98,9 @@ class LocalFriendDataSourceImpl implements FriendLocalDataSource {
             senderImage: map['sender_image'] as String? ?? '',
             receiverUid: map['receiver_uid'] as String?,
             receiverName: map['receiver_name'] as String?,
-            status: FriendInviteStatusX.fromValue(map['status'] as String?),
+            statusId: AppFriendInviteState.fromRaw(
+              map['status_id'] ?? map['status'],
+            ),
             createdAt: DateTime.parse(map['created_at'] as String).toLocal(),
             expiresAt: DateTime.parse(map['expires_at'] as String).toLocal(),
             sourceFriendSid: map['source_friend_sid'] as String?,

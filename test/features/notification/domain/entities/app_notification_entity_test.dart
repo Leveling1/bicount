@@ -9,7 +9,7 @@ void main() {
       title: 'New invite',
       body: 'youngsolver invited you',
       data: {'invite_code': 'abc123'},
-      route: '/friend/invite?code=abc123',
+      route: '/friend/invite?inviteCode=abc123',
     );
 
     final decoded = AppNotificationEntity.fromPayload(
@@ -19,7 +19,7 @@ void main() {
 
     expect(decoded.category, AppNotificationCategory.friendInvite);
     expect(decoded.source, AppNotificationSource.localTap);
-    expect(decoded.route, '/friend/invite?code=abc123');
+    expect(decoded.route, '/friend/invite?inviteCode=abc123');
     expect(decoded.data['invite_code'], 'abc123');
   });
 }

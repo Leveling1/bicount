@@ -81,7 +81,10 @@ class AppRouter {
             path: '/friend/invite',
             pageBuilder: (context, state) => buildFadeSlideTransitionPage(
               child: FriendInviteLandingScreen(
-                inviteCode: state.uri.queryParameters['code'] ?? '',
+                inviteCode:
+                    state.uri.queryParameters[AppConfig.inviteCodeQueryParam] ??
+                    state.uri.queryParameters['code'] ??
+                    '',
               ),
               state: state,
             ),

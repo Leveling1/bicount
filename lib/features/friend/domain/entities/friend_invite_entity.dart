@@ -1,48 +1,5 @@
+import 'package:bicount/core/constants/state_app.dart';
 import 'package:equatable/equatable.dart';
-
-enum FriendInviteStatus { pending, accepted, rejected, expired }
-
-extension FriendInviteStatusX on FriendInviteStatus {
-  String get value {
-    switch (this) {
-      case FriendInviteStatus.pending:
-        return 'pending';
-      case FriendInviteStatus.accepted:
-        return 'accepted';
-      case FriendInviteStatus.rejected:
-        return 'rejected';
-      case FriendInviteStatus.expired:
-        return 'expired';
-    }
-  }
-
-  String get label {
-    switch (this) {
-      case FriendInviteStatus.pending:
-        return 'Pending';
-      case FriendInviteStatus.accepted:
-        return 'Accepted';
-      case FriendInviteStatus.rejected:
-        return 'Rejected';
-      case FriendInviteStatus.expired:
-        return 'Expired';
-    }
-  }
-
-  static FriendInviteStatus fromValue(String? value) {
-    switch (value) {
-      case 'accepted':
-        return FriendInviteStatus.accepted;
-      case 'rejected':
-        return FriendInviteStatus.rejected;
-      case 'expired':
-        return FriendInviteStatus.expired;
-      case 'pending':
-      default:
-        return FriendInviteStatus.pending;
-    }
-  }
-}
 
 class FriendShareEntity extends Equatable {
   const FriendShareEntity({
@@ -100,7 +57,7 @@ class FriendInviteEntity extends Equatable {
     required this.senderName,
     required this.senderEmail,
     required this.senderImage,
-    required this.status,
+    required this.statusId,
     required this.createdAt,
     required this.expiresAt,
     this.receiverUid,
@@ -117,7 +74,7 @@ class FriendInviteEntity extends Equatable {
   final String senderName;
   final String senderEmail;
   final String senderImage;
-  final FriendInviteStatus status;
+  final int statusId;
   final DateTime createdAt;
   final DateTime expiresAt;
   final String? receiverUid;
@@ -127,7 +84,7 @@ class FriendInviteEntity extends Equatable {
   final String? sourceFriendEmail;
   final String? sourceFriendImage;
 
-  bool get isPending => status == FriendInviteStatus.pending;
+  bool get isPending => AppFriendInviteState.isPending(statusId);
 
   bool get isFriendProfileInvite =>
       sourceFriendSid != null && sourceFriendSid!.isNotEmpty;
@@ -148,7 +105,7 @@ class FriendInviteEntity extends Equatable {
     senderName,
     senderEmail,
     senderImage,
-    status,
+    statusId,
     createdAt,
     expiresAt,
     receiverUid,

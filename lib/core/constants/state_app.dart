@@ -89,3 +89,52 @@ final class AppSalaryOccurrenceState {
     return normalized == dueToday || normalized == overdue;
   }
 }
+
+final class AppFriendInviteState {
+  const AppFriendInviteState._();
+
+  static const int pending = 0;
+  static const int accepted = 1;
+  static const int rejected = 2;
+  static const int expired = 3;
+
+  static int normalize(int? status) {
+    switch (status) {
+      case accepted:
+        return accepted;
+      case rejected:
+        return rejected;
+      case expired:
+        return expired;
+      case pending:
+      default:
+        return pending;
+    }
+  }
+
+  static int fromRaw(dynamic value) {
+    if (value is int) {
+      return normalize(value);
+    }
+
+    switch ((value as String?)?.trim().toLowerCase()) {
+      case '1':
+      case 'accepted':
+        return accepted;
+      case '2':
+      case 'rejected':
+        return rejected;
+      case '3':
+      case 'expired':
+        return expired;
+      case '0':
+      case 'pending':
+      default:
+        return pending;
+    }
+  }
+
+  static bool isPending(int? status) {
+    return normalize(status) == pending;
+  }
+}

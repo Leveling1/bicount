@@ -9,6 +9,22 @@ String localizeRuntimeMessage(BuildContext context, String message) {
       return context.l10n.friendUnableToReadInvite;
     case 'This invitation was not found.':
       return context.l10n.friendInvitationNotFound;
+    case 'Connect to the internet to load this invitation.':
+      return context.l10n.friendInvitationPreviewOnlineRequired;
+    case 'Connect to the internet to accept this invitation.':
+      return context.l10n.friendInvitationAcceptOnlineRequired;
+    case 'Connect to the internet to reject this invitation.':
+      return context.l10n.friendInvitationRejectOnlineRequired;
+    case 'Sign in to accept this invitation.':
+      return context.l10n.friendInvitationAcceptSignInRequired;
+    case 'Sign in to reject this invitation.':
+      return context.l10n.friendInvitationRejectSignInRequired;
+    case 'Unable to load this invitation right now.':
+      return context.l10n.friendInvitationLoadFailed;
+    case 'Unable to accept this invitation right now.':
+      return context.l10n.friendInvitationAcceptFailed;
+    case 'Unable to reject this invitation right now.':
+      return context.l10n.friendInvitationRejectFailed;
     case 'Invitation ready to share.':
       return context.l10n.friendInvitationReady;
     case 'Invitation accepted.':

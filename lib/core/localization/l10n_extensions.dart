@@ -4,7 +4,6 @@ import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
-import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
 import 'package:bicount/features/settings/domain/entities/theme_preference.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
@@ -138,16 +137,18 @@ extension L10nBuildContextX on BuildContext {
     return formatDate(date);
   }
 
-  String friendInviteStatusLabel(FriendInviteStatus status) {
-    switch (status) {
-      case FriendInviteStatus.pending:
+  String friendInviteStatusLabel(int statusId) {
+    switch (AppFriendInviteState.normalize(statusId)) {
+      case AppFriendInviteState.pending:
         return l10n.statusPending;
-      case FriendInviteStatus.accepted:
+      case AppFriendInviteState.accepted:
         return l10n.statusAccepted;
-      case FriendInviteStatus.rejected:
+      case AppFriendInviteState.rejected:
         return l10n.statusRejected;
-      case FriendInviteStatus.expired:
+      case AppFriendInviteState.expired:
         return l10n.statusExpired;
+      default:
+        return l10n.statusPending;
     }
   }
 
