@@ -387,14 +387,14 @@
   "salaryConfirmBeforeCountingHelper": "Use this when your employer can pay late and you only want confirmed money to affect your balance.",
   "salaryReminderToggleTitle": "Remind me on payday",
   "salaryReminderToggleHelper": "Bicount will ask if the salary has been received when the due date arrives.",
-  "salaryTrackingTitle": "Salary tracking",
-  "salaryEmptyState": "Create a recurring salary from Add funds to start tracking expected payments and arrears.",
+  "salaryTrackingTitle": "Recurring fundings",
+  "salaryEmptyState": "Create a recurring funding from Add funds to follow expected payments and confirmed credits.",
   "salaryAttentionSectionTitle": "Needs confirmation",
-  "salaryPlansTitle": "Salary plans",
-  "salaryRecentPaymentsTitle": "Recent confirmed payments",
+  "salaryPlansTitle": "Recurring plans",
+  "salaryRecentPaymentsTitle": "Recent recorded payments",
   "salaryOverdueTitle": "Arrears",
   "salaryDueTodayTitle": "Due today",
-  "salaryNextPaydayTitle": "Next payday",
+  "salaryNextPaydayTitle": "Next expected",
   "salaryModeConfirm": "Confirm first",
   "salaryModeAutomatic": "Automatic",
   "salaryStatusUpcoming": "Upcoming",
@@ -413,7 +413,7 @@
       "date": {}
     }
   },
-  "salaryNextPaydayValue": "Next payday: {date}",
+  "salaryNextPaydayValue": "Next expected: {date}",
   "@salaryNextPaydayValue": {
     "placeholders": {
       "date": {}
@@ -425,7 +425,7 @@
       "status": {}
     }
   },
-  "salaryArrearsValue": "Arrears: {amount}",
+  "salaryArrearsValue": "Pending: {amount}",
   "@salaryArrearsValue": {
     "placeholders": {
       "amount": {}
@@ -433,18 +433,18 @@
   },
   "salaryConfirmPaymentCta": "Confirm payment received",
   "salaryKeepAutomaticCta": "Stop reminders and keep automatic credits",
-  "salaryAutomaticModeHelper": "Future salaries will go back to the current automatic process.",
+  "salaryAutomaticModeHelper": "This payment will be counted now and future recurring credits will rely on the automatic backend flow.",
   "salaryReminderDisabledHelper": "Reminders are already disabled for this salary.",
-  "salaryPaymentConfirmedSuccess": "Salary payment confirmed successfully.",
-  "salaryAutomaticModeEnabledSuccess": "Salary tracking switched back to automatic mode.",
-  "salaryHomeCardTitle": "Salary follow-up",
-  "salaryHomeCardAttention": "Arrears waiting: {amount}",
+  "salaryPaymentConfirmedSuccess": "Recurring payment confirmed successfully.",
+  "salaryAutomaticModeEnabledSuccess": "Recurring tracking switched back to automatic mode.",
+  "salaryHomeCardTitle": "Recurring follow-up",
+  "salaryHomeCardAttention": "Pending amount: {amount}",
   "@salaryHomeCardAttention": {
     "placeholders": {
       "amount": {}
     }
   },
-  "salaryHomeCardNext": "Next salary expected on {date}",
+  "salaryHomeCardNext": "Next recurring funding on {date}",
   "@salaryHomeCardNext": {
     "placeholders": {
       "date": {}
@@ -456,14 +456,14 @@
       "count": {}
     }
   },
-  "salaryPlansCount": "{count} active salary plans",
+  "salaryPlansCount": "{count} active recurring plans",
   "@salaryPlansCount": {
     "placeholders": {
       "count": {}
     }
   },
   "runtimeSalaryConfirmFailed": "Unable to confirm this salary payment right now.",
-  "runtimeSalaryTrackingSaveFailed": "Unable to update this salary tracking right now.",
+  "runtimeSalaryTrackingSaveFailed": "Unable to update this recurring tracking right now.",
   "transactionTypeTransfer": "Transfer",
   "transactionTypeSubscription": "Subscription",
   "transactionTypeAddFund": "Add funds",

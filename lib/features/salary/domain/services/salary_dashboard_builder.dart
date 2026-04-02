@@ -25,12 +25,22 @@ class SalaryDashboardBuilder {
     DateTime? now,
   }) {
     final today = scheduleService.startOfDay(now ?? DateTime.now());
-    final fundingsById = {
-      for (final funding in accountFundings.where(
-        (item) => item.fundingType == AccountFundingType.salary,
-      ))
-        funding.fundingId: funding,
-    };
+    final fundingsByOccurrenceKey = <String, AccountFundingModel>{};
+    for (final funding in accountFundings) {
+      final fundingDate = scheduleService.parseDate(funding.date);
+      if (fundingDate == null) {
+        continue;
+      }
+      final key = scheduleService.occurrenceMatchKey(
+        ownerUid: funding.sid,
+        source: funding.source,
+        fundingType: funding.fundingType,
+        amount: funding.amount,
+        currency: funding.currency,
+        expectedDate: fundingDate,
+      );
+      fundingsByOccurrenceKey.putIfAbsent(key, () => funding);
+    }
 
     final plans = <SalaryPlanSummaryEntity>[];
     final attention = <SalaryOccurrenceEntity>[];
@@ -40,25 +50,36 @@ class SalaryDashboardBuilder {
     int dueTodayCount = 0;
     int overdueCount = 0;
 
-    final salaryPlans =
+    final recurringPlans =
         recurringFundings
-            .where((item) => item.fundingType == AccountFundingType.salary)
+            .where((item) => RecurringFundingStatus.isActive(item.status))
             .toList()
           ..sort((left, right) => left.source.compareTo(right.source));
 
-    for (final plan in salaryPlans) {
+    for (final plan in recurringPlans) {
       final occurrences = _buildPlanOccurrences(
         recurringFunding: plan,
-        fundingsById: fundingsById,
+        fundingsByOccurrenceKey: fundingsByOccurrenceKey,
         currencyConfig: currencyConfig,
         today: today,
       );
+      final requiresConfirmation = SalaryProcessingMode.requiresConfirmation(
+        plan.salaryProcessingMode,
+      );
 
       final overdueForPlan = occurrences
-          .where((item) => item.state == AppSalaryOccurrenceState.overdue)
+          .where(
+            (item) =>
+                requiresConfirmation &&
+                item.state == AppSalaryOccurrenceState.overdue,
+          )
           .toList(growable: false);
       final dueTodayForPlan = occurrences
-          .where((item) => item.state == AppSalaryOccurrenceState.dueToday)
+          .where(
+            (item) =>
+                requiresConfirmation &&
+                item.state == AppSalaryOccurrenceState.dueToday,
+          )
           .toList(growable: false);
 
       attention.addAll(overdueForPlan);
@@ -81,7 +102,10 @@ class SalaryDashboardBuilder {
       plans.add(
         SalaryPlanSummaryEntity(
           recurringFunding: plan,
-          nextExpectedDate: scheduleService.parseDate(plan.nextFundingDate),
+          nextExpectedDate: _resolveNextExpectedDate(
+            occurrences: occurrences,
+            today: today,
+          ),
           overdueCount: overdueForPlan.length,
           dueTodayCount: dueTodayForPlan.length,
           outstandingReferenceAmount:
@@ -129,7 +153,7 @@ class SalaryDashboardBuilder {
 
   List<SalaryOccurrenceEntity> _buildPlanOccurrences({
     required RecurringFundingModel recurringFunding,
-    required Map<String, AccountFundingModel> fundingsById,
+    required Map<String, AccountFundingModel> fundingsByOccurrenceKey,
     required CurrencyConfigEntity currencyConfig,
     required DateTime today,
   }) {
@@ -146,7 +170,7 @@ class SalaryDashboardBuilder {
         _buildOccurrence(
           recurringFunding: recurringFunding,
           expectedDate: cursor,
-          fundingsById: fundingsById,
+          fundingsByOccurrenceKey: fundingsByOccurrenceKey,
           currencyConfig: currencyConfig,
           today: today,
         ),
@@ -162,7 +186,7 @@ class SalaryDashboardBuilder {
         _buildOccurrence(
           recurringFunding: recurringFunding,
           expectedDate: cursor,
-          fundingsById: fundingsById,
+          fundingsByOccurrenceKey: fundingsByOccurrenceKey,
           currencyConfig: currencyConfig,
           today: today,
         ),
@@ -175,7 +199,7 @@ class SalaryDashboardBuilder {
   SalaryOccurrenceEntity _buildOccurrence({
     required RecurringFundingModel recurringFunding,
     required DateTime expectedDate,
-    required Map<String, AccountFundingModel> fundingsById,
+    required Map<String, AccountFundingModel> fundingsByOccurrenceKey,
     required CurrencyConfigEntity currencyConfig,
     required DateTime today,
   }) {
@@ -183,7 +207,15 @@ class SalaryDashboardBuilder {
       recurringFunding.recurringFundingId,
       expectedDate,
     );
-    final receivedFunding = fundingsById[occurrenceId];
+    final occurrenceKey = scheduleService.occurrenceMatchKey(
+      ownerUid: recurringFunding.uid,
+      source: recurringFunding.source,
+      fundingType: recurringFunding.fundingType,
+      amount: recurringFunding.amount,
+      currency: recurringFunding.currency,
+      expectedDate: expectedDate,
+    );
+    final receivedFunding = fundingsByOccurrenceKey[occurrenceKey];
     final referenceAmount = receivedFunding == null
         ? currencyAmountService.record(
             originalAmount: recurringFunding.amount,
@@ -205,6 +237,18 @@ class SalaryDashboardBuilder {
       ),
       referenceAmount: referenceAmount,
     );
+  }
+
+  DateTime? _resolveNextExpectedDate({
+    required List<SalaryOccurrenceEntity> occurrences,
+    required DateTime today,
+  }) {
+    for (final occurrence in occurrences) {
+      if (!occurrence.expectedDate.isBefore(today)) {
+        return occurrence.expectedDate;
+      }
+    }
+    return occurrences.isEmpty ? null : occurrences.last.expectedDate;
   }
 
   int _resolveOccurrenceState({

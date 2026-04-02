@@ -186,7 +186,9 @@ class CurrencyRepositoryImpl {
         .toSet();
     try {
       final remoteSnapshots = await _remoteDataSource
-          .fetchLatestSnapshotsForCodes(normalizedCodes.toList(growable: false));
+          .fetchLatestSnapshotsForCodes(
+            normalizedCodes.toList(growable: false),
+          );
       await _mergeSnapshots(remoteSnapshots);
       return remoteSnapshots;
     } catch (_) {

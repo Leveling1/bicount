@@ -209,7 +209,10 @@ class _FriendScreenState extends State<FriendScreen> {
       return;
     }
 
-    final matchingInvite = _findInviteByCode(state.hub.receivedInvites, inviteCode);
+    final matchingInvite = _findInviteByCode(
+      state.hub.receivedInvites,
+      inviteCode,
+    );
     if (matchingInvite == null || matchingInvite.isPending) {
       return;
     }

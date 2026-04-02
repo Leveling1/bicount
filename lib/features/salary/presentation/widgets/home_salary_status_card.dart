@@ -62,18 +62,18 @@ class HomeSalaryStatusCard extends StatelessWidget {
                       Text(
                         dashboard.hasAttention
                             ? context.l10n.salaryHomeCardAttention(
-                          NumberFormatUtils.compactCurrency(
-                            dashboard.totalOutstandingAmount,
-                            currencyCode: data.referenceCurrencyCode,
-                          ),
-                        )
+                                NumberFormatUtils.compactCurrency(
+                                  dashboard.totalOutstandingAmount,
+                                  currencyCode: data.referenceCurrencyCode,
+                                ),
+                              )
                             : context.l10n.salaryHomeCardNext(
-                          dashboard.nextExpectedDate == null
-                              ? '-'
-                              : formatDateWithoutYear(
-                            dashboard.nextExpectedDate!,
-                          ),
-                        ),
+                                dashboard.nextExpectedDate == null
+                                    ? '-'
+                                    : formatDateWithoutYear(
+                                        dashboard.nextExpectedDate!,
+                                      ),
+                              ),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: accentColor,
                           fontWeight: FontWeight.w700,
@@ -83,9 +83,12 @@ class HomeSalaryStatusCard extends StatelessWidget {
                       Text(
                         dashboard.hasAttention
                             ? context.l10n.salaryHomeCardCount(
-                          dashboard.overdueCount + dashboard.dueTodayCount,
-                        )
-                            : context.l10n.salaryPlansCount(dashboard.plans.length),
+                                dashboard.overdueCount +
+                                    dashboard.dueTodayCount,
+                              )
+                            : context.l10n.salaryPlansCount(
+                                dashboard.plans.length,
+                              ),
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],

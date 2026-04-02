@@ -23,7 +23,7 @@ Core user value:
 - track money in and out
 - manage shared transactions between the current user and friends
 - follow subscriptions and account funding
-- track salary due dates, confirmations, and arrears
+- track recurring funding due dates, confirmations, and arrears
 - view useful analytics
 - share a profile through QR code or invite link
 - receive push notifications and local reminders
@@ -85,6 +85,7 @@ Main layout:
 - lib/features/notification
 - lib/features/profile
 - lib/features/project
+- lib/features/recurring_fundings
 - lib/features/salary
 - lib/features/subscription
 - lib/features/transaction
@@ -129,6 +130,7 @@ Visible routes:
 
 - /
 - /graphs
+- /recurring-fundings
 - /salary
 - /transaction
 - /friend/invite
@@ -343,22 +345,25 @@ Purpose:
 Important boundary:
 
 - actual received money stays represented by `AccountFundingModel`
-- recurring salary setup starts here, but salary due tracking and confirmation belong to the dedicated `salary` feature
+- recurring salary setup starts here, but recurring due tracking and confirmation belong to the dedicated `recurring_fundings` surface
 
-### salary
+### recurring_fundings
 
 Purpose:
 
-- dedicated follow-up for recurring salaries
-- surface expected salary dates, due-today items, overdue arrears, and confirmed payments
-- let the user confirm a salary payment before it affects the balance
-- let the user switch a salary back to the old automatic process
+- generic follow-up for recurring funding templates
+- surface expected dates, items that need confirmation, overdue arrears, and confirmed recurring credits
+- let the user confirm a recurring payment before it affects the balance
+- let the user switch a salary-like recurring plan back to automatic backend processing
 
 Important boundary:
 
-- salary occurrences are derived from `RecurringFundingModel` schedules and deterministic `AccountFundingModel.fundingId`
-- a confirmation-mode salary must not create a concrete `account_funding` row until the user confirms receipt
-- the salary screen should read from MainBloc aggregated data instead of introducing a duplicate fetch path
+- `RecurringFundingModel` stays a template only and must not be counted directly as money
+- real counted money must exist in `AccountFundingModel`
+- explicit user confirmation may create a concrete `account_funding` row from mobile
+- automatic recurring credits must be created by backend automation, not by startup-local generation
+- the recurring follow-up screen should read from MainBloc aggregated data instead of introducing a duplicate fetch path
+- the public route is `/recurring-fundings`; `/salary` is only a backward-compatible alias
 
 ### profile
 
@@ -472,13 +477,13 @@ Additional backend expectations introduced during V1 finishing work:
 - Edge Function accept-friend-invite
 - FCM push dispatch function
 - realtime enabled for friend and finance tables
-- salary payday notifications routed to `/salary`
+- recurring reminder notifications routed to `/recurring-fundings`
 
 Reference documents:
 
 - docs/SUPABASE_V1_HANDOFF.md
 - docs/BICOUNT_V1_BACKEND_ALIGNMENT_FR.md
-- docs/salary_tracking_backend_actions.md
+- docs/recurring_funding_backend_actions.md
 - docs/friend_invite_backend_actions.md
 
 Invite link config lives in lib/core/constants/app_config.dart.
@@ -609,7 +614,7 @@ Current state of the codebase:
 
 - V1 visible flow is coherent without company
 - graphs, friends, notifications, and grouped splits are implemented
-- transaction, subscription, add_fund, and salary now have separate active feature ownership
+- transaction, subscription, add_fund, and recurring_fundings now have separate active feature ownership
 - offline-first and realtime scaffolding is stronger than at project start
 - backend still needs to match the documented contracts for full production behavior
 - device-level QA remains important before external prospect distribution
@@ -960,11 +965,12 @@ Rules:
 - keep one-time account funding rows and recurring income templates as separate concepts
 - actual credited money must stay in `account_funding`
 - recurring income templates must live in `recurring_fundings`
-- when a recurring income becomes due, mobile generates a real `account_funding` row locally, then advances `next_funding_date`
+- do not generate due `account_funding` rows locally during startup processing anymore
+- explicit user confirmation may create a concrete `account_funding` row from mobile
+- automatic recurring credits must be created by backend automation
 - do not count recurring templates directly in balance, graphs, or funding totals before an actual funding row is created
 - `funding_type` is now part of `account_funding` and should stay aligned with the mobile contract
 - the visible `Add funds` form must support both one-time and recurring income without breaking the existing bottom-sheet flow
-- recurring income processing is currently triggered on startup and right after creation; if you change startup flows, preserve this behavior
 - subscription placeholder rows created in `friends` for offline projections must keep `uid = null`; never use `subscriptionId` as `friends.uid`, because backend `friends.uid` is a foreign key to real `users.uid`
 - backend work for this change is documented in `docs/recurring_funding_backend_actions.md`
 
@@ -988,11 +994,11 @@ Rules:
 ## Salary Tracking Update (2026-03-31)
 
 Rules:
-- recurring salaries with confirmation enabled must stay out of `AccountFundingModel` until the user confirms the payment
-- only confirmed salary money may impact global balances, graphs, or income totals
-- salary due dates and arrears are derived from `RecurringFundingModel` schedules and deterministic `funding_id` values, so do not break that id contract when touching recurring income logic
-- the dedicated salary follow-up flow belongs to `lib/features/salary`, not back inside `add_fund`
-- backend salary reminders should deep link to `/salary` with `recurringFundingId` and `expectedDate` so the app can open the correct confirmation context
+- recurring fundings with confirmation enabled must stay out of `AccountFundingModel` until the user confirms the payment
+- only confirmed recurring money may impact global balances, graphs, or income totals
+- do not rely on deterministic `funding_id` values for recurring occurrences; `account_funding.funding_id` should remain a real UUID
+- the dedicated recurring follow-up flow belongs to the `recurring_fundings` surface, not back inside `add_fund`
+- backend recurring reminders should deep link to `/recurring-fundings` with `recurringFundingId` and `expectedDate` so the app can open the correct confirmation context
 
 ## FX Snapshot Contract Update (2026-04-01)
 
@@ -1036,3 +1042,15 @@ Rules:
 Rules:
 - changing the reference currency should try to refresh live FX data first, but it must still use cached allowed currencies and cached/latest snapshots when they are already present locally
 - missing historical target snapshots for some old record dates should no longer block the reference-currency switch if the app already has enough current FX data to format and project with graceful fallbacks
+
+## Recurring Fundings Update (2026-04-02)
+
+Rules:
+- the public recurring follow-up surface is now `/recurring-fundings`; keep `/salary` only as a backward-compatible alias
+- `recurring_fundings` is a tracking template, not a counted money row
+- mobile must not auto-generate due `account_funding` rows from startup or local recurring sync anymore
+- explicit confirmation from the user may create the concrete `account_funding` row on mobile
+- automatic recurring credits must be created by backend automation and synced back through the normal local-first pipeline
+- when mobile confirms a recurring occurrence, the inserted `account_funding` row must use a normal UUID `funding_id`
+- until a dedicated backend link column exists, recurring occurrence matching relies on `sid`, `source`, `funding_type`, `amount`, `currency`, and the calendar day of `date`
+- keep `docs/recurring_funding_backend_actions.md` updated when the recurring funding backend contract changes

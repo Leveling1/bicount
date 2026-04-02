@@ -387,14 +387,14 @@
   "salaryConfirmBeforeCountingHelper": "Utilisez cette option si votre employeur peut payer en retard et que vous voulez seulement compter l'argent réellement reçu.",
   "salaryReminderToggleTitle": "Me rappeler le jour de paie",
   "salaryReminderToggleHelper": "Bicount vous demandera si le salaire a bien été reçu à la date prévue.",
-  "salaryTrackingTitle": "Suivi des salaires",
-  "salaryEmptyState": "Créez un salaire récurrent depuis Ajouter des fonds pour suivre les paiements attendus et les arriérés.",
+  "salaryTrackingTitle": "Fonds récurrents",
+  "salaryEmptyState": "Créez un fond récurrent depuis Ajouter des fonds pour suivre les paiements attendus et les crédits confirmés.",
   "salaryAttentionSectionTitle": "À confirmer",
-  "salaryPlansTitle": "Plans de salaire",
-  "salaryRecentPaymentsTitle": "Paiements confirmés récents",
+  "salaryPlansTitle": "Plans récurrents",
+  "salaryRecentPaymentsTitle": "Paiements enregistrés récents",
   "salaryOverdueTitle": "Arriérés",
   "salaryDueTodayTitle": "Prévu aujourd'hui",
-  "salaryNextPaydayTitle": "Prochaine paie",
+  "salaryNextPaydayTitle": "Prochaine échéance",
   "salaryModeConfirm": "Confirmation",
   "salaryModeAutomatic": "Automatique",
   "salaryStatusUpcoming": "À venir",
@@ -413,7 +413,7 @@
       "date": {}
     }
   },
-  "salaryNextPaydayValue": "Prochaine paie : {date}",
+  "salaryNextPaydayValue": "Prochaine échéance : {date}",
   "@salaryNextPaydayValue": {
     "placeholders": {
       "date": {}
@@ -425,7 +425,7 @@
       "status": {}
     }
   },
-  "salaryArrearsValue": "Arriérés : {amount}",
+  "salaryArrearsValue": "En attente : {amount}",
   "@salaryArrearsValue": {
     "placeholders": {
       "amount": {}
@@ -433,18 +433,18 @@
   },
   "salaryConfirmPaymentCta": "Confirmer la réception",
   "salaryKeepAutomaticCta": "Stopper les rappels et reprendre l'automatique",
-  "salaryAutomaticModeHelper": "Les prochains salaires reviendront au processus automatique actuel.",
+  "salaryAutomaticModeHelper": "Ce paiement sera compté maintenant et les prochains crédits récurrents dépendront du traitement automatique backend.",
   "salaryReminderDisabledHelper": "Les rappels sont déjà désactivés pour ce salaire.",
-  "salaryPaymentConfirmedSuccess": "Paiement de salaire confirmé avec succès.",
-  "salaryAutomaticModeEnabledSuccess": "Le suivi du salaire est repassé en mode automatique.",
-  "salaryHomeCardTitle": "Suivi salaire",
-  "salaryHomeCardAttention": "Arriérés en attente : {amount}",
+  "salaryPaymentConfirmedSuccess": "Paiement récurrent confirmé avec succès.",
+  "salaryAutomaticModeEnabledSuccess": "Le suivi récurrent est repassé en mode automatique.",
+  "salaryHomeCardTitle": "Suivi récurrent",
+  "salaryHomeCardAttention": "Montant en attente : {amount}",
   "@salaryHomeCardAttention": {
     "placeholders": {
       "amount": {}
     }
   },
-  "salaryHomeCardNext": "Prochain salaire prévu le {date}",
+  "salaryHomeCardNext": "Prochain fond récurrent prévu le {date}",
   "@salaryHomeCardNext": {
     "placeholders": {
       "date": {}
@@ -456,14 +456,14 @@
       "count": {}
     }
   },
-  "salaryPlansCount": "{count} plans de salaire actifs",
+  "salaryPlansCount": "{count} plans récurrents actifs",
   "@salaryPlansCount": {
     "placeholders": {
       "count": {}
     }
   },
   "runtimeSalaryConfirmFailed": "Impossible de confirmer ce paiement de salaire pour le moment.",
-  "runtimeSalaryTrackingSaveFailed": "Impossible de mettre à jour ce suivi de salaire pour le moment.",
+  "runtimeSalaryTrackingSaveFailed": "Impossible de mettre à jour ce suivi récurrent pour le moment.",
   "transactionTypeTransfer": "Transfert",
   "transactionTypeSubscription": "Abonnement",
   "transactionTypeAddFund": "Ajouter des fonds",

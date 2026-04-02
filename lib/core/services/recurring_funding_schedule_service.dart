@@ -41,4 +41,40 @@ class RecurringFundingScheduleService {
   String occurrenceFundingId(String recurringFundingId, DateTime value) {
     return '$recurringFundingId-${DateFormat('yyyyMMdd').format(value)}';
   }
+
+  DateTime mergeDateWithCurrentTime(DateTime date, {DateTime? now}) {
+    final current = (now ?? DateTime.now()).toLocal();
+    return DateTime(
+      date.year,
+      date.month,
+      date.day,
+      current.hour,
+      current.minute,
+      current.second,
+      current.millisecond,
+      current.microsecond,
+    );
+  }
+
+  bool isSameCalendarDay(DateTime left, DateTime right) {
+    return left.year == right.year &&
+        left.month == right.month &&
+        left.day == right.day;
+  }
+
+  String occurrenceMatchKey({
+    required String ownerUid,
+    required String source,
+    required int fundingType,
+    required double amount,
+    required String currency,
+    required DateTime expectedDate,
+  }) {
+    final normalizedSource = source.trim().toLowerCase();
+    final normalizedCurrency = currency.trim().toUpperCase();
+    final normalizedAmount = amount.toStringAsFixed(6);
+    final dayKey = DateFormat('yyyyMMdd').format(expectedDate);
+    return '$ownerUid|$fundingType|$normalizedAmount|'
+        '$normalizedCurrency|$normalizedSource|$dayKey';
+  }
 }

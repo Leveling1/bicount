@@ -71,15 +71,16 @@ class SalaryPlanCard extends StatelessWidget {
                 ),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-              Text(
-                context.l10n.salaryReminderStatusValue(
-                  plan.remindersEnabled
-                      ? context.l10n.statusActive
-                      : context.l10n.statusInactive,
+              if (plan.requiresConfirmation)
+                Text(
+                  context.l10n.salaryReminderStatusValue(
+                    plan.remindersEnabled
+                        ? context.l10n.statusActive
+                        : context.l10n.statusInactive,
+                  ),
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              if (plan.totalAttentionCount > 0)
+              if (plan.requiresConfirmation && plan.totalAttentionCount > 0)
                 Text(
                   context.l10n.salaryArrearsValue(
                     NumberFormatUtils.compactCurrency(

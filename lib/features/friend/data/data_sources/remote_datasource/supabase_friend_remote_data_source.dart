@@ -68,10 +68,9 @@ class SupabaseFriendRemoteDataSource implements FriendRemoteDataSource {
     try {
       await client.from('friend_invites').upsert(payload);
     } on PostgrestException {
-      await client.from('friend_invites').upsert({
-        ...payload,
-        'status': 'pending',
-      }..remove('status_id'));
+      await client
+          .from('friend_invites')
+          .upsert({...payload, 'status': 'pending'}..remove('status_id'));
     }
   }
 
@@ -116,10 +115,7 @@ class SupabaseFriendRemoteDataSource implements FriendRemoteDataSource {
     } on PostgrestException {
       await client
           .from('friend_invites')
-          .update({
-            'status': 'rejected',
-            'receiver_uid': currentUserId,
-          })
+          .update({'status': 'rejected', 'receiver_uid': currentUserId})
           .eq('invite_code', inviteCode);
     } on MessageFailure {
       rethrow;

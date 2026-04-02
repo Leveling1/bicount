@@ -62,7 +62,8 @@ import 'app_localizations_fr.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,17 +84,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('fr')
+    Locale('fr'),
   ];
 
   /// No description provided for @appName.
@@ -2348,13 +2351,13 @@ abstract class AppLocalizations {
   /// No description provided for @salaryTrackingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Salary tracking'**
+  /// **'Recurring fundings'**
   String get salaryTrackingTitle;
 
   /// No description provided for @salaryEmptyState.
   ///
   /// In en, this message translates to:
-  /// **'Create a recurring salary from Add funds to start tracking expected payments and arrears.'**
+  /// **'Create a recurring funding from Add funds to follow expected payments and confirmed credits.'**
   String get salaryEmptyState;
 
   /// No description provided for @salaryAttentionSectionTitle.
@@ -2366,13 +2369,13 @@ abstract class AppLocalizations {
   /// No description provided for @salaryPlansTitle.
   ///
   /// In en, this message translates to:
-  /// **'Salary plans'**
+  /// **'Recurring plans'**
   String get salaryPlansTitle;
 
   /// No description provided for @salaryRecentPaymentsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Recent confirmed payments'**
+  /// **'Recent recorded payments'**
   String get salaryRecentPaymentsTitle;
 
   /// No description provided for @salaryOverdueTitle.
@@ -2390,7 +2393,7 @@ abstract class AppLocalizations {
   /// No description provided for @salaryNextPaydayTitle.
   ///
   /// In en, this message translates to:
-  /// **'Next payday'**
+  /// **'Next expected'**
   String get salaryNextPaydayTitle;
 
   /// No description provided for @salaryModeConfirm.
@@ -2444,7 +2447,7 @@ abstract class AppLocalizations {
   /// No description provided for @salaryNextPaydayValue.
   ///
   /// In en, this message translates to:
-  /// **'Next payday: {date}'**
+  /// **'Next expected: {date}'**
   String salaryNextPaydayValue(Object date);
 
   /// No description provided for @salaryReminderStatusValue.
@@ -2456,7 +2459,7 @@ abstract class AppLocalizations {
   /// No description provided for @salaryArrearsValue.
   ///
   /// In en, this message translates to:
-  /// **'Arrears: {amount}'**
+  /// **'Pending: {amount}'**
   String salaryArrearsValue(Object amount);
 
   /// No description provided for @salaryConfirmPaymentCta.
@@ -2474,7 +2477,7 @@ abstract class AppLocalizations {
   /// No description provided for @salaryAutomaticModeHelper.
   ///
   /// In en, this message translates to:
-  /// **'Future salaries will go back to the current automatic process.'**
+  /// **'This payment will be counted now and future recurring credits will rely on the automatic backend flow.'**
   String get salaryAutomaticModeHelper;
 
   /// No description provided for @salaryReminderDisabledHelper.
@@ -2486,31 +2489,31 @@ abstract class AppLocalizations {
   /// No description provided for @salaryPaymentConfirmedSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Salary payment confirmed successfully.'**
+  /// **'Recurring payment confirmed successfully.'**
   String get salaryPaymentConfirmedSuccess;
 
   /// No description provided for @salaryAutomaticModeEnabledSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Salary tracking switched back to automatic mode.'**
+  /// **'Recurring tracking switched back to automatic mode.'**
   String get salaryAutomaticModeEnabledSuccess;
 
   /// No description provided for @salaryHomeCardTitle.
   ///
   /// In en, this message translates to:
-  /// **'Salary follow-up'**
+  /// **'Recurring follow-up'**
   String get salaryHomeCardTitle;
 
   /// No description provided for @salaryHomeCardAttention.
   ///
   /// In en, this message translates to:
-  /// **'Arrears waiting: {amount}'**
+  /// **'Pending amount: {amount}'**
   String salaryHomeCardAttention(Object amount);
 
   /// No description provided for @salaryHomeCardNext.
   ///
   /// In en, this message translates to:
-  /// **'Next salary expected on {date}'**
+  /// **'Next recurring funding on {date}'**
   String salaryHomeCardNext(Object date);
 
   /// No description provided for @salaryHomeCardCount.
@@ -2522,7 +2525,7 @@ abstract class AppLocalizations {
   /// No description provided for @salaryPlansCount.
   ///
   /// In en, this message translates to:
-  /// **'{count} active salary plans'**
+  /// **'{count} active recurring plans'**
   String salaryPlansCount(Object count);
 
   /// No description provided for @runtimeSalaryConfirmFailed.
@@ -2534,7 +2537,7 @@ abstract class AppLocalizations {
   /// No description provided for @runtimeSalaryTrackingSaveFailed.
   ///
   /// In en, this message translates to:
-  /// **'Unable to update this salary tracking right now.'**
+  /// **'Unable to update this recurring tracking right now.'**
   String get runtimeSalaryTrackingSaveFailed;
 
   /// No description provided for @transactionTypeTransfer.
@@ -2628,7 +2631,8 @@ abstract class AppLocalizations {
   String get runtimeSplitMismatch;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -2637,25 +2641,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'fr'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'fr'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'fr': return AppLocalizationsFr();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'fr':
+      return AppLocalizationsFr();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

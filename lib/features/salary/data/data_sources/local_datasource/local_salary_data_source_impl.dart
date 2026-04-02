@@ -2,7 +2,7 @@ import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/constants/account_funding_const.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
-import 'package:bicount/core/services/recurring_funding_local_service.dart';
+import 'package:bicount/core/services/recurring_funding_schedule_service.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
@@ -14,17 +14,16 @@ class LocalSalaryDataSourceImpl implements SalaryLocalDataSource {
   LocalSalaryDataSourceImpl({
     required CurrencyRepositoryImpl currencyRepository,
     OfflineFinanceLocalService? offlineFinanceLocalService,
-    RecurringFundingLocalService? recurringFundingLocalService,
+    RecurringFundingScheduleService scheduleService =
+        const RecurringFundingScheduleService(),
   }) : _currencyRepository = currencyRepository,
        _offlineFinanceLocalService =
            offlineFinanceLocalService ?? OfflineFinanceLocalService(),
-       _recurringFundingLocalService =
-           recurringFundingLocalService ??
-           RecurringFundingLocalService(currencyRepository: currencyRepository);
+       _scheduleService = scheduleService;
 
   final CurrencyRepositoryImpl _currencyRepository;
   final OfflineFinanceLocalService _offlineFinanceLocalService;
-  final RecurringFundingLocalService _recurringFundingLocalService;
+  final RecurringFundingScheduleService _scheduleService;
 
   @override
   Future<void> confirmSalaryOccurrence(
@@ -37,7 +36,10 @@ class LocalSalaryDataSourceImpl implements SalaryLocalDataSource {
       throw Exception('Salary plan not found.');
     }
 
-    final existingFunding = await _findFunding(occurrence.occurrenceId);
+    final existingFunding = await _findFundingForOccurrence(
+      recurringFunding: currentRecurringFunding,
+      occurrence: occurrence,
+    );
     if (existingFunding != null) {
       return;
     }
@@ -46,9 +48,10 @@ class LocalSalaryDataSourceImpl implements SalaryLocalDataSource {
       amount: occurrence.amount,
       originalCurrencyCode: occurrence.currency,
     );
-    final confirmedAt = DateTime.now().toIso8601String();
+    final confirmedAt = _scheduleService
+        .mergeDateWithCurrentTime(occurrence.expectedDate)
+        .toIso8601String();
     final funding = AccountFundingModel(
-      fundingId: occurrence.occurrenceId,
       sid: currentRecurringFunding.uid,
       amount: occurrence.amount,
       currency: occurrence.currency,
@@ -59,11 +62,11 @@ class LocalSalaryDataSourceImpl implements SalaryLocalDataSource {
       fxRateDate: quote.fxRateDate,
       fxSnapshotId: quote.fxSnapshotId,
       category: Constants.personal,
-      fundingType: AccountFundingType.salary,
+      fundingType: currentRecurringFunding.fundingType,
       source: occurrence.source,
       note: occurrence.note,
       date: confirmedAt,
-      createdAt: confirmedAt,
+      createdAt: DateTime.now().toIso8601String(),
     );
 
     await Repository().upsert<AccountFundingModel>(funding);
@@ -104,10 +107,6 @@ class LocalSalaryDataSourceImpl implements SalaryLocalDataSource {
     if (!occurrence.isReceived) {
       await confirmSalaryOccurrence(occurrence);
     }
-
-    await _recurringFundingLocalService.syncDueRecurringFundings(
-      currentUserId: currentRecurringFunding.uid,
-    );
   }
 
   Future<RecurringFundingModel?> _findRecurringFunding(
@@ -122,11 +121,48 @@ class LocalSalaryDataSourceImpl implements SalaryLocalDataSource {
     return items.isEmpty ? null : items.first;
   }
 
-  Future<AccountFundingModel?> _findFunding(String fundingId) async {
+  Future<AccountFundingModel?> _findFundingForOccurrence({
+    required RecurringFundingModel recurringFunding,
+    required SalaryOccurrenceEntity occurrence,
+  }) async {
     final items = await Repository().get<AccountFundingModel>(
       policy: OfflineFirstGetPolicy.localOnly,
-      query: Query(where: [Where.exact('fundingId', fundingId)]),
+      query: Query(
+        where: [
+          Where.exact('sid', recurringFunding.uid),
+          Where.exact('source', occurrence.source),
+          Where.exact('fundingType', recurringFunding.fundingType),
+        ],
+      ),
     );
-    return items.isEmpty ? null : items.first;
+
+    final expectedKey = _scheduleService.occurrenceMatchKey(
+      ownerUid: recurringFunding.uid,
+      source: occurrence.source,
+      fundingType: recurringFunding.fundingType,
+      amount: occurrence.amount,
+      currency: occurrence.currency,
+      expectedDate: occurrence.expectedDate,
+    );
+
+    for (final item in items) {
+      final itemDate = _scheduleService.parseDate(item.date);
+      if (itemDate == null) {
+        continue;
+      }
+      final itemKey = _scheduleService.occurrenceMatchKey(
+        ownerUid: item.sid,
+        source: item.source,
+        fundingType: item.fundingType,
+        amount: item.amount,
+        currency: item.currency,
+        expectedDate: itemDate,
+      );
+      if (itemKey == expectedKey) {
+        return item;
+      }
+    }
+
+    return null;
   }
 }

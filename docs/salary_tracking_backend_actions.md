@@ -1,5 +1,8 @@
 # Salary Tracking Backend Actions
 
+> Superseded in practice by [recurring_funding_backend_actions.md](C:/Users/louis/Documents/Projet/Young%20solver/IA%20-%20Sandox/bicount_proj/docs/recurring_funding_backend_actions.md).
+> Keep this file only as historical context. The current contract is that `recurring_fundings` stays a template and real money must exist in `account_funding`.
+
 This note describes the backend alignment required for Bicount's dedicated salary tracking flow.
 
 The mobile app now distinguishes:
