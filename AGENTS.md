@@ -1006,6 +1006,8 @@ Rules:
 - when persisting `fx_snapshot_id`, prefer the real backend `exchange_rate_snapshots.snapshot_id` for every currency, including `CDF`
 - synthetic local CDF snapshots may still be used as a calculation fallback, but they must not persist a fake id like `cdf-YYYY-MM-DD`
 - if a real CDF snapshot is unavailable, the safe fallback is a null `fx_snapshot_id`, never a non-UUID synthetic value
+- when projecting a stored money row into the current reference currency, return the exact `originalAmount` if the current reference currency matches the row's original currency
+- when the current reference currency matches the row's stored `reference_currency_code`, prefer the stored `convertedAmount` instead of reconstructing from `amount_cdf`
 
 ## Invite Domain Deployment Update (2026-04-01)
 

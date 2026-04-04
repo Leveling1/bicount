@@ -82,9 +82,25 @@ class CurrencyAmountService {
     final normalizedOriginal = CurrencyConfigEntity.normalizeCode(
       originalCurrencyCode,
     );
+    final normalizedStoredReference = CurrencyConfigEntity.normalizeCode(
+      referenceCurrencyCode,
+    );
     final normalizedDate = fxRateDate == null || fxRateDate.isEmpty
         ? null
         : CurrencyConfigEntity.normalizeDate(fxRateDate);
+
+    // If the current display currency matches the record's native currency,
+    // preserve the exact original amount instead of reconstructing it from CDF.
+    if (normalizedOriginal == normalizedReference) {
+      return originalAmount;
+    }
+
+    // If the current display currency matches the reference currency captured
+    // at creation time, prefer the stored converted amount when available.
+    if (normalizedStoredReference == normalizedReference &&
+        convertedAmount != null) {
+      return convertedAmount;
+    }
 
     final normalizedCdfAmount =
         amountCdf ??
@@ -115,14 +131,6 @@ class CurrencyAmountService {
         config.latestRateToCdf(normalizedReference);
 
     if (targetRate == null || targetRate == 0) {
-      if (CurrencyConfigEntity.normalizeCode(referenceCurrencyCode) ==
-              normalizedReference &&
-          convertedAmount != null) {
-        return convertedAmount;
-      }
-      if (normalizedOriginal == normalizedReference) {
-        return originalAmount;
-      }
       return convertedAmount ?? normalizedCdfAmount;
     }
 
