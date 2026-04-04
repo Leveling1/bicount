@@ -1054,3 +1054,4 @@ Rules:
 - when mobile confirms a recurring occurrence, the inserted `account_funding` row must use a normal UUID `funding_id`
 - until a dedicated backend link column exists, recurring occurrence matching relies on `sid`, `source`, `funding_type`, `amount`, `currency`, and the calendar day of `date`
 - keep `docs/recurring_funding_backend_actions.md` updated when the recurring funding backend contract changes
+- bootstrap should repair legacy Brick offline queue entries that still carry pre-fix recurring `account_funding` requests with composite non-UUID `funding_id` values, so stale retries do not keep failing forever after the contract change

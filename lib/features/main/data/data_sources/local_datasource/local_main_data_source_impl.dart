@@ -105,7 +105,6 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       setSubscription: (subscription) =>
           _transactionsSubscription = subscription,
       errorLabel: 'transactions',
-      query: Query(where: [Where.exact('uid', uid)]),
     );
   }
 

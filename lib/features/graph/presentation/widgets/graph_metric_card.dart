@@ -1,10 +1,6 @@
-import 'package:bicount/core/constants/icon_links.dart';
-import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/details_card.dart';
-import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,12 +22,14 @@ class GraphMetricCard extends StatelessWidget {
   final String currencyCode;
   final Color color;
   final String icon;
+  static const _compactThreshold = 10000;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
       child: DetailsCard(
+        isMargin: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -46,7 +44,12 @@ class GraphMetricCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppDimens.marginMedium),
-            Text(title, style: Theme.of(context).textTheme.bodySmall),
+            Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             const SizedBox(height: 6),
             TweenAnimationBuilder<double>(
               tween: Tween<double>(begin: 0, end: value),
@@ -54,10 +57,14 @@ class GraphMetricCard extends StatelessWidget {
               curve: Curves.easeOutCubic,
               builder: (context, animatedValue, _) {
                 return Text(
-                  NumberFormatUtils.formatCurrency(
+                  NumberFormatUtils.compactCurrency(
                     animatedValue,
                     currencyCode: currencyCode,
+                    compactThreshold: _compactThreshold,
+                    thousandSuffix: 'k',
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(
                     context,
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),

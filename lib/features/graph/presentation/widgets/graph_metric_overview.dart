@@ -26,7 +26,7 @@ class GraphMetricOverview extends StatelessWidget {
 
         return Wrap(
           spacing: spacing,
-          //runSpacing: spacing,
+          runSpacing: spacing,
           children: [
             GraphMetricCard(
               width: cardWidth,

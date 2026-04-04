@@ -48,6 +48,8 @@ class NumberFormatUtils {
     num value, {
     String? locale,
     String? currencyCode,
+    num compactThreshold = 100000,
+    String thousandSuffix = 'K',
   }) {
     final normalizedCode = _normalizeCurrencyCode(currencyCode);
     final currency = _currenciesByCode[normalizedCode];
@@ -55,6 +57,8 @@ class NumberFormatUtils {
       value,
       locale: locale,
       decimals: currency?.decimals ?? 2,
+      compactThreshold: compactThreshold,
+      thousandSuffix: thousandSuffix,
     );
     return '$formatted ${currency?.symbol ?? normalizedCode}'.trim();
   }
@@ -94,16 +98,18 @@ class NumberFormatUtils {
     num value, {
     required int decimals,
     String? locale,
+    required num compactThreshold,
+    required String thousandSuffix,
   }) {
     final absoluteValue = value.abs();
-    if (absoluteValue < 100000) {
+    if (absoluteValue < compactThreshold) {
       return _formatGroupedNumber(value, decimals: decimals, locale: locale);
     }
 
-    const units = <({double divisor, String suffix})>[
+    final units = <({double divisor, String suffix})>[
       (divisor: 1000000000, suffix: 'B'),
       (divisor: 1000000, suffix: 'M'),
-      (divisor: 1000, suffix: 'K'),
+      (divisor: 1000, suffix: thousandSuffix),
     ];
 
     final localeCode = locale ?? _resolvedLocale();

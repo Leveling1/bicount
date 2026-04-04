@@ -2,6 +2,8 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/custom_app_bar.dart';
+
 class FriendInviteLandingScreen extends StatelessWidget {
   const FriendInviteLandingScreen({super.key, required this.inviteCode});
 
@@ -10,10 +12,7 @@ class FriendInviteLandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(context.l10n.friendInviteLandingTitle),
-      ),
+      appBar: CustomAppBar(title: context.l10n.friendInviteLandingTitle),
       body: FriendScreen(initialInviteCode: inviteCode),
     );
   }

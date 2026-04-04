@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:brick_core/query.dart';
 import 'package:brick_offline_first/brick_offline_first.dart'
@@ -33,11 +34,27 @@ class Repository extends OfflineFirstWithSupabaseRepository {
   static late Repository? _instance;
   static late DatabaseFactory _databaseFactory;
   static const _sqliteDatabaseName = 'my_repository.sqlite';
+  static const _offlineQueueDatabaseName = 'brick_offline_queue.sqlite';
   static const _brickMigrationVersionsTableName = 'MigrationVersions';
   static const _recurringFundingSchemaVersion = 20260325165928;
   static const _currencyFxSchemaVersion = 20260329123000;
   static const _userReferenceCurrencySchemaVersion = 20260329194500;
   static const _salaryTrackingSchemaVersion = 20260331113000;
+  static final _uuidRegExp = RegExp(
+    r'^[0-9a-fA-F]{8}-'
+    r'[0-9a-fA-F]{4}-'
+    r'[0-9a-fA-F]{4}-'
+    r'[0-9a-fA-F]{4}-'
+    r'[0-9a-fA-F]{12}$',
+  );
+  static final _legacyRecurringFundingIdRegExp = RegExp(
+    r'^[0-9a-fA-F]{8}-'
+    r'[0-9a-fA-F]{4}-'
+    r'[0-9a-fA-F]{4}-'
+    r'[0-9a-fA-F]{4}-'
+    r'[0-9a-fA-F]{12}-'
+    r'\d{8}$',
+  );
   final Map<_RealtimeSubscriptionKey, _RealtimeBinding>
   _sharedRealtimeBindings = {};
 
@@ -263,6 +280,47 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       await database.execute(
         'PRAGMA user_version = $_salaryTrackingSchemaVersion',
       );
+    } finally {
+      await database.close();
+    }
+  }
+
+  Future<void> repairLegacyOfflineQueueIfNeeded() async {
+    final databasePath = path.join(
+      await _databaseFactory.getDatabasesPath(),
+      _offlineQueueDatabaseName,
+    );
+    final databaseExists = await _databaseFactory.databaseExists(databasePath);
+    if (!databaseExists) {
+      return;
+    }
+
+    final database = await _databaseFactory.openDatabase(databasePath);
+
+    try {
+      final tableRows = await database.rawQuery(
+        "SELECT name FROM sqlite_master "
+        "WHERE type = 'table' AND name NOT LIKE 'sqlite_%'",
+      );
+      var deletedRequests = 0;
+
+      for (final row in tableRows) {
+        final tableName = row['name'] as String?;
+        if (tableName == null || tableName.isEmpty) {
+          continue;
+        }
+        deletedRequests += await _deleteLegacyOfflineQueueRows(
+          database,
+          tableName,
+        );
+      }
+
+      if (deletedRequests > 0) {
+        debugPrint(
+          'Removed $deletedRequests legacy offline queue request(s) with '
+          'invalid recurring account_funding ids.',
+        );
+      }
     } finally {
       await database.close();
     }
@@ -744,6 +802,90 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       'VALUES(?)',
       [version],
     );
+  }
+
+  Future<int> _deleteLegacyOfflineQueueRows(
+    Database database,
+    String tableName,
+  ) async {
+    final columns = await database.rawQuery('PRAGMA table_info(`$tableName`)');
+    if (columns.isEmpty) {
+      return 0;
+    }
+
+    final columnNames = columns
+        .map((column) => column['name'] as String?)
+        .whereType<String>()
+        .toSet();
+    if (!columnNames.contains('body')) {
+      return 0;
+    }
+
+    final primaryKeyColumn =
+        columns.cast<Map<String, Object?>>().firstWhere(
+              (column) => (column['pk'] as int? ?? 0) > 0,
+              orElse: () => const {'name': 'id'},
+            )['name']
+            as String?;
+    if (primaryKeyColumn == null || !columnNames.contains(primaryKeyColumn)) {
+      return 0;
+    }
+
+    final rows = await database.query(
+      tableName,
+      columns: [primaryKeyColumn, 'body'],
+    );
+    final requestIdsToDelete = <Object?>[];
+
+    for (final row in rows) {
+      if (_isLegacyRecurringFundingQueueRow(row['body'])) {
+        requestIdsToDelete.add(row[primaryKeyColumn]);
+      }
+    }
+
+    if (requestIdsToDelete.isEmpty) {
+      return 0;
+    }
+
+    await database.transaction((transaction) async {
+      for (final requestId in requestIdsToDelete) {
+        await transaction.delete(
+          tableName,
+          where: '`$primaryKeyColumn` = ?',
+          whereArgs: [requestId],
+        );
+      }
+    });
+
+    return requestIdsToDelete.length;
+  }
+
+  bool _isLegacyRecurringFundingQueueRow(Object? rawBody) {
+    if (rawBody is! String || rawBody.isEmpty) {
+      return false;
+    }
+
+    final decodedBody = _decodeJsonMap(rawBody);
+    if (decodedBody == null) {
+      return false;
+    }
+
+    final fundingId = decodedBody['funding_id'];
+    if (fundingId is! String || fundingId.isEmpty) {
+      return false;
+    }
+
+    return _legacyRecurringFundingIdRegExp.hasMatch(fundingId) &&
+        !_uuidRegExp.hasMatch(fundingId);
+  }
+
+  Map<String, dynamic>? _decodeJsonMap(String rawBody) {
+    try {
+      final decoded = jsonDecode(rawBody);
+      return decoded is Map<String, dynamic> ? decoded : null;
+    } catch (_) {
+      return null;
+    }
   }
 }
 
