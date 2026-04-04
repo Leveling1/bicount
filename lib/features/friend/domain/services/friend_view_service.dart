@@ -1,11 +1,17 @@
 import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/friend/domain/entities/friend_detail_entity.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 
 class FriendViewService {
-  const FriendViewService();
+  const FriendViewService({
+    this.participantIdentityService =
+        const TransactionParticipantIdentityService(),
+  });
+
+  final TransactionParticipantIdentityService participantIdentityService;
 
   FriendDetailEntity buildDetail({
     required MainEntity data,
@@ -15,12 +21,16 @@ class FriendViewService {
       (candidate) => candidate.sid == fallbackFriend.sid,
       orElse: () => fallbackFriend,
     );
+    final friendParticipantIds = participantIdentityService
+        .friendParticipantIds(friend);
     final transactions =
         data.transactions
             .where(
               (transaction) =>
-                  transaction.senderId == friend.sid ||
-                  transaction.beneficiaryId == friend.sid,
+                  participantIdentityService.transactionInvolvesAnyParticipant(
+                    transaction,
+                    friendParticipantIds,
+                  ),
             )
             .toList()
           ..sort(

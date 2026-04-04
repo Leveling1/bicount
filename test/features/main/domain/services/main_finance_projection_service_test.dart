@@ -137,4 +137,67 @@ void main() {
     expect(friend.personalIncome, -12);
     expect(friend.companyIncome, 7);
   });
+
+  test(
+    'treats transactions involving a linked self profile as current user transactions',
+    () {
+      final result = service.project(
+        user: user,
+        friends: [
+          FriendsModel(
+            sid: 'self-profile',
+            uid: 'user-1',
+            fid: 'user-1',
+            image: '',
+            username: 'Me local',
+            email: 'me-local@example.com',
+            relationType: FriendConst.friend,
+            give: 0,
+            receive: 0,
+            personalIncome: 0,
+            companyIncome: 0,
+          ),
+          FriendsModel(
+            sid: 'friend-local',
+            uid: 'friend-real',
+            fid: 'user-1',
+            image: '',
+            username: 'Alice',
+            email: 'alice@example.com',
+            relationType: FriendConst.friend,
+            give: 0,
+            receive: 0,
+            personalIncome: 0,
+            companyIncome: 0,
+          ),
+        ],
+        subscriptions: const [],
+        transactions: [
+          TransactionModel(
+            uid: 'friend-real',
+            gtid: 'gtid-3',
+            name: 'Linked self profile payment',
+            type: 0,
+            beneficiaryId: 'friend-local',
+            senderId: 'self-profile',
+            date: '2026-03-23',
+            note: '',
+            amount: 40,
+            currency: 'USD',
+            category: Constants.personal,
+          ),
+        ],
+        accountFundings: const [],
+        recurringFundings: const [],
+        connectionState: Constants.connected,
+        currencyConfig: CurrencyConfigEntity.fallback(),
+      );
+
+      expect(result.transactions, hasLength(1));
+      expect(result.user.balance, -40);
+      expect(result.user.expenses, 40);
+      expect(result.friends.last.receive, 40);
+      expect(result.friends.last.personalIncome, 40);
+    },
+  );
 }

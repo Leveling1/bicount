@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
@@ -12,9 +13,12 @@ import 'package:bicount/features/subscription/data/models/subscription.model.dar
 class MainFinanceProjectionService {
   const MainFinanceProjectionService({
     this.currencyAmountService = const CurrencyAmountService(),
+    this.participantIdentityService =
+        const TransactionParticipantIdentityService(),
   });
 
   final CurrencyAmountService currencyAmountService;
+  final TransactionParticipantIdentityService participantIdentityService;
 
   MainEntity project({
     required UserModel user,
@@ -26,8 +30,23 @@ class MainFinanceProjectionService {
     required int connectionState,
     required CurrencyConfigEntity currencyConfig,
   }) {
+    final relevantTransactions = participantIdentityService
+        .filterTransactionsForCurrentUser(
+          currentUserId: user.uid,
+          friends: friends,
+          transactions: transactions,
+        );
+    final currentUserParticipantIds = participantIdentityService
+        .currentUserParticipantIds(currentUserId: user.uid, friends: friends);
+
     return MainEntity(
-      user: _deriveUser(user, transactions, accountFundings, currencyConfig),
+      user: _deriveUser(
+        user,
+        relevantTransactions,
+        accountFundings,
+        currencyConfig,
+        currentUserParticipantIds,
+      ),
       connectionState: connectionState,
       referenceCurrencyCode: currencyConfig.referenceCurrencyCode,
       monthlySubscriptionSpend: subscriptions.fold<double>(
@@ -40,13 +59,13 @@ class MainFinanceProjectionService {
             ),
       ),
       friends: _deriveFriends(
-        currentUserId: user.uid,
+        currentUserParticipantIds: currentUserParticipantIds,
         friends: friends,
-        transactions: transactions,
+        transactions: relevantTransactions,
         currencyConfig: currencyConfig,
       ),
       subscriptions: subscriptions,
-      transactions: transactions,
+      transactions: relevantTransactions,
       accountFundings: accountFundings,
       recurringFundings: recurringFundings,
     );
@@ -57,6 +76,7 @@ class MainFinanceProjectionService {
     List<TransactionModel> transactions,
     List<AccountFundingModel> accountFundings,
     CurrencyConfigEntity currencyConfig,
+    Set<String> currentUserParticipantIds,
   ) {
     double balance = 0;
     double incomes = 0;
@@ -71,7 +91,7 @@ class MainFinanceProjectionService {
       );
       final category = transaction.category ?? Constants.personal;
 
-      if (transaction.senderId == user.uid) {
+      if (currentUserParticipantIds.contains(transaction.senderId)) {
         balance -= amount;
         expenses += amount;
         if (category == Constants.personal) {
@@ -81,7 +101,7 @@ class MainFinanceProjectionService {
         }
       }
 
-      if (transaction.beneficiaryId == user.uid) {
+      if (currentUserParticipantIds.contains(transaction.beneficiaryId)) {
         balance += amount;
         incomes += amount;
         if (category == Constants.personal) {
@@ -117,7 +137,7 @@ class MainFinanceProjectionService {
   }
 
   List<FriendsModel> _deriveFriends({
-    required String currentUserId,
+    required Set<String> currentUserParticipantIds,
     required List<FriendsModel> friends,
     required List<TransactionModel> transactions,
     required CurrencyConfigEntity currencyConfig,
@@ -136,7 +156,7 @@ class MainFinanceProjectionService {
     for (final transaction in transactions) {
       final category = transaction.category ?? Constants.personal;
 
-      if (transaction.senderId != currentUserId) {
+      if (!currentUserParticipantIds.contains(transaction.senderId)) {
         final sender = aggregatesById[transaction.senderId];
         sender?.apply(
           amount: currencyAmountService.transaction(
@@ -148,7 +168,7 @@ class MainFinanceProjectionService {
         );
       }
 
-      if (transaction.beneficiaryId != currentUserId) {
+      if (!currentUserParticipantIds.contains(transaction.beneficiaryId)) {
         final beneficiary = aggregatesById[transaction.beneficiaryId];
         beneficiary?.apply(
           amount: currencyAmountService.transaction(

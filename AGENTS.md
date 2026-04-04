@@ -1057,3 +1057,12 @@ Rules:
 - until a dedicated backend link column exists, recurring occurrence matching relies on `sid`, `source`, `funding_type`, `amount`, `currency`, and the calendar day of `date`
 - keep `docs/recurring_funding_backend_actions.md` updated when the recurring funding backend contract changes
 - bootstrap should repair legacy Brick offline queue entries that still carry pre-fix recurring `account_funding` requests with composite non-UUID `funding_id` values, so stale retries do not keep failing forever after the contract change
+
+## Linked Friend Identity Update (2026-04-04)
+
+Rules:
+- when projecting "my" transactions, do not rely only on `transaction.uid == currentUser.uid`
+- the current user must also inherit transactions whose participants use a linked self-profile stored in `friends`, meaning any `FriendsModel` where `friend.uid == currentUser.uid`
+- resolve the current user participant identity set as `currentUser.uid` plus every linked self-profile `friend.sid`
+- friend detail timelines must match transactions by both `friend.sid` and `friend.uid`, because either identifier may appear in `sender_id` or `beneficiary_id`
+- if transaction ownership and participant identity diverge, the projection layer remains the source of truth for deciding whether a row belongs in the current user's finance story

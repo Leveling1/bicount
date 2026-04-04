@@ -98,6 +98,9 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
 
   @override
   Stream<List<TransactionModel>> getTransaction() {
+    // Keep the raw local transaction stream broad here. The projection layer
+    // decides which rows belong to the current user through `uid`, linked
+    // self-profile `sid`s, and linked `uid` aliases.
     return _cachedListStream<TransactionModel>(
       getSubject: () => _transactionsSubject,
       setSubject: (subject) => _transactionsSubject = subject,
