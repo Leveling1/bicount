@@ -231,6 +231,7 @@
   "graphBreakdownSubscriptions": "Abonnements",
   "graphBreakdownOther": "Autre",
   "friendsTitle": "Amis",
+  "friendDetailTitle": "Détails de l'ami",
   "friendsDirectoryIntro": "Touchez un ami pour consulter l'historique des transactions en temps réel ou lier un profil local à un vrai compte.",
   "friendsDirectoryEmpty": "Créez une transaction avec quelqu'un et il apparaîtra ici. Lorsqu'il rejoindra Bicount, ouvrez sa fiche pour partager et lier le profil.",
   "friendsTotal": "Total",
@@ -239,14 +240,27 @@
   "friendInviteLandingTitle": "Invitation d'ami",
   "friendInvitationsTitle": "Invitations d'amis",
   "friendLinkTitle": "Lier {name}",
-  "@friendLinkTitle": {"placeholders": {"name": {}}},
+  "@friendLinkTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "friendScreenIntro": "Scannez une invitation, consultez les liaisons en attente et suivez les profils partagés en temps réel.",
   "friendLinkIntro": "Partagez ce profil d'ami local quand la personne a créé un compte Bicount afin que le backend puisse relier les deux profils.",
   "friendShareProfileTitle": "Partager le profil de {name}",
-  "@friendShareProfileTitle": {"placeholders": {"name": {}}},
+  "@friendShareProfileTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "friendShareProfileDescription": "Générez un QR code ou un lien pour ce profil d'ami précis.",
   "friendShareMessage": "Rejoignez-moi sur Bicount et associez le profil de {name} : {url}",
-  "@friendShareMessage": {"placeholders": {"name": {}, "url": {}}},
+  "@friendShareMessage": {
+    "placeholders": {
+      "name": {},
+      "url": {}
+    }
+  },
   "friendMyProfile": "mon profil Bicount",
   "friendScanInvite": "Scanner l'invitation",
   "friendScanQrTitle": "Scanner le QR code d'invitation",
@@ -258,9 +272,17 @@
   "friendCurrentEmpty": "Vos contacts acceptés apparaîtront ici en temps réel.",
   "friendInvitePreview": "Aperçu de l'invitation",
   "friendProfileToLink": "Profil à lier : {name}",
-  "@friendProfileToLink": {"placeholders": {"name": {}}},
+  "@friendProfileToLink": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "friendInviteExpiresOn": "Cette invitation expire le {date}.",
-  "@friendInviteExpiresOn": {"placeholders": {"date": {}}},
+  "@friendInviteExpiresOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "friendShareGenerate": "Générer l'invitation",
   "friendShareRefresh": "Rafraîchir le lien",
   "friendShareLink": "Partager le lien",
@@ -279,9 +301,18 @@
   "friendInvitationAcceptFailed": "Impossible d'accepter cette invitation pour le moment.",
   "friendInvitationRejectFailed": "Impossible de refuser cette invitation pour le moment.",
   "friendProfileShared": "Profil partagé : {name}",
-  "@friendProfileShared": {"placeholders": {"name": {}}},
+  "@friendProfileShared": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "friendSharedBy": "{status} · partagé par {sender}",
-  "@friendSharedBy": {"placeholders": {"status": {}, "sender": {}}},
+  "@friendSharedBy": {
+    "placeholders": {
+      "status": {},
+      "sender": {}
+    }
+  },
   "friendLinkedAccount": "Compte lié",
   "friendLocalFriend": "Ami local",
   "friendLinkHint": "Cet ami est encore local à votre compte. Utilisez le bouton de partage pour le lier lorsque la personne aura créé un profil Bicount.",

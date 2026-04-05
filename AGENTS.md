@@ -1066,3 +1066,9 @@ Rules:
 - resolve the current user participant identity set as `currentUser.uid` plus every linked self-profile `friend.sid`
 - friend detail timelines must match transactions by both `friend.sid` and `friend.uid`, because either identifier may appear in `sender_id` or `beneficiary_id`
 - if transaction ownership and participant identity diverge, the projection layer remains the source of truth for deciding whether a row belongs in the current user's finance story
+
+## Transaction Edit Beneficiary Validation Update (2026-04-05)
+
+Rules:
+- in the transfer edit form, the selected beneficiaries list is the source of truth for validation
+- do not mark the beneficiary field as missing just because the autocomplete text input is empty when a beneficiary is already present in the preview list

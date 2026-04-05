@@ -35,7 +35,7 @@ class DetailFriend extends StatelessWidget {
 
         return Scaffold(
           appBar: CustomAppBar(
-            title: currentFriend.username,
+            title: context.l10n.friendDetailTitle,
             actions: [
               if (detail != null && detail.canShareProfile)
                 IconButton(

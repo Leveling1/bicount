@@ -761,6 +761,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get friendsTitle => 'Amis';
 
   @override
+  String get friendDetailTitle => 'Détails de l\'ami';
+
+  @override
   String get friendsDirectoryIntro =>
       'Touchez un ami pour consulter l\'historique des transactions en temps réel ou lier un profil local à un vrai compte.';
 

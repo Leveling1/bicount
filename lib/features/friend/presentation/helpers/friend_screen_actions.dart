@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../core/widgets/custom_bottom_sheet.dart';
+
 void handleFriendStateFeedback(BuildContext context, FriendState state) {
   if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
     NotificationHelper.showFailureNotification(
@@ -46,11 +48,10 @@ Future<void> openFriendScanner(
   BuildContext context, {
   required ValueChanged<String> onValue,
 }) async {
-  await showModalBottomSheet<void>(
+  showCustomBottomSheet(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) => FriendQrScannerSheet(onValue: onValue),
+    child: FriendQrScannerSheet(onValue: onValue),
+    minHeight: 0.6,
   );
 }
 

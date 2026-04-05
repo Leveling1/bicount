@@ -1454,6 +1454,12 @@ abstract class AppLocalizations {
   /// **'Friends'**
   String get friendsTitle;
 
+  /// No description provided for @friendDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend detail'**
+  String get friendDetailTitle;
+
   /// No description provided for @friendsDirectoryIntro.
   ///
   /// In en, this message translates to:

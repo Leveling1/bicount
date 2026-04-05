@@ -17,9 +17,7 @@ class BicountSkeletonBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(
-      context,
-    ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.55);
+    final color = Theme.of(context).cardColor.withValues(alpha: 0.55);
 
     return Container(
       width: width,
@@ -41,9 +39,7 @@ class BicountSkeletonCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(
-      context,
-    ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.55);
+    final color = Theme.of(context).cardColor.withValues(alpha: 0.55);
 
     return Container(
       width: size,

@@ -81,85 +81,80 @@ class _FriendScreenState extends State<FriendScreen> {
             .toList();
         return SafeArea(
           child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimens.paddingMedium,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FriendScreenIntro(
-                    title: widget.selectedFriend == null
-                        ? context.l10n.friendInvitationsTitle
-                        : context.l10n.friendLinkTitle(
-                            widget.selectedFriend!.username,
-                          ),
-                    description: widget.selectedFriend == null
-                        ? context.l10n.friendScreenIntro
-                        : context.l10n.friendLinkIntro,
-                  ),
-                  const SizedBox(height: AppDimens.marginLarge),
-                  if (widget.user != null && widget.selectedFriend != null) ...[
-                    FriendShareCard(
-                      title: context.l10n.friendShareProfileTitle(
-                        widget.selectedFriend!.username,
-                      ),
-                      description: context.l10n.friendShareProfileDescription,
-                      activeShare: activeShare,
-                      isSubmitting: state.isSubmitting,
-                      onCreate: _createInvite,
-                      onShare: () => shareFriendInvite(context, activeShare),
-                      onCopy: () => copyFriendInvite(context, activeShare),
-                      onScan: () => openFriendScanner(
-                        context,
-                        onValue: _onInviteValueReceived,
-                      ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FriendScreenIntro(
+                  title: widget.selectedFriend == null
+                      ? context.l10n.friendInvitationsTitle
+                      : context.l10n.friendLinkTitle(
+                          widget.selectedFriend!.username,
+                        ),
+                  description: widget.selectedFriend == null
+                      ? context.l10n.friendScreenIntro
+                      : context.l10n.friendLinkIntro,
+                ),
+                const SizedBox(height: AppDimens.marginLarge),
+                if (widget.user != null && widget.selectedFriend != null) ...[
+                  FriendShareCard(
+                    title: context.l10n.friendShareProfileTitle(
+                      widget.selectedFriend!.username,
                     ),
-                    const SizedBox(height: AppDimens.marginLarge),
-                  ],
-                  if (widget.user != null && widget.selectedFriend == null) ...[
-                    OutlinedButton.icon(
-                      onPressed: () => openFriendScanner(
-                        context,
-                        onValue: _onInviteValueReceived,
-                      ),
-                      icon: const Icon(Icons.qr_code_scanner_outlined),
-                      label: Text(context.l10n.friendScanInvite),
+                    description: context.l10n.friendShareProfileDescription,
+                    activeShare: activeShare,
+                    isSubmitting: state.isSubmitting,
+                    onCreate: _createInvite,
+                    onShare: () => shareFriendInvite(context, activeShare),
+                    onCopy: () => copyFriendInvite(context, activeShare),
+                    onScan: () => openFriendScanner(
+                      context,
+                      onValue: _onInviteValueReceived,
                     ),
-                    const SizedBox(height: AppDimens.marginLarge),
-                  ],
-                  if (state.invitePreview != null) ...[
-                    FriendInvitePreviewCard(
-                      invite: state.invitePreview!,
-                      isSubmitting: state.isSubmitting,
-                      onAccept: () => context.read<FriendBloc>().add(
-                        const FriendAcceptRequested(),
-                      ),
-                      onReject: () => context.read<FriendBloc>().add(
-                        const FriendRejectRequested(),
-                      ),
-                      onClose: () => context.read<FriendBloc>().add(
-                        const FriendPreviewCleared(),
-                      ),
-                    ),
-                    const SizedBox(height: AppDimens.marginLarge),
-                  ],
-                  FriendInviteSection(
-                    title: context.l10n.friendPendingRequests,
-                    emptyLabel: context.l10n.friendIncomingEmpty,
-                    invites: pendingReceivedInvites,
                   ),
-                  const SizedBox(height: AppDimens.marginLarge),
-                  FriendInviteSection(
-                    title: context.l10n.friendSentInvitations,
-                    emptyLabel: context.l10n.friendSentEmpty,
-                    invites: pendingSentInvites,
-                  ),
-                  const SizedBox(height: AppDimens.marginLarge),
-                  FriendListCard(friends: visibleFriends),
                   const SizedBox(height: AppDimens.marginLarge),
                 ],
-              ),
+                if (widget.user != null && widget.selectedFriend == null) ...[
+                  OutlinedButton.icon(
+                    onPressed: () => openFriendScanner(
+                      context,
+                      onValue: _onInviteValueReceived,
+                    ),
+                    icon: const Icon(Icons.qr_code_scanner_outlined),
+                    label: Text(context.l10n.friendScanInvite),
+                  ),
+                  const SizedBox(height: AppDimens.marginLarge),
+                ],
+                if (state.invitePreview != null) ...[
+                  FriendInvitePreviewCard(
+                    invite: state.invitePreview!,
+                    isSubmitting: state.isSubmitting,
+                    onAccept: () => context.read<FriendBloc>().add(
+                      const FriendAcceptRequested(),
+                    ),
+                    onReject: () => context.read<FriendBloc>().add(
+                      const FriendRejectRequested(),
+                    ),
+                    onClose: () => context.read<FriendBloc>().add(
+                      const FriendPreviewCleared(),
+                    ),
+                  ),
+                  const SizedBox(height: AppDimens.marginLarge),
+                ],
+                FriendInviteSection(
+                  title: context.l10n.friendPendingRequests,
+                  emptyLabel: context.l10n.friendIncomingEmpty,
+                  invites: pendingReceivedInvites,
+                ),
+                const SizedBox(height: AppDimens.marginLarge),
+                FriendInviteSection(
+                  title: context.l10n.friendSentInvitations,
+                  emptyLabel: context.l10n.friendSentEmpty,
+                  invites: pendingSentInvites,
+                ),
+                const SizedBox(height: AppDimens.marginLarge),
+                FriendListCard(friends: visibleFriends),
+                const SizedBox(height: AppDimens.marginLarge),
+              ],
             ),
           ),
         );

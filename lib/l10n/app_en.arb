@@ -231,6 +231,7 @@
   "graphBreakdownSubscriptions": "Subscriptions",
   "graphBreakdownOther": "Other",
   "friendsTitle": "Friends",
+  "friendDetailTitle": "Friend details",
   "friendsDirectoryIntro": "Tap a friend to review the live transaction history or link a local profile to a real account.",
   "friendsDirectoryEmpty": "Create a transaction with someone and they will appear here. When they join Bicount, open their detail screen to share and link the profile.",
   "friendsTotal": "Total",
@@ -239,14 +240,27 @@
   "friendInviteLandingTitle": "Friend invite",
   "friendInvitationsTitle": "Friend invitations",
   "friendLinkTitle": "Link {name}",
-  "@friendLinkTitle": {"placeholders": {"name": {}}},
+  "@friendLinkTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "friendScreenIntro": "Scan an invite, review pending links, and track shared profiles in real time.",
   "friendLinkIntro": "Share this local friend profile when the person has created a Bicount account so the backend can link both profiles together.",
   "friendShareProfileTitle": "Share {name} profile",
-  "@friendShareProfileTitle": {"placeholders": {"name": {}}},
+  "@friendShareProfileTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "friendShareProfileDescription": "Generate a QR code or a link for this specific friend profile.",
   "friendShareMessage": "Join me on Bicount and link the profile for {name}: {url}",
-  "@friendShareMessage": {"placeholders": {"name": {}, "url": {}}},
+  "@friendShareMessage": {
+    "placeholders": {
+      "name": {},
+      "url": {}
+    }
+  },
   "friendMyProfile": "my Bicount profile",
   "friendScanInvite": "Scan invite",
   "friendScanQrTitle": "Scan invitation QR code",
@@ -258,9 +272,17 @@
   "friendCurrentEmpty": "Your accepted contacts will show up here in real time.",
   "friendInvitePreview": "Invitation preview",
   "friendProfileToLink": "Profile to link: {name}",
-  "@friendProfileToLink": {"placeholders": {"name": {}}},
+  "@friendProfileToLink": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "friendInviteExpiresOn": "This invite expires on {date}.",
-  "@friendInviteExpiresOn": {"placeholders": {"date": {}}},
+  "@friendInviteExpiresOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "friendShareGenerate": "Generate invite",
   "friendShareRefresh": "Refresh link",
   "friendShareLink": "Share link",
@@ -279,9 +301,18 @@
   "friendInvitationAcceptFailed": "Unable to accept this invitation right now.",
   "friendInvitationRejectFailed": "Unable to reject this invitation right now.",
   "friendProfileShared": "Profile shared: {name}",
-  "@friendProfileShared": {"placeholders": {"name": {}}},
+  "@friendProfileShared": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "friendSharedBy": "{status} · shared by {sender}",
-  "@friendSharedBy": {"placeholders": {"status": {}, "sender": {}}},
+  "@friendSharedBy": {
+    "placeholders": {
+      "status": {},
+      "sender": {}
+    }
+  },
   "friendLinkedAccount": "Linked account",
   "friendLocalFriend": "Local friend",
   "friendLinkHint": "This friend is still local to your account. Use the share button to link it when the person has created a Bicount profile.",

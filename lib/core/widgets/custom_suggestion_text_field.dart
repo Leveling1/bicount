@@ -12,6 +12,7 @@ class CustomSuggestionTextField extends StatefulWidget {
   final TextEditingController? controller;
   final bool isVisible;
   final bool? enableValidator;
+  final FormFieldValidator<String>? validator;
 
   const CustomSuggestionTextField({
     super.key,
@@ -23,6 +24,7 @@ class CustomSuggestionTextField extends StatefulWidget {
     this.controller,
     this.isVisible = true,
     this.enableValidator = true,
+    this.validator,
   });
 
   @override
@@ -125,7 +127,9 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
               textAlign: TextAlign.start,
               keyboardType: widget.inputType,
               textInputAction: TextInputAction.next,
-              validator: widget.enableValidator! ? _validator : null,
+              validator: widget.enableValidator!
+                  ? (widget.validator ?? _validator)
+                  : null,
               decoration: InputDecoration(
                 hintText: widget.hintText,
                 suffixIcon: widget.isVisible

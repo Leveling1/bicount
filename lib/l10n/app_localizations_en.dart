@@ -751,6 +751,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendsTitle => 'Friends';
 
   @override
+  String get friendDetailTitle => 'Friend details';
+
+  @override
   String get friendsDirectoryIntro =>
       'Tap a friend to review the live transaction history or link a local profile to a real account.';
 

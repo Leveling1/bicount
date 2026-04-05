@@ -8,11 +8,13 @@ class TransferFormBeneficiariesSection extends StatelessWidget {
     required this.beneficiaryController,
     required this.friendNames,
     required this.onAdd,
+    this.validator,
   });
 
   final TextEditingController beneficiaryController;
   final List<String> friendNames;
   final VoidCallback onAdd;
+  final FormFieldValidator<String>? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class TransferFormBeneficiariesSection extends StatelessWidget {
           isVisible: true,
           hintText: context.l10n.transferEnterBeneficiaryName,
           options: friendNames,
+          validator: validator,
         ),
         const SizedBox(height: 8),
         Align(

@@ -92,6 +92,15 @@ extension _TransferFormSections on _TransferFormState {
           beneficiaryController: _beneficiary,
           friendNames: friendNames,
           onAdd: _addBeneficiary,
+          validator: (value) {
+            if (_beneficiaryList.isNotEmpty) {
+              return null;
+            }
+            if (value == null || value.trim().isEmpty) {
+              return context.l10n.validationFieldRequired;
+            }
+            return null;
+          },
         ),
       ],
     );

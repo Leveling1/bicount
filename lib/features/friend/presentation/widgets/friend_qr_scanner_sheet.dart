@@ -27,16 +27,6 @@ class _FriendQrScannerSheetState extends State<FriendQrScannerSheet> {
       ),
       child: Column(
         children: [
-          const SizedBox(height: AppDimens.marginMedium),
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Theme.of(context).dividerColor,
-              borderRadius: BorderRadius.circular(99),
-            ),
-          ),
-          const SizedBox(height: AppDimens.marginLarge),
           Text(
             context.l10n.friendScanQrTitle,
             style: Theme.of(context).textTheme.titleMedium,
