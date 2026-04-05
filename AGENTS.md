@@ -1067,6 +1067,20 @@ Rules:
 - friend detail timelines must match transactions by both `friend.sid` and `friend.uid`, because either identifier may appear in `sender_id` or `beneficiary_id`
 - if transaction ownership and participant identity diverge, the projection layer remains the source of truth for deciding whether a row belongs in the current user's finance story
 
+## Main Finance Stream Scope Update (2026-04-05)
+
+Rules:
+- `Main` local streams for `transactions`, `subscriptions`, and `account_funding` must stay unfiltered on the Flutter side
+- Supabase RLS is the source of truth for which finance rows are allowed to sync locally
+- do not reintroduce restrictive local `Query(where: ...)` filters there unless the backend contract explicitly changes
+
+## Friends Stream Scope Update (2026-04-05)
+
+Rules:
+- the global `friends` stream used by `Main` must stay unfiltered on the Flutter side
+- Supabase RLS is the source of truth for which friend rows can sync locally
+- user-facing friend list filtering belongs only in dedicated presentation surfaces such as Profile and Friends Directory, not in the shared data source or invite hub
+
 ## Transaction Edit Beneficiary Validation Update (2026-04-05)
 
 Rules:

@@ -92,15 +92,15 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       getSubscription: () => _friendsSubscription,
       setSubscription: (subscription) => _friendsSubscription = subscription,
       errorLabel: 'friends',
-      query: Query(where: [Where.exact('fid', uid)]),
     );
   }
 
   @override
   Stream<List<TransactionModel>> getTransaction() {
-    // Keep the raw local transaction stream broad here. The projection layer
-    // decides which rows belong to the current user through `uid`, linked
-    // self-profile `sid`s, and linked `uid` aliases.
+    // Keep finance streams broad here. Backend RLS now scopes which rows are
+    // synced locally, and the projection layer decides how transaction rows
+    // belong to the current user's story through `uid`, linked self-profile
+    // `sid`s, and linked `uid` aliases.
     return _cachedListStream<TransactionModel>(
       getSubject: () => _transactionsSubject,
       setSubject: (subject) => _transactionsSubject = subject,
@@ -120,7 +120,6 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       setSubscription: (subscription) =>
           _subscriptionsSubscription = subscription,
       errorLabel: 'subscriptions',
-      query: Query(where: [Where.exact('sid', uid)]),
     );
   }
 
@@ -133,7 +132,6 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       setSubscription: (subscription) =>
           _accountFundingsSubscription = subscription,
       errorLabel: 'account fundings',
-      query: Query(where: [Where.exact('sid', uid)]),
     );
   }
 

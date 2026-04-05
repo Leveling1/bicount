@@ -2,7 +2,6 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
-import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
 import 'package:bicount/features/friend/presentation/bloc/friend_bloc.dart';
 import 'package:bicount/features/friend/presentation/helpers/friend_screen_actions.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_invite_preview_card.dart';
@@ -35,7 +34,6 @@ class FriendScreen extends StatefulWidget {
 }
 
 class _FriendScreenState extends State<FriendScreen> {
-  static const _viewService = FriendViewService();
   bool _handledResolvedDeepLink = false;
 
   @override
@@ -60,11 +58,6 @@ class _FriendScreenState extends State<FriendScreen> {
       }
       return widget.friends;
     });
-
-    final visibleFriends = _viewService.visibleFriends(
-      realtimeFriends,
-      currentUserUid: widget.user?.uid,
-    );
 
     return BlocConsumer<FriendBloc, FriendState>(
       listener: (context, state) {
@@ -152,7 +145,7 @@ class _FriendScreenState extends State<FriendScreen> {
                   invites: pendingSentInvites,
                 ),
                 const SizedBox(height: AppDimens.marginLarge),
-                FriendListCard(friends: visibleFriends),
+                FriendListCard(friends: realtimeFriends),
                 const SizedBox(height: AppDimens.marginLarge),
               ],
             ),
