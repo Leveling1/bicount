@@ -43,7 +43,7 @@ Important:
 
 Trois nouvelles tables doivent être ajoutées:
 - friend_invites
-- device_tokens
+- fcm_tokens
 - notification_events
 
 Une RPC doit être ajoutée:
@@ -97,7 +97,7 @@ Valeurs de status attendues par l'application:
 - rejected
 - expired
 
-## Table device_tokens
+## Table fcm_tokens
 
 Cette table sert à:
 - enregistrer les tokens FCM des appareils
@@ -107,7 +107,7 @@ Cette table sert à:
 SQL recommandé:
 
 ```sql
-create table public.device_tokens (
+create table public.fcm_tokens (
   token_id uuid primary key default gen_random_uuid(),
   user_uid uuid not null references auth.users(id) on delete cascade,
   token text not null unique,
@@ -186,7 +186,7 @@ using (sender_uid = auth.uid() or receiver_uid = auth.uid())
 with check (sender_uid = auth.uid() or receiver_uid = auth.uid());
 ```
 
-### device_tokens
+### fcm_tokens
 
 Objectif:
 - un utilisateur lit seulement ses propres tokens
@@ -195,22 +195,22 @@ Objectif:
 SQL recommandé:
 
 ```sql
-alter table public.device_tokens enable row level security;
+alter table public.fcm_tokens enable row level security;
 
-create policy device_tokens_select_own
-on public.device_tokens
+create policy fcm_tokens_select_own
+on public.fcm_tokens
 for select
 to authenticated
 using (user_uid = auth.uid());
 
-create policy device_tokens_insert_own
-on public.device_tokens
+create policy fcm_tokens_insert_own
+on public.fcm_tokens
 for insert
 to authenticated
 with check (user_uid = auth.uid());
 
-create policy device_tokens_update_own
-on public.device_tokens
+create policy fcm_tokens_update_own
+on public.fcm_tokens
 for update
 to authenticated
 using (user_uid = auth.uid())
@@ -306,7 +306,7 @@ Pourquoi:
 L'application:
 - demande la permission des notifications
 - récupère le token FCM
-- tente de sauvegarder le token dans device_tokens
+- tente de sauvegarder le token dans fcm_tokens
 - gère les messages en foreground, en background et à l'ouverture
 - gère aussi des rappels locaux pour les subscriptions
 
@@ -324,7 +324,7 @@ Entrées recommandées:
 - payload optionnel
 
 Comportement attendu:
-1. récupérer tous les tokens de l'utilisateur dans device_tokens
+1. récupérer tous les tokens de l'utilisateur dans fcm_tokens
 2. envoyer la notification via FCM
 3. écrire une ligne dans notification_events
 4. supprimer ou désactiver les tokens invalides si FCM le signale
@@ -395,7 +395,7 @@ Si le domaine final change:
 ## Ordre recommandé d'implémentation
 
 1. créer friend_invites
-2. créer device_tokens
+2. créer fcm_tokens
 3. créer notification_events
 4. activer les RLS
 5. implémenter accept_friend_invite
@@ -443,7 +443,7 @@ Si le domaine final change:
 ## Résumé exécutif
 
 Pour être aligné avec la V1 mobile actuelle, le backend doit ajouter:
-- 3 tables: friend_invites, device_tokens, notification_events
+- 3 tables: friend_invites, fcm_tokens, notification_events
 - 1 RPC: accept_friend_invite
 - 1 Edge Function FCM
 - Realtime sur les tables utiles

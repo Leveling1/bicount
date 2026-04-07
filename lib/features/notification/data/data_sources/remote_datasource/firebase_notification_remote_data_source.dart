@@ -10,6 +10,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FirebaseNotificationRemoteDataSource
     implements NotificationRemoteDataSource {
+  static const _allUsersTopic = 'all_users';
+
   FirebaseNotificationRemoteDataSource({
     required this.messaging,
     required this.supabase,
@@ -57,16 +59,21 @@ class FirebaseNotificationRemoteDataSource
 
   @override
   Future<void> requestPermission() async {
-    await messaging.requestPermission(
+    final settings = await messaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
       provisional: false,
     );
+    await _syncAllUsersTopicMembership(settings);
   }
 
   @override
   Future<void> syncDeviceToken() async {
+    await _syncAllUsersTopicMembership(
+      await messaging.getNotificationSettings(),
+    );
+
     final token = await messaging.getToken();
     final userId = supabase.auth.currentUser?.id;
 
@@ -99,7 +106,7 @@ class FirebaseNotificationRemoteDataSource
     try {
       final existingRows = List<Map<String, dynamic>>.from(
         await supabase
-            .from('device_tokens')
+            .from('fcm_tokens')
             .select('token_id')
             .eq('user_uid', userId),
       );
@@ -109,12 +116,12 @@ class FirebaseNotificationRemoteDataSource
 
         if (primaryTokenId != null && primaryTokenId.isNotEmpty) {
           await supabase
-              .from('device_tokens')
+              .from('fcm_tokens')
               .update(payload)
               .eq('token_id', primaryTokenId);
 
           await supabase
-              .from('device_tokens')
+              .from('fcm_tokens')
               .delete()
               .eq('user_uid', userId)
               .neq('token_id', primaryTokenId);
@@ -122,15 +129,35 @@ class FirebaseNotificationRemoteDataSource
         }
 
         await supabase
-            .from('device_tokens')
+            .from('fcm_tokens')
             .update(payload)
             .eq('user_uid', userId);
         return;
       }
 
-      await supabase.from('device_tokens').insert(payload);
+      await supabase.from('fcm_tokens').insert(payload);
     } catch (_) {
       // The handoff document describes the required Supabase table.
+    }
+  }
+
+  Future<void> _syncAllUsersTopicMembership(
+    NotificationSettings settings,
+  ) async {
+    final authorizationStatus = settings.authorizationStatus;
+    final isAuthorized =
+        authorizationStatus == AuthorizationStatus.authorized ||
+        authorizationStatus == AuthorizationStatus.provisional;
+
+    try {
+      if (isAuthorized) {
+        await messaging.subscribeToTopic(_allUsersTopic);
+      } else {
+        await messaging.unsubscribeFromTopic(_allUsersTopic);
+      }
+    } catch (_) {
+      // Topic subscription is a convenience layer. Push token sync remains
+      // the primary notification addressing path when topic management fails.
     }
   }
 

@@ -469,7 +469,7 @@ Additional backend expectations introduced during V1 finishing work:
 
 - friend_invites
 - friend_invites_statut
-- device_tokens
+- fcm_tokens
 - notification_events
 - recurring_fundings.salary_processing_mode
 - recurring_fundings.salary_reminder_status
@@ -725,7 +725,7 @@ Backend contract delta:
 
 ## Device Token Policy Update (2026-03-19)
 
-The notification layer now treats `device_tokens` as one active row per `user_uid`.
+The notification layer now treats `fcm_tokens` as one active row per `user_uid`.
 
 Behavior:
 
@@ -736,7 +736,7 @@ Behavior:
 
 Backend note:
 
-- if you want database-level enforcement, add a unique constraint on `device_tokens.user_uid`
+- if you want database-level enforcement, add a unique constraint on `fcm_tokens.user_uid`
 - this current mobile behavior matches the requested product rule of one token row per user
 
 ## Motion Update (2026-03-19)
@@ -770,7 +770,7 @@ Current emphasis in that memo:
 - preserving `friends.sid` while updating `friends.uid`
 - secure invite preview and reject flows through backend RPCs
 - realtime requirements for the visible V1 friend experience
-- `device_tokens` now assumes one active row per `user_uid`, with uniqueness already expected to exist on Supabase
+- `fcm_tokens` now assumes one active row per `user_uid`, with uniqueness already expected to exist on Supabase
 
 ## Friend Share Reliability Update (2026-03-19)
 
@@ -1081,8 +1081,31 @@ Rules:
 - Supabase RLS is the source of truth for which friend rows can sync locally
 - user-facing friend list filtering belongs only in dedicated presentation surfaces such as Profile and Friends Directory, not in the shared data source or invite hub
 
+## Sign Out Hard Reset Update (2026-04-07)
+
+Rules:
+- signing out must behave like a full local reset for Bicount on the device
+- the logout flow must clear Brick local tables, the Brick offline queue, in-memory caches, SharedPreferences caches, and scheduled local notifications
+- local cleanup must still run even if the remote Supabase sign out call reports an error
+
+## Foreground Notification Update (2026-04-07)
+
+Rules:
+- when a push arrives while the app is already open, do not surface it through `Toasification` or other in-app toast helpers
+- foreground push events should use a real local notification through `flutter_local_notifications`
+- route navigation for a foreground push must happen from the notification tap flow (`localTap`), not immediately when the foreground event is received
+- if the user grants notification permission, mobile should subscribe the device to the FCM topic `all_users`
+- if notification permission is denied or later unavailable, mobile should unsubscribe the device from `all_users`
+
 ## Transaction Edit Beneficiary Validation Update (2026-04-05)
 
 Rules:
 - in the transfer edit form, the selected beneficiaries list is the source of truth for validation
 - do not mark the beneficiary field as missing just because the autocomplete text input is empty when a beneficiary is already present in the preview list
+
+## Graph Session-Aware Source Update (2026-04-07)
+
+Rules:
+- the visible V1 graph dashboard must derive from the same session-aware `MainBloc` finance data used by the app shell, not from an independent raw finance subscription path
+- graph-specific logic should only add period slicing, breakdown composition, and presentation state on top of `MainBloc` data
+- when `MainBloc` returns to loading, initial, or error states during auth/session changes, the graph dashboard must clear its previous in-memory dashboard so stale values from an old account are not shown

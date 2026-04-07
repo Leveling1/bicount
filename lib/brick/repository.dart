@@ -333,6 +333,8 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       await sqliteProvider.rawExecute('DELETE FROM `${table.name}`');
     }
 
+    await _clearOfflineQueueRequests();
+
     memoryCacheProvider.reset();
   }
 
@@ -549,6 +551,25 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       if (!binding.subject.isClosed) {
         await binding.subject.close();
       }
+    }
+  }
+
+  Future<void> _clearOfflineQueueRequests() async {
+    try {
+      final requestManager = offlineRequestQueue.requestManager;
+      final queuedRequests = await requestManager.unprocessedRequests();
+      final primaryKeyColumn = requestManager.primaryKeyColumn;
+
+      for (final request in queuedRequests) {
+        final rawId = request[primaryKeyColumn];
+        final requestId = rawId is int ? rawId : int.tryParse('$rawId');
+        if (requestId == null) {
+          continue;
+        }
+        await requestManager.deleteUnprocessedRequest(requestId);
+      }
+    } catch (error) {
+      debugPrint('Offline queue reset warning: $error');
     }
   }
 

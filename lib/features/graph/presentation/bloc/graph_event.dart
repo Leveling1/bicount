@@ -14,6 +14,13 @@ final class GraphPeriodChanged extends GraphEvent {
   final GraphPeriod period;
 }
 
+final class _GraphSourcesUpdated extends GraphEvent {
+  const _GraphSourcesUpdated(this.mainState, this.currencyConfig);
+
+  final MainState mainState;
+  final CurrencyConfigEntity currencyConfig;
+}
+
 final class _GraphDashboardUpdated extends GraphEvent {
   const _GraphDashboardUpdated(this.dashboard);
 

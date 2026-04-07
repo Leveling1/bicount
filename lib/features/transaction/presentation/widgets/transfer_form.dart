@@ -29,10 +29,15 @@ import '../../../../core/themes/app_dimens.dart';
 import '../bloc/transaction_bloc.dart';
 
 part 'transfer_form_helpers.dart';
+
 part 'transfer_form_interactions.dart';
+
 part 'transfer_form_prefill.dart';
+
 part 'transfer_form_sections.dart';
+
 part 'transfer_form_split_logic.dart';
+
 part 'transfer_form_submission.dart';
 
 class TransferForm extends StatefulWidget {
@@ -72,7 +77,10 @@ class _TransferFormState extends State<TransferForm> {
   bool _didPrefillInitialTransaction = false;
 
   @override
-  void initState() => super.initState();
+  void initState() {
+    super.initState();
+    _date.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
+  }
 
   @override
   void didChangeDependencies() {

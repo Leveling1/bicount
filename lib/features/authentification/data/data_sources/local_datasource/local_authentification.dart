@@ -4,6 +4,9 @@ import 'package:bicount/features/authentification/data/data_sources/local_dataso
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:brick_core/query.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../brick/repository.dart';
@@ -62,7 +65,14 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
   @override
   Future<Either<Failure, void>> signOut() async {
     try {
+      try {
+        await FlutterLocalNotificationsPlugin().cancelAll();
+      } catch (error) {
+        debugPrint('Local notification reset warning: $error');
+      }
       await Repository().clearLocalSessionData();
+      final preferences = await SharedPreferences.getInstance();
+      await preferences.clear();
       return const Right(null);
     } catch (e) {
       return Left(AuthenticationFailure(message: 'Local sign out failed: $e'));

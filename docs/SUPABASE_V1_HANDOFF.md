@@ -69,14 +69,14 @@ Recommended constraints:
 - unique on `invite_code`
 - check on valid `status`
 
-### 2. `device_tokens` table
+### 2. `fcm_tokens` table
 
-Create a new table named `device_tokens`.
+Create a new table named `fcm_tokens`.
 
 Recommended columns:
 
 ```sql
-create table public.device_tokens (
+create table public.fcm_tokens (
   token_id uuid primary key default gen_random_uuid(),
   user_uid uuid not null references auth.users(id) on delete cascade,
   token text not null unique,
@@ -150,7 +150,7 @@ using (sender_uid = auth.uid() or receiver_uid = auth.uid())
 with check (sender_uid = auth.uid() or receiver_uid = auth.uid());
 ```
 
-### `device_tokens`
+### `fcm_tokens`
 
 Minimum required behavior:
 - a user can insert and update only their own device tokens
@@ -215,7 +215,7 @@ Suggested name:
 
 The function should:
 1. receive `user_uid`, `title`, `body`, `category`, optional `route`, optional `payload`
-2. resolve all tokens from `device_tokens`
+2. resolve all tokens from `fcm_tokens`
 3. send an FCM notification to all active tokens
 4. write a row to `notification_events`
 5. optionally remove invalid tokens returned by FCM
@@ -269,7 +269,7 @@ If the final domain changes, update the Flutter environment variable:
 ## Order of execution recommended
 
 1. Create `friend_invites`
-2. Create `device_tokens`
+2. Create `fcm_tokens`
 3. Create `notification_events`
 4. Add RLS policies
 5. Implement `accept_friend_invite`
@@ -317,13 +317,13 @@ The new dedicated friend list screen is `lib/features/friend/presentation/screen
 
 ### Device token uniqueness update
 
-The mobile app now maintains a single active row per `user_uid` in `device_tokens`.
+The mobile app now maintains a single active row per `user_uid` in `fcm_tokens`.
 
 Recommended hardening on Supabase:
 
 ```sql
-create unique index if not exists device_tokens_user_uid_unique
-on public.device_tokens(user_uid);
+create unique index if not exists fcm_tokens_user_uid_unique
+on public.fcm_tokens(user_uid);
 ```
 
 Behavior expected by the app:

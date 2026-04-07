@@ -18,8 +18,6 @@ import 'package:bicount/features/friend/data/data_sources/local_datasource/local
 import 'package:bicount/features/friend/data/data_sources/remote_datasource/supabase_friend_remote_data_source.dart';
 import 'package:bicount/features/friend/data/repositories/friend_repository_impl.dart';
 import 'package:bicount/features/friend/presentation/bloc/friend_bloc.dart';
-import 'package:bicount/features/graph/data/data_sources/local_datasource/local_graph_data_source_impl.dart';
-import 'package:bicount/features/graph/data/repositories/graph_repository_impl.dart';
 import 'package:bicount/features/graph/presentation/bloc/graph_bloc.dart';
 import 'package:bicount/features/group/data/repositories/group_repository_impl.dart';
 import 'package:bicount/features/group/presentation/bloc/group_bloc.dart';
@@ -106,12 +104,6 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
         ),
       ),
     ),
-    RepositoryProvider<GraphRepositoryImpl>(
-      create: (context) => GraphRepositoryImpl(
-        LocalGraphDataSourceImpl(),
-        currencyRepository: context.read<CurrencyRepositoryImpl>(),
-      ),
-    ),
     RepositoryProvider<FriendRepositoryImpl>(
       create: (_) => FriendRepositoryImpl(
         localDataSource: LocalFriendDataSourceImpl(),
@@ -185,9 +177,10 @@ List<BlocProvider> buildBlocProviders(bool enableCompanySurface) {
       create: (context) => SalaryBloc(context.read<SalaryRepositoryImpl>()),
     ),
     BlocProvider<GraphBloc>(
-      create: (context) =>
-          GraphBloc(context.read<GraphRepositoryImpl>())
-            ..add(const GraphStarted()),
+      create: (context) => GraphBloc(
+        mainBloc: context.read<MainBloc>(),
+        currencyRepository: context.read<CurrencyRepositoryImpl>(),
+      )..add(const GraphStarted()),
     ),
     BlocProvider<FriendBloc>(
       create: (context) =>

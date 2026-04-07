@@ -91,14 +91,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               entry.key,
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
-                            const SizedBox(height: 8),
+                            AppDimens.spacerSmall,
                             ...entry.value.map(
                               (item) => TransactionFeedTile(
                                 item: item,
                                 data: widget.data,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            AppDimens.spacerMedium,
                           ],
                         );
                       }).toList(),

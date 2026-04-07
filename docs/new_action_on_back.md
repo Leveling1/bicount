@@ -9,7 +9,7 @@ Reference date:
 - 2026-03-19
 
 Already done on backend side:
-- uniqueness on `public.device_tokens.user_uid` is already in place
+- uniqueness on `public.fcm_tokens.user_uid` is already in place
 
 This means the remaining work is mainly about:
 - friend profile linking
@@ -218,7 +218,7 @@ Why:
 - `friend_invites`: sent/received invitation state updates live
 - `transactions`, `subscriptions`, `account_funding`: graphs and summaries refresh live
 
-### 6. Keep `device_tokens` compatible with the current app policy
+### 6. Keep `fcm_tokens` compatible with the current app policy
 
 The app now behaves as one active token row per `user_uid`.
 You already added uniqueness, which is correct.
@@ -232,8 +232,8 @@ Backend expectations now:
 Recommended cleanup query if needed once:
 
 ```sql
-delete from public.device_tokens a
-using public.device_tokens b
+delete from public.fcm_tokens a
+using public.fcm_tokens b
 where a.user_uid = b.user_uid
   and a.token_id < b.token_id;
 ```
@@ -287,7 +287,7 @@ Keep these behaviors:
 - users only read their allowed friend rows under the existing app model
 - backend trusted function can update `uid` during linking
 
-### `device_tokens`
+### `fcm_tokens`
 
 Keep these behaviors:
 - authenticated user can select, insert, and update only their own row
@@ -326,7 +326,7 @@ If one of those happens, the app can show inconsistent friend history or keep di
 
 ## Short conclusion
 
-Since uniqueness on `device_tokens.user_uid` is already done, the priority backend work is now:
+Since uniqueness on `fcm_tokens.user_uid` is already done, the priority backend work is now:
 1. target invites to an exact `friends.sid`
 2. securely load invite previews
 3. securely accept or reject invites

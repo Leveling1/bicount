@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '/core/errors/failure.dart';
@@ -92,18 +93,21 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
 
   @override
   Future<Either<Failure, void>> signOut() async {
+    Failure? localFailure;
+
     try {
       await remoteDataSource.signOut();
-      final localSignOut = await localDataSource.signOut();
-
-      if (localSignOut.isLeft()) {
-        return Left(
-          AuthenticationFailure(message: 'An error occurred during sign out.'),
-        );
-      }
-      return const Right(null);
     } catch (e) {
-      return Left(AuthenticationFailure(message: e.toString()));
+      debugPrint('Remote sign out warning: $e');
+    } finally {
+      final localSignOut = await localDataSource.signOut();
+      localSignOut.fold((failure) => localFailure = failure, (_) => null);
     }
+
+    if (localFailure != null) {
+      return Left(AuthenticationFailure(message: localFailure!.message));
+    }
+
+    return const Right(null);
   }
 }

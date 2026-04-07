@@ -310,7 +310,7 @@ When the app is closed:
 
 This feature introduced explicit backend expectations:
 
-- device_tokens
+- fcm_tokens
 - notification_events
 - Edge Function for push dispatch
 - app links on a real HTTPS domain

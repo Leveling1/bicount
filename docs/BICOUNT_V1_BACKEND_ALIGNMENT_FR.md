@@ -58,7 +58,7 @@ Usage côté app:
 ### 2. Gestion des tokens push
 
 L'app attend une nouvelle table:
-- `device_tokens`
+- `fcm_tokens`
 
 Usage côté app:
 - enregistrer un token FCM par utilisateur
@@ -110,10 +110,10 @@ add constraint friend_invites_status_check
 check (status in ('pending', 'accepted', 'rejected', 'expired'));
 ```
 
-### Table `device_tokens`
+### Table `fcm_tokens`
 
 ```sql
-create table public.device_tokens (
+create table public.fcm_tokens (
   token_id uuid primary key default gen_random_uuid(),
   user_uid uuid not null references auth.users(id) on delete cascade,
   token text not null unique,
@@ -185,7 +185,7 @@ using (sender_uid = auth.uid() or receiver_uid = auth.uid())
 with check (sender_uid = auth.uid() or receiver_uid = auth.uid());
 ```
 
-### `device_tokens`
+### `fcm_tokens`
 
 Objectif:
 - un utilisateur lit seulement ses tokens
@@ -194,22 +194,22 @@ Objectif:
 Politiques recommandées:
 
 ```sql
-alter table public.device_tokens enable row level security;
+alter table public.fcm_tokens enable row level security;
 
-create policy "device_tokens_select_own"
-on public.device_tokens
+create policy "fcm_tokens_select_own"
+on public.fcm_tokens
 for select
 to authenticated
 using (user_uid = auth.uid());
 
-create policy "device_tokens_insert_own"
-on public.device_tokens
+create policy "fcm_tokens_insert_own"
+on public.fcm_tokens
 for insert
 to authenticated
 with check (user_uid = auth.uid());
 
-create policy "device_tokens_update_own"
-on public.device_tokens
+create policy "fcm_tokens_update_own"
+on public.fcm_tokens
 for update
 to authenticated
 using (user_uid = auth.uid())
@@ -309,7 +309,7 @@ Pourquoi:
 L'app:
 - demande la permission notification
 - récupère le token FCM
-- essaie de le sauvegarder dans `device_tokens`
+- essaie de le sauvegarder dans `fcm_tokens`
 - reçoit les messages foreground / background / app ouverte
 - gère aussi des rappels locaux pour les subscriptions
 
@@ -327,7 +327,7 @@ Entrées recommandées:
 - `payload` optionnel
 
 Comportement:
-1. récupérer les tokens dans `device_tokens`
+1. récupérer les tokens dans `fcm_tokens`
 2. envoyer via FCM
 3. écrire dans `notification_events`
 4. nettoyer les tokens invalides si FCM le signale
@@ -397,7 +397,7 @@ Si le domaine change plus tard:
 ## Ordre recommandé d'implémentation côté backend
 
 1. créer `friend_invites`
-2. créer `device_tokens`
+2. créer `fcm_tokens`
 3. créer `notification_events`
 4. activer les RLS
 5. implémenter `accept_friend_invite`
@@ -427,7 +427,7 @@ Si le domaine change plus tard:
 
 ### Cas 4 - Token device
 - connexion utilisateur
-- token FCM sauvegardé dans `device_tokens`
+- token FCM sauvegardé dans `fcm_tokens`
 - changement de token met bien la ligne à jour
 
 ### Cas 5 - Notification push
@@ -453,7 +453,7 @@ Si le back veut vérifier le contrat exact attendu par l'app:
 ## Résumé exécutif
 
 Pour que la V1 fonctionne comme implémenté dans l'app, le backend doit ajouter:
-- 3 nouvelles tables: `friend_invites`, `device_tokens`, `notification_events`
+- 3 nouvelles tables: `friend_invites`, `fcm_tokens`, `notification_events`
 - 1 RPC: `accept_friend_invite`
 - 1 Edge Function FCM
 - Realtime sur les nouvelles tables utiles
@@ -497,13 +497,13 @@ C�t� app, l'�cran liste d�di� est maintenant `lib/features/friend/pres
 
 ### Mise a jour unicite des device tokens
 
-L'application mobile maintient maintenant une seule ligne active par `user_uid` dans `device_tokens`.
+L'application mobile maintient maintenant une seule ligne active par `user_uid` dans `fcm_tokens`.
 
 Durcissement recommande cote Supabase :
 
 ```sql
-create unique index if not exists device_tokens_user_uid_unique
-on public.device_tokens(user_uid);
+create unique index if not exists fcm_tokens_user_uid_unique
+on public.fcm_tokens(user_uid);
 ```
 
 Comportement attendu par l'app :

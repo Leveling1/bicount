@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bicount/core/routes/app_router.dart';
-import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
 import 'package:bicount/features/notification/domain/repositories/notification_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,17 +50,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     Emitter<NotificationState> emit,
   ) {
     final context = rootNavigatorKey.currentContext;
-    if (context != null &&
-        event.notification.source == AppNotificationSource.foreground) {
-      NotificationHelper.showSuccessNotification(
-        context,
-        event.notification.body.isEmpty
-            ? event.notification.title
-            : '${event.notification.title}: ${event.notification.body}',
-      );
-    }
 
     if (context != null &&
+        event.notification.source != AppNotificationSource.foreground &&
         event.notification.route != null &&
         event.notification.route!.isNotEmpty) {
       context.go(event.notification.route!);
