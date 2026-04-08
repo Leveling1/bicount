@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/date_format_utils.dart';
@@ -83,7 +84,10 @@ class _CustomFormDateFieldState extends State<CustomFormDateField> {
       validator: (value) => widget.validator?.call(_selectedDate),
       decoration: InputDecoration(
         hintText: widget.hintText,
-        suffixIcon: const Icon(Icons.calendar_today),
+        suffixIcon: const Icon(
+          Icons.calendar_today,
+          color: AppColors.inactiveColorDark,
+        ),
       ),
     );
   }

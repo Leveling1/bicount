@@ -1,6 +1,6 @@
-part of 'transfer_form.dart';
+part of '../expense_form.dart';
 
-extension _TransferFormHelpers on _TransferFormState {
+extension _ExpenseFormHelpers on _ExpenseFormState {
   FriendsModel _resolveSender() {
     if (_sender.text.trim().isEmpty && widget.user != null) {
       return _toCurrentUserParty();

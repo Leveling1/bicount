@@ -2,11 +2,11 @@ import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/smooth_switcher.dart';
 import 'package:bicount/core/services/title_animated_switcher.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
-import 'package:bicount/features/add_fund/presentation/widgets/account_funding_form.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
-import 'package:bicount/features/subscription/presentation/widgets/subscription_form.dart';
-import 'package:bicount/features/transaction/presentation/widgets/transfer_form.dart';
+import 'package:bicount/features/transaction/presentation/widgets/expense_form.dart';
+import 'package:bicount/features/transaction/presentation/widgets/income_form.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/segment_control.dart';
@@ -53,9 +53,9 @@ class _TransactionHandlerState extends State<TransactionHandler> {
         .where((friend) => friend.relationType != FriendConst.subscription)
         .toList(growable: false);
     final title = switch (selectedIndex) {
-      0 => context.l10n.transactionAddTitle,
-      1 => context.l10n.transactionNewSubscriptionTitle,
-      _ => context.l10n.transactionAddFundsTitle,
+      0 => context.l10n.transactionExpenseTitle,
+      1 => context.l10n.transactionIncomeTitle,
+      _ => "",
     };
 
     return Column(
@@ -67,14 +67,14 @@ class _TransactionHandlerState extends State<TransactionHandler> {
             style: Theme.of(context).textTheme.headlineLarge,
           ),
         ),
-        const SizedBox(height: 16),
+        AppDimens.spacerMedium,
         SegmentedControlWidget(controller: _segmentedType),
-        const SizedBox(height: 16),
+        AppDimens.spacerMedium,
         SmoothSwitcher(
           child: switch (selectedIndex) {
-            0 => TransferForm(user: widget.user, friends: transactionFriends),
-            1 => const SubscriptionForm(),
-            _ => const AccountFundingForm(),
+            0 => ExpenseForm(user: widget.user, friends: transactionFriends),
+            1 => IncomeForm(user: widget.user, friends: transactionFriends),
+            _ => const SizedBox.shrink(),
           },
         ),
       ],

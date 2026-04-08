@@ -1,6 +1,6 @@
-part of 'transfer_form.dart';
+part of '../expense_form.dart';
 
-extension _TransferFormSubmission on _TransferFormState {
+extension _ExpenseFormSubmission on _ExpenseFormState {
   void _onTransactionStateChanged(
     BuildContext context,
     TransactionState state,

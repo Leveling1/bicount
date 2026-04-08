@@ -1015,7 +1015,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transactionFilterPersonal => 'Personnel';
 
   @override
-  String get transactionAddTitle => 'Ajouter une transaction';
+  String get transactionExpenseTitle => 'Ajouter une dépense';
+
+  @override
+  String get transactionIncomeTitle => 'Ajouter un revenu';
 
   @override
   String get transactionEditTitle => 'Modifier la transaction';

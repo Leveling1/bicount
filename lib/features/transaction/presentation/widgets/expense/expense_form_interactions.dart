@@ -1,7 +1,8 @@
-part of 'transfer_form.dart';
+part of '../expense_form.dart';
 
-extension _TransferFormInteractions on _TransferFormState {
-  void _onCurrentUserChanged(bool? checked) {
+extension _ExpenseFormInteractions on _ExpenseFormState {
+  // ignore: unused_element
+  void onCurrentUserChanged(bool? checked) {
     _update(() {
       if (checked == true) {
         _sender.text = context.l10n.commonMe;
@@ -20,6 +21,7 @@ extension _TransferFormInteractions on _TransferFormState {
     });
   }
 
+  // ignore: unused_element
   void _resetSplitInputs() {
     _update(() {
       _seedSplitInputsForCurrentMode(overwrite: true);

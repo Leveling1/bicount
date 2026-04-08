@@ -116,50 +116,46 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
                     ? constraints.maxWidth
                     : 0.0;
 
-                return SingleChildScrollView(
-                  controller: _scrollController,
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: minWidth),
-                    child: Stack(
-                      key: _stackKey,
-                      children: [
-                        if (_selectedRect != null)
-                          AnimatedPositioned(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOutCubic,
-                            left: _selectedRect!.left,
-                            top: _selectedRect!.top,
-                            width: _selectedRect!.width,
-                            height: _selectedRect!.height,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF6C6C6C),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                return ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: minWidth),
+                  child: Stack(
+                    key: _stackKey,
+                    children: [
+                      if (_selectedRect != null)
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOutCubic,
+                          left: _selectedRect!.left,
+                          top: _selectedRect!.top,
+                          width: _selectedRect!.width,
+                          height: _selectedRect!.height,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF6C6C6C),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _buildSegment(
-                              context.l10n.transactionTypeTransfer,
+                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: _buildSegment(
+                              context.l10n.transactionTypeExpense,
                               0,
                             ),
-                            _buildSegment(
-                              context.l10n.transactionTypeSubscription,
+                          ),
+                          Expanded(
+                            child: _buildSegment(
+                              context.l10n.transactionTypeIncome,
                               1,
                             ),
-                            _buildSegment(
-                              context.l10n.transactionTypeAddFund,
-                              2,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 );
               },
@@ -176,7 +172,8 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
     return GestureDetector(
       key: _segmentKeys[index],
       onTap: () => widget.controller.setSelectedIndex(index),
-      child: Padding(
+      child: Container(
+        alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         child: Text(
           text,

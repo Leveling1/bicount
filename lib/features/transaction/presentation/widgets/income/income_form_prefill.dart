@@ -1,6 +1,6 @@
-part of 'transfer_form.dart';
+part of '../income_form.dart';
 
-extension _TransferFormPrefill on _TransferFormState {
+extension _IncomeFormPrefill on _IncomeFormState {
   bool get _isEditing => widget.initialTransaction != null;
 
   void _prefillInitialTransactionIfNeeded() {

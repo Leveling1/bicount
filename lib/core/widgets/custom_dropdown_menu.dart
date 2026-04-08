@@ -1,8 +1,6 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
-import '../themes/app_dimens.dart';
-
 class CustomDropdownMenu extends StatefulWidget {
   const CustomDropdownMenu({
     super.key,

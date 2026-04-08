@@ -2,7 +2,6 @@ import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class GraphMetricCard extends StatelessWidget {

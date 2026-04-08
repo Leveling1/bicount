@@ -1898,11 +1898,17 @@ abstract class AppLocalizations {
   /// **'Personal'**
   String get transactionFilterPersonal;
 
-  /// No description provided for @transactionAddTitle.
+  /// No description provided for @transactionExpenseTitle.
   ///
   /// In en, this message translates to:
-  /// **'Add transaction'**
-  String get transactionAddTitle;
+  /// **'Add expense'**
+  String get transactionExpenseTitle;
+
+  /// No description provided for @transactionIncomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add income'**
+  String get transactionIncomeTitle;
 
   /// No description provided for @transactionEditTitle.
   ///

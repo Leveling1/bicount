@@ -14,34 +14,26 @@ import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/features/transaction/domain/services/transaction_split_resolver.dart';
-import 'package:bicount/features/transaction/presentation/widgets/split_input_row.dart';
 import 'package:bicount/features/transaction/presentation/widgets/split_preview_result.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transfer_form_beneficiaries_section.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transfer_form_beneficiary_list.dart';
-import 'package:bicount/features/transaction/presentation/widgets/transfer_form_party_section.dart';
-import 'package:bicount/features/transaction/presentation/widgets/transfer_form_preview_card.dart';
-import 'package:bicount/features/transaction/presentation/widgets/transfer_form_split_mode_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/themes/app_dimens.dart';
 import '../bloc/transaction_bloc.dart';
 
-part 'transfer_form_helpers.dart';
+part 'expense/expense_form_helpers.dart';
+part 'expense/expense_form_interactions.dart';
+part 'expense/expense_form_prefill.dart';
+part 'expense/expense_form_sections.dart';
+part 'expense/expense_form_split_logic.dart';
+part 'expense/expense_form_submission.dart';
 
-part 'transfer_form_interactions.dart';
-
-part 'transfer_form_prefill.dart';
-
-part 'transfer_form_sections.dart';
-
-part 'transfer_form_split_logic.dart';
-
-part 'transfer_form_submission.dart';
-
-class TransferForm extends StatefulWidget {
-  const TransferForm({
+class ExpenseForm extends StatefulWidget {
+  const ExpenseForm({
     super.key,
     required this.user,
     required this.friends,
@@ -55,10 +47,10 @@ class TransferForm extends StatefulWidget {
   final VoidCallback? onCompleted;
 
   @override
-  State<TransferForm> createState() => _TransferFormState();
+  State<ExpenseForm> createState() => _ExpenseFormState();
 }
 
-class _TransferFormState extends State<TransferForm> {
+class _ExpenseFormState extends State<ExpenseForm> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _date = TextEditingController();
   final TextEditingController _amount = TextEditingController();
@@ -80,6 +72,8 @@ class _TransferFormState extends State<TransferForm> {
   void initState() {
     super.initState();
     _date.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    _amount.addListener(_onRealtimePreviewDependencyChanged);
+    _currency.addListener(_onRealtimePreviewDependencyChanged);
   }
 
   @override
@@ -90,6 +84,8 @@ class _TransferFormState extends State<TransferForm> {
 
   @override
   void dispose() {
+    _amount.removeListener(_onRealtimePreviewDependencyChanged);
+    _currency.removeListener(_onRealtimePreviewDependencyChanged);
     _name.dispose();
     _date.dispose();
     _amount.dispose();
@@ -131,6 +127,24 @@ class _TransferFormState extends State<TransferForm> {
   }
 
   void _update(VoidCallback callback) {
+    if (!mounted) return;
+
+    // Vérifie si on est en phase build
+    if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
+      // Délaye après build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(callback);
+      });
+      return;
+    }
+
     setState(callback);
+  }
+
+  void _onRealtimePreviewDependencyChanged() {
+    if (!mounted) {
+      return;
+    }
+    _update(() {});
   }
 }

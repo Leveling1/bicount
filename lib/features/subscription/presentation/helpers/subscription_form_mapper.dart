@@ -47,7 +47,7 @@ SubscriptionEntity buildSubscriptionPayload({
   return SubscriptionEntity(
     subscriptionId: initialSubscription?.subscriptionId,
     title: title,
-    amount: double.parse(amount),
+    amount: _parseAmountInput(amount),
     currency: currency,
     frequency: int.parse(frequency),
     startDate: resolveFormDateToIso(startDate),
@@ -73,4 +73,8 @@ bool _hasDifferentBillingDate(SubscriptionModel subscription) {
   return start.year != nextBilling.year ||
       start.month != nextBilling.month ||
       start.day != nextBilling.day;
+}
+
+double _parseAmountInput(String rawValue) {
+  return double.parse(rawValue.replaceAll(' ', '').replaceAll(',', '.'));
 }

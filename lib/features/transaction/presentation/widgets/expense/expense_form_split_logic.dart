@@ -1,6 +1,6 @@
-part of 'transfer_form.dart';
+part of '../expense_form.dart';
 
-extension _TransferFormSplitLogic on _TransferFormState {
+extension _ExpenseFormSplitLogic on _ExpenseFormState {
   void _seedSplitInputsForCurrentMode({required bool overwrite}) {
     if (_beneficiaryList.isEmpty) {
       return;

@@ -3,7 +3,6 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {

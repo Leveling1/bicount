@@ -33,14 +33,6 @@ class TransferFormBeneficiariesSection extends StatelessWidget {
           options: friendNames,
           validator: validator,
         ),
-        const SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            context.l10n.transferBeneficiariesHint,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ),
       ],
     );
   }

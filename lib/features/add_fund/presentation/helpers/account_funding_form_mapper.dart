@@ -41,7 +41,7 @@ AddAccountFundingEntity buildAccountFundingPayload({
   return AddAccountFundingEntity(
     fundingId: initialFunding?.fundingId,
     source: source,
-    amount: double.parse(amount),
+    amount: _parseAmountInput(amount),
     currency: currency,
     note: note,
     date: date,
@@ -85,4 +85,8 @@ AddFundEvent buildAddFundEvent({
   return initialFunding != null
       ? AddFundUpdated(data: payload)
       : AddFundSubmitted(data: payload);
+}
+
+double _parseAmountInput(String rawValue) {
+  return double.parse(rawValue.replaceAll(' ', '').replaceAll(',', '.'));
 }
