@@ -1,4 +1,5 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,10 @@ class FriendInviteLandingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: context.l10n.friendInviteLandingTitle),
-      body: FriendScreen(initialInviteCode: inviteCode),
+      body: Padding(
+        padding: const EdgeInsets.all(AppDimens.paddingLarge),
+        child: FriendScreen(initialInviteCode: inviteCode),
+      ),
     );
   }
 }
