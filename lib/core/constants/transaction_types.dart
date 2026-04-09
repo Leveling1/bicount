@@ -10,28 +10,19 @@ class TransactionTypes {
 
   static const int expenseCode = 0;
   static const int incomeCode = 1;
+  static const int subscriptionCode = 2; 
+  static const int salaryCode = 3; 
+  static const int othersCode = 4; // Placeholder for any other types that may be added in the future
 
   // ── Legacy type aliases kept for backward migration reading ──
 
-  static const transfer = 0;
-  static const subscription = 1;
-  static const addFund = 2;
-  static const int othersCode = 3;
-  @Deprecated('Use expenseCode or incomeCode instead')
-  static const int subscriptionCode = 4;
-
-  static const String transferText = 'Transfer';
-  static const String subscriptionText = 'Subscription';
-  static const String addFundText = 'Add a fund';
-
-  static const personal = 99;
-
-  /// Filter list: [all, income, expense, personal]
+  /// Filter list: [all, income, expense, salary]
   static const List<int> allTypesInt = [
     -1, // all
     incomeCode,
     expenseCode,
-    personal,
+    subscriptionCode,
+    salaryCode,
   ];
 
   // ── Generation mode on transactions ──

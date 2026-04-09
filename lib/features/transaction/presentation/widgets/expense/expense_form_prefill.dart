@@ -30,7 +30,7 @@ extension _ExpenseFormPrefill on _ExpenseFormState {
 
   FriendsModel _findPartyById(String partyId) {
     if (widget.user != null && widget.user!.uid == partyId) {
-      return _toCurrentUserParty();
+      return toCurrentUserParty();
     }
 
     return widget.friends.firstWhere(

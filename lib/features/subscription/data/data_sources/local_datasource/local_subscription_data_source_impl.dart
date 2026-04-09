@@ -16,13 +16,10 @@ class LocalSubscriptionDataSourceImpl implements SubscriptionLocalDataSource {
   LocalSubscriptionDataSourceImpl({
     required CurrencyRepositoryImpl currencyRepository,
     OfflineFinanceLocalService? offlineFinanceLocalService,
-  }) : _currencyRepository = currencyRepository,
-       _offlineFinanceLocalService =
-           offlineFinanceLocalService ?? OfflineFinanceLocalService();
+  }) : _currencyRepository = currencyRepository;
 
   final supabaseInstance = Supabase.instance.client;
   final CurrencyRepositoryImpl _currencyRepository;
-  final OfflineFinanceLocalService _offlineFinanceLocalService;
 
   String? get _currentUid => supabaseInstance.auth.currentUser?.id;
 

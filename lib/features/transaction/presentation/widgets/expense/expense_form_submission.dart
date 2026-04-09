@@ -71,7 +71,7 @@ extension _ExpenseFormSubmission on _ExpenseFormState {
       return;
     }
 
-    final totalAmount = _parseAmount(_amount.text);
+    final totalAmount = parseAmount(_amount.text);
     if (totalAmount == null || totalAmount <= 0) {
       NotificationHelper.showFailureNotification(
         context,
@@ -83,9 +83,9 @@ extension _ExpenseFormSubmission on _ExpenseFormState {
     try {
       final request = CreateTransactionRequestEntity(
         name: _name.text.trim(),
-        date: _resolveTransactionDate(),
+        date: resolveTransactionDate(),
         totalAmount: totalAmount,
-        currency: _selectedCurrency,
+        currency: selectedCurrency,
         sender: _resolveSender(),
         note: _note.text.trim(),
         splitMode: _isEditing ? TransactionSplitMode.equal : _splitMode,
@@ -112,7 +112,7 @@ extension _ExpenseFormSubmission on _ExpenseFormState {
 
   List<TransactionSplitInputEntity> _buildSplitInputs() {
     return _beneficiaryList.map((friend) {
-      final value = _parseAmount(_splitControllerFor(friend).text);
+      final value = parseAmount(splitControllerFor(friend).text);
       return TransactionSplitInputEntity(
         beneficiary: friend,
         percentage: _splitMode == TransactionSplitMode.percentage

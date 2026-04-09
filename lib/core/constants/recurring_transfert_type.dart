@@ -1,3 +1,6 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:flutter/material.dart';
+
 /// Centralized reference for all recurring transfert types.
 ///
 /// Each entry mirrors the `recurring_transfert_type` backend table.
@@ -65,4 +68,21 @@ final class RecurringTransfertType {
   // ── Income-side type list ──
 
   static const List<int> incomeTypes = [salaryIncome, recurringIncomeOther];
+
+
+  // ── UI labels ──
+  static String typeLabel(BuildContext context, int typeId) {
+    switch (typeId) {
+      case RecurringTransfertType.subscriptionExpense:
+        return context.l10n.recurringTypeSubscription;
+      case RecurringTransfertType.recurringExpenseOther:
+        return context.l10n.recurringTypeOther;
+      case RecurringTransfertType.salaryIncome:
+        return context.l10n.recurringTypeSalary;
+      case RecurringTransfertType.recurringIncomeOther:
+        return context.l10n.recurringTypeOtherIncome;
+      default:
+        return context.l10n.recurringTypeOther;
+    }
+  }
 }

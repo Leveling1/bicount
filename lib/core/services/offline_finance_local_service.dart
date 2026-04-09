@@ -72,6 +72,7 @@ class OfflineFinanceLocalService {
     ),
   );
 
+  // ignore: unused_element
   Future<CompanyModel?> _findCompany(String cid) => _firstOrNull(
     Repository().get<CompanyModel>(
       policy: OfflineFirstGetPolicy.localOnly,

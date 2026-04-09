@@ -2,15 +2,14 @@ import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/recurring_transfert_type.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
-import 'package:bicount/core/utils/form_date_utils.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';
-import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
@@ -27,6 +26,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/themes/app_dimens.dart';
 import '../bloc/transaction_bloc.dart';
+import 'transaction_form_helpers.dart';
 
 part 'expense/expense_form_helpers.dart';
 part 'expense/expense_form_interactions.dart';
@@ -53,7 +53,8 @@ class ExpenseForm extends StatefulWidget {
   State<ExpenseForm> createState() => _ExpenseFormState();
 }
 
-class _ExpenseFormState extends State<ExpenseForm> {
+class _ExpenseFormState extends State<ExpenseForm>
+    with TransactionFormHelpers<ExpenseForm> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _date = TextEditingController();
   final TextEditingController _amount = TextEditingController();
@@ -73,6 +74,25 @@ class _ExpenseFormState extends State<ExpenseForm> {
   bool _isRecurring = false;
   int _recurringFrequency = Frequency.monthly;
   int _recurringTypeId = RecurringTransfertType.subscriptionExpense;
+
+  @override
+  UserModel? get transactionFormUser => widget.user;
+
+  @override
+  int get transactionFormType => TransactionTypes.expenseCode;
+
+  @override
+  List<FriendsModel> get transactionFormFriends => widget.friends;
+
+  @override
+  TextEditingController get transactionDateController => _date;
+
+  @override
+  TextEditingController get transactionCurrencyController => _currency;
+
+  @override
+  Map<String, TextEditingController> get transactionSplitControllers =>
+      _splitControllers;
 
   @override
   void initState() {

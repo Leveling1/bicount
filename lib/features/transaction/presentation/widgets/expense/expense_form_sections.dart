@@ -30,12 +30,12 @@ extension _ExpenseFormSections on _ExpenseFormState {
           TransferFormBeneficiaryList(
             beneficiaries: _beneficiaryList,
             sharesByKey: splitPreview.sharesByKey,
-            currency: _selectedCurrency,
-            beneficiaryKeyOf: _beneficiaryKey,
+            currency: selectedCurrency,
+            beneficiaryKeyOf: beneficiaryKey,
             onRemove: _removeBeneficiary,
             splitMode: _splitMode,
             onSplitModeChanged: _onSplitModeChanged,
-            splitControllerFor: _splitControllerFor,
+            splitControllerFor: splitControllerFor,
             onSplitValueChanged: _onSplitValueChanged,
             errorMessage: splitPreview.errorMessage,
           ),
@@ -86,6 +86,10 @@ extension _ExpenseFormSections on _ExpenseFormState {
           enabled: !_isEditing,
           onRecurringChanged: (value) => _update(() {
             _isRecurring = value;
+            if (_name.text.isEmpty) {
+              _name.text =
+                  "${RecurringTransfertType.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? "(${_beneficiaryList[0]})" : ""}";
+            }
           }),
           onFrequencyChanged: (value) => _update(() {
             _recurringFrequency = value;

@@ -25,7 +25,7 @@ extension _IncomeFormPrefill on _IncomeFormState {
     if (widget.user != null) {
       _beneficiaryList
         ..clear()
-        ..add(_toCurrentUserParty());
+        ..add(toCurrentUserParty());
       return;
     }
 
@@ -37,7 +37,7 @@ extension _IncomeFormPrefill on _IncomeFormState {
 
   FriendsModel _findPartyById(String partyId) {
     if (widget.user != null && widget.user!.uid == partyId) {
-      return _toCurrentUserParty();
+      return toCurrentUserParty();
     }
 
     return widget.friends.firstWhere(

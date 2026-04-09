@@ -17,12 +17,9 @@ class LocalSalaryDataSourceImpl implements SalaryLocalDataSource {
     RecurringFundingScheduleService scheduleService =
         const RecurringFundingScheduleService(),
   }) : _currencyRepository = currencyRepository,
-       _offlineFinanceLocalService =
-           offlineFinanceLocalService ?? OfflineFinanceLocalService(),
        _scheduleService = scheduleService;
 
   final CurrencyRepositoryImpl _currencyRepository;
-  final OfflineFinanceLocalService _offlineFinanceLocalService;
   final RecurringFundingScheduleService _scheduleService;
 
   @override

@@ -67,6 +67,7 @@ extension _IncomeFormSections on _IncomeFormState {
           }),
           onTypeChanged: (value) => _update(() {
             _recurringTypeId = value;
+            _name.text = RecurringTransfertType.typeLabel(context, value);
           }),
         ),
       ],

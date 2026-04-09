@@ -49,10 +49,10 @@ extension _IncomeFormInteractions on _IncomeFormState {
       return;
     }
 
-    final beneficiary = _resolveParty(rawValue);
-    final beneficiaryKey = _beneficiaryKey(beneficiary);
+    final beneficiary = resolveParty(rawValue);
+    final resolvedBeneficiaryKey = beneficiaryKey(beneficiary);
     final exists = _beneficiaryList.any(
-      (friend) => _beneficiaryKey(friend) == beneficiaryKey,
+      (friend) => beneficiaryKey(friend) == resolvedBeneficiaryKey,
     );
     if (exists) {
       NotificationHelper.showFailureNotification(
@@ -65,7 +65,7 @@ extension _IncomeFormInteractions on _IncomeFormState {
     _update(() {
       _beneficiaryList.add(beneficiary);
       _beneficiary.clear();
-      _splitControllerFor(beneficiary);
+      splitControllerFor(beneficiary);
       if (_splitMode != TransactionSplitMode.equal) {
         _seedSplitInputsForCurrentMode(overwrite: false);
       }

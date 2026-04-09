@@ -11,7 +11,7 @@ extension _ExpenseFormSplitLogic on _ExpenseFormState {
       var distributed = 0.0;
       for (var index = 0; index < _beneficiaryList.length; index++) {
         final friend = _beneficiaryList[index];
-        final controller = _splitControllerFor(friend);
+        final controller = splitControllerFor(friend);
         if (!overwrite && controller.text.trim().isNotEmpty) {
           continue;
         }
@@ -26,7 +26,7 @@ extension _ExpenseFormSplitLogic on _ExpenseFormState {
     }
 
     if (_splitMode == TransactionSplitMode.customAmount) {
-      final totalAmount = _parseAmount(_amount.text);
+      final totalAmount = parseAmount(_amount.text);
       if (totalAmount == null || totalAmount <= 0) {
         return;
       }
@@ -36,11 +36,11 @@ extension _ExpenseFormSplitLogic on _ExpenseFormState {
           name: _name.text.trim().isEmpty
               ? context.l10n.commonPreview
               : _name.text.trim(),
-          date: _resolveTransactionDate(),
+          date: resolveTransactionDate(),
           totalAmount: totalAmount,
-          currency: _selectedCurrency,
+          currency: selectedCurrency,
           sender: widget.user != null
-              ? _toCurrentUserParty()
+              ? toCurrentUserParty()
               : _beneficiaryList.first,
           note: _note.text.trim(),
           splitMode: TransactionSplitMode.equal,
@@ -51,7 +51,7 @@ extension _ExpenseFormSplitLogic on _ExpenseFormState {
       );
 
       for (final share in equalShares) {
-        final controller = _splitControllerFor(share.beneficiary);
+        final controller = splitControllerFor(share.beneficiary);
         if (!overwrite && controller.text.trim().isNotEmpty) {
           continue;
         }
@@ -68,7 +68,7 @@ extension _ExpenseFormSplitLogic on _ExpenseFormState {
       );
     }
 
-    final totalAmount = _parseAmount(_amount.text);
+    final totalAmount = parseAmount(_amount.text);
     if (totalAmount == null || totalAmount <= 0) {
       return SplitPreviewResult(
         resolvedSplits: const <ResolvedTransactionSplitEntity>[],
@@ -83,11 +83,11 @@ extension _ExpenseFormSplitLogic on _ExpenseFormState {
           name: _name.text.trim().isEmpty
               ? context.l10n.commonPreview
               : _name.text.trim(),
-          date: _resolveTransactionDate(),
+          date: resolveTransactionDate(),
           totalAmount: totalAmount,
-          currency: _selectedCurrency,
+          currency: selectedCurrency,
           sender: widget.user != null
-              ? _toCurrentUserParty()
+              ? toCurrentUserParty()
               : _beneficiaryList.first,
           note: _note.text.trim(),
           splitMode: _splitMode,
@@ -99,7 +99,7 @@ extension _ExpenseFormSplitLogic on _ExpenseFormState {
         resolvedSplits: resolved,
         sharesByKey: {
           for (final split in resolved)
-            _beneficiaryKey(split.beneficiary): split,
+            beneficiaryKey(split.beneficiary): split,
         },
       );
     } on MessageFailure catch (error) {

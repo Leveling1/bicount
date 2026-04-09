@@ -170,7 +170,7 @@ class _TypeSelector extends StatelessWidget {
           spacing: AppDimens.spacingSmall,
           children: options.map((typeId) {
             return CustomChoiceChip(
-              label: _typeLabel(context, typeId),
+              label: RecurringTransfertType.typeLabel(context, typeId),
               selected: typeId == selected,
               onSelected: (_) => onChanged(typeId),
             );
@@ -178,20 +178,5 @@ class _TypeSelector extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  String _typeLabel(BuildContext context, int typeId) {
-    switch (typeId) {
-      case RecurringTransfertType.subscriptionExpense:
-        return context.l10n.recurringTypeSubscription;
-      case RecurringTransfertType.recurringExpenseOther:
-        return context.l10n.recurringTypeOther;
-      case RecurringTransfertType.salaryIncome:
-        return context.l10n.recurringTypeSalary;
-      case RecurringTransfertType.recurringIncomeOther:
-        return context.l10n.recurringTypeOtherIncome;
-      default:
-        return context.l10n.recurringTypeOther;
-    }
   }
 }

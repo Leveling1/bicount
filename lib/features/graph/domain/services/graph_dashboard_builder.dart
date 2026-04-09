@@ -31,6 +31,15 @@ class GraphDashboardBuilder {
           (sum, t) =>
               sum + currencyAmountService.transaction(t, currencyConfig),
         );
+
+    final salaryAmount = filteredTransactions
+        .where((t) => t.type == TransactionTypes.salaryCode)
+        .fold<double>(
+          0,
+          (sum, t) =>
+              sum + currencyAmountService.transaction(t, currencyConfig),
+        );
+
     final expenseAmount = filteredTransactions
         .where((t) => t.type == TransactionTypes.expenseCode)
         .fold<double>(
@@ -38,16 +47,16 @@ class GraphDashboardBuilder {
           (sum, t) =>
               sum + currencyAmountService.transaction(t, currencyConfig),
         );
-    final otherAmount = filteredTransactions
-        .where((t) => t.type == TransactionTypes.othersCode)
+    final subscriptionAmount = filteredTransactions
+        .where((t) => t.type == TransactionTypes.subscriptionCode)
         .fold<double>(
           0,
           (sum, t) =>
               sum + currencyAmountService.transaction(t, currencyConfig),
         );
 
-    final inflow = incomeAmount;
-    final outflow = expenseAmount + otherAmount;
+    final inflow = incomeAmount + salaryAmount;
+    final outflow = expenseAmount + subscriptionAmount;
 
     return GraphDashboardEntity(
       period: period,
@@ -61,10 +70,11 @@ class GraphDashboardBuilder {
       ),
       incomeBreakdown: [
         GraphBreakdownItem(label: 'Income', value: incomeAmount),
+        GraphBreakdownItem(label: 'Salary', value: salaryAmount),
       ].where((item) => item.value > 0).toList(),
       expenseBreakdown: [
         GraphBreakdownItem(label: 'Expenses', value: expenseAmount),
-        GraphBreakdownItem(label: 'Other', value: otherAmount),
+        GraphBreakdownItem(label: 'Subscriptions', value: subscriptionAmount),
       ].where((item) => item.value > 0).toList(),
     );
   }

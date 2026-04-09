@@ -1,4 +1,3 @@
-import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
@@ -31,10 +30,6 @@ List<TransactionFeedItem> filterTransactionFeed({
 
     if (selectedIndex == 0) {
       return true;
-    }
-
-    if (selectedCode == TransactionTypes.personal) {
-      return item.category == Constants.personal;
     }
 
     return item.filterType == selectedCode;

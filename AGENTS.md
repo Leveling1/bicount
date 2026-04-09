@@ -1124,6 +1124,8 @@ Rules:
 Rules:
 - the transaction creation surface is now split between `TransactionHandler`, `ExpenseForm`, and `IncomeForm`; do not recreate a monolithic `transfer_form.dart`
 - `ExpenseForm` and `IncomeForm` should keep widget state local but factor logic into dedicated `part` files for helpers, interactions, prefill, sections, split logic, and submission
+- shared cross-form helper logic now lives in `lib/features/transaction/presentation/widgets/transaction_form_helpers.dart`; keep only role-specific sender and beneficiary rules inside `expense_form_helpers.dart` and `income_form_helpers.dart`
+- placeholder friends created from the transaction forms must derive `relationType` from `FriendConst.getTypeOfFriend(transactionType)` and the persisted local friend row must preserve that incoming relation type instead of forcing `FriendConst.friend`
 - the `/transaction` feed is a unified timeline built from both `transactions` and `account_funding`; if feed item kinds change, keep bottom-sheet routing aligned in `transaction_feed_details.dart`
 - keep split previews reactive to amount, currency, beneficiary, and split-input changes without refreshing the whole transaction surface
 - the segmented control is currently a two-option animated toggle for `expense` and `income`; if more transaction types are added later, revisit the control layout instead of overloading the current two-segment assumptions

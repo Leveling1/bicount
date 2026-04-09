@@ -52,7 +52,7 @@ extension _IncomeFormSubmission on _IncomeFormState {
       return;
     }
 
-    final totalAmount = _parseAmount(_amount.text);
+    final totalAmount = parseAmount(_amount.text);
     if (totalAmount == null || totalAmount <= 0) {
       NotificationHelper.showFailureNotification(
         context,
@@ -73,9 +73,9 @@ extension _IncomeFormSubmission on _IncomeFormState {
 
       final request = CreateTransactionRequestEntity(
         name: _name.text.trim(),
-        date: _resolveTransactionDate(),
+        date: resolveTransactionDate(),
         totalAmount: totalAmount,
-        currency: _selectedCurrency,
+        currency: selectedCurrency,
         sender: sender,
         note: _note.text.trim(),
         splitMode: TransactionSplitMode.equal,
