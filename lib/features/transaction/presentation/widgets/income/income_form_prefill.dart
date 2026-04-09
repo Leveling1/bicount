@@ -22,6 +22,13 @@ extension _IncomeFormPrefill on _IncomeFormState {
     _note.text = transaction.note;
     _sender.text = _partyLabelForId(transaction.sender);
 
+    if (widget.user != null) {
+      _beneficiaryList
+        ..clear()
+        ..add(_toCurrentUserParty());
+      return;
+    }
+
     final beneficiary = _findPartyById(transaction.beneficiary);
     _beneficiaryList
       ..clear()

@@ -2,7 +2,7 @@ part of '../expense_form.dart';
 
 extension _ExpenseFormHelpers on _ExpenseFormState {
   FriendsModel _resolveSender() {
-    if (_sender.text.trim().isEmpty && widget.user != null) {
+    if (widget.user != null) {
       return _toCurrentUserParty();
     }
     return _resolveParty(_sender.text.trim());

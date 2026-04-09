@@ -34,6 +34,7 @@ extension _IncomeFormInteractions on _IncomeFormState {
     _update(() {});
   }
 
+  // ignore: unused_element
   void _addBeneficiary() {
     final rawValue = _beneficiary.text.trim();
     if (rawValue.isEmpty) {

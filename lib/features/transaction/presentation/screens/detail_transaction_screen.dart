@@ -6,6 +6,7 @@ import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_content.dart';
 import 'package:bicount/features/transaction/presentation/widgets/expense_form.dart';
+import 'package:bicount/features/transaction/presentation/widgets/income_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -40,6 +41,20 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
       listener: _onTransactionStateChanged,
       builder: (context, state) {
         if (_isEditing) {
+          final editForm = transactionDetail.type == TransactionTypes.incomeCode
+              ? IncomeForm(
+                  user: widget.transaction.user,
+                  friends: widget.transaction.friends,
+                  initialTransaction: transactionDetail,
+                  onCompleted: () => Navigator.of(context).maybePop(),
+                )
+              : ExpenseForm(
+                  user: widget.transaction.user,
+                  friends: widget.transaction.friends,
+                  initialTransaction: transactionDetail,
+                  onCompleted: () => Navigator.of(context).maybePop(),
+                );
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -48,12 +63,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
               AppDimens.spacerMedium,
-              ExpenseForm(
-                user: widget.transaction.user,
-                friends: widget.transaction.friends,
-                initialTransaction: transactionDetail,
-                onCompleted: () => Navigator.of(context).maybePop(),
-              ),
+              editForm,
             ],
           );
         }

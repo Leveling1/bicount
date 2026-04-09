@@ -356,6 +356,7 @@
   "transactionDuplicateBeneficiary": "Ce bénéficiaire est déjà dans la répartition.",
   "transactionEditSingleBeneficiaryOnly": "Modifiez cette transaction avec un seul bénéficiaire.",
   "transactionAddAtLeastOneBeneficiary": "Ajoutez au moins un bénéficiaire.",
+  "transactionIncomeSenderCannotBeCurrentUser": "L'expéditeur d'un revenu ne peut pas être vous. Pour un revenu, l'utilisateur courant est toujours le bénéficiaire.",
   "transactionEnterValidAmount": "Saisissez un montant valide.",
   "transactionPreviewEnterValidTotal": "Saisissez un montant total valide pour prévisualiser la répartition.",
   "transactionSplitMethod": "Méthode de répartition",

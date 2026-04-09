@@ -307,16 +307,28 @@ Purpose:
 
 Main files:
 
-- lib/features/transaction/presentation/widgets/transfer_form.dart
+- lib/features/transaction/presentation/screens/transaction_handler.dart
+- lib/features/transaction/presentation/screens/transaction_screen.dart
+- lib/features/transaction/presentation/screens/detail_transaction_screen.dart
+- lib/features/transaction/presentation/widgets/expense_form.dart
+- lib/features/transaction/presentation/widgets/income_form.dart
 - lib/features/transaction/data/repositories/transaction_repository_impl.dart
 - lib/features/transaction/domain/entities/create_transaction_request_entity.dart
 - lib/features/transaction/domain/services/transaction_split_resolver.dart
+
+Current surface:
+
+- `TransactionHandler` switches between expense and income entry with a two-option segmented control
+- `TransactionScreen` renders a unified feed built from `transactions` and `account_funding`
+- transaction feed details open the matching add-fund or transaction bottom sheet
+- `ExpenseForm` persists expenses with the current authenticated user as sender, while `IncomeForm` persists incomes with the current authenticated user as beneficiary
 
 Important V1 work:
 
 - fixed transaction date handling so the chosen date is respected
 - fixed currency handling so the form value is used
 - added grouped split support
+- split the transaction entry UI into dedicated expense and income forms with shared presentational widgets
 
 Grouped split modes:
 
@@ -329,11 +341,12 @@ Persistence strategy:
 - one transaction row per beneficiary
 - all rows of the same grouped operation share the same gtid
 
-Responsive UI note:
+Current transaction UI note:
 
-- the transaction type segmented control should stay horizontally scrollable on narrow widths instead of overflowing or compressing labels too aggressively
-- the selected transaction type should use a lightweight sliding thumb that matches the segment shape instead of snapping only the text background
-- the scrollable transaction type selector should keep small masked side insets so clipped labels or thumb edges do not show abruptly at the viewport bounds
+- `ExpenseForm` and `IncomeForm` are separate stateful shells, each split into focused `part` files for helpers, interactions, prefill, sections, split logic, and submission
+- shared `transfer_form_*` widgets own party picking, beneficiary lists, split-mode choices, and expense split previews
+- the transaction type selector is currently a full-width two-option toggle with a lightweight animated thumb
+- both forms currently expose a recurrent switch tile as a UI placeholder only; do not wire backend behavior there without clarifying whether the flow belongs to `transaction`, `add_fund`, or `recurring_fundings`
 
 ### add_fund
 
@@ -551,7 +564,7 @@ Stability work:
 - Android desugaring enabled for flutter_local_notifications
 - shared realtime stream protection added to the Brick repository
 - remote delete reconciliation added for offline cache consistency
-- `transfer_form.dart` was split into dedicated `part` files and presentational sub-widgets to keep transaction UI maintainable and under the 200-line rule
+- the transaction entry surface was split into `transaction_handler.dart`, `expense_form.dart`, `income_form.dart`, dedicated `part` files, and shared presentational widgets to keep the transaction UI maintainable and under the 200-line rule
 - local sign out now clears SQLite using Brick schema table names instead of hardcoded app table names
 
 ## Sensitive Areas
@@ -591,8 +604,10 @@ Be careful when editing these areas:
 6. lib/features/graph/presentation/screens/graph_screen.dart
 7. lib/features/friend/presentation/screens/friend_screen.dart
 8. lib/features/notification/presentation/bloc/notification_bloc.dart
-9. lib/features/transaction/presentation/widgets/transfer_form.dart
-10. docs/BICOUNT_V1_BACKEND_ALIGNMENT_FR.md
+9. lib/features/transaction/presentation/screens/transaction_handler.dart
+10. lib/features/transaction/presentation/widgets/expense_form.dart
+11. lib/features/transaction/presentation/screens/detail_transaction_screen.dart
+12. docs/BICOUNT_V1_BACKEND_ALIGNMENT_FR.md
 
 ## Useful Commands
 
@@ -938,12 +953,13 @@ The transaction detail flow now supports editing a simple transaction from its d
 
 Rules:
 - the edit entry point lives in `lib/features/transaction/presentation/screens/detail_transaction_screen.dart`
-- reuse the shared `TransferForm` for edit mode instead of introducing a visually different editor
+- reuse the matching transaction form for edit mode instead of introducing a visually different editor
 - edit mode is intended for a single transaction row, so keep it limited to one beneficiary
 - do not expose the edit action for subscription-generated transaction rows, because subscriptions are managed by a different flow
 - after a successful transaction edit from the detail sheet, close the sheet so the updated data can be reopened from the live list state
-- keep detail and form files under the 200-line rule by splitting readonly transaction detail widgets and transfer form interactions into focused files
-- when the user selects `Me` or `Moi` in the transfer form for sender or beneficiary, the transient current-user party must carry the authenticated `uid` as its resolved identifier so `sender_id` and `beneficiary_id` persist the real user id instead of a generated placeholder id
+- keep detail and form files under the 200-line rule by splitting readonly transaction detail widgets and expense or income form interactions into focused files
+- when the user selects `Me` or `Moi` in the transaction form for sender or beneficiary, the transient current-user party must carry the authenticated `uid` as its resolved identifier so `sender_id` and `beneficiary_id` persist the real user id instead of a generated placeholder id
+- keep success and error notifications owned by the active form, using post-frame callbacks, so the detail shell does not duplicate form feedback
 
 ## Invite Domain Update (2026-03-24)
 
@@ -1102,6 +1118,24 @@ Rules:
 Rules:
 - in the transfer edit form, the selected beneficiaries list is the source of truth for validation
 - do not mark the beneficiary field as missing just because the autocomplete text input is empty when a beneficiary is already present in the preview list
+
+## Transaction UI Architecture Update (2026-04-08)
+
+Rules:
+- the transaction creation surface is now split between `TransactionHandler`, `ExpenseForm`, and `IncomeForm`; do not recreate a monolithic `transfer_form.dart`
+- `ExpenseForm` and `IncomeForm` should keep widget state local but factor logic into dedicated `part` files for helpers, interactions, prefill, sections, split logic, and submission
+- the `/transaction` feed is a unified timeline built from both `transactions` and `account_funding`; if feed item kinds change, keep bottom-sheet routing aligned in `transaction_feed_details.dart`
+- keep split previews reactive to amount, currency, beneficiary, and split-input changes without refreshing the whole transaction surface
+- the segmented control is currently a two-option animated toggle for `expense` and `income`; if more transaction types are added later, revisit the control layout instead of overloading the current two-segment assumptions
+- the recurrent switch tile currently shown in expense and income forms is presentational only; do not connect it to persistence until product and backend ownership are clarified across `transaction`, `add_fund`, and `recurring_fundings`
+
+## Transaction Role Semantics Update (2026-04-08)
+
+Rules:
+- in `ExpenseForm`, the current authenticated user is always the sender; do not reintroduce editable sender ownership there unless product explicitly changes the flow
+- in `IncomeForm`, the current authenticated user is always the beneficiary; the entered party is the sender/source of the income
+- `IncomeForm` must reject a sender that resolves to the current user, because that would collapse the flow into a self-to-self transaction and break `type` inference
+- the local transaction type inference still depends on `sender_id == current user` for expense and `beneficiary_id == current user` for income, so mobile transaction forms must preserve these participant semantics when creating or editing rows
 
 ## Graph Session-Aware Source Update (2026-04-07)
 

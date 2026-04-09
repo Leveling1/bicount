@@ -52,25 +52,6 @@ extension _IncomeFormSubmission on _IncomeFormState {
       return;
     }
 
-    if (_beneficiaryList.isEmpty && _beneficiary.text.trim().isNotEmpty) {
-      _addBeneficiary();
-    }
-    if (_beneficiaryList.isEmpty) {
-      NotificationHelper.showFailureNotification(
-        context,
-        context.l10n.transactionAddAtLeastOneBeneficiary,
-      );
-      return;
-    }
-
-    if (_isEditing && _beneficiaryList.length != 1) {
-      NotificationHelper.showFailureNotification(
-        context,
-        context.l10n.transactionEditSingleBeneficiaryOnly,
-      );
-      return;
-    }
-
     final totalAmount = _parseAmount(_amount.text);
     if (totalAmount == null || totalAmount <= 0) {
       NotificationHelper.showFailureNotification(
@@ -81,14 +62,23 @@ extension _IncomeFormSubmission on _IncomeFormState {
     }
 
     try {
+      final sender = _resolveSender();
+      if (_isCurrentUser(sender)) {
+        NotificationHelper.showFailureNotification(
+          context,
+          context.l10n.transactionIncomeSenderCannotBeCurrentUser,
+        );
+        return;
+      }
+
       final request = CreateTransactionRequestEntity(
         name: _name.text.trim(),
         date: _resolveTransactionDate(),
         totalAmount: totalAmount,
         currency: _selectedCurrency,
-        sender: _resolveSender(),
+        sender: sender,
         note: _note.text.trim(),
-        splitMode: _isEditing ? TransactionSplitMode.equal : _splitMode,
+        splitMode: TransactionSplitMode.equal,
         splits: _buildSplitInputs(),
       );
       _splitResolver.resolve(request);
@@ -108,15 +98,6 @@ extension _IncomeFormSubmission on _IncomeFormState {
   }
 
   List<TransactionSplitInputEntity> _buildSplitInputs() {
-    return _beneficiaryList.map((friend) {
-      final value = _parseAmount(_splitControllerFor(friend).text);
-      return TransactionSplitInputEntity(
-        beneficiary: friend,
-        percentage: _splitMode == TransactionSplitMode.percentage
-            ? value
-            : null,
-        amount: _splitMode == TransactionSplitMode.customAmount ? value : null,
-      );
-    }).toList();
+    return [TransactionSplitInputEntity(beneficiary: _resolveBeneficiary())];
   }
 }

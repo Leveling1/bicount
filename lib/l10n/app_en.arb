@@ -356,6 +356,7 @@
   "transactionDuplicateBeneficiary": "This beneficiary is already in the split.",
   "transactionEditSingleBeneficiaryOnly": "Edit this transaction with one beneficiary only.",
   "transactionAddAtLeastOneBeneficiary": "Add at least one beneficiary.",
+  "transactionIncomeSenderCannotBeCurrentUser": "Income sender cannot be you. Income always uses the current user as beneficiary.",
   "transactionEnterValidAmount": "Enter a valid amount.",
   "transactionPreviewEnterValidTotal": "Enter a valid total amount to preview the split.",
   "transactionSplitMethod": "Split method",
