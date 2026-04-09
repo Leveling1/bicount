@@ -1,6 +1,7 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
+import 'package:bicount/core/widgets/custom_choice_chip.dart';
 import 'package:bicount/features/settings/domain/entities/delete_account_request_entity.dart';
 import 'package:bicount/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:bicount/features/settings/presentation/bloc/settings_event.dart';
@@ -65,11 +66,9 @@ class _SettingsDeleteAccountSheetState
                   runSpacing: 8,
                   children: reasons.entries.map((entry) {
                     final selected = entry.key == _reasonCode;
-                    return ChoiceChip(
-                      label: Text(entry.value),
+                    return CustomChoiceChip(
+                      label: entry.value,
                       selected: selected,
-                      backgroundColor: Theme.of(context).cardColor,
-                      selectedColor: Theme.of(context).primaryColor,
                       onSelected: (_) =>
                           setState(() => _reasonCode = entry.key),
                     );

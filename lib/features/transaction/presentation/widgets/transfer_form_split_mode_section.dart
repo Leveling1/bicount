@@ -1,4 +1,5 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/widgets/custom_choice_chip.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -26,13 +27,10 @@ class TransferFormSplitModeSection extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: TransactionSplitMode.values.map((mode) {
-            return ChoiceChip(
-              backgroundColor: Theme.of(context).cardColor,
-              disabledColor: Theme.of(context).cardColor,
-              label: Text(context.splitModeLabel(mode)),
+            return CustomChoiceChip(
+              label: context.splitModeLabel(mode),
               selected: splitMode == mode,
               onSelected: (_) => onChanged(mode),
-              side: BorderSide.none,
             );
           }).toList(),
         ),

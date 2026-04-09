@@ -2,6 +2,7 @@ import 'package:bicount/core/constants/recurring_transfert_type.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/custom_choice_chip.dart';
 import 'package:flutter/material.dart';
 
 /// Recurring toggle + animated frequency / type selectors shared by both
@@ -131,12 +132,9 @@ class _FrequencySelector extends StatelessWidget {
           spacing: AppDimens.spacingSmall,
           children: _frequencies.map((freq) {
             final isSelected = freq == selected;
-            return ChoiceChip(
-              label: Text(context.frequencyLabel(freq)),
+            return CustomChoiceChip(
+              label: context.frequencyLabel(freq),
               selected: isSelected,
-              backgroundColor: Theme.of(context).cardColor,
-              selectedColor: Theme.of(context).primaryColor,
-              side: BorderSide.none,
               onSelected: (_) => onChanged(freq),
             );
           }).toList(),
@@ -171,12 +169,9 @@ class _TypeSelector extends StatelessWidget {
         Wrap(
           spacing: AppDimens.spacingSmall,
           children: options.map((typeId) {
-            return ChoiceChip(
-              label: Text(_typeLabel(context, typeId)),
+            return CustomChoiceChip(
+              label: _typeLabel(context, typeId),
               selected: typeId == selected,
-              backgroundColor: Theme.of(context).cardColor,
-              selectedColor: Theme.of(context).primaryColor,
-              side: BorderSide.none,
               onSelected: (_) => onChanged(typeId),
             );
           }).toList(),
