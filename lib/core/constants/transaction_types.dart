@@ -1,10 +1,24 @@
 import 'package:bicount/core/constants/subscription_const.dart';
 
+/// Transaction type codes aligned with the unified architecture.
+///
+/// `type` describes the direction of the money flow.
+/// Recurrence information lives on `recurring_transfert_id` /
+/// `generation_mode`, not on `type`.
 class TransactionTypes {
-  /// Transaction types
+  // ── New canonical direction-based types ──
+
+  static const int expenseCode = 0;
+  static const int incomeCode = 1;
+
+  // ── Legacy type aliases kept for backward migration reading ──
+
   static const transfer = 0;
   static const subscription = 1;
   static const addFund = 2;
+  static const int othersCode = 3;
+  @Deprecated('Use expenseCode or incomeCode instead')
+  static const int subscriptionCode = 4;
 
   static const String transferText = 'Transfer';
   static const String subscriptionText = 'Subscription';
@@ -12,21 +26,19 @@ class TransactionTypes {
 
   static const personal = 99;
 
+  /// Filter list: [all, income, expense, personal]
   static const List<int> allTypesInt = [
-    0,
+    -1, // all
     incomeCode,
     expenseCode,
-    subscriptionCode,
-    othersCode,
     personal,
   ];
 
-  static const int incomeCode = 1;
-  static const int expenseCode = 2;
-  static const int othersCode = 3;
-  static const int subscriptionCode = 4;
+  // ── Generation mode on transactions ──
 
-  static const int personalIncome = 0;
+  static const int generationOneTime = 0;
+  static const int generationManualConfirmation = 1;
+  static const int generationBackendAutomatic = 2;
 
   static String frequencyToString(int frequency) {
     switch (frequency) {

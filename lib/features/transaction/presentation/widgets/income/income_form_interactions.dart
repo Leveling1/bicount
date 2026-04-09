@@ -83,6 +83,9 @@ extension _IncomeFormInteractions on _IncomeFormState {
       _note.clear();
       _beneficiaryList.clear();
       _splitMode = TransactionSplitMode.equal;
+      _isRecurring = false;
+      _recurringFrequency = Frequency.monthly;
+      _recurringTypeId = RecurringTransfertType.salaryIncome;
       for (final controller in _splitControllers.values) {
         controller.dispose();
       }

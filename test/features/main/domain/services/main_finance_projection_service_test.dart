@@ -1,10 +1,10 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
-import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
-import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/main/domain/services/main_finance_projection_service.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -23,11 +23,10 @@ void main() {
     companyIncome: 999,
   );
 
-  test('projects user totals from raw transactions and fundings', () {
+  test('projects user totals from raw transactions', () {
     final result = service.project(
       user: user,
       friends: const [],
-      subscriptions: const [],
       transactions: [
         TransactionModel(
           uid: 'user-1',
@@ -55,18 +54,21 @@ void main() {
           currency: 'USD',
           category: Constants.company,
         ),
-      ],
-      accountFundings: [
-        AccountFundingModel(
-          sid: 'user-1',
+        TransactionModel(
+          uid: 'user-1',
+          gtid: 'gtid-3',
+          name: 'Cash deposit',
+          type: 1,
+          beneficiaryId: 'user-1',
+          senderId: 'cash',
+          date: '2026-03-23',
+          note: '',
           amount: 30,
           currency: 'USD',
           category: Constants.personal,
-          source: 'cash',
-          date: '2026-03-23',
         ),
       ],
-      recurringFundings: const [],
+      recurringTransferts: const <RecurringTransfertModel>[],
       connectionState: Constants.connected,
       currencyConfig: CurrencyConfigEntity.fallback(),
     );
@@ -96,7 +98,6 @@ void main() {
           companyIncome: 66,
         ),
       ],
-      subscriptions: const [],
       transactions: [
         TransactionModel(
           uid: 'user-1',
@@ -125,8 +126,7 @@ void main() {
           category: Constants.company,
         ),
       ],
-      accountFundings: const [],
-      recurringFundings: const [],
+      recurringTransferts: const <RecurringTransfertModel>[],
       connectionState: Constants.connected,
       currencyConfig: CurrencyConfigEntity.fallback(),
     );
@@ -171,7 +171,6 @@ void main() {
             companyIncome: 0,
           ),
         ],
-        subscriptions: const [],
         transactions: [
           TransactionModel(
             uid: 'friend-real',
@@ -187,8 +186,7 @@ void main() {
             category: Constants.personal,
           ),
         ],
-        accountFundings: const [],
-        recurringFundings: const [],
+        recurringTransferts: const <RecurringTransfertModel>[],
         connectionState: Constants.connected,
         currencyConfig: CurrencyConfigEntity.fallback(),
       );

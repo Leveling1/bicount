@@ -6,15 +6,12 @@ import 'package:bicount/features/notification/domain/repositories/notification_r
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../subscription/data/models/subscription.model.dart';
-
 part 'notification_event.dart';
 part 'notification_state.dart';
 
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc(this.repository) : super(NotificationState.initial()) {
     on<NotificationBootstrapRequested>(_onNotificationBootstrapRequested);
-    on<NotificationSubscriptionsSynced>(_onNotificationSubscriptionsSynced);
     on<_NotificationEventReceived>(_onNotificationEventReceived);
     on<_NotificationFailed>(_onNotificationFailed);
   }
@@ -36,13 +33,6 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     } catch (error) {
       add(_NotificationFailed(error.toString()));
     }
-  }
-
-  Future<void> _onNotificationSubscriptionsSynced(
-    NotificationSubscriptionsSynced event,
-    Emitter<NotificationState> emit,
-  ) async {
-    await repository.syncSubscriptions(event.subscriptions);
   }
 
   void _onNotificationEventReceived(

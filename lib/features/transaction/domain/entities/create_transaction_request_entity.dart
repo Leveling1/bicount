@@ -62,6 +62,9 @@ class CreateTransactionRequestEntity {
     required this.splitMode,
     required this.splits,
     this.category = Constants.personal,
+    this.isRecurring = false,
+    this.recurringFrequency,
+    this.recurringTypeId,
   });
 
   final String name;
@@ -73,4 +76,13 @@ class CreateTransactionRequestEntity {
   final TransactionSplitMode splitMode;
   final List<TransactionSplitInputEntity> splits;
   final int category;
+
+  /// When true the transaction is also registered as a recurring template.
+  final bool isRecurring;
+
+  /// Frequency constant from [Frequency] (weekly, monthly, …).
+  final int? recurringFrequency;
+
+  /// Type id from [RecurringTransfertType].
+  final int? recurringTypeId;
 }

@@ -1316,4 +1316,31 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get runtimeSplitMismatch => 'La répartition ne correspond pas au montant total. Vérifiez les montants individuels.';
+
+  @override
+  String get recurringToggleTitle => 'Définir comme récurrent';
+
+  @override
+  String get recurringToggleSubtitleExpense => 'Ce montant sera débité de votre solde de manière récurrente.';
+
+  @override
+  String get recurringToggleSubtitleIncome => 'Ce montant sera crédité sur votre solde de manière récurrente.';
+
+  @override
+  String get recurringFrequencyLabel => 'Répéter chaque';
+
+  @override
+  String get recurringTypeSubscription => 'Abonnement';
+
+  @override
+  String get recurringTypeOther => 'Autre récurrent';
+
+  @override
+  String get recurringTypeSalary => 'Salaire';
+
+  @override
+  String get recurringTypeOtherIncome => 'Autre revenu récurrent';
+
+  @override
+  String get recurringTypeLabel => 'Catégorie';
 }

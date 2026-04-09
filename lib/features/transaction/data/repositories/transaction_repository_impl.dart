@@ -1,6 +1,8 @@
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
@@ -30,6 +32,36 @@ class TransactionRepositoryImpl extends TransactionRepository {
       final sender = await _ensureParty(transaction.sender);
       final gtid = const Uuid().v4();
 
+      // Create a recurring template if the user enabled recurring mode.
+      String? recurringTransfertId;
+      int? generationMode;
+      if (transaction.isRecurring &&
+          transaction.recurringFrequency != null &&
+          transaction.recurringTypeId != null) {
+        final firstBeneficiary = await _ensureParty(
+          resolvedSplits.first.beneficiary,
+        );
+        recurringTransfertId = const Uuid().v4();
+        generationMode = 1; // manualConfirmation
+
+        await OfflineFinanceLocalService().createRecurringTransfert(
+          RecurringTransfertModel(
+            recurringTransfertId: recurringTransfertId,
+            uid: sender.sid,
+            recurringTransfertTypeId: transaction.recurringTypeId!,
+            title: transaction.name,
+            note: transaction.note,
+            amount: transaction.totalAmount,
+            currency: transaction.currency,
+            senderId: sender.sid,
+            beneficiaryId: firstBeneficiary.sid,
+            frequency: transaction.recurringFrequency!,
+            startDate: transaction.date,
+            nextDueDate: transaction.date,
+          ),
+        );
+      }
+
       for (final split in resolvedSplits) {
         final beneficiary = await _ensureParty(split.beneficiary);
         final saveResult = await localDataSource.saveTransaction(
@@ -45,6 +77,8 @@ class TransactionRepositoryImpl extends TransactionRepository {
           image: beneficiary.image.isEmpty
               ? Constants.memojiDefault
               : beneficiary.image,
+          recurringTransfertId: recurringTransfertId,
+          generationMode: generationMode,
         );
 
         await saveResult.fold(_throwFailure, (_) async => null);

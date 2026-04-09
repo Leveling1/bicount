@@ -32,7 +32,7 @@ List<SubscriptionListItem> buildSubscriptionListItems(MainEntity data) {
       if (friend.relationType == FriendConst.subscription) friend.sid: friend,
   };
 
-  final items = data.subscriptions.map((subscription) {
+  final items = <SubscriptionModel>[].map((subscription) {
     final subscriptionKey = subscription.subscriptionId ?? '';
     final linkedFriend =
         subscriptionFriends[subscriptionKey] ??

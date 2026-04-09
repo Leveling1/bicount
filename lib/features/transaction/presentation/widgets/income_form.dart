@@ -1,5 +1,7 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/constants/recurring_transfert_type.dart';
+import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
@@ -16,6 +18,7 @@ import 'package:bicount/features/transaction/domain/entities/transaction_entity.
 import 'package:bicount/features/transaction/domain/services/transaction_split_resolver.dart';
 import 'package:bicount/features/transaction/presentation/widgets/split_preview_result.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transfer_form_party_section.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_recurring_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,6 +69,9 @@ class _IncomeFormState extends State<IncomeForm> {
 
   TransactionSplitMode _splitMode = TransactionSplitMode.equal;
   bool _didPrefillInitialTransaction = false;
+  bool _isRecurring = false;
+  int _recurringFrequency = Frequency.monthly;
+  int _recurringTypeId = RecurringTransfertType.salaryIncome;
 
   @override
   void initState() {

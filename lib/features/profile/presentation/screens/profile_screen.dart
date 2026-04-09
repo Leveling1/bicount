@@ -23,10 +23,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final recurringSpend = data.subscriptions.fold<double>(
-      0,
-      (sum, subscription) => sum + subscription.amount,
-    );
+    final recurringSpend = 0.0;
     final visibleFriends = _friendViewService.visibleFriends(
       data.friends,
       currentUserUid: data.user.uid,

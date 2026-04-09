@@ -1,16 +1,7 @@
-import 'package:bicount/features/profile/data/models/account_funding.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 
-import '../../../subscription/data/models/subscription.model.dart';
-
 class GraphSourceData {
-  const GraphSourceData({
-    required this.transactions,
-    required this.subscriptions,
-    required this.fundings,
-  });
+  const GraphSourceData({required this.transactions});
 
   final List<TransactionModel> transactions;
-  final List<SubscriptionModel> subscriptions;
-  final List<AccountFundingModel> fundings;
 }

@@ -88,6 +88,9 @@ extension _ExpenseFormInteractions on _ExpenseFormState {
       _note.clear();
       _beneficiaryList.clear();
       _splitMode = TransactionSplitMode.equal;
+      _isRecurring = false;
+      _recurringFrequency = Frequency.monthly;
+      _recurringTypeId = RecurringTransfertType.subscriptionExpense;
       for (final controller in _splitControllers.values) {
         controller.dispose();
       }

@@ -1143,3 +1143,53 @@ Rules:
 - the visible V1 graph dashboard must derive from the same session-aware `MainBloc` finance data used by the app shell, not from an independent raw finance subscription path
 - graph-specific logic should only add period slicing, breakdown composition, and presentation state on top of `MainBloc` data
 - when `MainBloc` returns to loading, initial, or error states during auth/session changes, the graph dashboard must clear its previous in-memory dashboard so stale values from an old account are not shown
+
+## Unified Architecture Migration (2026-04-09)
+
+The app finance model is now unified around two tables: `transactions` (ledger of all money flows) and `recurring_transfert` (recurring templates).
+
+Removed from active use:
+- `SubscriptionModel` / `subscriptions` table
+- `AccountFundingModel` / `account_funding` table
+- `RecurringFundingModel` / `recurring_fundings` table
+
+These old models and their source files are preserved in the codebase but are no longer wired in `app_providers.dart`.
+The old blocs (`SubscriptionBloc`, `AddFundBloc`, `SalaryBloc`) are no longer instantiated.
+Do not re-wire them unless the user explicitly reverts the architecture.
+
+New model:
+- `RecurringTransfertModel` lives in `lib/features/recurring_fundings/data/models/recurring_transfert.model.dart`
+- type IDs are centralized in `lib/core/constants/recurring_transfert_type.dart`
+- `TransactionModel` gains three new columns: `recurring_transfert_id`, `recurring_occurrence_date`, `generation_mode`
+
+Type semantics:
+- `TransactionTypes.expenseCode = 0`, `TransactionTypes.incomeCode = 1`
+- `RecurringTransfertType`: subscriptionExpense=0, recurringExpenseOther=1, salaryIncome=2, recurringIncomeOther=3
+- generation mode: oneTime=0, manualConfirmation=1, backendAutomatic=2
+- recurring transfert status: active=0, inactive=1, archived=2
+
+Data flow:
+- `MainEntity` now carries `recurringTransferts` (List<RecurringTransfertModel>) instead of `subscriptions`, `accountFundings`, and `recurringFundings`
+- `MainRepositoryImpl` uses `Rx.combineLatest6` (users, friends, transactions, recurringTransferts, connectionState, currencyConfig)
+- `MainFinanceProjectionService` derives all balances from transactions only
+- graph, home, profile, and transaction feed all consume transactions exclusively
+- subscription insight section was removed from the graph dashboard
+
+Filter list:
+- `TransactionTypes.allTypesInt` is now `[-1, incomeCode, expenseCode, personal]`
+- transactionFilterLabel maps indices 0-3 to All, Income, Expense, Personal
+
+Migration:
+- Brick migration `20260409080526` handles the schema changes
+- `Repository.repairRecurringTransfertMigrationStateIfNeeded()` protects partially migrated devices
+- the manual migration file `20260409120000` was deleted as a duplicate
+
+Backend delta:
+- `docs/recurring_transfert_backend_actions.md` describes the new backend contracts
+- the backend simplified to `transactions` + `recurring_transfert` tables
+- old `subscription`, `account_funding`, `recurring_fundings` tables remain in Supabase during transition but mobile no longer reads from them as primary sources
+
+Dormant features:
+- `add_fund`, `subscription`, and `salary` feature directories still exist with stubbed broken calls
+- their local data sources have `_offlineFinanceLocalService` fields marked as unused
+- they can be fully removed when the product confirms no backward compatibility is needed

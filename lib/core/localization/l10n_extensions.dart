@@ -49,8 +49,6 @@ extension L10nBuildContextX on BuildContext {
         return l10n.transactionTypeIncome;
       case TransactionTypes.expenseCode:
         return l10n.transactionTypeExpense;
-      case TransactionTypes.subscriptionCode:
-        return l10n.transactionTypeSubscription;
       default:
         return l10n.transactionTypeOther;
     }
@@ -102,10 +100,6 @@ extension L10nBuildContextX on BuildContext {
       case 2:
         return l10n.transactionFilterExpense;
       case 3:
-        return l10n.transactionFilterSubscription;
-      case 4:
-        return l10n.transactionFilterOther;
-      case 5:
         return l10n.transactionFilterPersonal;
       default:
         return l10n.transactionFilterAll;

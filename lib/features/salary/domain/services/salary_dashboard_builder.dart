@@ -216,14 +216,13 @@ class SalaryDashboardBuilder {
       expectedDate: expectedDate,
     );
     final receivedFunding = fundingsByOccurrenceKey[occurrenceKey];
-    final referenceAmount = receivedFunding == null
-        ? currencyAmountService.record(
-            originalAmount: recurringFunding.amount,
-            originalCurrencyCode: recurringFunding.currency,
-            fxRateDate: expectedDate.toIso8601String(),
-            config: currencyConfig,
-          )
-        : currencyAmountService.funding(receivedFunding, currencyConfig);
+    final referenceAmount = currencyAmountService.record(
+      originalAmount: receivedFunding?.amount ?? recurringFunding.amount,
+      originalCurrencyCode:
+          receivedFunding?.currency ?? recurringFunding.currency,
+      fxRateDate: expectedDate.toIso8601String(),
+      config: currencyConfig,
+    );
 
     return SalaryOccurrenceEntity(
       occurrenceId: occurrenceId,

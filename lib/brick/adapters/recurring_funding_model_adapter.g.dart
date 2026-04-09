@@ -21,12 +21,8 @@ Future<RecurringFundingModel> _$RecurringFundingModelFromSupabase(
         ? null
         : data['last_processed_at'] as String?,
     status: data['status'] as int,
-    salaryProcessingMode: data['salary_processing_mode'] == null
-        ? SalaryProcessingMode.automatic
-        : data['salary_processing_mode'] as int,
-    salaryReminderStatus: data['salary_reminder_status'] == null
-        ? SalaryReminderStatus.enabled
-        : data['salary_reminder_status'] as int,
+    salaryProcessingMode: data['salary_processing_mode'] as int,
+    salaryReminderStatus: data['salary_reminder_status'] as int,
     createdAt: data['created_at'] == null
         ? null
         : data['created_at'] as String?,
@@ -77,12 +73,8 @@ Future<RecurringFundingModel> _$RecurringFundingModelFromSqlite(
         ? null
         : data['last_processed_at'] as String?,
     status: data['status'] as int,
-    salaryProcessingMode: data['salary_processing_mode'] == null
-        ? SalaryProcessingMode.automatic
-        : data['salary_processing_mode'] as int,
-    salaryReminderStatus: data['salary_reminder_status'] == null
-        ? SalaryReminderStatus.enabled
-        : data['salary_reminder_status'] as int,
+    salaryProcessingMode: data['salary_processing_mode'] as int,
+    salaryReminderStatus: data['salary_reminder_status'] as int,
     createdAt: data['created_at'] == null
         ? null
         : data['created_at'] as String?,

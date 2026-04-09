@@ -61,7 +61,7 @@ class SubscriptionScreenContent extends StatelessWidget {
               _OverviewCard(
                 label: context.l10n.graphMonthlyLoad,
                 value: NumberFormatUtils.compactCurrency(
-                  data.monthlySubscriptionSpend,
+                  0.0,
                   currencyCode: data.referenceCurrencyCode,
                 ),
                 color: Theme.of(

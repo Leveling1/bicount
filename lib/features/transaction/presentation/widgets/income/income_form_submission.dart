@@ -80,6 +80,9 @@ extension _IncomeFormSubmission on _IncomeFormState {
         note: _note.text.trim(),
         splitMode: TransactionSplitMode.equal,
         splits: _buildSplitInputs(),
+        isRecurring: _isRecurring,
+        recurringFrequency: _isRecurring ? _recurringFrequency : null,
+        recurringTypeId: _isRecurring ? _recurringTypeId : null,
       );
       _splitResolver.resolve(request);
       if (_isEditing) {

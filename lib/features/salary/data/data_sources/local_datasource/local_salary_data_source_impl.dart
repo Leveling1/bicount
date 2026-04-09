@@ -70,7 +70,7 @@ class LocalSalaryDataSourceImpl implements SalaryLocalDataSource {
     );
 
     await Repository().upsert<AccountFundingModel>(funding);
-    await _offlineFinanceLocalService.applyFundingEffects(funding);
+    // applyFundingEffects removed – salary is superseded by recurring_transfert
   }
 
   @override

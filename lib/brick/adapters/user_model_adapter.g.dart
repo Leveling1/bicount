@@ -19,7 +19,9 @@ Future<UserModel> _$UserModelFromSupabase(
     personalIncome: data['personal_income'] == null
         ? null
         : data['personal_income'] as double?,
-    referenceCurrencyCode: data['reference_currency_code'] as String?,
+    referenceCurrencyCode: data['reference_currency_code'] == null
+        ? null
+        : data['reference_currency_code'] as String?,
     uid: data['uid'] as String?,
   );
 }
@@ -61,7 +63,9 @@ Future<UserModel> _$UserModelFromSqlite(
     personalIncome: data['personal_income'] == null
         ? null
         : data['personal_income'] as double?,
-    referenceCurrencyCode: data['reference_currency_code'] as String?,
+    referenceCurrencyCode: data['reference_currency_code'] == null
+        ? null
+        : data['reference_currency_code'] as String?,
     uid: data['uid'] as String,
   )..primaryKey = data['_brick_id'] as int;
 }

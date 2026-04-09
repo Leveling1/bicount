@@ -17,6 +17,8 @@ abstract class TransactionLocalDataSource {
     required String senderId,
     required String beneficiaryId,
     required String image,
+    String? recurringTransfertId,
+    int? generationMode,
   });
   Future<Either<Failure, void>> updateTransaction(
     TransactionEntity previousTransaction, {

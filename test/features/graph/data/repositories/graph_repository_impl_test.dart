@@ -1,4 +1,4 @@
-import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/currency/data/data_sources/local_datasource/currency_local_datasource.dart';
 import 'package:bicount/features/currency/data/data_sources/remote_datasource/currency_remote_datasource.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
@@ -7,30 +7,15 @@ import 'package:bicount/features/currency/domain/entities/exchange_rate_snapshot
 import 'package:bicount/features/graph/data/data_sources/local_datasource/graph_local_datasource.dart';
 import 'package:bicount/features/graph/data/repositories/graph_repository_impl.dart';
 import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
-import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class _FakeGraphLocalDataSource implements GraphLocalDataSource {
-  _FakeGraphLocalDataSource({
-    required this.transactions,
-    required this.subscriptions,
-    required this.fundings,
-  });
+  _FakeGraphLocalDataSource({required this.transactions});
 
   final List<TransactionModel> transactions;
-  final List<SubscriptionModel> subscriptions;
-  final List<AccountFundingModel> fundings;
-
-  @override
-  Stream<List<AccountFundingModel>> watchAccountFundings() {
-    return Stream.value(fundings);
-  }
-
-  @override
-  Stream<List<SubscriptionModel>> watchSubscriptions() {
-    return Stream.value(subscriptions);
-  }
 
   @override
   Stream<List<TransactionModel>> watchTransactions() {
@@ -43,7 +28,9 @@ class _FakeCurrencyLocalDataSource implements CurrencyLocalDataSource {
   Future<void> cacheCurrencies(List<AppCurrencyEntity> currencies) async {}
 
   @override
-  Future<void> cacheSnapshots(Iterable<ExchangeRateSnapshotEntity> snapshots) async {}
+  Future<void> cacheSnapshots(
+    Iterable<ExchangeRateSnapshotEntity> snapshots,
+  ) async {}
 
   @override
   Future<List<AppCurrencyEntity>> readCachedCurrencies() async => const [];
@@ -84,7 +71,21 @@ class _FakeCurrencyRemoteDataSource implements CurrencyRemoteDataSource {
 }
 
 void main() {
-  test('graph repository aggregates cashflow and subscriptions', () async {
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});
+
+    try {
+      Supabase.instance.client;
+    } catch (_) {
+      await Supabase.initialize(
+        url: 'https://example.supabase.co',
+        anonKey: 'test-anon-key',
+      );
+    }
+  });
+
+  test('graph repository aggregates cashflow and breakdowns', () async {
     final now = DateTime.now();
     final currencyRepository = CurrencyRepositoryImpl(
       localDataSource: _FakeCurrencyLocalDataSource(),
@@ -97,7 +98,7 @@ void main() {
             uid: 'u1',
             gtid: 'g1',
             name: 'Salary',
-            type: 1,
+            type: TransactionTypes.incomeCode,
             beneficiaryId: 'me',
             senderId: 'job',
             date: now.subtract(const Duration(days: 2)).toIso8601String(),
@@ -109,8 +110,21 @@ void main() {
           TransactionModel(
             uid: 'u1',
             gtid: 'g2',
+            name: 'Cash deposit',
+            type: TransactionTypes.incomeCode,
+            beneficiaryId: 'me',
+            senderId: 'cash',
+            date: now.subtract(const Duration(days: 1)).toIso8601String(),
+            note: '',
+            amount: 50,
+            currency: 'USD',
+            createdAt: now.subtract(const Duration(days: 1)).toIso8601String(),
+          ),
+          TransactionModel(
+            uid: 'u1',
+            gtid: 'g3',
             name: 'Groceries',
-            type: 2,
+            type: TransactionTypes.expenseCode,
             beneficiaryId: 'store',
             senderId: 'me',
             date: now.subtract(const Duration(days: 1)).toIso8601String(),
@@ -121,9 +135,9 @@ void main() {
           ),
           TransactionModel(
             uid: 'u1',
-            gtid: 'g3',
+            gtid: 'g4',
             name: 'Streaming',
-            type: 4,
+            type: TransactionTypes.othersCode,
             beneficiaryId: 'netflix',
             senderId: 'me',
             date: now.toIso8601String(),
@@ -133,45 +147,30 @@ void main() {
             createdAt: now.toIso8601String(),
           ),
         ],
-        subscriptions: [
-          SubscriptionModel(
-            subscriptionId: 'sub1',
-            sid: 'u1',
-            title: 'Streaming',
-            amount: 20,
-            currency: 'USD',
-            frequency: 1,
-            startDate: now.subtract(const Duration(days: 10)).toIso8601String(),
-            nextBillingDate: now.add(const Duration(days: 3)).toIso8601String(),
-            status: 0,
-          ),
-        ],
-        fundings: [
-          AccountFundingModel(
-            fundingId: 'fund1',
-            sid: 'u1',
-            amount: 50,
-            currency: 'USD',
-            category: 0,
-            source: 'cash',
-            date: now.subtract(const Duration(days: 4)).toIso8601String(),
-            createdAt: now.subtract(const Duration(days: 4)).toIso8601String(),
-          ),
-        ],
       ),
       currencyRepository: currencyRepository,
     );
 
-    final dashboard = await repository.watchDashboard(GraphPeriod.month30).first;
+    final dashboard = await repository
+        .watchDashboard(GraphPeriod.month30)
+        .first;
 
     expect(dashboard.inflow, 1250);
     expect(dashboard.outflow, 170);
     expect(dashboard.netFlow, 1080);
-    expect(dashboard.activeSubscriptionCount, 1);
-    expect(dashboard.monthlySubscriptionSpend, 20);
-    expect(dashboard.dueSoonAmount, 20);
+    expect(dashboard.displayCurrencyCode, 'CDF');
+    expect(dashboard.incomeBreakdown, const [
+      GraphBreakdownItem(label: 'Income', value: 1250),
+    ]);
     expect(dashboard.expenseBreakdown.length, 2);
+    expect(
+      dashboard.expenseBreakdown[0],
+      const GraphBreakdownItem(label: 'Expenses', value: 150),
+    );
+    expect(
+      dashboard.expenseBreakdown[1],
+      const GraphBreakdownItem(label: 'Other', value: 20),
+    );
     expect(dashboard.cashflowPoints, isNotEmpty);
-    expect(dashboard.upcomingSubscriptions.single.title, 'Streaming');
   });
 }

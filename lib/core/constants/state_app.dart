@@ -138,3 +138,44 @@ final class AppFriendInviteState {
     return normalize(status) == pending;
   }
 }
+
+final class AppRecurringTransfertState {
+  const AppRecurringTransfertState._();
+
+  static const int active = 0;
+  static const int inactive = 1;
+  static const int archived = 2;
+
+  static int normalize(int? status) {
+    switch (status) {
+      case inactive:
+        return inactive;
+      case archived:
+        return archived;
+      case active:
+      default:
+        return active;
+    }
+  }
+
+  static bool isActive(int? status) => normalize(status) == active;
+}
+
+final class AppExecutionMode {
+  const AppExecutionMode._();
+
+  static const int manualConfirmation = 0;
+  static const int backendAutomatic = 1;
+
+  static int normalize(int? mode) {
+    return mode == backendAutomatic ? backendAutomatic : manualConfirmation;
+  }
+
+  static bool requiresConfirmation(int? mode) {
+    return normalize(mode) == manualConfirmation;
+  }
+
+  static bool isAutomatic(int? mode) {
+    return normalize(mode) == backendAutomatic;
+  }
+}

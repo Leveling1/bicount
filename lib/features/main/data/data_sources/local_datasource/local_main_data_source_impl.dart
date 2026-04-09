@@ -2,13 +2,11 @@ import 'dart:async';
 
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/errors/failure.dart';
-import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
-import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/data_sources/local_datasource/main_local_datasource.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
-import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:brick_core/query.dart';
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:rxdart/rxdart.dart';
@@ -42,15 +40,9 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
   BehaviorSubject<List<TransactionModel>>? _transactionsSubject;
   StreamSubscription<List<TransactionModel>>? _transactionsSubscription;
 
-  BehaviorSubject<List<SubscriptionModel>>? _subscriptionsSubject;
-  StreamSubscription<List<SubscriptionModel>>? _subscriptionsSubscription;
-
-  BehaviorSubject<List<AccountFundingModel>>? _accountFundingsSubject;
-  StreamSubscription<List<AccountFundingModel>>? _accountFundingsSubscription;
-
-  BehaviorSubject<List<RecurringFundingModel>>? _recurringFundingsSubject;
-  StreamSubscription<List<RecurringFundingModel>>?
-  _recurringFundingsSubscription;
+  BehaviorSubject<List<RecurringTransfertModel>>? _recurringTransfertsSubject;
+  StreamSubscription<List<RecurringTransfertModel>>?
+  _recurringTransfertsSubscription;
 
   String get uid => supabaseInstance.auth.currentUser!.id;
 
@@ -97,10 +89,6 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
 
   @override
   Stream<List<TransactionModel>> getTransaction() {
-    // Keep finance streams broad here. Backend RLS now scopes which rows are
-    // synced locally, and the projection layer decides how transaction rows
-    // belong to the current user's story through `uid`, linked self-profile
-    // `sid`s, and linked `uid` aliases.
     return _cachedListStream<TransactionModel>(
       getSubject: () => _transactionsSubject,
       setSubject: (subject) => _transactionsSubject = subject,
@@ -112,39 +100,14 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
   }
 
   @override
-  Stream<List<SubscriptionModel>> getSubscriptions() {
-    return _cachedListStream<SubscriptionModel>(
-      getSubject: () => _subscriptionsSubject,
-      setSubject: (subject) => _subscriptionsSubject = subject,
-      getSubscription: () => _subscriptionsSubscription,
+  Stream<List<RecurringTransfertModel>> getRecurringTransferts() {
+    return _cachedListStream<RecurringTransfertModel>(
+      getSubject: () => _recurringTransfertsSubject,
+      setSubject: (subject) => _recurringTransfertsSubject = subject,
+      getSubscription: () => _recurringTransfertsSubscription,
       setSubscription: (subscription) =>
-          _subscriptionsSubscription = subscription,
-      errorLabel: 'subscriptions',
-    );
-  }
-
-  @override
-  Stream<List<AccountFundingModel>> getAccountFundings() {
-    return _cachedListStream<AccountFundingModel>(
-      getSubject: () => _accountFundingsSubject,
-      setSubject: (subject) => _accountFundingsSubject = subject,
-      getSubscription: () => _accountFundingsSubscription,
-      setSubscription: (subscription) =>
-          _accountFundingsSubscription = subscription,
-      errorLabel: 'account fundings',
-    );
-  }
-
-  @override
-  Stream<List<RecurringFundingModel>> getRecurringFundings() {
-    return _cachedListStream<RecurringFundingModel>(
-      getSubject: () => _recurringFundingsSubject,
-      setSubject: (subject) => _recurringFundingsSubject = subject,
-      getSubscription: () => _recurringFundingsSubscription,
-      setSubscription: (subscription) =>
-          _recurringFundingsSubscription = subscription,
-      errorLabel: 'recurring fundings',
-      query: Query(where: [Where.exact('uid', uid)]),
+          _recurringTransfertsSubscription = subscription,
+      errorLabel: 'recurring transferts',
     );
   }
 
@@ -183,30 +146,22 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     _userSubscription?.cancel();
     _friendsSubscription?.cancel();
     _transactionsSubscription?.cancel();
-    _subscriptionsSubscription?.cancel();
-    _accountFundingsSubscription?.cancel();
-    _recurringFundingsSubscription?.cancel();
+    _recurringTransfertsSubscription?.cancel();
 
     _userSubject?.close();
     _friendsSubject?.close();
     _transactionsSubject?.close();
-    _subscriptionsSubject?.close();
-    _accountFundingsSubject?.close();
-    _recurringFundingsSubject?.close();
+    _recurringTransfertsSubject?.close();
 
     _userSubscription = null;
     _friendsSubscription = null;
     _transactionsSubscription = null;
-    _subscriptionsSubscription = null;
-    _accountFundingsSubscription = null;
-    _recurringFundingsSubscription = null;
+    _recurringTransfertsSubscription = null;
 
     _userSubject = null;
     _friendsSubject = null;
     _transactionsSubject = null;
-    _subscriptionsSubject = null;
-    _accountFundingsSubject = null;
-    _recurringFundingsSubject = null;
+    _recurringTransfertsSubject = null;
   }
 
   void dispose() {

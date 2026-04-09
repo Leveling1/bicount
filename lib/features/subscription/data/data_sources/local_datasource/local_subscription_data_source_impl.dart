@@ -61,10 +61,8 @@ class LocalSubscriptionDataSourceImpl implements SubscriptionLocalDataSource {
         category: subscription.category,
       );
 
-      await _offlineFinanceLocalService.createSubscriptionWithEffects(
-        currentUserId: uid,
-        subscription: subscriptionAdd,
-      );
+      await Repository().upsert<SubscriptionModel>(subscriptionAdd);
+      // createSubscriptionWithEffects removed – subscription is now a transaction
       return const Right(null);
     } catch (_) {
       return Left(

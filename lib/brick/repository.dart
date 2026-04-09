@@ -15,9 +15,8 @@ import 'package:bicount/features/company/data/models/company.model.dart';
 import 'package:bicount/features/company/data/models/company_with_user_link.model.dart';
 import 'package:bicount/features/group/data/models/group.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
-import 'package:bicount/features/profile/data/models/account_funding.model.dart';
-import 'package:bicount/features/profile/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/project/data/models/project.model.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
@@ -26,7 +25,6 @@ import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/constants/secrets.dart';
-import '../features/subscription/data/models/subscription.model.dart';
 import 'brick.g.dart';
 import 'db/schema.g.dart';
 
@@ -40,6 +38,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
   static const _currencyFxSchemaVersion = 20260329123000;
   static const _userReferenceCurrencySchemaVersion = 20260329194500;
   static const _salaryTrackingSchemaVersion = 20260331113000;
+  static const _recurringTransfertSchemaVersion = 20260409080526;
   static final _uuidRegExp = RegExp(
     r'^[0-9a-fA-F]{8}-'
     r'[0-9a-fA-F]{4}-'
@@ -285,6 +284,67 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     }
   }
 
+  Future<void> repairRecurringTransfertMigrationStateIfNeeded() async {
+    final databasePath = path.join(
+      await _databaseFactory.getDatabasesPath(),
+      _sqliteDatabaseName,
+    );
+    final database = await _databaseFactory.openDatabase(databasePath);
+
+    try {
+      if (!await _tableExists(database, 'TransactionModel')) {
+        return;
+      }
+
+      final latestBrickMigrationVersion = await _lastBrickMigrationVersion(
+        database,
+      );
+      final isMigrationRecorded =
+          latestBrickMigrationVersion >= _recurringTransfertSchemaVersion;
+      final hasRecurringTransfertId = await _columnExists(
+        database,
+        'TransactionModel',
+        'recurring_transfert_id',
+      );
+      final hasRecurringTransfertTable = await _tableExists(
+        database,
+        'RecurringTransfertModel',
+      );
+
+      if (isMigrationRecorded &&
+          hasRecurringTransfertId &&
+          hasRecurringTransfertTable) {
+        return;
+      }
+
+      await _ensureColumn(
+        database,
+        tableName: 'TransactionModel',
+        columnName: 'recurring_transfert_id',
+        definition: 'TEXT',
+      );
+      await _ensureColumn(
+        database,
+        tableName: 'TransactionModel',
+        columnName: 'recurring_occurrence_date',
+        definition: 'TEXT',
+      );
+      await _ensureColumn(
+        database,
+        tableName: 'TransactionModel',
+        columnName: 'generation_mode',
+        definition: 'INTEGER',
+      );
+      await _ensureRecurringTransfertTable(database);
+      await _recordMigrationVersion(database, _recurringTransfertSchemaVersion);
+      await database.execute(
+        'PRAGMA user_version = $_recurringTransfertSchemaVersion',
+      );
+    } finally {
+      await database.close();
+    }
+  }
+
   Future<void> repairLegacyOfflineQueueIfNeeded() async {
     final databasePath = path.join(
       await _databaseFactory.getDatabasesPath(),
@@ -431,14 +491,8 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       _incrementalDeleteSync<TransactionModel>(
         uniqueValueOf: (model) => model.tid,
       ),
-      _incrementalDeleteSync<SubscriptionModel>(
-        uniqueValueOf: (model) => model.subscriptionId,
-      ),
-      _incrementalDeleteSync<AccountFundingModel>(
-        uniqueValueOf: (model) => model.fundingId,
-      ),
-      _incrementalDeleteSync<RecurringFundingModel>(
-        uniqueValueOf: (model) => model.recurringFundingId,
+      _incrementalDeleteSync<RecurringTransfertModel>(
+        uniqueValueOf: (model) => model.recurringTransfertId,
       ),
       _incrementalDeleteSync<CompanyModel>(uniqueValueOf: (model) => model.cid),
       _incrementalDeleteSync<CompanyWithUserLinkModel>(
@@ -694,6 +748,43 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     await database.execute(
       'CREATE INDEX IF NOT EXISTS `index_RecurringFundingModel_on_uid` '
       'ON `RecurringFundingModel`(`uid`)',
+    );
+  }
+
+  Future<void> _ensureRecurringTransfertTable(Database database) async {
+    await database.execute('''
+      CREATE TABLE IF NOT EXISTS `RecurringTransfertModel` (
+        `_brick_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        `recurring_transfert_id` TEXT,
+        `uid` TEXT,
+        `recurring_transfert_type_id` INTEGER,
+        `title` TEXT,
+        `note` TEXT,
+        `amount` REAL,
+        `currency` TEXT,
+        `sender_id` TEXT,
+        `beneficiary_id` TEXT,
+        `frequency` INTEGER,
+        `start_date` TEXT,
+        `next_due_date` TEXT,
+        `end_date` TEXT,
+        `status` INTEGER,
+        `execution_mode` INTEGER,
+        `reminder_enabled` INTEGER,
+        `last_generated_at` TEXT,
+        `last_confirmed_at` TEXT,
+        `created_at` TEXT
+      )
+    ''');
+
+    await database.execute(
+      'CREATE UNIQUE INDEX IF NOT EXISTS '
+      '`index_RecurringTransfertModel_on_recurring_transfert_id` '
+      'ON `RecurringTransfertModel`(`recurring_transfert_id`)',
+    );
+    await database.execute(
+      'CREATE INDEX IF NOT EXISTS `index_RecurringTransfertModel_on_uid` '
+      'ON `RecurringTransfertModel`(`uid`)',
     );
   }
 

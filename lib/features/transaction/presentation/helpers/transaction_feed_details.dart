@@ -1,5 +1,4 @@
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
-import 'package:bicount/features/add_fund/presentation/screens/detail_add_fund_screen.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_detail_args.dart';
 import 'package:bicount/features/transaction/presentation/models/transaction_feed_item.dart';
@@ -15,14 +14,12 @@ void showTransactionFeedDetails(
     context: context,
     minHeight: 0.95,
     color: null,
-    child: item.isAddFund
-        ? DetailAddFundScreen(funding: item.accountFunding!)
-        : DetailTransactionScreen(
-            transaction: TransactionDetailArgs(
-              user: data.user,
-              transactionDetail: item.transaction!,
-              friends: data.friends,
-            ),
-          ),
+    child: DetailTransactionScreen(
+      transaction: TransactionDetailArgs(
+        user: data.user,
+        transactionDetail: item.transaction,
+        friends: data.friends,
+      ),
+    ),
   );
 }

@@ -6,7 +6,6 @@ import 'package:bicount/features/graph/presentation/widgets/graph_expense_breakd
 import 'package:bicount/features/graph/presentation/widgets/graph_income_breakdown_card.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_period_selector.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_screen_skeleton.dart';
-import 'package:bicount/features/graph/presentation/widgets/graph_subscription_insight_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -149,20 +148,6 @@ class _GraphScreenContent extends StatelessWidget {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         GraphExpenseBreakdownCard(dashboard: dashboard),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppDimens.marginLarge),
-                  BicountReveal(
-                    delay: const Duration(milliseconds: 270),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          context.l10n.graphSubscriptions,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        GraphSubscriptionInsightCard(dashboard: dashboard),
                       ],
                     ),
                   ),

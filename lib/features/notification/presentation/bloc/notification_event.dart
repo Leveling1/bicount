@@ -8,12 +8,6 @@ final class NotificationBootstrapRequested extends NotificationEvent {
   const NotificationBootstrapRequested();
 }
 
-final class NotificationSubscriptionsSynced extends NotificationEvent {
-  const NotificationSubscriptionsSynced(this.subscriptions);
-
-  final List<SubscriptionModel> subscriptions;
-}
-
 final class _NotificationEventReceived extends NotificationEvent {
   const _NotificationEventReceived(this.notification);
 

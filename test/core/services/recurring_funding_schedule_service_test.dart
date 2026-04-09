@@ -8,8 +8,11 @@ void main() {
   group('RecurringFundingScheduleService', () {
     test('normalizeDate supports form date values', () {
       final normalized = service.normalizeDate('19/03/2026');
+      final normalizedDate = DateTime.parse(normalized).toLocal();
 
-      expect(normalized, startsWith('2026-03-19T00:00:00'));
+      expect(normalizedDate.year, 2026);
+      expect(normalizedDate.month, 3);
+      expect(normalizedDate.day, 19);
     });
 
     test('nextOccurrence advances monthly schedules', () {

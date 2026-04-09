@@ -511,5 +511,14 @@
   "runtimeSplitPercentagePositive": "Every beneficiary needs a percentage greater than zero.",
   "runtimeSplitPercentagesTotal": "Percentages must add up to 100%.",
   "runtimeSplitAmountPositive": "Every beneficiary needs an amount greater than zero.",
-  "runtimeSplitMismatch": "The split does not match the total amount. Check the individual amounts."
+  "runtimeSplitMismatch": "The split does not match the total amount. Check the individual amounts.",
+  "recurringToggleTitle": "Set as recurring",
+  "recurringToggleSubtitleExpense": "This amount will be debited from your balance on a recurring basis.",
+  "recurringToggleSubtitleIncome": "This amount will be credited to your balance on a recurring basis.",
+  "recurringFrequencyLabel": "Repeat every",
+  "recurringTypeSubscription": "Subscription",
+  "recurringTypeOther": "Other recurring",
+  "recurringTypeSalary": "Salary",
+  "recurringTypeOtherIncome": "Other recurring income",
+  "recurringTypeLabel": "Category"
 }

@@ -2,13 +2,11 @@ import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
-import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
-import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
-import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 
 class MainFinanceProjectionService {
   const MainFinanceProjectionService({
@@ -23,10 +21,8 @@ class MainFinanceProjectionService {
   MainEntity project({
     required UserModel user,
     required List<FriendsModel> friends,
-    required List<SubscriptionModel> subscriptions,
     required List<TransactionModel> transactions,
-    required List<AccountFundingModel> accountFundings,
-    required List<RecurringFundingModel> recurringFundings,
+    required List<RecurringTransfertModel> recurringTransferts,
     required int connectionState,
     required CurrencyConfigEntity currencyConfig,
   }) {
@@ -43,38 +39,25 @@ class MainFinanceProjectionService {
       user: _deriveUser(
         user,
         relevantTransactions,
-        accountFundings,
         currencyConfig,
         currentUserParticipantIds,
       ),
       connectionState: connectionState,
       referenceCurrencyCode: currencyConfig.referenceCurrencyCode,
-      monthlySubscriptionSpend: subscriptions.fold<double>(
-        0,
-        (sum, subscription) =>
-            sum +
-            currencyAmountService.monthlySubscription(
-              subscription,
-              currencyConfig,
-            ),
-      ),
       friends: _deriveFriends(
         currentUserParticipantIds: currentUserParticipantIds,
         friends: friends,
         transactions: relevantTransactions,
         currencyConfig: currencyConfig,
       ),
-      subscriptions: subscriptions,
       transactions: relevantTransactions,
-      accountFundings: accountFundings,
-      recurringFundings: recurringFundings,
+      recurringTransferts: recurringTransferts,
     );
   }
 
   UserModel _deriveUser(
     UserModel user,
     List<TransactionModel> transactions,
-    List<AccountFundingModel> accountFundings,
     CurrencyConfigEntity currencyConfig,
     Set<String> currentUserParticipantIds,
   ) {
@@ -110,16 +93,6 @@ class MainFinanceProjectionService {
           companyIncome += amount;
         }
       }
-    }
-
-    for (final funding in accountFundings) {
-      if (funding.sid != user.uid || funding.category != Constants.personal) {
-        continue;
-      }
-      final amount = currencyAmountService.funding(funding, currencyConfig);
-      balance += amount;
-      incomes += amount;
-      personalIncome += amount;
     }
 
     return UserModel(

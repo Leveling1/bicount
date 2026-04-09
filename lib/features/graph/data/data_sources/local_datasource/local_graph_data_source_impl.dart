@@ -2,13 +2,10 @@ import 'dart:async';
 
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/features/graph/data/data_sources/local_datasource/graph_local_datasource.dart';
-import 'package:bicount/features/profile/data/models/account_funding.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../../../../subscription/data/models/subscription.model.dart';
 
 class LocalGraphDataSourceImpl implements GraphLocalDataSource {
   LocalGraphDataSourceImpl() {
@@ -29,34 +26,6 @@ class LocalGraphDataSourceImpl implements GraphLocalDataSource {
 
   BehaviorSubject<List<TransactionModel>>? _transactionsSubject;
   StreamSubscription<List<TransactionModel>>? _transactionsSubscription;
-
-  BehaviorSubject<List<SubscriptionModel>>? _subscriptionsSubject;
-  StreamSubscription<List<SubscriptionModel>>? _subscriptionsSubscription;
-
-  BehaviorSubject<List<AccountFundingModel>>? _accountFundingsSubject;
-  StreamSubscription<List<AccountFundingModel>>? _accountFundingsSubscription;
-
-  @override
-  Stream<List<AccountFundingModel>> watchAccountFundings() {
-    return _cachedListStream<AccountFundingModel>(
-      getSubject: () => _accountFundingsSubject,
-      setSubject: (subject) => _accountFundingsSubject = subject,
-      getSubscription: () => _accountFundingsSubscription,
-      setSubscription: (subscription) =>
-          _accountFundingsSubscription = subscription,
-    );
-  }
-
-  @override
-  Stream<List<SubscriptionModel>> watchSubscriptions() {
-    return _cachedListStream<SubscriptionModel>(
-      getSubject: () => _subscriptionsSubject,
-      setSubject: (subject) => _subscriptionsSubject = subject,
-      getSubscription: () => _subscriptionsSubscription,
-      setSubscription: (subscription) =>
-          _subscriptionsSubscription = subscription,
-    );
-  }
 
   @override
   Stream<List<TransactionModel>> watchTransactions() {
@@ -94,20 +63,9 @@ class LocalGraphDataSourceImpl implements GraphLocalDataSource {
 
   void _resetCaches() {
     _transactionsSubscription?.cancel();
-    _subscriptionsSubscription?.cancel();
-    _accountFundingsSubscription?.cancel();
-
     _transactionsSubject?.close();
-    _subscriptionsSubject?.close();
-    _accountFundingsSubject?.close();
-
     _transactionsSubscription = null;
-    _subscriptionsSubscription = null;
-    _accountFundingsSubscription = null;
-
     _transactionsSubject = null;
-    _subscriptionsSubject = null;
-    _accountFundingsSubject = null;
   }
 
   void dispose() {

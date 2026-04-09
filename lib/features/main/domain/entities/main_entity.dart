@@ -1,9 +1,7 @@
 import 'package:bicount/core/constants/constants.dart';
-import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
-import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
-import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../authentification/data/models/user.model.dart';
@@ -12,35 +10,26 @@ class MainEntity extends Equatable {
   final UserModel user;
   final int connectionState;
   final String referenceCurrencyCode;
-  final double monthlySubscriptionSpend;
   final List<FriendsModel> friends;
-  final List<SubscriptionModel> subscriptions;
   final List<TransactionModel> transactions;
-  final List<AccountFundingModel> accountFundings;
-  final List<RecurringFundingModel> recurringFundings;
+  final List<RecurringTransfertModel> recurringTransferts;
 
   const MainEntity({
     required this.user,
     required this.connectionState,
     required this.referenceCurrencyCode,
-    required this.monthlySubscriptionSpend,
     required this.friends,
-    required this.subscriptions,
     required this.transactions,
-    required this.accountFundings,
-    required this.recurringFundings,
+    required this.recurringTransferts,
   });
 
   @override
   List<Object?> get props => [
     user,
     referenceCurrencyCode,
-    monthlySubscriptionSpend,
     friends,
-    subscriptions,
     transactions,
-    accountFundings,
-    recurringFundings,
+    recurringTransferts,
   ];
 
   factory MainEntity.fromEmpty() {
@@ -59,12 +48,9 @@ class MainEntity extends Equatable {
       ),
       connectionState: Constants.disconnected,
       referenceCurrencyCode: 'CDF',
-      monthlySubscriptionSpend: 0,
       friends: [],
-      subscriptions: [],
       transactions: [],
-      accountFundings: [],
-      recurringFundings: [],
+      recurringTransferts: [],
     );
   }
 }

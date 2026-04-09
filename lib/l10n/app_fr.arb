@@ -511,5 +511,14 @@
   "runtimeSplitPercentagePositive": "Chaque bénéficiaire doit avoir un pourcentage supérieur à zéro.",
   "runtimeSplitPercentagesTotal": "Les pourcentages doivent totaliser 100 %.",
   "runtimeSplitAmountPositive": "Chaque bénéficiaire doit avoir un montant supérieur à zéro.",
-  "runtimeSplitMismatch": "La répartition ne correspond pas au montant total. Vérifiez les montants individuels."
+  "runtimeSplitMismatch": "La répartition ne correspond pas au montant total. Vérifiez les montants individuels.",
+  "recurringToggleTitle": "Définir comme récurrent",
+  "recurringToggleSubtitleExpense": "Ce montant sera débité de votre solde de manière récurrente.",
+  "recurringToggleSubtitleIncome": "Ce montant sera crédité sur votre solde de manière récurrente.",
+  "recurringFrequencyLabel": "Répéter chaque",
+  "recurringTypeSubscription": "Abonnement",
+  "recurringTypeOther": "Autre récurrent",
+  "recurringTypeSalary": "Salaire",
+  "recurringTypeOtherIncome": "Autre revenu récurrent",
+  "recurringTypeLabel": "Catégorie"
 }

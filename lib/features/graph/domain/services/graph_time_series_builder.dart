@@ -1,6 +1,5 @@
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
-import 'package:bicount/features/profile/data/models/account_funding.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:intl/intl.dart';
 
@@ -21,31 +20,13 @@ class GraphTimeSeriesBuilder {
     }).toList();
   }
 
-  List<AccountFundingModel> filterFundings(
-    List<AccountFundingModel> fundings,
-    GraphPeriod period,
-  ) {
-    final start = periodStart(
-      period,
-      values: fundings.map(resolveFundingDate).toList(),
-    );
-    return fundings.where((funding) {
-      final date = resolveFundingDate(funding);
-      return !date.isBefore(start);
-    }).toList();
-  }
-
   List<GraphCashflowPoint> buildCashflowPoints(
     List<TransactionModel> transactions,
-    List<AccountFundingModel> fundings,
     GraphPeriod period,
   ) {
     final start = periodStart(
       period,
-      values: [
-        ...transactions.map(resolveTransactionDate),
-        ...fundings.map(resolveFundingDate),
-      ],
+      values: transactions.map(resolveTransactionDate).toList(),
     );
     final end = startOfDay(DateTime.now());
 
@@ -55,12 +36,7 @@ class GraphTimeSeriesBuilder {
 
     while (!cursor.isAfter(end)) {
       final currentKey = bucketKey(cursor, period);
-      final inflow = _bucketInflowForDate(
-        transactions,
-        fundings,
-        currentKey,
-        period,
-      );
+      final inflow = _bucketInflowForDate(transactions, currentKey, period);
       final outflow = _bucketOutflowForDate(transactions, currentKey, period);
       runningNet += inflow - outflow;
 
@@ -106,16 +82,6 @@ class GraphTimeSeriesBuilder {
         startOfDay(DateTime.now());
   }
 
-  DateTime resolveFundingDate(AccountFundingModel funding) {
-    return parseDate(funding.date) ??
-        parseDate(funding.createdAt) ??
-        startOfDay(DateTime.now());
-  }
-
-  DateTime resolveSubscriptionDate(String rawDate) {
-    return parseDate(rawDate) ?? startOfDay(DateTime.now());
-  }
-
   DateTime startOfDay(DateTime value) {
     return DateTime(value.year, value.month, value.day);
   }
@@ -136,26 +102,16 @@ class GraphTimeSeriesBuilder {
 
   double _bucketInflowForDate(
     List<TransactionModel> transactions,
-    List<AccountFundingModel> fundings,
     String bucketKeyValue,
     GraphPeriod period,
   ) {
-    final transactionIncome = transactions
+    return transactions
         .where(
-          (transaction) =>
-              transaction.type == TransactionTypes.incomeCode &&
-              bucketKey(resolveTransactionDate(transaction), period) ==
-                  bucketKeyValue,
+          (t) =>
+              t.type == TransactionTypes.incomeCode &&
+              bucketKey(resolveTransactionDate(t), period) == bucketKeyValue,
         )
-        .fold<double>(0, (sum, transaction) => sum + transaction.amount);
-    final fundingIncome = fundings
-        .where(
-          (funding) =>
-              bucketKey(resolveFundingDate(funding), period) == bucketKeyValue,
-        )
-        .fold<double>(0, (sum, funding) => sum + funding.amount);
-
-    return transactionIncome + fundingIncome;
+        .fold<double>(0, (sum, t) => sum + t.amount);
   }
 
   double _bucketOutflowForDate(
@@ -165,11 +121,10 @@ class GraphTimeSeriesBuilder {
   ) {
     return transactions
         .where(
-          (transaction) =>
-              transaction.type != TransactionTypes.incomeCode &&
-              bucketKey(resolveTransactionDate(transaction), period) ==
-                  bucketKeyValue,
+          (t) =>
+              t.type != TransactionTypes.incomeCode &&
+              bucketKey(resolveTransactionDate(t), period) == bucketKeyValue,
         )
-        .fold<double>(0, (sum, transaction) => sum + transaction.amount);
+        .fold<double>(0, (sum, t) => sum + t.amount);
   }
 }

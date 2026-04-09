@@ -89,6 +89,18 @@ class TransactionModel extends OfflineFirstWithSupabaseModel {
   @Supabase(name: 'created_at')
   final String? createdAt;
 
+  @Sqlite(name: 'recurring_transfert_id')
+  @Supabase(name: 'recurring_transfert_id')
+  final String? recurringTransfertId;
+
+  @Sqlite(name: 'recurring_occurrence_date')
+  @Supabase(name: 'recurring_occurrence_date')
+  final String? recurringOccurrenceDate;
+
+  @Sqlite(name: 'generation_mode')
+  @Supabase(name: 'generation_mode')
+  final int? generationMode;
+
   @Supabase(unique: true, name: 'tid')
   @Sqlite(index: true, unique: true, name: 'tid')
   final String? tid;
@@ -115,6 +127,9 @@ class TransactionModel extends OfflineFirstWithSupabaseModel {
     this.image,
     this.frequency,
     this.createdAt,
+    this.recurringTransfertId,
+    this.recurringOccurrenceDate,
+    this.generationMode,
   }) : tid = tid ?? const Uuid().v4(),
        super();
 }

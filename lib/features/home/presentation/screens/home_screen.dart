@@ -116,7 +116,7 @@ class HomeScreen extends StatelessWidget {
                           child: CardTypeRevenue(
                             onTap: () => onCardTap?.call(1),
                             label: context.l10n.profileRecurring,
-                            amount: data.monthlySubscriptionSpend,
+                            amount: 0.0,
                             icon: SvgPicture.asset(
                               IconLinks.graph,
                               width: AppDimens.iconSizeSmall,
@@ -134,7 +134,7 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              if (data.recurringFundings.isNotEmpty)
+              if (data.recurringTransferts.isNotEmpty)
                 BicountReveal(
                   delay: const Duration(milliseconds: 150),
                   child: HomeRecurringFundingsStatusCard(

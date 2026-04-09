@@ -51,8 +51,8 @@ class _SalaryScreenState extends State<SalaryScreen> {
                 MainLoaded() => _buildContent(
                   context,
                   _dashboardBuilder.build(
-                    recurringFundings: state.startData.recurringFundings,
-                    accountFundings: state.startData.accountFundings,
+                    recurringFundings: const [],
+                    accountFundings: const [],
                     currencyConfig: currencyConfig,
                   ),
                   salaryState,

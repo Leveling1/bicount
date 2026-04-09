@@ -73,6 +73,8 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     required String senderId,
     required String beneficiaryId,
     required String image,
+    String? recurringTransfertId,
+    int? generationMode,
   }) async {
     final uid = _currentUid;
     if (uid == null) {
@@ -112,6 +114,8 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         frequency: Frequency.oneTime,
         createdAt: DateTime.now().toIso8601String(),
         category: category,
+        recurringTransfertId: recurringTransfertId,
+        generationMode: generationMode ?? 0,
       );
 
       await Repository().upsert<TransactionModel>(transactionModel);

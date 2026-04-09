@@ -1316,4 +1316,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get runtimeSplitMismatch => 'The split does not match the total amount. Check the individual amounts.';
+
+  @override
+  String get recurringToggleTitle => 'Set as recurring';
+
+  @override
+  String get recurringToggleSubtitleExpense => 'This amount will be debited from your balance on a recurring basis.';
+
+  @override
+  String get recurringToggleSubtitleIncome => 'This amount will be credited to your balance on a recurring basis.';
+
+  @override
+  String get recurringFrequencyLabel => 'Repeat every';
+
+  @override
+  String get recurringTypeSubscription => 'Subscription';
+
+  @override
+  String get recurringTypeOther => 'Other recurring';
+
+  @override
+  String get recurringTypeSalary => 'Salary';
+
+  @override
+  String get recurringTypeOtherIncome => 'Other recurring income';
+
+  @override
+  String get recurringTypeLabel => 'Category';
 }

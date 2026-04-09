@@ -153,11 +153,7 @@ class GraphBloc extends Bloc<GraphEvent, GraphState> {
 
   GraphDashboardEntity _buildDashboard(MainEntity mainData) {
     return dashboardBuilder.build(
-      GraphSourceData(
-        transactions: mainData.transactions,
-        subscriptions: mainData.subscriptions,
-        fundings: mainData.accountFundings,
-      ),
+      GraphSourceData(transactions: mainData.transactions),
       state.period,
       _latestCurrencyConfig,
     );

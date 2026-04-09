@@ -37,13 +37,9 @@ class GraphDashboardEntity extends Equatable {
     required this.inflow,
     required this.outflow,
     required this.netFlow,
-    required this.activeSubscriptionCount,
-    required this.monthlySubscriptionSpend,
-    required this.dueSoonAmount,
     required this.cashflowPoints,
     required this.incomeBreakdown,
     required this.expenseBreakdown,
-    required this.upcomingSubscriptions,
   });
 
   final GraphPeriod period;
@@ -51,13 +47,9 @@ class GraphDashboardEntity extends Equatable {
   final double inflow;
   final double outflow;
   final double netFlow;
-  final int activeSubscriptionCount;
-  final double monthlySubscriptionSpend;
-  final double dueSoonAmount;
   final List<GraphCashflowPoint> cashflowPoints;
   final List<GraphBreakdownItem> incomeBreakdown;
   final List<GraphBreakdownItem> expenseBreakdown;
-  final List<UpcomingSubscriptionEntity> upcomingSubscriptions;
 
   @override
   List<Object?> get props => [
@@ -66,13 +58,9 @@ class GraphDashboardEntity extends Equatable {
     inflow,
     outflow,
     netFlow,
-    activeSubscriptionCount,
-    monthlySubscriptionSpend,
-    dueSoonAmount,
     cashflowPoints,
     incomeBreakdown,
     expenseBreakdown,
-    upcomingSubscriptions,
   ];
 }
 
@@ -101,32 +89,4 @@ class GraphBreakdownItem extends Equatable {
 
   @override
   List<Object?> get props => [label, value];
-}
-
-class UpcomingSubscriptionEntity extends Equatable {
-  const UpcomingSubscriptionEntity({
-    required this.subscriptionId,
-    required this.title,
-    required this.amount,
-    required this.currency,
-    required this.nextBillingDate,
-    required this.frequency,
-  });
-
-  final String subscriptionId;
-  final String title;
-  final double amount;
-  final String currency;
-  final DateTime nextBillingDate;
-  final int frequency;
-
-  @override
-  List<Object?> get props => [
-    subscriptionId,
-    title,
-    amount,
-    currency,
-    nextBillingDate,
-    frequency,
-  ];
 }

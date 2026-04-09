@@ -1,4 +1,3 @@
-import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
@@ -34,9 +33,9 @@ class TransactionCard extends StatelessWidget {
         : Theme.of(context).textTheme.bodyMedium!.color;
 
     IconData transactionIcon = sign == "+"
-        ? Icons.arrow_upward
-        : sign == "-"
         ? Icons.arrow_downward
+        : sign == "-"
+        ? Icons.arrow_upward
         : Icons.more_horiz;
 
     String time = TimeOfDay.fromDateTime(transaction.date).format(context);
@@ -67,9 +66,7 @@ class TransactionCard extends StatelessWidget {
                     width: 30.w,
                     height: 30.h,
                     child: Icon(
-                      transaction.type == TransactionTypes.subscriptionCode
-                          ? Icons.subscriptions
-                          : transactionIcon,
+                      transactionIcon,
                       color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),

@@ -6,10 +6,9 @@ import 'package:bicount/features/transaction/presentation/models/transaction_fee
 import 'package:flutter/material.dart';
 
 List<TransactionFeedItem> buildTransactionFeed(MainEntity data) {
-  final items = [
-    ...data.transactions.map(TransactionFeedItem.fromTransaction),
-    ...data.accountFundings.map(TransactionFeedItem.fromAccountFunding),
-  ];
+  final items = data.transactions
+      .map(TransactionFeedItem.fromTransaction)
+      .toList();
 
   items.sort((left, right) => right.timelineDate.compareTo(left.timelineDate));
   return items;
@@ -36,10 +35,6 @@ List<TransactionFeedItem> filterTransactionFeed({
 
     if (selectedCode == TransactionTypes.personal) {
       return item.category == Constants.personal;
-    }
-
-    if (selectedCode == TransactionTypes.incomeCode && item.isAddFund) {
-      return true;
     }
 
     return item.filterType == selectedCode;

@@ -12,7 +12,6 @@ import 'package:bicount/features/main/presentation/helpers/main_screen_helpers.d
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_app_bar.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_body.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_fab.dart';
-import 'package:bicount/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:bicount/features/profile/presentation/screens/profile_screen.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_handler.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
@@ -128,9 +127,6 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onStateChanged(BuildContext context, MainState state) {
     if (state is MainLoaded) {
-      context.read<NotificationBloc>().add(
-        NotificationSubscriptionsSynced(state.startData.subscriptions),
-      );
       return;
     }
 

@@ -11,82 +11,76 @@ import 'package:brick_supabase/brick_supabase.dart';
 // ignore: unused_import, unused_shown_name, unnecessary_import
 import 'package:uuid/uuid.dart';
 // ignore: unused_import, unused_shown_name, unnecessary_import
+import '../../../../core/constants/account_funding_const.dart';
+// ignore: unused_import, unused_shown_name, unnecessary_import
 import '../../../../core/constants/tables_name.dart';
 // ignore: unused_import, unused_shown_name, unnecessary_import
-import '../../../../core/constants/account_funding_const.dart';
+import 'package:bicount/core/constants/account_funding_const.dart';// GENERATED CODE DO NOT EDIT
 // ignore: unused_import
 import 'dart:convert';
-import 'package:brick_sqlite/brick_sqlite.dart'
-    show
-        SqliteModel,
-        SqliteAdapter,
-        SqliteModelDictionary,
-        RuntimeSqliteColumnDefinition,
-        SqliteProvider;
-import 'package:brick_supabase/brick_supabase.dart'
-    show
-        SupabaseProvider,
-        SupabaseModel,
-        SupabaseAdapter,
-        SupabaseModelDictionary;
+import 'package:brick_sqlite/brick_sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition, SqliteProvider;
+import 'package:brick_supabase/brick_supabase.dart' show SupabaseProvider, SupabaseModel, SupabaseAdapter, SupabaseModelDictionary;
 // ignore: unused_import, unused_shown_name
-import 'package:brick_offline_first/brick_offline_first.dart'
-    show RuntimeOfflineFirstDefinition;
+import 'package:brick_offline_first/brick_offline_first.dart' show RuntimeOfflineFirstDefinition;
 // ignore: unused_import, unused_shown_name
 import 'package:sqflite_common/sqlite_api.dart' show DatabaseExecutor;
 
 import '../core/models/memoji.model.dart';
+import '../features/add_fund/data/models/account_funding.model.dart';
+import '../features/add_fund/data/models/recurring_funding.model.dart';
 import '../features/authentification/data/models/user.model.dart';
 import '../features/company/data/models/company.model.dart';
 import '../features/company/data/models/company_with_user_link.model.dart';
 import '../features/group/data/models/group.model.dart';
 import '../features/main/data/models/friends.model.dart';
-import '../features/profile/data/models/account_funding.model.dart';
-import '../features/profile/data/models/recurring_funding.model.dart';
 import '../features/project/data/models/project.model.dart';
+import '../features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import '../features/subscription/data/models/subscription.model.dart';
 import '../features/transaction/data/models/transaction.model.dart';
 
 part 'adapters/memoji_model_adapter.g.dart';
+part 'adapters/account_funding_model_adapter.g.dart';
+part 'adapters/recurring_funding_model_adapter.g.dart';
 part 'adapters/user_model_adapter.g.dart';
 part 'adapters/company_model_adapter.g.dart';
 part 'adapters/company_with_user_link_model_adapter.g.dart';
 part 'adapters/group_model_adapter.g.dart';
 part 'adapters/friends_model_adapter.g.dart';
-part 'adapters/account_funding_model_adapter.g.dart';
-part 'adapters/recurring_funding_model_adapter.g.dart';
 part 'adapters/project_model_adapter.g.dart';
+part 'adapters/recurring_transfert_model_adapter.g.dart';
 part 'adapters/subscription_model_adapter.g.dart';
 part 'adapters/transaction_model_adapter.g.dart';
 
 /// Supabase mappings should only be used when initializing a [SupabaseProvider]
 final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
   MemojiModel: MemojiModelAdapter(),
+  AccountFundingModel: AccountFundingModelAdapter(),
+  RecurringFundingModel: RecurringFundingModelAdapter(),
   UserModel: UserModelAdapter(),
   CompanyModel: CompanyModelAdapter(),
   CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
   GroupModel: GroupModelAdapter(),
   FriendsModel: FriendsModelAdapter(),
-  AccountFundingModel: AccountFundingModelAdapter(),
-  RecurringFundingModel: RecurringFundingModelAdapter(),
   ProjectModel: ProjectModelAdapter(),
+  RecurringTransfertModel: RecurringTransfertModelAdapter(),
   SubscriptionModel: SubscriptionModelAdapter(),
-  TransactionModel: TransactionModelAdapter(),
+  TransactionModel: TransactionModelAdapter()
 };
 final supabaseModelDictionary = SupabaseModelDictionary(supabaseMappings);
 
 /// Sqlite mappings should only be used when initializing a [SqliteProvider]
 final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   MemojiModel: MemojiModelAdapter(),
+  AccountFundingModel: AccountFundingModelAdapter(),
+  RecurringFundingModel: RecurringFundingModelAdapter(),
   UserModel: UserModelAdapter(),
   CompanyModel: CompanyModelAdapter(),
   CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
   GroupModel: GroupModelAdapter(),
   FriendsModel: FriendsModelAdapter(),
-  AccountFundingModel: AccountFundingModelAdapter(),
-  RecurringFundingModel: RecurringFundingModelAdapter(),
   ProjectModel: ProjectModelAdapter(),
+  RecurringTransfertModel: RecurringTransfertModelAdapter(),
   SubscriptionModel: SubscriptionModelAdapter(),
-  TransactionModel: TransactionModelAdapter(),
+  TransactionModel: TransactionModelAdapter()
 };
 final sqliteModelDictionary = SqliteModelDictionary(sqliteMappings);

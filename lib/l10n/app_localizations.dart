@@ -2644,6 +2644,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The split does not match the total amount. Check the individual amounts.'**
   String get runtimeSplitMismatch;
+
+  /// No description provided for @recurringToggleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set as recurring'**
+  String get recurringToggleTitle;
+
+  /// No description provided for @recurringToggleSubtitleExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'This amount will be debited from your balance on a recurring basis.'**
+  String get recurringToggleSubtitleExpense;
+
+  /// No description provided for @recurringToggleSubtitleIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'This amount will be credited to your balance on a recurring basis.'**
+  String get recurringToggleSubtitleIncome;
+
+  /// No description provided for @recurringFrequencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat every'**
+  String get recurringFrequencyLabel;
+
+  /// No description provided for @recurringTypeSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription'**
+  String get recurringTypeSubscription;
+
+  /// No description provided for @recurringTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other recurring'**
+  String get recurringTypeOther;
+
+  /// No description provided for @recurringTypeSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get recurringTypeSalary;
+
+  /// No description provided for @recurringTypeOtherIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Other recurring income'**
+  String get recurringTypeOtherIncome;
+
+  /// No description provided for @recurringTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get recurringTypeLabel;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1,7 +1,4 @@
-import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
-import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
-import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 
 class CurrencyAmountService {
@@ -18,52 +15,6 @@ class CurrencyAmountService {
       fxRateDate: model.fxRateDate,
       config: config,
     );
-  }
-
-  double funding(AccountFundingModel model, CurrencyConfigEntity config) {
-    return record(
-      originalAmount: model.amount,
-      originalCurrencyCode: model.currency,
-      amountCdf: model.amountCdf,
-      convertedAmount: model.convertedAmount,
-      referenceCurrencyCode: model.referenceCurrencyCode,
-      rateToCdf: model.rateToCdf,
-      fxRateDate: model.fxRateDate,
-      config: config,
-    );
-  }
-
-  double subscription(SubscriptionModel model, CurrencyConfigEntity config) {
-    return record(
-      originalAmount: model.amount,
-      originalCurrencyCode: model.currency,
-      amountCdf: model.amountCdf,
-      convertedAmount: model.convertedAmount,
-      referenceCurrencyCode: model.referenceCurrencyCode,
-      rateToCdf: model.rateToCdf,
-      fxRateDate: model.fxRateDate,
-      config: config,
-    );
-  }
-
-  double monthlySubscription(
-    SubscriptionModel model,
-    CurrencyConfigEntity config,
-  ) {
-    final base = subscription(model, config);
-    switch (model.frequency) {
-      case Frequency.weekly:
-        return base * 52 / 12;
-      case Frequency.monthly:
-        return base;
-      case Frequency.quarterly:
-        return base / 3;
-      case Frequency.yearly:
-        return base / 12;
-      case Frequency.oneTime:
-      default:
-        return 0;
-    }
   }
 
   double record({

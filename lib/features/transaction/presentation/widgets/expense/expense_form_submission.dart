@@ -90,6 +90,9 @@ extension _ExpenseFormSubmission on _ExpenseFormState {
         note: _note.text.trim(),
         splitMode: _isEditing ? TransactionSplitMode.equal : _splitMode,
         splits: _buildSplitInputs(),
+        isRecurring: _isRecurring,
+        recurringFrequency: _isRecurring ? _recurringFrequency : null,
+        recurringTypeId: _isRecurring ? _recurringTypeId : null,
       );
       _splitResolver.resolve(request);
       if (_isEditing) {

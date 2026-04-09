@@ -5,11 +5,8 @@ import 'package:bicount/features/currency/domain/entities/currency_config_entity
 import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
 import 'package:bicount/features/graph/domain/repositories/graph_repository.dart';
 import 'package:bicount/features/graph/domain/services/graph_dashboard_builder.dart';
-import 'package:bicount/features/profile/data/models/account_funding.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:rxdart/rxdart.dart';
-
-import '../../../subscription/data/models/subscription.model.dart';
 
 class GraphRepositoryImpl implements GraphRepository {
   GraphRepositoryImpl(
@@ -24,23 +21,15 @@ class GraphRepositoryImpl implements GraphRepository {
 
   @override
   Stream<GraphDashboardEntity> watchDashboard(GraphPeriod period) {
-    return Rx.combineLatest4(
+    return Rx.combineLatest2(
       localDataSource.watchTransactions(),
-      localDataSource.watchSubscriptions(),
-      localDataSource.watchAccountFundings(),
       currencyRepository.watchConfig(),
       (
         List<TransactionModel> transactions,
-        List<SubscriptionModel> subscriptions,
-        List<AccountFundingModel> fundings,
         CurrencyConfigEntity currencyConfig,
       ) {
         return dashboardBuilder.build(
-          GraphSourceData(
-            transactions: transactions,
-            subscriptions: subscriptions,
-            fundings: fundings,
-          ),
+          GraphSourceData(transactions: transactions),
           period,
           currencyConfig,
         );

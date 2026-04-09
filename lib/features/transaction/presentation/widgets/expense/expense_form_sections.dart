@@ -77,18 +77,22 @@ extension _ExpenseFormSections on _ExpenseFormState {
           enableValidator: false,
         ),
         AppDimens.spacerMedium,
-        SwitchListTile.adaptive(
-          value: true,
-          onChanged: (value) {},
-          title: Text(
-            "Définir comme récurrent",
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          subtitle: Text(
-            "En cochant cette case le montant sera debuit de votre solde de manière recurrente",
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          contentPadding: EdgeInsets.zero,
+        TransferFormRecurringSection(
+          isRecurring: _isRecurring,
+          frequency: _recurringFrequency,
+          recurringTypeId: _recurringTypeId,
+          typeOptions: RecurringTransfertType.expenseTypes,
+          subtitle: context.l10n.recurringToggleSubtitleExpense,
+          enabled: !_isEditing,
+          onRecurringChanged: (value) => _update(() {
+            _isRecurring = value;
+          }),
+          onFrequencyChanged: (value) => _update(() {
+            _recurringFrequency = value;
+          }),
+          onTypeChanged: (value) => _update(() {
+            _recurringTypeId = value;
+          }),
         ),
       ],
     );
