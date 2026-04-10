@@ -142,6 +142,27 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     }
   }
 
+  @override
+  Future<void> forceHydrate() async {
+    final userSubject = _userSubject;
+    if (userSubject != null && !userSubject.isClosed) {
+      final query = Query(where: [Where.exact('uid', uid)]);
+      await primeUserSubject(userSubject, query);
+    }
+    final friendsSubject = _friendsSubject;
+    if (friendsSubject != null && !friendsSubject.isClosed) {
+      await primeListSubject(friendsSubject, null);
+    }
+    final transactionsSubject = _transactionsSubject;
+    if (transactionsSubject != null && !transactionsSubject.isClosed) {
+      await primeListSubject(transactionsSubject, null);
+    }
+    final recurringSubject = _recurringTransfertsSubject;
+    if (recurringSubject != null && !recurringSubject.isClosed) {
+      await primeListSubject(recurringSubject, null);
+    }
+  }
+
   void _resetCaches() {
     _userSubscription?.cancel();
     _friendsSubscription?.cancel();

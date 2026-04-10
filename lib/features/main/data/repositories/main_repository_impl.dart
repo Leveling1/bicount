@@ -33,6 +33,11 @@ class MainRepositoryImpl implements MainRepository {
   }
 
   @override
+  Future<void> forceHydrate() {
+    return localDataSource.forceHydrate();
+  }
+
+  @override
   Stream<MainEntity> getStartDataStream() {
     try {
       final userStream = localDataSource.getUserDetails();

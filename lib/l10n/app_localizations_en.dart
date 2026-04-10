@@ -698,6 +698,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendsDirectoryEmpty => 'Create a transaction with someone and they will appear here. When they join Bicount, open their detail screen to share and link the profile.';
 
   @override
+  String get friendsSearchHint => 'Search a friend…';
+
+  @override
+  String get friendsSearchEmpty => 'No friend matches your search.';
+
+  @override
   String get friendsTotal => 'Total';
 
   @override

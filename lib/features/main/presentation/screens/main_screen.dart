@@ -30,7 +30,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final PageController pageController = PageController();
   final TextEditingController searchTransaction = TextEditingController();
-  String? _lastScheduledInviteCode;
+  static String? _lastScheduledInviteCode;
 
   bool showSearchBar = false;
   int _selectedIndex = 0;
@@ -117,7 +117,6 @@ class _MainScreenState extends State<MainScreen> {
   void _scheduleInvitePresentation(Uri currentUri) {
     final inviteCode = FriendInviteRoute.inviteCodeFromUri(currentUri);
     if (currentUri.path != '/' || inviteCode == null) {
-      _lastScheduledInviteCode = null;
       return;
     }
 

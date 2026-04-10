@@ -15,25 +15,60 @@ import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FriendsDirectoryScreen extends StatelessWidget {
+class FriendsDirectoryScreen extends StatefulWidget {
   const FriendsDirectoryScreen({super.key});
 
+  @override
+  State<FriendsDirectoryScreen> createState() => _FriendsDirectoryScreenState();
+}
+
+class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
   static const _viewService = FriendViewService();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.trim().toLowerCase();
+    if (query != _searchQuery) {
+      setState(() => _searchQuery = query);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MainBloc, MainState>(
       builder: (context, state) {
         final data = state is MainLoaded ? state.startData : null;
-        final friends = data == null
+        final allFriends = data == null
             ? const <FriendsModel>[]
             : _viewService.visibleFriends(
                 data.friends,
                 currentUserUid: data.user.uid,
               );
+        final friends = _searchQuery.isEmpty
+            ? allFriends
+            : allFriends
+                  .where(
+                    (f) =>
+                        f.username.toLowerCase().contains(_searchQuery) ||
+                        f.email.toLowerCase().contains(_searchQuery),
+                  )
+                  .toList();
         final linkedCount = data == null
             ? 0
-            : friends
+            : allFriends
                   .where((friend) => !_viewService.isShareableFriend(friend))
                   .length;
 
@@ -75,13 +110,31 @@ class FriendsDirectoryScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: AppDimens.marginLarge),
+                        TextField(
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                            hintText: context.l10n.friendsSearchHint,
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: _searchQuery.isNotEmpty
+                                ? IconButton(
+                                    icon: const Icon(Icons.close),
+                                    onPressed: () {
+                                      _searchController.clear();
+                                    },
+                                  )
+                                : null,
+                          ),
+                        ),
+                        const SizedBox(height: AppDimens.marginLarge),
                         Expanded(
                           child: friends.isEmpty
                               ? BicountReveal(
                                   delay: const Duration(milliseconds: 140),
                                   child: DetailsCard(
                                     child: Text(
-                                      context.l10n.friendsDirectoryEmpty,
+                                      _searchQuery.isEmpty
+                                          ? context.l10n.friendsDirectoryEmpty
+                                          : context.l10n.friendsSearchEmpty,
                                       style: Theme.of(
                                         context,
                                       ).textTheme.bodySmall,

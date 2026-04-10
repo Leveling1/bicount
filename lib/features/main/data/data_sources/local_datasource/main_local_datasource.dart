@@ -9,4 +9,5 @@ abstract class MainLocalDataSource {
   Stream<List<FriendsModel>> getFriends();
   Stream<List<TransactionModel>> getTransaction();
   Stream<List<RecurringTransfertModel>> getRecurringTransferts();
+  Future<void> forceHydrate();
 }

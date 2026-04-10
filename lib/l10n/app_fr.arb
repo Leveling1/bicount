@@ -234,6 +234,8 @@
   "friendDetailTitle": "Détails de l'ami",
   "friendsDirectoryIntro": "Touchez un ami pour consulter l'historique des transactions en temps réel ou lier un profil local à un vrai compte.",
   "friendsDirectoryEmpty": "Créez une transaction avec quelqu'un et il apparaîtra ici. Lorsqu'il rejoindra Bicount, ouvrez sa fiche pour partager et lier le profil.",
+  "friendsSearchHint": "Rechercher un ami…",
+  "friendsSearchEmpty": "Aucun ami ne correspond à votre recherche.",
   "friendsTotal": "Total",
   "friendsLinked": "Liés",
   "friendsToLink": "À lier",

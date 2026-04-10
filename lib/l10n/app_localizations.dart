@@ -1469,6 +1469,18 @@ abstract class AppLocalizations {
   /// **'Create a transaction with someone and they will appear here. When they join Bicount, open their detail screen to share and link the profile.'**
   String get friendsDirectoryEmpty;
 
+  /// No description provided for @friendsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search a friend…'**
+  String get friendsSearchHint;
+
+  /// No description provided for @friendsSearchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No friend matches your search.'**
+  String get friendsSearchEmpty;
+
   /// No description provided for @friendsTotal.
   ///
   /// In en, this message translates to:

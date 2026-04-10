@@ -75,11 +75,11 @@ class FriendViewService {
     }).toList();
 
     filtered.sort((left, right) {
-      final rightScore = (right.receive ?? 0) - (right.give ?? 0);
-      final leftScore = (left.receive ?? 0) - (left.give ?? 0);
-      final balanceComparison = rightScore.compareTo(leftScore);
-      if (balanceComparison != 0) {
-        return balanceComparison;
+      final rightVolume = (right.give ?? 0).abs() + (right.receive ?? 0).abs();
+      final leftVolume = (left.give ?? 0).abs() + (left.receive ?? 0).abs();
+      final volumeComparison = rightVolume.compareTo(leftVolume);
+      if (volumeComparison != 0) {
+        return volumeComparison;
       }
       return left.username.toLowerCase().compareTo(
         right.username.toLowerCase(),

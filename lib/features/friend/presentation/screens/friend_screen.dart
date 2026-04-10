@@ -70,6 +70,7 @@ class _FriendScreenState extends State<FriendScreen> {
         _trackInitialInviteLookup(state);
         _resetDeepLinkDecisionOnFailure(state);
         handleFriendStateFeedback(context, state);
+        _refreshDataAfterAccept(state);
         _handleCompletedDeepLink(state);
       },
       builder: (context, state) {
@@ -199,6 +200,17 @@ class _FriendScreenState extends State<FriendScreen> {
   void _onDeepLinkRejectRequested() {
     _submittedDeepLinkDecision = true;
     context.read<FriendBloc>().add(const FriendRejectRequested());
+  }
+
+  bool _dataRefreshedAfterAccept = false;
+
+  void _refreshDataAfterAccept(FriendState state) {
+    if (_dataRefreshedAfterAccept ||
+        state.flashMessage != 'Invitation accepted.') {
+      return;
+    }
+    _dataRefreshedAfterAccept = true;
+    context.read<MainBloc>().add(RefreshMainData());
   }
 
   void _trackInitialInviteLookup(FriendState state) {

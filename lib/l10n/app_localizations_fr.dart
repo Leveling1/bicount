@@ -698,6 +698,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get friendsDirectoryEmpty => 'Créez une transaction avec quelqu\'un et il apparaîtra ici. Lorsqu\'il rejoindra Bicount, ouvrez sa fiche pour partager et lier le profil.';
 
   @override
+  String get friendsSearchHint => 'Rechercher un ami…';
+
+  @override
+  String get friendsSearchEmpty => 'Aucun ami ne correspond à votre recherche.';
+
+  @override
   String get friendsTotal => 'Total';
 
   @override

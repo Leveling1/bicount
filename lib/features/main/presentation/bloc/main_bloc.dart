@@ -12,6 +12,7 @@ part 'main_state.dart';
 class MainBloc extends Bloc<MainEvent, MainState> {
   MainBloc(this.repository) : super(MainInitial()) {
     on<GetAllStartData>(_onGetAllStartData);
+    on<RefreshMainData>(_onRefreshMainData);
     on<_StartDataUpdated>(_onStartDataUpdated);
     on<_StartDataFailed>(_onStartDataFailed);
   }
@@ -38,6 +39,17 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
   void _onStartDataUpdated(_StartDataUpdated event, Emitter<MainState> emit) {
     emit(MainLoaded(event.data));
+  }
+
+  Future<void> _onRefreshMainData(
+    RefreshMainData event,
+    Emitter<MainState> emit,
+  ) async {
+    try {
+      await repository.forceHydrate();
+    } catch (_) {
+      // Hydration failure is non-fatal; realtime will catch up.
+    }
   }
 
   void _onStartDataFailed(_StartDataFailed event, Emitter<MainState> emit) {

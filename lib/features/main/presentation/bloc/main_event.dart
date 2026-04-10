@@ -9,6 +9,8 @@ class NetworkStatusChanged extends MainEvent {
 
 class GetAllStartData extends MainEvent {}
 
+class RefreshMainData extends MainEvent {}
+
 class _StartDataUpdated extends MainEvent {
   _StartDataUpdated(this.data);
 

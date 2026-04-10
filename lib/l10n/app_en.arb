@@ -234,6 +234,8 @@
   "friendDetailTitle": "Friend details",
   "friendsDirectoryIntro": "Tap a friend to review the live transaction history or link a local profile to a real account.",
   "friendsDirectoryEmpty": "Create a transaction with someone and they will appear here. When they join Bicount, open their detail screen to share and link the profile.",
+  "friendsSearchHint": "Search a friend…",
+  "friendsSearchEmpty": "No friend matches your search.",
   "friendsTotal": "Total",
   "friendsLinked": "Linked",
   "friendsToLink": "To link",
