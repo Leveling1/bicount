@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 mixin TransactionFormHelpers<T extends StatefulWidget> on State<T> {
   UserModel? get transactionFormUser;
   int get transactionFormType;
+  int get transactionFormPartyType => transactionFormType;
   List<FriendsModel> get transactionFormFriends;
   TextEditingController get transactionDateController;
   TextEditingController get transactionCurrencyController;
@@ -29,7 +30,7 @@ mixin TransactionFormHelpers<T extends StatefulWidget> on State<T> {
         uid: '',
         image: Constants.memojiDefault,
         email: '',
-        relationType: FriendConst.getTypeOfFriend(transactionFormType),
+        relationType: FriendConst.getTypeOfFriend(transactionFormPartyType),
       ),
     );
   }

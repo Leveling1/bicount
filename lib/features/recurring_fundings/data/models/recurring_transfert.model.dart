@@ -19,8 +19,8 @@ class RecurringTransfertModel extends OfflineFirstWithSupabaseModel {
   @Sqlite(index: true, name: 'uid')
   final String uid;
 
-  @Supabase(name: 'recurring_transfert_type_id')
-  @Sqlite(name: 'recurring_transfert_type_id')
+  @Supabase(name: 'transaction_type')
+  @Sqlite(name: 'transaction_type')
   final int recurringTransfertTypeId;
 
   @Supabase(name: 'title')

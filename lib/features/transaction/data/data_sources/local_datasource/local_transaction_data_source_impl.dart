@@ -8,6 +8,7 @@ import 'package:bicount/features/currency/data/repositories/currency_repository_
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -56,6 +57,60 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     } catch (_) {
       return Left(
         MessageFailure(message: 'Unable to save this friend right now.'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, FriendsModel?>> findMatchingFriend(
+    FriendsModel friend,
+  ) async {
+    final normalizedUsername = _normalizeLookupValue(friend.username);
+    final normalizedEmail = _normalizeLookupValue(friend.email);
+
+    if (normalizedUsername.isEmpty && normalizedEmail.isEmpty) {
+      return const Right(null);
+    }
+
+    try {
+      final localFriends = await Repository().get<FriendsModel>(
+        policy: OfflineFirstGetPolicy.localOnly,
+      );
+
+      final sameNameAndType = localFriends
+          .where((candidate) {
+            return candidate.relationType == friend.relationType &&
+                _normalizeLookupValue(candidate.username) == normalizedUsername;
+          })
+          .toList(growable: false);
+
+      if (sameNameAndType.isEmpty) {
+        return const Right(null);
+      }
+
+      if (normalizedEmail.isNotEmpty) {
+        for (final candidate in sameNameAndType) {
+          if (_normalizeLookupValue(candidate.email) == normalizedEmail) {
+            return Right(candidate);
+          }
+        }
+        return const Right(null);
+      }
+
+      for (final candidate in sameNameAndType) {
+        if (_normalizeLookupValue(candidate.email).isEmpty) {
+          return Right(candidate);
+        }
+      }
+
+      if (sameNameAndType.length == 1) {
+        return Right(sameNameAndType.first);
+      }
+
+      return const Right(null);
+    } catch (_) {
+      return Left(
+        MessageFailure(message: 'Unable to load this friend right now.'),
       );
     }
   }
@@ -194,5 +249,9 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         MessageFailure(message: 'Unable to update this transaction right now.'),
       );
     }
+  }
+
+  String _normalizeLookupValue(String value) {
+    return value.trim().toLowerCase();
   }
 }

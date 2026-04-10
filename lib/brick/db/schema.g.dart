@@ -272,7 +272,7 @@ final schema = Schema(
         ),
         SchemaColumn('recurring_transfert_id', Column.varchar, unique: true),
         SchemaColumn('uid', Column.varchar),
-        SchemaColumn('recurring_transfert_type_id', Column.integer),
+        SchemaColumn('transaction_type', Column.integer),
         SchemaColumn('title', Column.varchar),
         SchemaColumn('note', Column.varchar),
         SchemaColumn('amount', Column.Double),

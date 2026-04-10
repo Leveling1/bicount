@@ -80,6 +80,10 @@ class _IncomeFormState extends State<IncomeForm>
   int get transactionFormType => TransactionTypes.incomeCode;
 
   @override
+  int get transactionFormPartyType =>
+      _isRecurring ? _recurringTypeId : transactionFormType;
+
+  @override
   List<FriendsModel> get transactionFormFriends => widget.friends;
 
   @override

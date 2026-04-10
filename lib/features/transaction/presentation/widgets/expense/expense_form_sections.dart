@@ -88,7 +88,7 @@ extension _ExpenseFormSections on _ExpenseFormState {
             _isRecurring = value;
             if (_name.text.isEmpty) {
               _name.text =
-                  "${TransactionTypes.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? "(${_beneficiaryList[0]})" : ""}";
+                  "${TransactionTypes.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? _beneficiaryList[0].username : ""}";
             }
           }),
           onFrequencyChanged: (value) => _update(() {

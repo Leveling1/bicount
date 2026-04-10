@@ -787,7 +787,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
         `_brick_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         `recurring_transfert_id` TEXT,
         `uid` TEXT,
-        `recurring_transfert_type_id` INTEGER,
+        `transaction_type` INTEGER,
         `title` TEXT,
         `note` TEXT,
         `amount` REAL,

@@ -61,13 +61,16 @@ extension _IncomeFormSections on _IncomeFormState {
           enabled: !_isEditing,
           onRecurringChanged: (value) => _update(() {
             _isRecurring = value;
+            if (_name.text.isEmpty) {
+              _name.text =
+                  "${TransactionTypes.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? _beneficiaryList[0].username : ""}";
+            }
           }),
           onFrequencyChanged: (value) => _update(() {
             _recurringFrequency = value;
           }),
           onTypeChanged: (value) => _update(() {
             _recurringTypeId = value;
-            _name.text = TransactionTypes.typeLabel(context, value);
           }),
         ),
       ],

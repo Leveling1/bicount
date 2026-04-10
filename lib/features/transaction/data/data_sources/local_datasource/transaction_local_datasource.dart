@@ -6,6 +6,9 @@ import '../../../../../core/errors/failure.dart';
 
 abstract class TransactionLocalDataSource {
   Future<Either<Failure, FriendsModel>> createANewFriend(FriendsModel friend);
+  Future<Either<Failure, FriendsModel?>> findMatchingFriend(
+    FriendsModel friend,
+  );
   Future<Either<Failure, void>> saveTransaction(
     String gtid, {
     required String title,

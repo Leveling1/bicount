@@ -11,7 +11,7 @@ Future<RecurringTransfertModel> _$RecurringTransfertModelFromSupabase(
         ? null
         : data['recurring_transfert_id'] as String?,
     uid: data['uid'] as String,
-    recurringTransfertTypeId: data['recurring_transfert_type_id'] as int,
+    recurringTransfertTypeId: data['transaction_type'] as int,
     title: data['title'] as String,
     note: data['note'] as String,
     amount: data['amount'] as double,
@@ -45,7 +45,7 @@ Future<Map<String, dynamic>> _$RecurringTransfertModelToSupabase(
   return {
     'recurring_transfert_id': instance.recurringTransfertId,
     'uid': instance.uid,
-    'recurring_transfert_type_id': instance.recurringTransfertTypeId,
+    'transaction_type': instance.recurringTransfertTypeId,
     'title': instance.title,
     'note': instance.note,
     'amount': instance.amount,
@@ -75,7 +75,7 @@ Future<RecurringTransfertModel> _$RecurringTransfertModelFromSqlite(
         ? null
         : data['recurring_transfert_id'] as String?,
     uid: data['uid'] as String,
-    recurringTransfertTypeId: data['recurring_transfert_type_id'] as int,
+    recurringTransfertTypeId: data['transaction_type'] as int,
     title: data['title'] as String,
     note: data['note'] as String,
     amount: data['amount'] as double,
@@ -109,7 +109,7 @@ Future<Map<String, dynamic>> _$RecurringTransfertModelToSqlite(
   return {
     'recurring_transfert_id': instance.recurringTransfertId,
     'uid': instance.uid,
-    'recurring_transfert_type_id': instance.recurringTransfertTypeId,
+    'transaction_type': instance.recurringTransfertTypeId,
     'title': instance.title,
     'note': instance.note,
     'amount': instance.amount,
@@ -150,7 +150,7 @@ class RecurringTransfertModelAdapter
     ),
     'recurringTransfertTypeId': const RuntimeSupabaseColumnDefinition(
       association: false,
-      columnName: 'recurring_transfert_type_id',
+      columnName: 'transaction_type',
     ),
     'title': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -243,7 +243,7 @@ class RecurringTransfertModelAdapter
     ),
     'recurringTransfertTypeId': const RuntimeSqliteColumnDefinition(
       association: false,
-      columnName: 'recurring_transfert_type_id',
+      columnName: 'transaction_type',
       iterable: false,
       type: int,
     ),

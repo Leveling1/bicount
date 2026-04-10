@@ -1238,3 +1238,10 @@ Dormant features:
 - `add_fund`, `subscription`, and `salary` feature directories still exist with stubbed broken calls
 - their local data sources have `_offlineFinanceLocalService` fields marked as unused
 - they can be fully removed when the product confirms no backward compatibility is needed
+
+## Transaction Placeholder Friend Update (2026-04-11)
+
+Rules:
+- when a transaction form creates a draft `FriendsModel` with no `sid` and no `uid`, its `relationType` must follow the effective persisted type: use the recurring type when recurring mode is enabled, otherwise use the base expense or income form type
+- transaction persistence must resolve each draft party only once per submission and reuse that resolved friend row across recurring-template creation and saved transaction rows
+- local friend reuse for typed draft parties should match normalized identity plus `relationType` so filtered subscription or company entries are reused instead of duplicated when possible

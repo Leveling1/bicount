@@ -1,6 +1,7 @@
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
+import 'package:dartz/dartz.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
@@ -18,10 +19,16 @@ class TransactionRepositoryImpl extends TransactionRepository {
   TransactionRepositoryImpl(
     this.localDataSource, {
     this.splitResolver = const TransactionSplitResolver(),
-  });
+    Future<void> Function(RecurringTransfertModel recurringTransfert)?
+    saveRecurringTransfert,
+  }) : _saveRecurringTransfert =
+           saveRecurringTransfert ??
+           OfflineFinanceLocalService().createRecurringTransfert;
 
   final TransactionLocalDataSource localDataSource;
   final TransactionSplitResolver splitResolver;
+  final Future<void> Function(RecurringTransfertModel recurringTransfert)
+  _saveRecurringTransfert;
 
   @override
   Future<void> createTransaction(
@@ -29,7 +36,11 @@ class TransactionRepositoryImpl extends TransactionRepository {
   ) async {
     try {
       final resolvedSplits = splitResolver.resolve(transaction);
-      final sender = await _ensureParty(transaction.sender);
+      final resolvedParties = <String, _ResolvedParty>{};
+      final sender = await _ensureParty(
+        transaction.sender,
+        resolvedParties: resolvedParties,
+      );
       final gtid = const Uuid().v4();
 
       // Create a recurring template if the user enabled recurring mode.
@@ -40,11 +51,12 @@ class TransactionRepositoryImpl extends TransactionRepository {
           transaction.recurringTypeId != null) {
         final firstBeneficiary = await _ensureParty(
           resolvedSplits.first.beneficiary,
+          resolvedParties: resolvedParties,
         );
         recurringTransfertId = const Uuid().v4();
         generationMode = 1; // manualConfirmation
 
-        await OfflineFinanceLocalService().createRecurringTransfert(
+        await _saveRecurringTransfert(
           RecurringTransfertModel(
             recurringTransfertId: recurringTransfertId,
             uid: sender.sid,
@@ -63,25 +75,28 @@ class TransactionRepositoryImpl extends TransactionRepository {
       }
 
       for (final split in resolvedSplits) {
-        final beneficiary = await _ensureParty(split.beneficiary);
-        final saveResult = await localDataSource.saveTransaction(
-          gtid,
-          title: transaction.name,
-          date: transaction.date,
-          amount: split.amount,
-          category: transaction.category,
-          currency: transaction.currency,
-          note: transaction.note,
-          senderId: sender.sid,
-          beneficiaryId: beneficiary.sid,
-          image: beneficiary.image.isEmpty
-              ? Constants.memojiDefault
-              : beneficiary.image,
-          recurringTransfertId: recurringTransfertId,
-          generationMode: generationMode,
+        final beneficiary = await _ensureParty(
+          split.beneficiary,
+          resolvedParties: resolvedParties,
         );
-
-        await saveResult.fold(_throwFailure, (_) async => null);
+        await _unwrapEither(
+          await localDataSource.saveTransaction(
+            gtid,
+            title: transaction.name,
+            date: transaction.date,
+            amount: split.amount,
+            category: transaction.category,
+            currency: transaction.currency,
+            note: transaction.note,
+            senderId: sender.sid,
+            beneficiaryId: beneficiary.sid,
+            image: beneficiary.image.isEmpty
+                ? Constants.memojiDefault
+                : beneficiary.image,
+            recurringTransfertId: recurringTransfertId,
+            generationMode: generationMode,
+          ),
+        );
       }
     } on Failure {
       rethrow;
@@ -127,25 +142,32 @@ class TransactionRepositoryImpl extends TransactionRepository {
         );
       }
 
-      final sender = await _ensureParty(transaction.sender);
-      final split = resolvedSplits.single;
-      final beneficiary = await _ensureParty(split.beneficiary);
-      final result = await localDataSource.updateTransaction(
-        previousTransaction,
-        title: transaction.name,
-        date: transaction.date,
-        amount: split.amount,
-        category: transaction.category,
-        currency: transaction.currency,
-        note: transaction.note,
-        senderId: sender.sid,
-        beneficiaryId: beneficiary.sid,
-        image: beneficiary.image.isEmpty
-            ? Constants.memojiDefault
-            : beneficiary.image,
+      final resolvedParties = <String, _ResolvedParty>{};
+      final sender = await _ensureParty(
+        transaction.sender,
+        resolvedParties: resolvedParties,
       );
-
-      await result.fold(_throwFailure, (_) async => null);
+      final split = resolvedSplits.single;
+      final beneficiary = await _ensureParty(
+        split.beneficiary,
+        resolvedParties: resolvedParties,
+      );
+      await _unwrapEither(
+        await localDataSource.updateTransaction(
+          previousTransaction,
+          title: transaction.name,
+          date: transaction.date,
+          amount: split.amount,
+          category: transaction.category,
+          currency: transaction.currency,
+          note: transaction.note,
+          senderId: sender.sid,
+          beneficiaryId: beneficiary.sid,
+          image: beneficiary.image.isEmpty
+              ? Constants.memojiDefault
+              : beneficiary.image,
+        ),
+      );
     } on Failure {
       rethrow;
     } catch (_) {
@@ -153,21 +175,59 @@ class TransactionRepositoryImpl extends TransactionRepository {
     }
   }
 
-  Future<_ResolvedParty> _ensureParty(FriendsModel party) async {
-    var partyId = _resolvePartyId(party);
-    var image = party.image;
+  Future<_ResolvedParty> _ensureParty(
+    FriendsModel party, {
+    required Map<String, _ResolvedParty> resolvedParties,
+  }) async {
+    final directPartyId = _resolvePartyId(party);
+    final partyImage = party.image.isEmpty
+        ? Constants.memojiDefault
+        : party.image;
 
-    if (partyId.isEmpty) {
-      final result = await localDataSource.createANewFriend(party);
-      partyId = await result.fold(_throwFailure, (friend) async => friend.sid);
-      image = await result.fold(_throwFailure, (friend) async => friend.image);
+    if (directPartyId.isNotEmpty) {
+      final resolvedParty = _ResolvedParty(
+        sid: directPartyId,
+        image: partyImage,
+      );
+      resolvedParties[_partyCacheKey(party)] = resolvedParty;
+      return resolvedParty;
     }
 
-    return _ResolvedParty(sid: partyId, image: image);
+    final cacheKey = _partyCacheKey(party);
+    final cachedParty = resolvedParties[cacheKey];
+    if (cachedParty != null) {
+      return cachedParty;
+    }
+
+    final existingFriend = await _unwrapEither(
+      await localDataSource.findMatchingFriend(party),
+    );
+    if (existingFriend != null) {
+      final resolvedParty = _ResolvedParty(
+        sid: existingFriend.sid,
+        image: existingFriend.image.isEmpty ? partyImage : existingFriend.image,
+      );
+      resolvedParties[cacheKey] = resolvedParty;
+      return resolvedParty;
+    }
+
+    final createdFriend = await _unwrapEither(
+      await localDataSource.createANewFriend(party),
+    );
+    final resolvedParty = _ResolvedParty(
+      sid: createdFriend.sid,
+      image: createdFriend.image.isEmpty ? partyImage : createdFriend.image,
+    );
+    resolvedParties[cacheKey] = resolvedParty;
+    return resolvedParty;
   }
 
   Future<T> _throwFailure<T>(Failure failure) async {
     throw failure;
+  }
+
+  Future<T> _unwrapEither<T>(Either<Failure, T> result) async {
+    return result.fold(_throwFailure, (value) async => value);
   }
 
   String _resolvePartyId(FriendsModel party) {
@@ -181,6 +241,23 @@ class TransactionRepositoryImpl extends TransactionRepository {
     }
 
     return '';
+  }
+
+  String _partyCacheKey(FriendsModel party) {
+    if (party.sid.isNotEmpty) {
+      return 'sid:${party.sid}';
+    }
+
+    final uid = party.uid;
+    if (uid != null && uid.isNotEmpty) {
+      return 'uid:$uid';
+    }
+
+    return 'draft:${party.relationType}:${_normalizePartyLookupValue(party.username)}:${_normalizePartyLookupValue(party.email)}';
+  }
+
+  String _normalizePartyLookupValue(String value) {
+    return value.trim().toLowerCase();
   }
 }
 

@@ -81,6 +81,10 @@ class _ExpenseFormState extends State<ExpenseForm>
   int get transactionFormType => TransactionTypes.expenseCode;
 
   @override
+  int get transactionFormPartyType =>
+      _isRecurring ? _recurringTypeId : transactionFormType;
+
+  @override
   List<FriendsModel> get transactionFormFriends => widget.friends;
 
   @override

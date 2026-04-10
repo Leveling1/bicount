@@ -97,7 +97,7 @@ Colonnes recommandées :
 
 - `recurring_transfert_id uuid primary key`
 - `uid uuid not null references auth.users(id) on delete cascade`
-- `recurring_transfert_type_id smallint not null references recurring_transfert_type(id)`
+- `transaction_type smallint not null references recurring_transfert_type(id)`
 - `title text not null`
 - `note text not null default ''`
 - `amount numeric not null`
@@ -195,7 +195,7 @@ Contrat attendu :
 
 Options attendues côté backend pour supporter ce flow :
 
-- type récurrent via `recurring_transfert_type_id`
+- type récurrent via `transaction_type`
 - fréquence
 - date de début
 - prochaine échéance
@@ -280,7 +280,7 @@ Le backend ne doit pas :
 
 Migrer les abonnements vers `recurring_transfert` avec :
 
-- `recurring_transfert_type_id = subscription_expense`
+- `transaction_type = subscription_expense`
 - `execution_mode` selon le choix produit ou le comportement actuel par défaut
 - `sender_id = current user uid`
 - `beneficiary_id = friend sid` ou identifiant métier déjà utilisé pour la contrepartie
@@ -335,8 +335,8 @@ Pourquoi cette structure est meilleure :
 
 1. Créer une expense ponctuelle et vérifier qu’elle tombe dans `transactions`.
 2. Créer une income ponctuelle et vérifier qu’elle tombe dans `transactions`.
-3. Créer une charge récurrente type abonnement et vérifier qu’elle tombe dans `recurring_transfert` avec le bon `recurring_transfert_type_id`.
-4. Créer une entrée récurrente type salaire et vérifier qu’elle tombe dans `recurring_transfert` avec le bon `recurring_transfert_type_id`.
+3. Créer une charge récurrente type abonnement et vérifier qu’elle tombe dans `recurring_transfert` avec le bon `transaction_type`.
+4. Créer une entrée récurrente type salaire et vérifier qu’elle tombe dans `recurring_transfert` avec le bon `transaction_type`.
 5. Vérifier qu’aucun modèle récurrent n’impacte les soldes tant qu’aucune occurrence réelle n’existe.
 6. Vérifier qu’un mode manuel crée une occurrence réelle uniquement après confirmation explicite.
 7. Vérifier qu’un mode automatique crée l’occurrence réelle via le job backend sans doublon.
@@ -349,4 +349,4 @@ Décisions produit / backend confirmées :
 
 - les anciennes tables `subscriptions`, `account_funding`, et `recurring_fundings` doivent être supprimées après migration
 - `transactions.type` doit être redéfini proprement autour de la nouvelle cible métier, et ne doit pas conserver l’ancien découpage historique
-- il n’est pas nécessaire de stocker un snapshot de `recurring_transfert_type_id` dans `transactions`; le lien `recurring_transfert_id` suffit pour l’architecture cible
+- il n’est pas nécessaire de stocker un snapshot de `transaction_type` dans `transactions`; le lien `recurring_transfert_id` suffit pour l’architecture cible
