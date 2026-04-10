@@ -993,6 +993,7 @@ Rules:
 Migration rule:
 - keep the recurring-funding SQLite repair step in `Repository.repairRecurringFundingMigrationStateIfNeeded()` before `Repository().initialize()`; it protects existing local databases from duplicate-column failures on partially migrated devices
 - Brick tracks applied migrations in the `MigrationVersions` table, not only with `PRAGMA user_version`; if you repair a partially migrated local database, also mark the migration version there or Brick may replay the same `ALTER TABLE` commands
+- repair passes that open the main Brick SQLite file or `brick_offline_queue.sqlite` after `clientQueue(...)` is created must use a non-shared database handle (`singleInstance: false`) so closing the repair connection does not close Brick's live queue/database connection
 - keep the temporary AndroidX forcing block in `android/build.gradle.kts` unless AGP is upgraded; it prevents transitive AndroidX updates from requiring a newer Android Gradle plugin than the project currently uses
 - keep Android build paths and `flutter.source` aligned on the canonical project directory; this project may be opened through a Windows junction during AI work, and Flutter assets can disappear from the APK if Gradle builds from one path while Flutter bundles from another
 
@@ -1042,6 +1043,32 @@ Rules:
 - previewing an invite from a deep link must go through the backend Edge Function instead of a direct public `select` on `friend_invites`
 - accepting an invite must go through the backend Edge Function and should fail clearly when the user is offline or not authenticated
 - the friend deep-link landing should only show pending invites in the `Pending requests` section and should not strand the user on the invite hub after the same invite has already been accepted
+
+## Invite Secondary Navigation Update (2026-04-10)
+
+Rules:
+- external `/friend/invite?inviteCode=...` links should no longer replace the whole in-app navigation stack for authenticated users
+- when the app receives a friend invite deep link and the user is authenticated, the app should land in the normal shell flow first, then open the invite screen as a secondary pushed page
+- the pushed in-app invite route uses the same `/friend/invite` path with an internal `embedded=1` query marker; keep that marker internal and do not generate it in public links
+- when the user is not authenticated, preserve `inviteCode` through `/auth` and `/auth/email-code`, then reopen the invite flow after sign-in instead of dropping the deep link context
+- if an invite deep link is already resolved or the user accepts or rejects it successfully from the pushed page, prefer `pop()` back to the underlying screen when possible instead of `go('/')`
+- cold-start invite links coming from `app_links.getInitialLink()` must not be emitted before the notification bloc is subscribed, or the initial invite navigation can be lost entirely
+- if an initial deep-link notification arrives before `rootNavigatorKey.currentContext` exists, keep it pending and retry navigation on the next frame instead of dropping it
+- the pushed invite page must not auto-close from stale `FriendBloc.flashMessage`, hub cache, or an empty initial preview result; only auto-close after an accept/reject action initiated from that page succeeds
+
+## Startup Robustness Update (2026-04-10)
+
+Rules:
+- local currency preference reads and writes must tolerate transient Brick or SQLite unavailability during startup or sign-out transitions
+- do not let a failed local `Repository().get<UserModel>(...)` inside currency preference helpers crash app bootstrap; fall back to remote or cached config when possible
+- currency bootstrap callbacks triggered from auth changes, realtime currency streams, or unawaited `hydrate()` calls must catch and log their own failures instead of surfacing as unhandled exceptions during app launch
+- keep the root `GoRouter` instance stable across theme, locale, and currency rebuilds; do not recreate `AppRouter()` from inside `MaterialApp.router` builders or deep-link navigation can reset during startup
+
+## Graph Outflow Update (2026-04-10)
+
+Rules:
+- the graph dashboard outflow must include transactions stored with `TransactionTypes.othersCode`
+- expense breakdowns should expose that bucket as `Other` so graph tests and dashboard totals stay aligned with the unified transaction ledger
 
 ## Friend Detail Currency Update (2026-04-01)
 

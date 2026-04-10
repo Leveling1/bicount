@@ -10,6 +10,7 @@ import 'package:bicount/features/currency/domain/entities/app_currency_entity.da
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/entities/currency_quote_entity.dart';
 import 'package:bicount/features/currency/domain/entities/exchange_rate_snapshot_entity.dart';
+import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -29,7 +30,7 @@ class CurrencyRepositoryImpl {
     _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((
       _,
     ) {
-      _rebindUserPreferenceStream();
+      unawaited(_safeRebindUserPreferenceStream());
     });
   }
 
@@ -69,9 +70,11 @@ class CurrencyRepositoryImpl {
     );
 
     _currencyCatalogSubscription ??= _remoteDataSource.watchCurrencies().listen(
-      _onRemoteCurrenciesChanged,
+      (currencies) {
+        unawaited(_safeOnRemoteCurrenciesChanged(currencies));
+      },
     );
-    await _rebindUserPreferenceStream();
+    await _safeRebindUserPreferenceStream();
 
     try {
       await refreshCurrencies();
@@ -278,7 +281,35 @@ class CurrencyRepositoryImpl {
 
     _userPreferenceSubscription = _userPreferenceService
         .watchCurrentUserReferenceCurrency()
-        .listen(_onUserReferenceCurrencyChanged);
+        .listen((currencyCode) {
+          unawaited(_safeOnUserReferenceCurrencyChanged(currencyCode));
+        });
+  }
+
+  Future<void> _safeRebindUserPreferenceStream() async {
+    try {
+      await _rebindUserPreferenceStream();
+    } catch (error) {
+      debugPrint('Currency preference stream rebind warning: $error');
+    }
+  }
+
+  Future<void> _safeOnUserReferenceCurrencyChanged(String? currencyCode) async {
+    try {
+      await _onUserReferenceCurrencyChanged(currencyCode);
+    } catch (error) {
+      debugPrint('Currency preference update warning: $error');
+    }
+  }
+
+  Future<void> _safeOnRemoteCurrenciesChanged(
+    List<AppCurrencyEntity> currencies,
+  ) async {
+    try {
+      await _onRemoteCurrenciesChanged(currencies);
+    } catch (error) {
+      debugPrint('Currency catalog sync warning: $error');
+    }
   }
 
   Future<void> dispose() async {

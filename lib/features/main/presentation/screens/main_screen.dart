@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/network_status.dart';
+import 'package:bicount/core/routes/friend_invite_route.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
@@ -29,6 +30,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final PageController pageController = PageController();
   final TextEditingController searchTransaction = TextEditingController();
+  String? _lastScheduledInviteCode;
 
   bool showSearchBar = false;
   int _selectedIndex = 0;
@@ -45,10 +47,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final location = GoRouter.of(context).state.uri.toString();
-    if (location == '/graphs') {
+    final currentUri = GoRouterState.of(context).uri;
+    if (currentUri.path == '/graphs') {
       _goToPage(1);
-    } else if (location == '/transaction') {
+    } else if (currentUri.path == '/transaction') {
       _goToPage(2);
     }
   }
@@ -62,6 +64,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _scheduleInvitePresentation(GoRouterState.of(context).uri);
     final titles = localizedMainShellTitles(context);
 
     return BlocConsumer<MainBloc, MainState>(
@@ -109,6 +112,25 @@ class _MainScreenState extends State<MainScreen> {
         );
       },
     );
+  }
+
+  void _scheduleInvitePresentation(Uri currentUri) {
+    final inviteCode = FriendInviteRoute.inviteCodeFromUri(currentUri);
+    if (currentUri.path != '/' || inviteCode == null) {
+      _lastScheduledInviteCode = null;
+      return;
+    }
+
+    if (_lastScheduledInviteCode == inviteCode) {
+      return;
+    }
+
+    _lastScheduledInviteCode = inviteCode;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.go('/');
+      context.push(FriendInviteRoute.buildSecondaryRoute(inviteCode));
+    });
   }
 
   List<Widget> _buildScreens(MainEntity data) {

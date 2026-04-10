@@ -34,13 +34,19 @@ class FriendScreen extends StatefulWidget {
 }
 
 class _FriendScreenState extends State<FriendScreen> {
-  bool _handledResolvedDeepLink = false;
+  bool _handledCompletedDeepLink = false;
+  bool _awaitingInitialInviteLookup = false;
+  bool _initialInviteLookupStarted = false;
+  bool _submittedDeepLinkDecision = false;
 
   @override
   void initState() {
     super.initState();
+    final inviteCode = widget.initialInviteCode;
+    if (inviteCode != null && inviteCode.isNotEmpty) {
+      _awaitingInitialInviteLookup = true;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final inviteCode = widget.initialInviteCode;
       if (inviteCode != null && inviteCode.isNotEmpty) {
         context.read<FriendBloc>().add(FriendInviteCodeReceived(inviteCode));
       }
@@ -61,8 +67,10 @@ class _FriendScreenState extends State<FriendScreen> {
 
     return BlocConsumer<FriendBloc, FriendState>(
       listener: (context, state) {
+        _trackInitialInviteLookup(state);
+        _resetDeepLinkDecisionOnFailure(state);
         handleFriendStateFeedback(context, state);
-        _handleResolvedDeepLink(state);
+        _handleCompletedDeepLink(state);
       },
       builder: (context, state) {
         final activeShare = _resolveActiveShare(state.hub.activeShare);
@@ -121,12 +129,8 @@ class _FriendScreenState extends State<FriendScreen> {
                   FriendInvitePreviewCard(
                     invite: state.invitePreview!,
                     isSubmitting: state.isSubmitting,
-                    onAccept: () => context.read<FriendBloc>().add(
-                      const FriendAcceptRequested(),
-                    ),
-                    onReject: () => context.read<FriendBloc>().add(
-                      const FriendRejectRequested(),
-                    ),
+                    onAccept: _onDeepLinkAcceptRequested,
+                    onReject: _onDeepLinkRejectRequested,
                     onClose: () => context.read<FriendBloc>().add(
                       const FriendPreviewCleared(),
                     ),
@@ -187,42 +191,65 @@ class _FriendScreenState extends State<FriendScreen> {
     context.read<FriendBloc>().add(FriendInviteCodeReceived(value));
   }
 
-  void _handleResolvedDeepLink(FriendState state) {
+  void _onDeepLinkAcceptRequested() {
+    _submittedDeepLinkDecision = true;
+    context.read<FriendBloc>().add(const FriendAcceptRequested());
+  }
+
+  void _onDeepLinkRejectRequested() {
+    _submittedDeepLinkDecision = true;
+    context.read<FriendBloc>().add(const FriendRejectRequested());
+  }
+
+  void _trackInitialInviteLookup(FriendState state) {
+    if (!_awaitingInitialInviteLookup) {
+      return;
+    }
+
+    if (state.isSubmitting) {
+      _initialInviteLookupStarted = true;
+      return;
+    }
+
+    if (!_initialInviteLookupStarted) {
+      return;
+    }
+
+    _awaitingInitialInviteLookup = false;
+  }
+
+  void _resetDeepLinkDecisionOnFailure(FriendState state) {
+    if (_submittedDeepLinkDecision &&
+        !state.isSubmitting &&
+        state.errorMessage != null &&
+        state.errorMessage!.isNotEmpty) {
+      _submittedDeepLinkDecision = false;
+    }
+  }
+
+  void _handleCompletedDeepLink(FriendState state) {
     final inviteCode = widget.initialInviteCode;
-    if (_handledResolvedDeepLink ||
+    final flashMessage = state.flashMessage;
+    if (_handledCompletedDeepLink ||
+        !_submittedDeepLinkDecision ||
         inviteCode == null ||
         inviteCode.isEmpty ||
-        widget.selectedFriend != null ||
-        state.invitePreview != null) {
+        (flashMessage != 'Invitation accepted.' &&
+            flashMessage != 'Invitation rejected.')) {
       return;
     }
 
-    final matchingInvite = _findInviteByCode(
-      state.hub.receivedInvites,
-      inviteCode,
-    );
-    if (matchingInvite == null || matchingInvite.isPending) {
-      return;
-    }
-
-    _handledResolvedDeepLink = true;
+    _handledCompletedDeepLink = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
         return;
       }
+      final navigator = Navigator.of(context);
+      if (navigator.canPop()) {
+        navigator.pop();
+        return;
+      }
       context.go('/');
     });
-  }
-
-  FriendInviteEntity? _findInviteByCode(
-    List<FriendInviteEntity> invites,
-    String inviteCode,
-  ) {
-    for (final invite in invites) {
-      if (invite.inviteCode == inviteCode) {
-        return invite;
-      }
-    }
-    return null;
   }
 }

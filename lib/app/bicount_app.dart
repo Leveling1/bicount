@@ -20,6 +20,7 @@ Future<void> bootstrapBicountApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Repository.configure(databaseFactory);
+  await Repository().repairCoreColumnsMigrationStateIfNeeded();
   await Repository().repairRecurringFundingMigrationStateIfNeeded();
   await Repository().repairCurrencyFxMigrationStateIfNeeded();
   await Repository().repairUserReferenceCurrencyMigrationStateIfNeeded();
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   static const Locale _fallbackLocale = Locale('en');
+  static final _router = AppRouter().router;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +64,7 @@ class MyApp extends StatelessWidget {
                           theme: AppTheme.lightTheme,
                           darkTheme: AppTheme.darkTheme,
                           themeMode: themeState.preference.themeMode,
-                          routerConfig: AppRouter().router,
+                          routerConfig: _router,
                           locale: resolvedLocale,
                           localizationsDelegates:
                               AppLocalizations.localizationsDelegates,

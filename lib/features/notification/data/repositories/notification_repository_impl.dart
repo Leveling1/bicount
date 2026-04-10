@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bicount/features/notification/data/data_sources/local_datasource/notification_local_datasource.dart';
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/notification_remote_datasource.dart';
@@ -19,13 +20,22 @@ class NotificationRepositoryImpl implements NotificationRepository {
   StreamSubscription<AppNotificationEntity>? _foregroundSubscription;
   StreamSubscription<AppNotificationEntity>? _openedSubscription;
   StreamSubscription<AppNotificationEntity>? _deepLinkSubscription;
+  Future<void>? _warmupTask;
 
   @override
   Future<void> initialize() async {
     await localDataSource.initialize(_controller.add);
-    await remoteDataSource.requestPermission();
-    await remoteDataSource.syncDeviceToken();
+    _registerEventStreams();
 
+    final initialEvent = await remoteDataSource.getInitialEvent();
+    if (initialEvent != null) {
+      _controller.add(initialEvent);
+    }
+
+    _warmupTask ??= _warmNotifications();
+  }
+
+  void _registerEventStreams() {
     _foregroundSubscription ??= remoteDataSource.foregroundMessages().listen((
       notification,
     ) async {
@@ -39,10 +49,18 @@ class NotificationRepositoryImpl implements NotificationRepository {
     _deepLinkSubscription ??= remoteDataSource.deepLinks().listen(
       _controller.add,
     );
+  }
 
-    final initialEvent = await remoteDataSource.getInitialEvent();
-    if (initialEvent != null) {
-      _controller.add(initialEvent);
+  Future<void> _warmNotifications() async {
+    try {
+      await remoteDataSource.requestPermission();
+      await remoteDataSource.syncDeviceToken();
+    } catch (error, stackTrace) {
+      log(
+        'Notification warmup warning: $error',
+        name: 'NotificationRepositoryImpl',
+        stackTrace: stackTrace,
+      );
     }
   }
 

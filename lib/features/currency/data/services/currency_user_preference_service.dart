@@ -1,6 +1,7 @@
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CurrencyUserPreferenceService {
@@ -63,41 +64,50 @@ class CurrencyUserPreferenceService {
         .update({'reference_currency_code': currencyCode})
         .eq('uid', uid);
 
-    final users = await Repository().get<UserModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
-      query: Query(where: [Where.exact('uid', uid)]),
-    );
-    if (users.isEmpty) {
-      return;
-    }
+    try {
+      final users = await Repository().get<UserModel>(
+        policy: OfflineFirstGetPolicy.localOnly,
+        query: Query(where: [Where.exact('uid', uid)]),
+      );
+      if (users.isEmpty) {
+        return;
+      }
 
-    final currentUser = users.first;
-    await Repository().upsert<UserModel>(
-      UserModel(
-        uid: currentUser.uid,
-        image: currentUser.image,
-        username: currentUser.username,
-        email: currentUser.email,
-        incomes: currentUser.incomes,
-        expenses: currentUser.expenses,
-        balance: currentUser.balance,
-        companyIncome: currentUser.companyIncome,
-        personalIncome: currentUser.personalIncome,
-        referenceCurrencyCode: currencyCode,
-      ),
-    );
+      final currentUser = users.first;
+      await Repository().upsert<UserModel>(
+        UserModel(
+          uid: currentUser.uid,
+          image: currentUser.image,
+          username: currentUser.username,
+          email: currentUser.email,
+          incomes: currentUser.incomes,
+          expenses: currentUser.expenses,
+          balance: currentUser.balance,
+          companyIncome: currentUser.companyIncome,
+          personalIncome: currentUser.personalIncome,
+          referenceCurrencyCode: currencyCode,
+        ),
+      );
+    } catch (error) {
+      debugPrint('Currency local preference sync warning: $error');
+    }
   }
 
   Future<String?> _readLocalReferenceCurrency(String uid) async {
-    final users = await Repository().get<UserModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
-      query: Query(where: [Where.exact('uid', uid)]),
-    );
-    if (users.isEmpty) {
+    try {
+      final users = await Repository().get<UserModel>(
+        policy: OfflineFirstGetPolicy.localOnly,
+        query: Query(where: [Where.exact('uid', uid)]),
+      );
+      if (users.isEmpty) {
+        return null;
+      }
+
+      final value = users.first.referenceCurrencyCode?.trim();
+      return value == null || value.isEmpty ? null : value;
+    } catch (error) {
+      debugPrint('Currency local preference read warning: $error');
       return null;
     }
-
-    final value = users.first.referenceCurrencyCode?.trim();
-    return value == null || value.isEmpty ? null : value;
   }
 }

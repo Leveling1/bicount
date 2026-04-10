@@ -1,5 +1,6 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
+import 'package:bicount/core/routes/friend_invite_route.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
@@ -15,9 +16,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/widgets/custom_button.dart';
 
 class AuthScreen extends StatelessWidget {
-  const AuthScreen({super.key, this.initialEmail});
+  const AuthScreen({super.key, this.initialEmail, this.initialInviteCode});
 
   final String? initialEmail;
+  final String? initialInviteCode;
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +30,24 @@ class AuthScreen extends StatelessWidget {
             if (state is RequestEmailOtpSuccess) {
               final target = Uri(
                 path: '/auth/email-code',
-                queryParameters: {'email': state.email},
+                queryParameters: {
+                  'email': state.email,
+                  if (initialInviteCode != null &&
+                      initialInviteCode!.trim().isNotEmpty)
+                    'inviteCode': initialInviteCode,
+                },
               ).toString();
               context.go(target);
               return;
             }
 
             if (state is AuthWithGoogleSuccess) {
-              context.go('/');
+              context.go(_resolvePostAuthRoute());
+              return;
+            }
+
+            if (state is AuthWithAppleSuccess) {
+              context.go(_resolvePostAuthRoute());
               return;
             }
 
@@ -174,5 +186,13 @@ class AuthScreen extends StatelessWidget {
   bool get _showsAppleButton {
     return defaultTargetPlatform == TargetPlatform.iOS ||
         defaultTargetPlatform == TargetPlatform.macOS;
+  }
+
+  String _resolvePostAuthRoute() {
+    final inviteCode = initialInviteCode?.trim();
+    if (inviteCode == null || inviteCode.isEmpty) {
+      return '/';
+    }
+    return FriendInviteRoute.buildShellRoute(inviteCode);
   }
 }

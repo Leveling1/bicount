@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CurrencyState extends Equatable {
@@ -43,8 +44,13 @@ class CurrencyCubit extends Cubit<CurrencyState> {
 
   Future<void> hydrate() async {
     emit(state.copyWith(isSyncing: true));
-    await _repository.hydrate();
-    emit(state.copyWith(isSyncing: false, config: _repository.currentConfig));
+    try {
+      await _repository.hydrate();
+      emit(state.copyWith(isSyncing: false, config: _repository.currentConfig));
+    } catch (error) {
+      debugPrint('Currency bootstrap warning: $error');
+      emit(state.copyWith(isSyncing: false));
+    }
   }
 
   Future<void> selectReferenceCurrency(String currencyCode) async {

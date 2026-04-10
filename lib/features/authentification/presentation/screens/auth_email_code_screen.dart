@@ -1,5 +1,6 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
+import 'package:bicount/core/routes/friend_invite_route.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
@@ -11,9 +12,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class AuthEmailCodeScreen extends StatelessWidget {
-  const AuthEmailCodeScreen({super.key, required this.email});
+  const AuthEmailCodeScreen({super.key, required this.email, this.inviteCode});
 
   final String email;
+  final String? inviteCode;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class AuthEmailCodeScreen extends StatelessWidget {
         child: BlocConsumer<AuthentificationBloc, AuthentificationState>(
           listener: (context, state) {
             if (state is VerifyEmailOtpSuccess) {
-              context.go('/');
+              context.go(_resolvePostAuthRoute());
               return;
             }
 
@@ -104,7 +106,12 @@ class AuthEmailCodeScreen extends StatelessWidget {
                                 onPressed: () {
                                   final target = Uri(
                                     path: '/auth',
-                                    queryParameters: {'email': email},
+                                    queryParameters: {
+                                      'email': email,
+                                      if (inviteCode != null &&
+                                          inviteCode!.trim().isNotEmpty)
+                                        'inviteCode': inviteCode,
+                                    },
                                   ).toString();
                                   context.go(target);
                                 },
@@ -130,5 +137,13 @@ class AuthEmailCodeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _resolvePostAuthRoute() {
+    final normalizedInviteCode = inviteCode?.trim();
+    if (normalizedInviteCode == null || normalizedInviteCode.isEmpty) {
+      return '/';
+    }
+    return FriendInviteRoute.buildShellRoute(normalizedInviteCode);
   }
 }

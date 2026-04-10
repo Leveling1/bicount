@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bicount/core/constants/app_config.dart';
+import 'package:bicount/core/routes/friend_invite_route.dart';
 import 'package:bicount/features/authentification/presentation/screens/auth_email_code_screen.dart';
 import 'package:bicount/features/authentification/presentation/screens/auth_screen.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_invite_landing_screen.dart';
@@ -34,6 +35,9 @@ class AppRouter {
             pageBuilder: (context, state) => buildFadeSlideTransitionPage(
               child: AuthScreen(
                 initialEmail: state.uri.queryParameters['email'],
+                initialInviteCode: FriendInviteRoute.inviteCodeFromUri(
+                  state.uri,
+                ),
               ),
               state: state,
             ),
@@ -43,6 +47,7 @@ class AppRouter {
             pageBuilder: (context, state) => buildFadeSlideTransitionPage(
               child: AuthEmailCodeScreen(
                 email: state.uri.queryParameters['email'] ?? '',
+                inviteCode: FriendInviteRoute.inviteCodeFromUri(state.uri),
               ),
               state: state,
             ),
@@ -145,11 +150,15 @@ class AppRouter {
         redirect: (context, state) {
           final session = Supabase.instance.client.auth.currentSession;
           final isLoggedIn = session != null;
-          final path = state.uri.path;
+          final uri = state.uri;
+          final path = uri.path;
+          final inviteCode = FriendInviteRoute.inviteCodeFromUri(uri);
+          final isInvitePath = FriendInviteRoute.isInvitePath(uri);
+          final isEmbeddedInvite = FriendInviteRoute.isEmbedded(uri);
           final isPublicPath =
               path == '/auth' ||
               path == '/auth/email-code' ||
-              path == '/friend/invite';
+              (isInvitePath && !isEmbeddedInvite);
 
           if (!AppConfig.exposeCompanySurface &&
               (path == '/company' ||
@@ -166,13 +175,23 @@ class AppRouter {
           }
 
           if (path == '/auth/email-code' &&
-              (state.uri.queryParameters['email'] ?? '').isEmpty) {
-            return '/auth';
+              (uri.queryParameters['email'] ?? '').isEmpty) {
+            return inviteCode == null
+                ? '/auth'
+                : FriendInviteRoute.buildAuthRoute(inviteCode: inviteCode);
           }
 
           if (!isLoggedIn) {
+            if (isInvitePath && !isEmbeddedInvite) {
+              if (inviteCode == null) {
+                return '/auth';
+              }
+              return FriendInviteRoute.buildAuthRoute(inviteCode: inviteCode);
+            }
             if (path == '/') {
-              return '/auth';
+              return inviteCode == null
+                  ? '/auth'
+                  : FriendInviteRoute.buildAuthRoute(inviteCode: inviteCode);
             }
             if (!isPublicPath) {
               return '/auth';
@@ -180,8 +199,17 @@ class AppRouter {
             return null;
           }
 
+          if (isInvitePath && !isEmbeddedInvite) {
+            if (inviteCode == null) {
+              return '/';
+            }
+            return FriendInviteRoute.buildShellRoute(inviteCode);
+          }
+
           if (path == '/auth' || path == '/auth/email-code') {
-            return '/';
+            return inviteCode == null
+                ? '/'
+                : FriendInviteRoute.buildShellRoute(inviteCode);
           }
           return null;
         },

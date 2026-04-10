@@ -98,12 +98,42 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     );
   }
 
+  Future<void> repairCoreColumnsMigrationStateIfNeeded() async {
+    final databasePath = path.join(
+      await _databaseFactory.getDatabasesPath(),
+      _sqliteDatabaseName,
+    );
+    final database = await _openRepairDatabase(databasePath);
+
+    try {
+      if (await _tableExists(database, 'UserModel')) {
+        await _ensureColumn(
+          database,
+          tableName: 'UserModel',
+          columnName: 'balance',
+          definition: 'REAL',
+        );
+      }
+
+      if (await _tableExists(database, 'FriendsModel')) {
+        await _ensureColumn(
+          database,
+          tableName: 'FriendsModel',
+          columnName: 'relation_type',
+          definition: 'INTEGER',
+        );
+      }
+    } finally {
+      await database.close();
+    }
+  }
+
   Future<void> repairRecurringFundingMigrationStateIfNeeded() async {
     final databasePath = path.join(
       await _databaseFactory.getDatabasesPath(),
       _sqliteDatabaseName,
     );
-    final database = await _databaseFactory.openDatabase(databasePath);
+    final database = await _openRepairDatabase(databasePath);
 
     try {
       if (!await _tableExists(database, 'AccountFundingModel')) {
@@ -152,7 +182,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       await _databaseFactory.getDatabasesPath(),
       _sqliteDatabaseName,
     );
-    final database = await _databaseFactory.openDatabase(databasePath);
+    final database = await _openRepairDatabase(databasePath);
 
     try {
       final tables = [
@@ -191,7 +221,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       await _databaseFactory.getDatabasesPath(),
       _sqliteDatabaseName,
     );
-    final database = await _databaseFactory.openDatabase(databasePath);
+    final database = await _openRepairDatabase(databasePath);
 
     try {
       if (!await _tableExists(database, 'UserModel')) {
@@ -236,7 +266,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       await _databaseFactory.getDatabasesPath(),
       _sqliteDatabaseName,
     );
-    final database = await _databaseFactory.openDatabase(databasePath);
+    final database = await _openRepairDatabase(databasePath);
 
     try {
       if (!await _tableExists(database, 'RecurringFundingModel')) {
@@ -289,7 +319,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       await _databaseFactory.getDatabasesPath(),
       _sqliteDatabaseName,
     );
-    final database = await _databaseFactory.openDatabase(databasePath);
+    final database = await _openRepairDatabase(databasePath);
 
     try {
       if (!await _tableExists(database, 'TransactionModel')) {
@@ -355,7 +385,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       return;
     }
 
-    final database = await _databaseFactory.openDatabase(databasePath);
+    final database = await _openRepairDatabase(databasePath);
 
     try {
       final tableRows = await database.rawQuery(
@@ -857,6 +887,13 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     await database.execute(
       'CREATE TABLE IF NOT EXISTS '
       '$_brickMigrationVersionsTableName(version INTEGER PRIMARY KEY)',
+    );
+  }
+
+  Future<Database> _openRepairDatabase(String databasePath) {
+    return _databaseFactory.openDatabase(
+      databasePath,
+      options: OpenDatabaseOptions(singleInstance: false),
     );
   }
 
