@@ -1056,6 +1056,17 @@ Rules:
 - if an initial deep-link notification arrives before `rootNavigatorKey.currentContext` exists, keep it pending and retry navigation on the next frame instead of dropping it
 - the pushed invite page must not auto-close from stale `FriendBloc.flashMessage`, hub cache, or an empty initial preview result; only auto-close after an accept/reject action initiated from that page succeeds
 
+## Transaction Feed Filter Update (2026-04-10)
+
+Rules:
+- the transaction feed chips are no longer all pure `transaction.type` comparisons
+- `Income` must match rows where the current user participant identity set is the beneficiary
+- `Expense` must match rows where the current user participant identity set is the sender
+- the current user participant identity set means `currentUser.uid` plus any `friends.sid` whose linked `friends.uid` equals the current user
+- `Subscription` still matches `TransactionTypes.subscriptionCode`
+- `Salary` still matches `TransactionTypes.salaryCode`
+- `Other` in the transaction feed must match `TransactionTypes.otherRecurringExpenseCode` and `TransactionTypes.otherRecurringIncomeCode`, not `TransactionTypes.othersCode`
+
 ## Startup Robustness Update (2026-04-10)
 
 Rules:
@@ -1067,8 +1078,13 @@ Rules:
 ## Graph Outflow Update (2026-04-10)
 
 Rules:
-- the graph dashboard outflow must include transactions stored with `TransactionTypes.othersCode`
-- expense breakdowns should expose that bucket as `Other` so graph tests and dashboard totals stay aligned with the unified transaction ledger
+- the graph dashboard inflow, outflow, and cashflow trend must use the same current-user participant identity set as the transaction feed and main finance projection
+- the current user participant identity set means `currentUser.uid` plus any `friends.sid` whose linked `friends.uid` equals the current user
+- `TransactionTypes.salaryCode` stays a dedicated inflow breakdown bucket
+- `TransactionTypes.subscriptionCode` stays a dedicated outflow breakdown bucket
+- `TransactionTypes.otherRecurringIncomeCode` belongs to the income breakdown `Other` bucket when the current user participant set is the beneficiary
+- `TransactionTypes.otherRecurringExpenseCode` belongs to the expense breakdown `Other` bucket when the current user participant set is the sender
+- legacy `TransactionTypes.othersCode` rows should be absorbed into generic `Income` or `Expenses` by participant role, not forced into the graph `Other` bucket
 
 ## Friend Detail Currency Update (2026-04-01)
 

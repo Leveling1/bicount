@@ -28,6 +28,7 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
 
   final supabaseInstance = Supabase.instance.client;
   final CurrencyRepositoryImpl _currencyRepository;
+  // ignore: unused_field
   final OfflineFinanceLocalService _offlineFinanceLocalService;
   final RecurringFundingLocalService _recurringFundingLocalService;
   final RecurringFundingScheduleService _scheduleService;

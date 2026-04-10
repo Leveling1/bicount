@@ -1,6 +1,5 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/friend_const.dart';
-import 'package:bicount/core/constants/recurring_transfert_type.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
@@ -72,7 +71,7 @@ class _IncomeFormState extends State<IncomeForm>
   bool _didPrefillInitialTransaction = false;
   bool _isRecurring = false;
   int _recurringFrequency = Frequency.monthly;
-  int _recurringTypeId = RecurringTransfertType.salaryIncome;
+  int _recurringTypeId = TransactionTypes.salaryCode;
 
   @override
   UserModel? get transactionFormUser => widget.user;

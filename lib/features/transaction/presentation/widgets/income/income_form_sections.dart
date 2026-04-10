@@ -56,7 +56,7 @@ extension _IncomeFormSections on _IncomeFormState {
           isRecurring: _isRecurring,
           frequency: _recurringFrequency,
           recurringTypeId: _recurringTypeId,
-          typeOptions: RecurringTransfertType.incomeTypes,
+          typeOptions: TransactionTypes.incomeTypes,
           subtitle: context.l10n.recurringToggleSubtitleIncome,
           enabled: !_isEditing,
           onRecurringChanged: (value) => _update(() {
@@ -67,7 +67,7 @@ extension _IncomeFormSections on _IncomeFormState {
           }),
           onTypeChanged: (value) => _update(() {
             _recurringTypeId = value;
-            _name.text = RecurringTransfertType.typeLabel(context, value);
+            _name.text = TransactionTypes.typeLabel(context, value);
           }),
         ),
       ],

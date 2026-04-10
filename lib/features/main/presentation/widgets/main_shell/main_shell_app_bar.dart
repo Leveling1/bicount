@@ -1,10 +1,7 @@
 import 'package:bicount/core/constants/constants.dart';
-import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
-import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -65,18 +62,6 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  onPressed: onAddFunds,
-                  icon: SvgPicture.asset(
-                    IconLinks.addFundsIcon,
-                    width: AppDimens.iconSizeMedium,
-                    height: AppDimens.iconSizeMedium,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).textTheme.titleSmall!.color!,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-                IconButton(
                   onPressed: onOpenSettings,
                   icon: Icon(
                     Icons.settings_outlined,
@@ -104,7 +89,7 @@ class _OfflineBadge extends StatelessWidget {
       child: Container(
         height: 24,
         decoration: BoxDecoration(
-          color: AppColors.errorColorBasic.withValues(alpha: 0.3),
+          color: Theme.of(context).colorScheme.error.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -113,14 +98,14 @@ class _OfflineBadge extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             LoadingAnimationWidget.hexagonDots(
-              color: AppColors.errorColorBasic,
+              color: Theme.of(context).colorScheme.error,
               size: 11,
             ),
             const SizedBox(width: 4),
             Text(
               context.l10n.shellOfflineBadge,
-              style: const TextStyle(
-                color: AppColors.errorColorBasic,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
                 fontSize: 11,
               ),
               textAlign: TextAlign.center,

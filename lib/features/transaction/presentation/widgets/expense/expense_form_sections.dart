@@ -81,14 +81,14 @@ extension _ExpenseFormSections on _ExpenseFormState {
           isRecurring: _isRecurring,
           frequency: _recurringFrequency,
           recurringTypeId: _recurringTypeId,
-          typeOptions: RecurringTransfertType.expenseTypes,
+          typeOptions: TransactionTypes.expenseTypes,
           subtitle: context.l10n.recurringToggleSubtitleExpense,
           enabled: !_isEditing,
           onRecurringChanged: (value) => _update(() {
             _isRecurring = value;
             if (_name.text.isEmpty) {
               _name.text =
-                  "${RecurringTransfertType.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? "(${_beneficiaryList[0]})" : ""}";
+                  "${TransactionTypes.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? "(${_beneficiaryList[0]})" : ""}";
             }
           }),
           onFrequencyChanged: (value) => _update(() {

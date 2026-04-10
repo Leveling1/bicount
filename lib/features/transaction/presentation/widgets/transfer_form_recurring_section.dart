@@ -1,5 +1,5 @@
-import 'package:bicount/core/constants/recurring_transfert_type.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_choice_chip.dart';
@@ -170,7 +170,7 @@ class _TypeSelector extends StatelessWidget {
           spacing: AppDimens.spacingSmall,
           children: options.map((typeId) {
             return CustomChoiceChip(
-              label: RecurringTransfertType.typeLabel(context, typeId),
+              label: TransactionTypes.typeLabel(context, typeId),
               selected: typeId == selected,
               onSelected: (_) => onChanged(typeId),
             );

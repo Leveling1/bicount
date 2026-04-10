@@ -1,5 +1,6 @@
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/presentation/models/transaction_feed_item.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,17 @@ List<TransactionFeedItem> buildTransactionFeed(MainEntity data) {
 }
 
 List<TransactionFeedItem> filterTransactionFeed({
+  required MainEntity data,
   required List<TransactionFeedItem> source,
   required String query,
   required int selectedIndex,
 }) {
   final normalizedQuery = query.trim().toLowerCase();
-  final selectedCode = TransactionTypes.allTypesInt[selectedIndex];
+  final currentUserParticipantIds =
+      const TransactionParticipantIdentityService().currentUserParticipantIds(
+        currentUserId: data.user.uid,
+        friends: data.friends,
+      );
 
   return source.where((item) {
     final matchesSearch =
@@ -32,7 +38,16 @@ List<TransactionFeedItem> filterTransactionFeed({
       return true;
     }
 
-    return item.filterType == selectedCode;
+    return switch (selectedIndex) {
+      1 => currentUserParticipantIds.contains(item.transaction.beneficiary),
+      2 => currentUserParticipantIds.contains(item.transaction.sender),
+      3 => item.filterType == TransactionTypes.subscriptionCode,
+      4 => item.filterType == TransactionTypes.salaryCode,
+      5 =>
+        item.filterType == TransactionTypes.otherRecurringExpenseCode ||
+            item.filterType == TransactionTypes.otherRecurringIncomeCode,
+      _ => true,
+    };
   }).toList();
 }
 

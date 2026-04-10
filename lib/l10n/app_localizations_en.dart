@@ -925,6 +925,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionFilterSubscription => 'Subscription';
 
   @override
+  String get transactionFilterSalary => 'Salary';
+
+  @override
   String get transactionFilterOther => 'Other';
 
   @override

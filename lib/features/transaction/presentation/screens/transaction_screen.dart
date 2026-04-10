@@ -59,6 +59,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   Widget build(BuildContext context) {
     final feed = buildTransactionFeed(widget.data);
     final filteredFeed = filterTransactionFeed(
+      data: widget.data,
       source: feed,
       query: widget.showSearchBar ? widget.searchController.text : '',
       selectedIndex: widget.selectedIndexTransaction,

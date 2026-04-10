@@ -342,6 +342,7 @@
   "transactionFilterIncome": "Income",
   "transactionFilterExpense": "Expense",
   "transactionFilterSubscription": "Subscription",
+  "transactionFilterSalary": "Salary",
   "transactionFilterOther": "Other",
   "transactionFilterPersonal": "Personal",
   "transactionExpenseTitle": "Add expense",

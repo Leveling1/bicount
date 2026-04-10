@@ -65,7 +65,7 @@ class FriendViewService {
     String? currentUserUid,
   }) {
     final filtered = friends.where((friend) {
-      if (friend.relationType == FriendConst.subscription) {
+      if (friend.relationType != FriendConst.friend) {
         return false;
       }
       if (currentUserUid != null && friend.uid == currentUserUid) {

@@ -100,9 +100,13 @@ extension L10nBuildContextX on BuildContext {
       case 2:
         return l10n.transactionFilterExpense;
       case 3:
-        return l10n.transactionFilterPersonal;
+        return l10n.transactionFilterSubscription;
+      case 4:
+        return l10n.transactionFilterSalary;
+      case 5:
+        return l10n.transactionFilterOther;
       default:
-        return l10n.transactionFilterAll;
+        return l10n.transactionFilterOther;
     }
   }
 

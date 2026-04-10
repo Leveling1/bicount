@@ -22,8 +22,9 @@ class GraphTimeSeriesBuilder {
 
   List<GraphCashflowPoint> buildCashflowPoints(
     List<TransactionModel> transactions,
-    GraphPeriod period,
-  ) {
+    GraphPeriod period, {
+    Set<String>? currentUserParticipantIds,
+  }) {
     final start = periodStart(
       period,
       values: transactions.map(resolveTransactionDate).toList(),
@@ -36,8 +37,18 @@ class GraphTimeSeriesBuilder {
 
     while (!cursor.isAfter(end)) {
       final currentKey = bucketKey(cursor, period);
-      final inflow = _bucketInflowForDate(transactions, currentKey, period);
-      final outflow = _bucketOutflowForDate(transactions, currentKey, period);
+      final inflow = _bucketInflowForDate(
+        transactions,
+        currentKey,
+        period,
+        currentUserParticipantIds: currentUserParticipantIds,
+      );
+      final outflow = _bucketOutflowForDate(
+        transactions,
+        currentKey,
+        period,
+        currentUserParticipantIds: currentUserParticipantIds,
+      );
       runningNet += inflow - outflow;
 
       points.add(
@@ -103,12 +114,16 @@ class GraphTimeSeriesBuilder {
   double _bucketInflowForDate(
     List<TransactionModel> transactions,
     String bucketKeyValue,
-    GraphPeriod period,
-  ) {
+    GraphPeriod period, {
+    Set<String>? currentUserParticipantIds,
+  }) {
     return transactions
         .where(
           (t) =>
-              t.type == TransactionTypes.incomeCode &&
+              _isInflowTransaction(
+                t,
+                currentUserParticipantIds: currentUserParticipantIds,
+              ) &&
               bucketKey(resolveTransactionDate(t), period) == bucketKeyValue,
         )
         .fold<double>(0, (sum, t) => sum + t.amount);
@@ -117,14 +132,45 @@ class GraphTimeSeriesBuilder {
   double _bucketOutflowForDate(
     List<TransactionModel> transactions,
     String bucketKeyValue,
-    GraphPeriod period,
-  ) {
+    GraphPeriod period, {
+    Set<String>? currentUserParticipantIds,
+  }) {
     return transactions
         .where(
           (t) =>
-              t.type != TransactionTypes.incomeCode &&
+              _isOutflowTransaction(
+                t,
+                currentUserParticipantIds: currentUserParticipantIds,
+              ) &&
               bucketKey(resolveTransactionDate(t), period) == bucketKeyValue,
         )
         .fold<double>(0, (sum, t) => sum + t.amount);
+  }
+
+  bool _isInflowTransaction(
+    TransactionModel transaction, {
+    Set<String>? currentUserParticipantIds,
+  }) {
+    if (currentUserParticipantIds != null) {
+      return currentUserParticipantIds.contains(transaction.beneficiaryId);
+    }
+
+    return transaction.type == TransactionTypes.incomeCode ||
+        transaction.type == TransactionTypes.salaryCode ||
+        transaction.type == TransactionTypes.otherRecurringIncomeCode;
+  }
+
+  bool _isOutflowTransaction(
+    TransactionModel transaction, {
+    Set<String>? currentUserParticipantIds,
+  }) {
+    if (currentUserParticipantIds != null) {
+      return currentUserParticipantIds.contains(transaction.senderId);
+    }
+
+    return transaction.type == TransactionTypes.expenseCode ||
+        transaction.type == TransactionTypes.subscriptionCode ||
+        transaction.type == TransactionTypes.otherRecurringExpenseCode ||
+        transaction.type == TransactionTypes.othersCode;
   }
 }
