@@ -1,6 +1,4 @@
-import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
-import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/brick/repository.dart';
@@ -13,6 +11,9 @@ import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import 'local_transaction_friend_matcher.dart';
+import 'local_transaction_friend_factory.dart';
+import 'local_transaction_type_resolver.dart';
 import '../../models/transaction.model.dart';
 
 class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
@@ -23,95 +24,57 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
        _offlineFinanceLocalService =
            offlineFinanceLocalService ?? OfflineFinanceLocalService();
 
-  final supabaseInstance = Supabase.instance.client;
   final CurrencyRepositoryImpl _currencyRepository;
   final OfflineFinanceLocalService _offlineFinanceLocalService;
+  final LocalTransactionFriendMatcher _friendMatcher =
+      const LocalTransactionFriendMatcher();
 
-  String? get _currentUid => supabaseInstance.auth.currentUser?.id;
+  String? get _currentUid => Supabase.instance.client.auth.currentUser?.id;
 
   @override
   Future<Either<Failure, FriendsModel>> createANewFriend(
-    FriendsModel friend,
-  ) async {
+    FriendsModel friend, {
+    required int transactionType,
+  }) async {
     final id = const Uuid().v4();
     final uid = _currentUid;
     if (uid == null) {
-      return Left(AuthenticationFailure(message: 'Authentication failure'));
+      return _authenticationFailure();
     }
 
     try {
-      final friendAdd = FriendsModel(
-        uid: null,
+      final friendAdd = buildTransactionPlaceholderFriend(
         sid: id,
-        fid: uid,
-        username: friend.username,
-        email: friend.email,
-        image: friend.image.isEmpty ? Constants.memojiDefault : friend.image,
-        give: 0.0,
-        receive: 0.0,
-        relationType: friend.relationType,
+        ownerUid: uid,
+        friend: friend,
+        transactionType: transactionType,
       );
 
       await Repository().upsert<FriendsModel>(friendAdd);
       return Right(friendAdd);
     } catch (_) {
-      return Left(
-        MessageFailure(message: 'Unable to save this friend right now.'),
-      );
+      return _messageFailure('Unable to save this friend right now.');
     }
   }
 
   @override
   Future<Either<Failure, FriendsModel?>> findMatchingFriend(
-    FriendsModel friend,
-  ) async {
-    final normalizedUsername = _normalizeLookupValue(friend.username);
-    final normalizedEmail = _normalizeLookupValue(friend.email);
-
-    if (normalizedUsername.isEmpty && normalizedEmail.isEmpty) {
-      return const Right(null);
-    }
-
+    FriendsModel friend, {
+    required int transactionType,
+  }) async {
     try {
       final localFriends = await Repository().get<FriendsModel>(
         policy: OfflineFirstGetPolicy.localOnly,
       );
-
-      final sameNameAndType = localFriends
-          .where((candidate) {
-            return candidate.relationType == friend.relationType &&
-                _normalizeLookupValue(candidate.username) == normalizedUsername;
-          })
-          .toList(growable: false);
-
-      if (sameNameAndType.isEmpty) {
-        return const Right(null);
-      }
-
-      if (normalizedEmail.isNotEmpty) {
-        for (final candidate in sameNameAndType) {
-          if (_normalizeLookupValue(candidate.email) == normalizedEmail) {
-            return Right(candidate);
-          }
-        }
-        return const Right(null);
-      }
-
-      for (final candidate in sameNameAndType) {
-        if (_normalizeLookupValue(candidate.email).isEmpty) {
-          return Right(candidate);
-        }
-      }
-
-      if (sameNameAndType.length == 1) {
-        return Right(sameNameAndType.first);
-      }
-
-      return const Right(null);
-    } catch (_) {
-      return Left(
-        MessageFailure(message: 'Unable to load this friend right now.'),
+      return Right(
+        _friendMatcher.findMatch(
+          localFriends,
+          friend,
+          transactionType: transactionType,
+        ),
       );
+    } catch (_) {
+      return _messageFailure('Unable to load this friend right now.');
     }
   }
 
@@ -132,7 +95,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   }) async {
     final uid = _currentUid;
     if (uid == null) {
-      return Left(AuthenticationFailure(message: 'Authentication failure'));
+      return _authenticationFailure();
     }
 
     try {
@@ -140,12 +103,11 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         amount: amount,
         originalCurrencyCode: currency,
       );
-      var type = TransactionTypes.othersCode;
-      if (senderId == uid) {
-        type = TransactionTypes.expenseCode;
-      } else if (beneficiaryId == uid) {
-        type = TransactionTypes.incomeCode;
-      }
+      final type = resolveLocalTransactionType(
+        ownerId: uid,
+        senderId: senderId,
+        beneficiaryId: beneficiaryId,
+      );
 
       final transactionModel = TransactionModel(
         uid: uid,
@@ -179,9 +141,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       );
       return const Right(null);
     } catch (_) {
-      return Left(
-        MessageFailure(message: 'The transaction could not be saved.'),
-      );
+      return _messageFailure('The transaction could not be saved.');
     }
   }
 
@@ -201,7 +161,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     final currentUid = _currentUid;
     final ownerUid = previousTransaction.uid ?? currentUid;
     if (ownerUid == null) {
-      return Left(AuthenticationFailure(message: 'Authentication failure'));
+      return _authenticationFailure();
     }
 
     try {
@@ -209,12 +169,11 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         amount: amount,
         originalCurrencyCode: currency,
       );
-      var type = TransactionTypes.othersCode;
-      if (senderId == ownerUid) {
-        type = TransactionTypes.expenseCode;
-      } else if (beneficiaryId == ownerUid) {
-        type = TransactionTypes.incomeCode;
-      }
+      final type = resolveLocalTransactionType(
+        ownerId: ownerUid,
+        senderId: senderId,
+        beneficiaryId: beneficiaryId,
+      );
 
       final transactionModel = TransactionModel(
         tid: previousTransaction.tid,
@@ -245,13 +204,15 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       await Repository().upsert<TransactionModel>(transactionModel);
       return const Right(null);
     } catch (_) {
-      return Left(
-        MessageFailure(message: 'Unable to update this transaction right now.'),
-      );
+      return _messageFailure('Unable to update this transaction right now.');
     }
   }
 
-  String _normalizeLookupValue(String value) {
-    return value.trim().toLowerCase();
+  Left<Failure, T> _authenticationFailure<T>() {
+    return Left(AuthenticationFailure(message: 'Authentication failure'));
+  }
+
+  Left<Failure, T> _messageFailure<T>(String message) {
+    return Left(MessageFailure(message: message));
   }
 }

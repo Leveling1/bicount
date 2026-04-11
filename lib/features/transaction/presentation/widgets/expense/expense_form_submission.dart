@@ -88,6 +88,7 @@ extension _ExpenseFormSubmission on _ExpenseFormState {
         currency: selectedCurrency,
         sender: _resolveSender(),
         note: _note.text.trim(),
+        transactionType: transactionFormType,
         splitMode: _isEditing ? TransactionSplitMode.equal : _splitMode,
         splits: _buildSplitInputs(),
         isRecurring: _isRecurring,

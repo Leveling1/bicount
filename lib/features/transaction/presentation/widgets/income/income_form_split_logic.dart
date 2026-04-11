@@ -43,6 +43,7 @@ extension _IncomeFormSplitLogic on _IncomeFormState {
               ? toCurrentUserParty()
               : _beneficiaryList.first,
           note: _note.text.trim(),
+          transactionType: transactionFormType,
           splitMode: TransactionSplitMode.equal,
           splits: _beneficiaryList
               .map((friend) => TransactionSplitInputEntity(beneficiary: friend))
@@ -90,6 +91,7 @@ extension _IncomeFormSplitLogic on _IncomeFormState {
               ? toCurrentUserParty()
               : _beneficiaryList.first,
           note: _note.text.trim(),
+          transactionType: transactionFormType,
           splitMode: _splitMode,
           splits: _buildSplitInputs(),
         ),

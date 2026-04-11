@@ -1243,5 +1243,6 @@ Dormant features:
 
 Rules:
 - when a transaction form creates a draft `FriendsModel` with no `sid` and no `uid`, its `relationType` must follow the effective persisted type: use the recurring type when recurring mode is enabled, otherwise use the base expense or income form type
+- local transaction persistence must treat `FriendConst.getTypeOfFriend(transactionType)` as the source of truth for the created or reused friend `relationType`; do not trust an incoming draft `FriendsModel.relationType` blindly
 - transaction persistence must resolve each draft party only once per submission and reuse that resolved friend row across recurring-template creation and saved transaction rows
 - local friend reuse for typed draft parties should match normalized identity plus `relationType` so filtered subscription or company entries are reused instead of duplicated when possible

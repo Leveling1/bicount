@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
@@ -31,6 +32,7 @@ void main() {
       currency: 'USD',
       sender: friend('sender', 'Sender'),
       note: '',
+      transactionType: TransactionTypes.expenseCode,
       splitMode: mode,
       splits: splits,
     );

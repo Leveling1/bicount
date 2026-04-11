@@ -21,6 +21,7 @@ class SubscriptionScreen extends StatelessWidget {
             title: context.l10n.graphSubscriptions,
             actions: [
               if (state is MainLoaded && false) // subscriptions removed
+                // ignore: dead_code
                 IconButton(
                   onPressed: () => _openSearch(context, state.startData),
                   icon: const Icon(Icons.search_rounded),

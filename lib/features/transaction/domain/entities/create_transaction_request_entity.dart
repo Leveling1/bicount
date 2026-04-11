@@ -59,6 +59,7 @@ class CreateTransactionRequestEntity {
     required this.currency,
     required this.sender,
     required this.note,
+    required this.transactionType,
     required this.splitMode,
     required this.splits,
     this.category = Constants.personal,
@@ -73,6 +74,7 @@ class CreateTransactionRequestEntity {
   final String currency;
   final FriendsModel sender;
   final String note;
+  final int transactionType;
   final TransactionSplitMode splitMode;
   final List<TransactionSplitInputEntity> splits;
   final int category;

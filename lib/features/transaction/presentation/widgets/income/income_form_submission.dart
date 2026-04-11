@@ -78,6 +78,7 @@ extension _IncomeFormSubmission on _IncomeFormState {
         currency: selectedCurrency,
         sender: sender,
         note: _note.text.trim(),
+        transactionType: transactionFormType,
         splitMode: TransactionSplitMode.equal,
         splits: _buildSplitInputs(),
         isRecurring: _isRecurring,

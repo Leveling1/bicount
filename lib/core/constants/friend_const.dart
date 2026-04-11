@@ -10,6 +10,8 @@ class FriendConst {
     switch (type) {
       case TransactionTypes.expenseCode:
       case TransactionTypes.incomeCode:
+      case TransactionTypes.otherRecurringExpenseCode:
+      case TransactionTypes.otherRecurringIncomeCode:
         return friend;
       case TransactionTypes.subscriptionCode:
         return subscription;
