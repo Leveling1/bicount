@@ -29,117 +29,111 @@ class ProfileScreen extends StatelessWidget {
       currentUserUid: data.user.uid,
     );
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppDimens.paddingMedium,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
+      child: Column(
+        children: [
+          BicountReveal(
+            delay: const Duration(milliseconds: 40),
+            child: ProfileCard(
+              image: data.user.image,
+              name: data.user.username,
+              email: data.user.email,
+              balance: data.user.balance,
+              onTap: () => context.push('/settings'),
+            ),
           ),
-          child: Column(
-            children: [
-              BicountReveal(
-                delay: const Duration(milliseconds: 40),
-                child: ProfileCard(
-                  image: data.user.image,
-                  name: data.user.username,
-                  email: data.user.email,
-                  balance: data.user.balance,
-                  onTap: () => context.push('/settings'),
-                ),
-              ),
-              BicountReveal(
-                delay: const Duration(milliseconds: 100),
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: InfoCardAmount(
-                        icon: IconLinks.income,
-                        title: context.l10n.profileIncome,
-                        value: data.user.incomes!,
-                        color: Theme.of(
-                          context,
-                        ).extension<OtherTheme>()!.income!,
-                      ),
-                    ),
-                    const SizedBox(width: AppDimens.marginMedium),
-                    Flexible(
-                      child: InfoCardAmount(
-                        icon: IconLinks.expense,
-                        title: context.l10n.profileExpense,
-                        value: data.user.expenses!,
-                        color: Theme.of(
-                          context,
-                        ).extension<OtherTheme>()!.expense!,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              BicountReveal(
-                delay: const Duration(milliseconds: 150),
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: InfoCardAmount(
-                        icon: IconLinks.user,
-                        title: context.l10n.profilePersonal,
-                        value: data.user.personalIncome!,
-                        color: Theme.of(
-                          context,
-                        ).extension<OtherTheme>()!.personnalIncome!,
-                      ),
-                    ),
-                    const SizedBox(width: AppDimens.marginMedium),
-                    Flexible(
-                      child: InfoCardAmount(
-                        icon: IconLinks.graph,
-                        title: context.l10n.profileRecurring,
-                        value: recurringSpend,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppDimens.marginMedium),
-              BicountReveal(
-                delay: const Duration(milliseconds: 190),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      context.l10n.profileFriends,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const FriendsDirectoryScreen(),
-                          ),
-                        );
-                      },
-                      style: Theme.of(context).textButtonTheme.style,
-                      child: Text(
-                        context.l10n.profileSeeAll,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (visibleFriends.isEmpty)
-                BicountReveal(
-                  delay: const Duration(milliseconds: 240),
-                  child: DetailsCard(
-                    child: Text(
-                      context.l10n.profileFirstFriendHint,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
+          BicountReveal(
+            delay: const Duration(milliseconds: 100),
+            child: Row(
+              children: [
+                Flexible(
+                  child: InfoCardAmount(
+                    icon: IconLinks.income,
+                    title: context.l10n.profileIncome,
+                    value: data.user.incomes!,
+                    color: Theme.of(context).extension<OtherTheme>()!.income!,
                   ),
-                )
-              else
-                Column(
+                ),
+                const SizedBox(width: AppDimens.marginMedium),
+                Flexible(
+                  child: InfoCardAmount(
+                    icon: IconLinks.expense,
+                    title: context.l10n.profileExpense,
+                    value: data.user.expenses!,
+                    color: Theme.of(context).extension<OtherTheme>()!.expense!,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          BicountReveal(
+            delay: const Duration(milliseconds: 150),
+            child: Row(
+              children: [
+                Flexible(
+                  child: InfoCardAmount(
+                    icon: IconLinks.user,
+                    title: context.l10n.profilePersonal,
+                    value: data.user.personalIncome!,
+                    color: Theme.of(
+                      context,
+                    ).extension<OtherTheme>()!.personnalIncome!,
+                  ),
+                ),
+                const SizedBox(width: AppDimens.marginMedium),
+                Flexible(
+                  child: InfoCardAmount(
+                    icon: IconLinks.graph,
+                    title: context.l10n.profileRecurring,
+                    value: recurringSpend,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppDimens.marginMedium),
+          BicountReveal(
+            delay: const Duration(milliseconds: 190),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  context.l10n.profileFriends,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const FriendsDirectoryScreen(),
+                      ),
+                    );
+                  },
+                  style: Theme.of(context).textButtonTheme.style,
+                  child: Text(
+                    context.l10n.profileSeeAll,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (visibleFriends.isEmpty)
+            BicountReveal(
+              delay: const Duration(milliseconds: 240),
+              child: DetailsCard(
+                child: Text(
+                  context.l10n.profileFirstFriendHint,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+            )
+          else
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
                   children: visibleFriends.take(3).toList().asMap().entries.map(
                     (entry) {
                       final index = entry.key;
@@ -160,9 +154,9 @@ class ProfileScreen extends StatelessWidget {
                     },
                   ).toList(),
                 ),
-            ],
-          ),
-        ),
+              ),
+            ),
+        ],
       ),
     );
   }
