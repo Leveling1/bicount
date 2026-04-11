@@ -35,6 +35,8 @@ import 'package:bicount/features/notification/data/repositories/notification_rep
 import 'package:bicount/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:bicount/features/project/data/repositories/project_repository_impl.dart';
 import 'package:bicount/features/project/presentation/bloc/project_bloc.dart';
+import 'package:bicount/features/recurring_fundings/data/data_sources/local_datasource/local_recurring_transfert_data_source_impl.dart';
+import 'package:bicount/features/recurring_fundings/data/repositories/recurring_transfert_repository_impl.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/local_transaction_data_source_impl.dart';
 import 'package:bicount/features/transaction/data/repositories/transaction_repository_impl.dart';
 import 'package:bicount/features/transaction/presentation/bloc/transaction_bloc.dart';
@@ -70,6 +72,13 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
     RepositoryProvider<TransactionRepositoryImpl>(
       create: (context) => TransactionRepositoryImpl(
         LocalTransactionDataSourceImpl(
+          currencyRepository: context.read<CurrencyRepositoryImpl>(),
+        ),
+      ),
+    ),
+    RepositoryProvider<RecurringTransfertRepositoryImpl>(
+      create: (context) => RecurringTransfertRepositoryImpl(
+        localDataSource: LocalRecurringTransfertDataSourceImpl(
           currencyRepository: context.read<CurrencyRepositoryImpl>(),
         ),
       ),

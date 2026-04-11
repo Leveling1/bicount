@@ -8,6 +8,7 @@ import 'package:bicount/features/transaction/domain/entities/transaction_entity.
 import 'package:bicount/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:bicount/features/transaction/domain/services/transaction_split_resolver.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/errors/failure.dart';
@@ -45,6 +46,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
         resolvedParties: resolvedParties,
       );
       final gtid = const Uuid().v4();
+      final authenticatedUserId = _authenticatedUserIdOrNull();
 
       // Create a recurring template if the user enabled recurring mode.
       String? recurringTransfertId;
@@ -57,13 +59,18 @@ class TransactionRepositoryImpl extends TransactionRepository {
           transactionType: partyTransactionType,
           resolvedParties: resolvedParties,
         );
+        final recurringOwnerId =
+            authenticatedUserId ??
+            (transaction.transactionType == 1
+                ? firstBeneficiary.sid
+                : sender.sid);
         recurringTransfertId = const Uuid().v4();
         generationMode = 1; // manualConfirmation
 
         await _saveRecurringTransfert(
           RecurringTransfertModel(
             recurringTransfertId: recurringTransfertId,
-            uid: sender.sid,
+            uid: recurringOwnerId,
             recurringTransfertTypeId: transaction.recurringTypeId!,
             title: transaction.name,
             note: transaction.note,
@@ -87,6 +94,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
         final saveResult = await localDataSource.saveTransaction(
           gtid,
           title: transaction.name,
+          type: partyTransactionType,
           date: transaction.date,
           amount: split.amount,
           category: transaction.category,
@@ -98,6 +106,9 @@ class TransactionRepositoryImpl extends TransactionRepository {
               ? Constants.memojiDefault
               : beneficiary.image,
           recurringTransfertId: recurringTransfertId,
+          recurringOccurrenceDate: recurringTransfertId == null
+              ? null
+              : transaction.date,
           generationMode: generationMode,
         );
 
@@ -163,6 +174,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
       final result = await localDataSource.updateTransaction(
         previousTransaction,
         title: transaction.name,
+        type: partyTransactionType,
         date: transaction.date,
         amount: split.amount,
         category: transaction.category,
@@ -185,6 +197,14 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
   Future<T> _throwFailure<T>(Failure failure) async {
     throw failure;
+  }
+
+  String? _authenticatedUserIdOrNull() {
+    try {
+      return Supabase.instance.client.auth.currentUser?.id;
+    } catch (_) {
+      return null;
+    }
   }
 
   int _resolvePartyTransactionType(CreateTransactionRequestEntity transaction) {

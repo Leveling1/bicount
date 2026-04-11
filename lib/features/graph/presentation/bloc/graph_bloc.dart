@@ -155,6 +155,7 @@ class GraphBloc extends Bloc<GraphEvent, GraphState> {
     return dashboardBuilder.build(
       GraphSourceData(
         transactions: mainData.transactions,
+        recurringTransferts: mainData.recurringTransferts,
         currentUserId: mainData.user.uid,
         friends: mainData.friends,
       ),

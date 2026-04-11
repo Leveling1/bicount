@@ -40,6 +40,8 @@ class GraphDashboardEntity extends Equatable {
     required this.cashflowPoints,
     required this.incomeBreakdown,
     required this.expenseBreakdown,
+    required this.recurringCharges,
+    required this.recurringIncomes,
   });
 
   final GraphPeriod period;
@@ -50,6 +52,8 @@ class GraphDashboardEntity extends Equatable {
   final List<GraphCashflowPoint> cashflowPoints;
   final List<GraphBreakdownItem> incomeBreakdown;
   final List<GraphBreakdownItem> expenseBreakdown;
+  final GraphRecurringSummary recurringCharges;
+  final GraphRecurringSummary recurringIncomes;
 
   @override
   List<Object?> get props => [
@@ -61,6 +65,35 @@ class GraphDashboardEntity extends Equatable {
     cashflowPoints,
     incomeBreakdown,
     expenseBreakdown,
+    recurringCharges,
+    recurringIncomes,
+  ];
+}
+
+class GraphRecurringSummary extends Equatable {
+  const GraphRecurringSummary({
+    required this.totalCount,
+    required this.activeCount,
+    required this.upcomingCount,
+    required this.monthlyReferenceAmount,
+    required this.nextExpectedDate,
+  });
+
+  final int totalCount;
+  final int activeCount;
+  final int upcomingCount;
+  final double monthlyReferenceAmount;
+  final DateTime? nextExpectedDate;
+
+  bool get hasPlans => totalCount > 0;
+
+  @override
+  List<Object?> get props => [
+    totalCount,
+    activeCount,
+    upcomingCount,
+    monthlyReferenceAmount,
+    nextExpectedDate,
   ];
 }
 

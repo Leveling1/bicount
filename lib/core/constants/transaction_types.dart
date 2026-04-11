@@ -81,4 +81,12 @@ class TransactionTypes {
 
   // ── Income-side type list ──
   static const List<int> incomeTypes = [salaryCode, otherRecurringIncomeCode];
+
+  static bool isIncomeType(int typeId) {
+    return typeId == incomeCode || incomeTypes.contains(typeId);
+  }
+
+  static bool isExpenseType(int typeId) {
+    return typeId == expenseCode || expenseTypes.contains(typeId);
+  }
 }

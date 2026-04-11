@@ -23,8 +23,8 @@ class HomeSalaryStatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final currencyConfig = context.watch<CurrencyCubit>().state.config;
     final dashboard = const SalaryDashboardBuilder().build(
-      recurringFundings: const [],
-      accountFundings: const [],
+      recurringTransferts: data.recurringTransferts,
+      transactions: data.transactions,
       currencyConfig: currencyConfig,
     );
     if (!dashboard.hasPlans) {

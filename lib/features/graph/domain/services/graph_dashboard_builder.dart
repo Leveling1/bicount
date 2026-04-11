@@ -5,6 +5,8 @@ import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/graph/data/models/graph_source_data.dart';
 import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
 import 'package:bicount/features/graph/domain/services/graph_time_series_builder.dart';
+import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
+import 'package:bicount/features/recurring_fundings/domain/services/recurring_plan_collection_builder.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 
 class GraphDashboardBuilder {
@@ -13,11 +15,14 @@ class GraphDashboardBuilder {
     this.currencyAmountService = const CurrencyAmountService(),
     this.participantIdentityService =
         const TransactionParticipantIdentityService(),
+    this.recurringPlanCollectionBuilder =
+        const RecurringPlanCollectionBuilder(),
   });
 
   final GraphTimeSeriesBuilder timeSeriesBuilder;
   final CurrencyAmountService currencyAmountService;
   final TransactionParticipantIdentityService participantIdentityService;
+  final RecurringPlanCollectionBuilder recurringPlanCollectionBuilder;
 
   GraphDashboardEntity build(
     GraphSourceData source,
@@ -81,6 +86,18 @@ class GraphDashboardBuilder {
 
     final inflow = incomeAmount + salaryAmount + otherIncomeAmount;
     final outflow = expenseAmount + subscriptionAmount + otherExpenseAmount;
+    final recurringCharges = recurringPlanCollectionBuilder.build(
+      recurringTransferts: source.recurringTransferts,
+      transactions: source.transactions,
+      currencyConfig: currencyConfig,
+      scope: RecurringPlanScope.charge,
+    );
+    final recurringIncomes = recurringPlanCollectionBuilder.build(
+      recurringTransferts: source.recurringTransferts,
+      transactions: source.transactions,
+      currencyConfig: currencyConfig,
+      scope: RecurringPlanScope.income,
+    );
 
     return GraphDashboardEntity(
       period: period,
@@ -103,6 +120,20 @@ class GraphDashboardBuilder {
         GraphBreakdownItem(label: 'Subscriptions', value: subscriptionAmount),
         GraphBreakdownItem(label: 'Other', value: otherExpenseAmount),
       ].where((item) => item.value > 0).toList(),
+      recurringCharges: GraphRecurringSummary(
+        totalCount: recurringCharges.plans.length,
+        activeCount: recurringCharges.activeCount,
+        upcomingCount: recurringCharges.upcomingCount,
+        monthlyReferenceAmount: recurringCharges.monthlyReferenceAmount,
+        nextExpectedDate: recurringCharges.nextExpectedDate,
+      ),
+      recurringIncomes: GraphRecurringSummary(
+        totalCount: recurringIncomes.plans.length,
+        activeCount: recurringIncomes.activeCount,
+        upcomingCount: recurringIncomes.upcomingCount,
+        monthlyReferenceAmount: recurringIncomes.monthlyReferenceAmount,
+        nextExpectedDate: recurringIncomes.nextExpectedDate,
+      ),
     );
   }
 

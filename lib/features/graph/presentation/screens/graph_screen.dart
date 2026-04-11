@@ -1,13 +1,16 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/graph/presentation/bloc/graph_bloc.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_expense_breakdown_card.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_income_breakdown_card.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_period_selector.dart';
+import 'package:bicount/features/graph/presentation/widgets/graph_recurring_summary_card.dart';
 import 'package:bicount/features/graph/presentation/widgets/graph_screen_skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../widgets/graph_metric_overview.dart';
 
@@ -139,6 +142,22 @@ class _GraphScreenContent extends StatelessWidget {
                   ),
                   const SizedBox(height: AppDimens.marginLarge),
                   BicountReveal(
+                    delay: const Duration(milliseconds: 210),
+                    child: GraphRecurringSummaryCard(
+                      title: context.l10n.graphRecurringChargesTitle,
+                      description:
+                          context.l10n.graphRecurringChargesDescription,
+                      summary: dashboard.recurringCharges,
+                      currencyCode: dashboard.displayCurrencyCode,
+                      color: Theme.of(
+                        context,
+                      ).extension<OtherTheme>()!.expense!,
+                      upcomingLabel: context.l10n.graphUpcomingCharges,
+                      onTap: () => context.push('/subscriptions'),
+                    ),
+                  ),
+                  const SizedBox(height: AppDimens.marginLarge),
+                  BicountReveal(
                     delay: const Duration(milliseconds: 230),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,6 +168,20 @@ class _GraphScreenContent extends StatelessWidget {
                         ),
                         GraphExpenseBreakdownCard(dashboard: dashboard),
                       ],
+                    ),
+                  ),
+                  const SizedBox(height: AppDimens.marginLarge),
+                  BicountReveal(
+                    delay: const Duration(milliseconds: 260),
+                    child: GraphRecurringSummaryCard(
+                      title: context.l10n.graphRecurringIncomesTitle,
+                      description:
+                          context.l10n.graphRecurringIncomesDescription,
+                      summary: dashboard.recurringIncomes,
+                      currencyCode: dashboard.displayCurrencyCode,
+                      color: Theme.of(context).extension<OtherTheme>()!.income!,
+                      upcomingLabel: context.l10n.graphRecurringIncomesUpcoming,
+                      onTap: () => context.push('/recurring-incomes'),
                     ),
                   ),
                 ],

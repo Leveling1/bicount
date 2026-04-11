@@ -1,13 +1,14 @@
-import 'package:bicount/core/constants/account_funding_const.dart';
 import 'package:bicount/core/constants/state_app.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/services/recurring_funding_schedule_service.dart';
-import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
-import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/salary/domain/entities/salary_dashboard_entity.dart';
 import 'package:bicount/features/salary/domain/entities/salary_occurrence_entity.dart';
 import 'package:bicount/features/salary/domain/entities/salary_plan_summary_entity.dart';
+import 'package:bicount/features/transaction/data/models/transaction.model.dart';
+import 'package:intl/intl.dart';
 
 class SalaryDashboardBuilder {
   const SalaryDashboardBuilder({
@@ -19,27 +20,26 @@ class SalaryDashboardBuilder {
   final CurrencyAmountService currencyAmountService;
 
   SalaryDashboardEntity build({
-    required List<RecurringFundingModel> recurringFundings,
-    required List<AccountFundingModel> accountFundings,
+    required List<RecurringTransfertModel> recurringTransferts,
+    required List<TransactionModel> transactions,
     required CurrencyConfigEntity currencyConfig,
     DateTime? now,
   }) {
     final today = scheduleService.startOfDay(now ?? DateTime.now());
-    final fundingsByOccurrenceKey = <String, AccountFundingModel>{};
-    for (final funding in accountFundings) {
-      final fundingDate = scheduleService.parseDate(funding.date);
-      if (fundingDate == null) {
+    final transactionsByOccurrenceKey = <String, TransactionModel>{};
+    for (final transaction in transactions) {
+      final recurringTransfertId = transaction.recurringTransfertId;
+      if (recurringTransfertId == null || recurringTransfertId.isEmpty) {
         continue;
       }
-      final key = scheduleService.occurrenceMatchKey(
-        ownerUid: funding.sid,
-        source: funding.source,
-        fundingType: funding.fundingType,
-        amount: funding.amount,
-        currency: funding.currency,
-        expectedDate: fundingDate,
-      );
-      fundingsByOccurrenceKey.putIfAbsent(key, () => funding);
+      final occurrenceDate =
+          scheduleService.parseDate(transaction.recurringOccurrenceDate) ??
+          scheduleService.parseDate(transaction.date);
+      if (occurrenceDate == null) {
+        continue;
+      }
+      final key = _occurrenceKey(recurringTransfertId, occurrenceDate);
+      transactionsByOccurrenceKey.putIfAbsent(key, () => transaction);
     }
 
     final plans = <SalaryPlanSummaryEntity>[];
@@ -50,21 +50,26 @@ class SalaryDashboardBuilder {
     int dueTodayCount = 0;
     int overdueCount = 0;
 
-    final recurringPlans =
-        recurringFundings
-            .where((item) => RecurringFundingStatus.isActive(item.status))
+    final salaryPlans =
+        recurringTransferts
+            .where(
+              (item) =>
+                  item.recurringTransfertTypeId ==
+                      TransactionTypes.salaryCode &&
+                  AppRecurringTransfertState.isActive(item.status),
+            )
             .toList()
-          ..sort((left, right) => left.source.compareTo(right.source));
+          ..sort((left, right) => left.title.compareTo(right.title));
 
-    for (final plan in recurringPlans) {
+    for (final plan in salaryPlans) {
       final occurrences = _buildPlanOccurrences(
-        recurringFunding: plan,
-        fundingsByOccurrenceKey: fundingsByOccurrenceKey,
+        recurringTransfert: plan,
+        transactionsByOccurrenceKey: transactionsByOccurrenceKey,
         currencyConfig: currencyConfig,
         today: today,
       );
-      final requiresConfirmation = SalaryProcessingMode.requiresConfirmation(
-        plan.salaryProcessingMode,
+      final requiresConfirmation = AppExecutionMode.requiresConfirmation(
+        plan.executionMode,
       );
 
       final overdueForPlan = occurrences
@@ -101,7 +106,7 @@ class SalaryDashboardBuilder {
 
       plans.add(
         SalaryPlanSummaryEntity(
-          recurringFunding: plan,
+          recurringTransfert: plan,
           nextExpectedDate: _resolveNextExpectedDate(
             occurrences: occurrences,
             today: today,
@@ -152,41 +157,43 @@ class SalaryDashboardBuilder {
   }
 
   List<SalaryOccurrenceEntity> _buildPlanOccurrences({
-    required RecurringFundingModel recurringFunding,
-    required Map<String, AccountFundingModel> fundingsByOccurrenceKey,
+    required RecurringTransfertModel recurringTransfert,
+    required Map<String, TransactionModel> transactionsByOccurrenceKey,
     required CurrencyConfigEntity currencyConfig,
     required DateTime today,
   }) {
-    final startDate = scheduleService.parseDate(recurringFunding.startDate);
+    final startDate = scheduleService.parseDate(recurringTransfert.startDate);
     if (startDate == null) {
       return const [];
     }
+    final endDate = scheduleService.parseDate(recurringTransfert.endDate);
 
     final occurrences = <SalaryOccurrenceEntity>[];
     var cursor = scheduleService.startOfDay(startDate);
 
-    while (!cursor.isAfter(today)) {
+    while (!cursor.isAfter(today) && !_isAfterEndDate(cursor, endDate)) {
       occurrences.add(
         _buildOccurrence(
-          recurringFunding: recurringFunding,
+          recurringTransfert: recurringTransfert,
           expectedDate: cursor,
-          fundingsByOccurrenceKey: fundingsByOccurrenceKey,
+          transactionsByOccurrenceKey: transactionsByOccurrenceKey,
           currencyConfig: currencyConfig,
           today: today,
         ),
       );
       cursor = scheduleService.nextOccurrence(
         cursor,
-        recurringFunding.frequency,
+        recurringTransfert.frequency,
       );
     }
 
-    if (recurringFunding.status == RecurringFundingStatus.active) {
+    if (AppRecurringTransfertState.isActive(recurringTransfert.status) &&
+        !_isAfterEndDate(cursor, endDate)) {
       occurrences.add(
         _buildOccurrence(
-          recurringFunding: recurringFunding,
+          recurringTransfert: recurringTransfert,
           expectedDate: cursor,
-          fundingsByOccurrenceKey: fundingsByOccurrenceKey,
+          transactionsByOccurrenceKey: transactionsByOccurrenceKey,
           currencyConfig: currencyConfig,
           today: today,
         ),
@@ -197,42 +204,38 @@ class SalaryDashboardBuilder {
   }
 
   SalaryOccurrenceEntity _buildOccurrence({
-    required RecurringFundingModel recurringFunding,
+    required RecurringTransfertModel recurringTransfert,
     required DateTime expectedDate,
-    required Map<String, AccountFundingModel> fundingsByOccurrenceKey,
+    required Map<String, TransactionModel> transactionsByOccurrenceKey,
     required CurrencyConfigEntity currencyConfig,
     required DateTime today,
   }) {
-    final occurrenceId = scheduleService.occurrenceFundingId(
-      recurringFunding.recurringFundingId,
+    final occurrenceId = _occurrenceKey(
+      recurringTransfert.recurringTransfertId ?? '',
       expectedDate,
     );
-    final occurrenceKey = scheduleService.occurrenceMatchKey(
-      ownerUid: recurringFunding.uid,
-      source: recurringFunding.source,
-      fundingType: recurringFunding.fundingType,
-      amount: recurringFunding.amount,
-      currency: recurringFunding.currency,
-      expectedDate: expectedDate,
-    );
-    final receivedFunding = fundingsByOccurrenceKey[occurrenceKey];
-    final referenceAmount = currencyAmountService.record(
-      originalAmount: receivedFunding?.amount ?? recurringFunding.amount,
-      originalCurrencyCode:
-          receivedFunding?.currency ?? recurringFunding.currency,
-      fxRateDate: expectedDate.toIso8601String(),
-      config: currencyConfig,
-    );
+    final receivedTransaction = transactionsByOccurrenceKey[occurrenceId];
+    final referenceAmount = receivedTransaction == null
+        ? currencyAmountService.record(
+            originalAmount: recurringTransfert.amount,
+            originalCurrencyCode: recurringTransfert.currency,
+            fxRateDate: expectedDate.toIso8601String(),
+            config: currencyConfig,
+          )
+        : currencyAmountService.transaction(
+            receivedTransaction,
+            currencyConfig,
+          );
 
     return SalaryOccurrenceEntity(
       occurrenceId: occurrenceId,
-      recurringFunding: recurringFunding,
-      receivedFunding: receivedFunding,
+      recurringTransfert: recurringTransfert,
+      receivedTransaction: receivedTransaction,
       expectedDate: expectedDate,
       state: _resolveOccurrenceState(
         expectedDate: expectedDate,
         today: today,
-        receivedFunding: receivedFunding,
+        receivedTransaction: receivedTransaction,
       ),
       referenceAmount: referenceAmount,
     );
@@ -243,7 +246,7 @@ class SalaryDashboardBuilder {
     required DateTime today,
   }) {
     for (final occurrence in occurrences) {
-      if (!occurrence.expectedDate.isBefore(today)) {
+      if (!occurrence.isReceived && !occurrence.expectedDate.isBefore(today)) {
         return occurrence.expectedDate;
       }
     }
@@ -253,9 +256,9 @@ class SalaryDashboardBuilder {
   int _resolveOccurrenceState({
     required DateTime expectedDate,
     required DateTime today,
-    required AccountFundingModel? receivedFunding,
+    required TransactionModel? receivedTransaction,
   }) {
-    if (receivedFunding != null) {
+    if (receivedTransaction != null) {
       return AppSalaryOccurrenceState.received;
     }
 
@@ -267,5 +270,16 @@ class SalaryDashboardBuilder {
       return AppSalaryOccurrenceState.overdue;
     }
     return AppSalaryOccurrenceState.upcoming;
+  }
+
+  bool _isAfterEndDate(DateTime value, DateTime? endDate) {
+    if (endDate == null) {
+      return false;
+    }
+    return value.isAfter(scheduleService.startOfDay(endDate));
+  }
+
+  String _occurrenceKey(String recurringTransfertId, DateTime value) {
+    return '$recurringTransfertId-${DateFormat('yyyyMMdd').format(value)}';
   }
 }

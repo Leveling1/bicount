@@ -56,11 +56,21 @@ String localizeRuntimeMessage(BuildContext context, String message) {
       return context.l10n.runtimeSubscriptionSaveFailed;
     case 'Unable to update this subscription right now.':
       return context.l10n.runtimeSubscriptionUnsubscribeFailed;
+    case 'Unable to update this recurring plan right now.':
+      return context.l10n.runtimeRecurringPlanUpdateFailed;
+    case 'Unable to stop this recurring plan right now.':
+      return context.l10n.runtimeRecurringPlanTerminateFailed;
+    case 'Unable to delete this recurring plan right now.':
+      return context.l10n.runtimeRecurringPlanDeleteFailed;
     case 'Unable to delete this account funding right now.':
       return context.l10n.runtimeAccountFundingDeleteFailed;
     case 'Unable to save this account funding right now.':
     case 'Unable to update this account funding right now.':
       return context.l10n.runtimeAccountFundingSaveFailed;
+    case 'Unable to confirm this recurring salary right now.':
+      return context.l10n.runtimeRecurringSalaryConfirmFailed;
+    case 'Unable to update this recurring salary right now.':
+      return context.l10n.runtimeRecurringSalaryUpdateFailed;
     case 'Unable to confirm this salary payment right now.':
       return context.l10n.runtimeSalaryConfirmFailed;
     case 'Unable to update this salary tracking right now.':

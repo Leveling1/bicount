@@ -13,7 +13,6 @@ import 'package:uuid/uuid.dart';
 
 import 'local_transaction_friend_matcher.dart';
 import 'local_transaction_friend_factory.dart';
-import 'local_transaction_type_resolver.dart';
 import '../../models/transaction.model.dart';
 
 class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
@@ -82,6 +81,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   Future<Either<Failure, void>> saveTransaction(
     String gtid, {
     required String title,
+    required int type,
     required String date,
     required double amount,
     required int category,
@@ -91,6 +91,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     required String beneficiaryId,
     required String image,
     String? recurringTransfertId,
+    String? recurringOccurrenceDate,
     int? generationMode,
   }) async {
     final uid = _currentUid;
@@ -102,11 +103,6 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       final quote = await _currencyRepository.resolveCreationQuote(
         amount: amount,
         originalCurrencyCode: currency,
-      );
-      final type = resolveLocalTransactionType(
-        ownerId: uid,
-        senderId: senderId,
-        beneficiaryId: beneficiaryId,
       );
 
       final transactionModel = TransactionModel(
@@ -131,6 +127,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         createdAt: DateTime.now().toIso8601String(),
         category: category,
         recurringTransfertId: recurringTransfertId,
+        recurringOccurrenceDate: recurringOccurrenceDate,
         generationMode: generationMode ?? 0,
       );
 
@@ -149,6 +146,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   Future<Either<Failure, void>> updateTransaction(
     TransactionEntity previousTransaction, {
     required String title,
+    required int type,
     required String date,
     required double amount,
     required int category,
@@ -168,11 +166,6 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       final quote = await _currencyRepository.resolveCreationQuote(
         amount: amount,
         originalCurrencyCode: currency,
-      );
-      final type = resolveLocalTransactionType(
-        ownerId: ownerUid,
-        senderId: senderId,
-        beneficiaryId: beneficiaryId,
       );
 
       final transactionModel = TransactionModel(
@@ -196,6 +189,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         image: image,
         frequency: previousTransaction.frequency,
         category: category,
+        recurringTransfertId: previousTransaction.recurringTransfertId,
         createdAt:
             previousTransaction.createdAt?.toIso8601String() ??
             DateTime.now().toIso8601String(),

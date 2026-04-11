@@ -43,7 +43,8 @@ class SalaryBloc extends Bloc<SalaryEvent, SalaryState> {
   ) async {
     emit(
       SalaryActionInProgress(
-        targetId: event.occurrence.recurringFunding.recurringFundingId,
+        targetId:
+            event.occurrence.recurringTransfert.recurringTransfertId ?? '',
       ),
     );
     try {

@@ -1246,3 +1246,16 @@ Rules:
 - local transaction persistence must treat `FriendConst.getTypeOfFriend(transactionType)` as the source of truth for the created or reused friend `relationType`; do not trust an incoming draft `FriendsModel.relationType` blindly
 - transaction persistence must resolve each draft party only once per submission and reuse that resolved friend row across recurring-template creation and saved transaction rows
 - local friend reuse for typed draft parties should match normalized identity plus `relationType` so filtered subscription or company entries are reused instead of duplicated when possible
+
+## Recurring Management Update (2026-04-11)
+
+Rules:
+- transaction detail must resolve the current user's visible name through the full participant identity set (`users.uid` plus linked self-profile `friends.sid`), not just by direct id equality
+- transaction persistence must keep the explicit `type` chosen by the form for recurring expense and recurring income rows; do not recompute it later from sender and beneficiary roles
+- when creating a `RecurringTransfertModel`, the owner `uid` must be the authenticated user when available, even for recurring income flows where the sender is an external party
+- recurring ledger rows created together with a recurring template must persist `recurring_occurrence_date` using the chosen transaction date so salary and recurring follow-up screens can match occurrences reliably
+- `/subscriptions` is now a live recurring charges route again and should surface the new recurring charge management screen; `/recurring-charges` is an explicit alias for the same surface
+- recurring incomes now have a dedicated management route at `/recurring-incomes`
+- recurring salary follow-up is now driven by `lib/features/recurring_fundings/presentation/screens/recurring_salary_screen.dart` and the shared `RecurringTransfertBloc`, not by the dormant legacy salary bloc flow
+- the salary confirmation sheet must let the user adjust the actually received amount before confirming the occurrence, and switching back to automatic mode must use that adjusted amount too
+- the Home recurring follow-up card and the Graphs dashboard recurring sections must both derive from `recurring_transfert` + `transactions`, not from removed `subscription`, `account_funding`, or `recurring_fundings` tables

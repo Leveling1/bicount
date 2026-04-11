@@ -31,7 +31,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
     final transactionDetail = widget.transaction.transactionDetail;
     final uid = Supabase.instance.client.auth.currentUser!.id;
     final canManage =
-        transactionDetail.type != TransactionTypes.subscriptionCode &&
+        transactionDetail.recurringTransfertId == null &&
         transactionDetail.uid == uid;
 
     return BlocConsumer<TransactionBloc, TransactionState>(
@@ -41,7 +41,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
       listener: _onTransactionStateChanged,
       builder: (context, state) {
         if (_isEditing) {
-          final editForm = transactionDetail.type == TransactionTypes.incomeCode
+          final editForm = TransactionTypes.isIncomeType(transactionDetail.type)
               ? IncomeForm(
                   user: widget.transaction.user,
                   friends: widget.transaction.friends,

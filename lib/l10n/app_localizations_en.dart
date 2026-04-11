@@ -665,6 +665,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get graphUpcomingCharges => 'Upcoming charges';
 
   @override
+  String get graphRecurringChargesTitle => 'Recurring charges';
+
+  @override
+  String get graphRecurringChargesDescription => 'Review the plans that keep leaving your balance and manage them before they drift.';
+
+  @override
+  String get graphRecurringIncomesTitle => 'Recurring incomes';
+
+  @override
+  String get graphRecurringIncomesDescription => 'Track your repeating income sources and open the full follow-up when one needs attention.';
+
+  @override
+  String get graphRecurringIncomesUpcoming => 'Upcoming incomes';
+
+  @override
   String get graphNoActiveSubscriptions => 'No active subscriptions scheduled yet.';
 
   @override
@@ -1280,6 +1295,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get runtimeSalaryTrackingSaveFailed => 'Unable to update this recurring tracking right now.';
+
+  @override
+  String get recurringChargesTitle => 'Charges';
+
+  @override
+  String get recurringIncomesTitle => 'Recurring incomes';
+
+  @override
+  String get recurringChargesIntro => 'Keep an eye on the recurring charges that hit your balance, review their pace, and stop or update them when the context changes.';
+
+  @override
+  String get recurringIncomesIntro => 'Follow your recurring incomes in one place, update them when the amount changes, and keep the schedule aligned with reality.';
+
+  @override
+  String get recurringChargesEmpty => 'No recurring charge is active yet.';
+
+  @override
+  String get recurringIncomesEmpty => 'No recurring income is active yet.';
+
+  @override
+  String get recurringPlanRecordedTotalLabel => 'Recorded total';
+
+  @override
+  String get recurringPlanRecordedCountLabel => 'Recorded payments';
+
+  @override
+  String get recurringPlanTerminateCta => 'Stop this plan';
+
+  @override
+  String get recurringPlanDeleteConfirmTitle => 'Delete this recurring plan?';
+
+  @override
+  String get recurringIncomeDeleteWarning => 'This will remove the recurring income plan and its linked generated payments on this device. Continue only if you really want to discard the follow-up.';
+
+  @override
+  String get recurringChargeDeleteWarning => 'This will remove the recurring charge plan and its linked generated payments on this device. Continue only if you really want to discard the follow-up.';
+
+  @override
+  String get recurringPlanDeleteConfirmCta => 'Delete plan';
+
+  @override
+  String get recurringPlanUpdatedSuccess => 'Recurring plan updated successfully.';
+
+  @override
+  String get recurringPlanStoppedSuccess => 'Recurring plan stopped successfully.';
+
+  @override
+  String get recurringPlanDeletedSuccess => 'Recurring plan deleted successfully.';
+
+  @override
+  String get runtimeRecurringPlanUpdateFailed => 'Unable to update this recurring plan right now.';
+
+  @override
+  String get runtimeRecurringPlanTerminateFailed => 'Unable to stop this recurring plan right now.';
+
+  @override
+  String get runtimeRecurringPlanDeleteFailed => 'Unable to delete this recurring plan right now.';
+
+  @override
+  String get runtimeRecurringSalaryConfirmFailed => 'Unable to confirm this recurring salary right now.';
+
+  @override
+  String get runtimeRecurringSalaryUpdateFailed => 'Unable to update this recurring salary right now.';
 
   @override
   String get transactionTypeTransfer => 'Transfer';

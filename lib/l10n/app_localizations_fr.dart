@@ -665,6 +665,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get graphUpcomingCharges => 'Prélèvements à venir';
 
   @override
+  String get graphRecurringChargesTitle => 'Charges récurrentes';
+
+  @override
+  String get graphRecurringChargesDescription => 'Retrouvez les charges qui sortent régulièrement de votre solde et gérez-les avant qu\'elles ne dérivent.';
+
+  @override
+  String get graphRecurringIncomesTitle => 'Revenus récurrents';
+
+  @override
+  String get graphRecurringIncomesDescription => 'Suivez vos sources de revenus récurrentes et ouvrez le suivi complet dès qu\'une échéance demande votre attention.';
+
+  @override
+  String get graphRecurringIncomesUpcoming => 'Revenus à venir';
+
+  @override
   String get graphNoActiveSubscriptions => 'Aucun abonnement actif planifié pour le moment.';
 
   @override
@@ -925,7 +940,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transactionFilterSubscription => 'Abonnement';
 
   @override
-  String get transactionFilterSalary => 'Salary';
+  String get transactionFilterSalary => 'Salaire';
 
   @override
   String get transactionFilterOther => 'Autre';
@@ -1280,6 +1295,69 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get runtimeSalaryTrackingSaveFailed => 'Impossible de mettre à jour ce suivi récurrent pour le moment.';
+
+  @override
+  String get recurringChargesTitle => 'Charges';
+
+  @override
+  String get recurringIncomesTitle => 'Revenus récurrents';
+
+  @override
+  String get recurringChargesIntro => 'Gardez un oeil sur les charges récurrentes qui pèsent sur votre solde, ajustez-les quand le contexte change et arrêtez-les proprement quand elles ne servent plus.';
+
+  @override
+  String get recurringIncomesIntro => 'Regroupez ici vos revenus récurrents, mettez-les à jour quand le montant change et gardez le calendrier cohérent avec la réalité.';
+
+  @override
+  String get recurringChargesEmpty => 'Aucune charge récurrente active pour le moment.';
+
+  @override
+  String get recurringIncomesEmpty => 'Aucun revenu récurrent actif pour le moment.';
+
+  @override
+  String get recurringPlanRecordedTotalLabel => 'Total enregistré';
+
+  @override
+  String get recurringPlanRecordedCountLabel => 'Paiements enregistrés';
+
+  @override
+  String get recurringPlanTerminateCta => 'Mettre fin à ce plan';
+
+  @override
+  String get recurringPlanDeleteConfirmTitle => 'Supprimer ce plan récurrent ?';
+
+  @override
+  String get recurringIncomeDeleteWarning => 'Cette action supprimera le plan de revenu récurrent et ses paiements générés liés sur cet appareil. Continuez seulement si vous voulez vraiment retirer ce suivi.';
+
+  @override
+  String get recurringChargeDeleteWarning => 'Cette action supprimera le plan de charge récurrente et ses paiements générés liés sur cet appareil. Continuez seulement si vous voulez vraiment retirer ce suivi.';
+
+  @override
+  String get recurringPlanDeleteConfirmCta => 'Supprimer le plan';
+
+  @override
+  String get recurringPlanUpdatedSuccess => 'Plan récurrent mis à jour avec succès.';
+
+  @override
+  String get recurringPlanStoppedSuccess => 'Plan récurrent arrêté avec succès.';
+
+  @override
+  String get recurringPlanDeletedSuccess => 'Plan récurrent supprimé avec succès.';
+
+  @override
+  String get runtimeRecurringPlanUpdateFailed => 'Impossible de mettre à jour ce plan récurrent pour le moment.';
+
+  @override
+  String get runtimeRecurringPlanTerminateFailed => 'Impossible d\'arrêter ce plan récurrent pour le moment.';
+
+  @override
+  String get runtimeRecurringPlanDeleteFailed => 'Impossible de supprimer ce plan récurrent pour le moment.';
+
+  @override
+  String get runtimeRecurringSalaryConfirmFailed => 'Impossible de confirmer ce salaire récurrent pour le moment.';
+
+  @override
+  String get runtimeRecurringSalaryUpdateFailed => 'Impossible de mettre à jour ce salaire récurrent pour le moment.';
 
   @override
   String get transactionTypeTransfer => 'Transfert';

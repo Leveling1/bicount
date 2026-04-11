@@ -1,6 +1,7 @@
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
@@ -32,6 +33,8 @@ class TransactionDetailContent extends StatelessWidget {
   final bool isLoading;
   final VoidCallback? onDeletePressed;
   final VoidCallback? onEditPressed;
+  static const TransactionParticipantIdentityService _identityService =
+      TransactionParticipantIdentityService();
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +58,20 @@ class TransactionDetailContent extends StatelessWidget {
       email: transaction.user.email,
       relationType: FriendConst.friend,
     );
-    final sender = _resolvePartyName(data.sender, currentUser);
-    final beneficiary = _resolvePartyName(data.beneficiary, currentUser);
+    final currentUserIds = _identityService.currentUserParticipantIds(
+      currentUserId: transaction.user.uid,
+      friends: transaction.friends,
+    );
+    final sender = _resolvePartyName(
+      data.sender,
+      fallback: currentUser,
+      currentUserIds: currentUserIds,
+    );
+    final beneficiary = _resolvePartyName(
+      data.beneficiary,
+      fallback: currentUser,
+      currentUserIds: currentUserIds,
+    );
     final amount = NumberFormatUtils.formatCurrency(
       data.amount,
       currencyCode: data.currency,
@@ -185,7 +200,15 @@ class TransactionDetailContent extends StatelessWidget {
     );
   }
 
-  String _resolvePartyName(String partyId, FriendsModel fallback) {
+  String _resolvePartyName(
+    String partyId, {
+    required FriendsModel fallback,
+    required Set<String> currentUserIds,
+  }) {
+    if (currentUserIds.contains(partyId)) {
+      return fallback.username;
+    }
+
     return transaction.friends
         .firstWhere(
           (friend) => friend.sid == partyId || friend.uid == partyId,

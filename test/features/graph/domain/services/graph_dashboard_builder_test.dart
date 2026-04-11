@@ -62,6 +62,7 @@ void main() {
         GraphSourceData(
           currentUserId: currentUserId,
           friends: [linkedSelfProfile()],
+          recurringTransferts: const [],
           transactions: [
             transaction(
               tid: 'salary',

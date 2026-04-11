@@ -20,6 +20,7 @@ class TransactionEntity {
     required this.currency,
     this.image,
     this.frequency,
+    this.recurringTransfertId,
     required this.sender,
     required this.beneficiary,
     required this.note,
@@ -37,6 +38,7 @@ class TransactionEntity {
   final String currency;
   final String? image;
   final int? frequency;
+  final String? recurringTransfertId;
   final String sender;
   final String beneficiary;
   final String note;
@@ -61,6 +63,7 @@ class TransactionEntity {
       currency: '${data['currency'] ?? 'CDF'}',
       image: data['image'] as String?,
       frequency: data['frequency'] as int?,
+      recurringTransfertId: data['recurring_transfert_id'] as String?,
       sender: data['sender']?['name'] ?? '',
       beneficiary: data['beneficiary'] is Map<String, dynamic>
           ? jsonEncode(data['beneficiary'])
@@ -78,6 +81,7 @@ class TransactionEntity {
       'currency': currency,
       'image': image,
       'frequency': frequency,
+      'recurring_transfert_id': recurringTransfertId,
       'sender': sender,
       'beneficiary': jsonEncode(beneficiary),
       'note': note,
@@ -97,6 +101,7 @@ class TransactionEntity {
       currency: transaction.currency,
       image: transaction.image,
       frequency: transaction.frequency,
+      recurringTransfertId: transaction.recurringTransfertId,
       sender: transaction.senderId,
       beneficiary: transaction.beneficiaryId,
       note: transaction.note,

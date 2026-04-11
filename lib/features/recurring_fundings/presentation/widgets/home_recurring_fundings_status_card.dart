@@ -1,8 +1,7 @@
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
+import 'package:bicount/features/salary/presentation/widgets/home_salary_status_card.dart';
 import 'package:flutter/material.dart';
 
-/// Placeholder for the recurring transferts home card.
-/// Will be wired to RecurringTransfertModel data in a follow-up pass.
 class HomeRecurringFundingsStatusCard extends StatelessWidget {
   const HomeRecurringFundingsStatusCard({
     super.key,
@@ -15,7 +14,6 @@ class HomeRecurringFundingsStatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: wire to RecurringTransfertModel dashboard
-    return const SizedBox.shrink();
+    return HomeSalaryStatusCard(data: data, onTap: onTap);
   }
 }

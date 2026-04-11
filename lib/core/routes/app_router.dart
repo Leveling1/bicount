@@ -5,10 +5,14 @@ import 'package:bicount/core/routes/friend_invite_route.dart';
 import 'package:bicount/features/authentification/presentation/screens/auth_email_code_screen.dart';
 import 'package:bicount/features/authentification/presentation/screens/auth_screen.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_invite_landing_screen.dart';
+import 'package:bicount/features/recurring_fundings/data/repositories/recurring_transfert_repository_impl.dart';
+import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
 import 'package:bicount/features/recurring_fundings/presentation/screens/recurring_fundings_screen.dart';
+import 'package:bicount/features/recurring_fundings/presentation/screens/recurring_plan_screen.dart';
+import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_transfert_bloc.dart';
 import 'package:bicount/features/settings/presentation/screens/settings_screen.dart';
-import 'package:bicount/features/subscription/presentation/screens/subscription_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -67,7 +71,42 @@ class AppRouter {
           GoRoute(
             path: '/subscriptions',
             pageBuilder: (context, state) => buildFadeSlideTransitionPage(
-              child: const SubscriptionScreen(),
+              child: BlocProvider(
+                create: (context) => RecurringTransfertBloc(
+                  context.read<RecurringTransfertRepositoryImpl>(),
+                ),
+                child: const RecurringPlanScreen(
+                  scope: RecurringPlanScope.charge,
+                ),
+              ),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/recurring-charges',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: BlocProvider(
+                create: (context) => RecurringTransfertBloc(
+                  context.read<RecurringTransfertRepositoryImpl>(),
+                ),
+                child: const RecurringPlanScreen(
+                  scope: RecurringPlanScope.charge,
+                ),
+              ),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/recurring-incomes',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: BlocProvider(
+                create: (context) => RecurringTransfertBloc(
+                  context.read<RecurringTransfertRepositoryImpl>(),
+                ),
+                child: const RecurringPlanScreen(
+                  scope: RecurringPlanScope.income,
+                ),
+              ),
               state: state,
             ),
           ),

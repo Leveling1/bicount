@@ -18,6 +18,8 @@ class SalaryPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final recurringTransfert = plan.recurringTransfert;
+
     return Container(
       margin: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
@@ -33,7 +35,7 @@ class SalaryPlanCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  plan.recurringFunding.source,
+                  recurringTransfert.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleMedium,
@@ -51,8 +53,8 @@ class SalaryPlanCard extends StatelessWidget {
           const SizedBox(height: AppDimens.spacingSmall),
           Text(
             NumberFormatUtils.formatCurrency(
-              plan.recurringFunding.amount,
-              currencyCode: plan.recurringFunding.currency,
+              recurringTransfert.amount,
+              currencyCode: recurringTransfert.currency,
             ),
             style: Theme.of(
               context,

@@ -29,7 +29,10 @@ class GraphRepositoryImpl implements GraphRepository {
         CurrencyConfigEntity currencyConfig,
       ) {
         return dashboardBuilder.build(
-          GraphSourceData(transactions: transactions),
+          GraphSourceData(
+            transactions: transactions,
+            recurringTransferts: const [],
+          ),
           period,
           currencyConfig,
         );

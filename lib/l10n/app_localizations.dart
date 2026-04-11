@@ -62,8 +62,7 @@ import 'app_localizations_fr.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,18 +82,17 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('fr'),
+    Locale('fr')
   ];
 
   /// No description provided for @appName.
@@ -1406,6 +1403,36 @@ abstract class AppLocalizations {
   /// **'Upcoming charges'**
   String get graphUpcomingCharges;
 
+  /// No description provided for @graphRecurringChargesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring charges'**
+  String get graphRecurringChargesTitle;
+
+  /// No description provided for @graphRecurringChargesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Review the plans that keep leaving your balance and manage them before they drift.'**
+  String get graphRecurringChargesDescription;
+
+  /// No description provided for @graphRecurringIncomesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring incomes'**
+  String get graphRecurringIncomesTitle;
+
+  /// No description provided for @graphRecurringIncomesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your repeating income sources and open the full follow-up when one needs attention.'**
+  String get graphRecurringIncomesDescription;
+
+  /// No description provided for @graphRecurringIncomesUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming incomes'**
+  String get graphRecurringIncomesUpcoming;
+
   /// No description provided for @graphNoActiveSubscriptions.
   ///
   /// In en, this message translates to:
@@ -2576,6 +2603,132 @@ abstract class AppLocalizations {
   /// **'Unable to update this recurring tracking right now.'**
   String get runtimeSalaryTrackingSaveFailed;
 
+  /// No description provided for @recurringChargesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Charges'**
+  String get recurringChargesTitle;
+
+  /// No description provided for @recurringIncomesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring incomes'**
+  String get recurringIncomesTitle;
+
+  /// No description provided for @recurringChargesIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep an eye on the recurring charges that hit your balance, review their pace, and stop or update them when the context changes.'**
+  String get recurringChargesIntro;
+
+  /// No description provided for @recurringIncomesIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow your recurring incomes in one place, update them when the amount changes, and keep the schedule aligned with reality.'**
+  String get recurringIncomesIntro;
+
+  /// No description provided for @recurringChargesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring charge is active yet.'**
+  String get recurringChargesEmpty;
+
+  /// No description provided for @recurringIncomesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring income is active yet.'**
+  String get recurringIncomesEmpty;
+
+  /// No description provided for @recurringPlanRecordedTotalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded total'**
+  String get recurringPlanRecordedTotalLabel;
+
+  /// No description provided for @recurringPlanRecordedCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded payments'**
+  String get recurringPlanRecordedCountLabel;
+
+  /// No description provided for @recurringPlanTerminateCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop this plan'**
+  String get recurringPlanTerminateCta;
+
+  /// No description provided for @recurringPlanDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this recurring plan?'**
+  String get recurringPlanDeleteConfirmTitle;
+
+  /// No description provided for @recurringIncomeDeleteWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove the recurring income plan and its linked generated payments on this device. Continue only if you really want to discard the follow-up.'**
+  String get recurringIncomeDeleteWarning;
+
+  /// No description provided for @recurringChargeDeleteWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove the recurring charge plan and its linked generated payments on this device. Continue only if you really want to discard the follow-up.'**
+  String get recurringChargeDeleteWarning;
+
+  /// No description provided for @recurringPlanDeleteConfirmCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete plan'**
+  String get recurringPlanDeleteConfirmCta;
+
+  /// No description provided for @recurringPlanUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring plan updated successfully.'**
+  String get recurringPlanUpdatedSuccess;
+
+  /// No description provided for @recurringPlanStoppedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring plan stopped successfully.'**
+  String get recurringPlanStoppedSuccess;
+
+  /// No description provided for @recurringPlanDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring plan deleted successfully.'**
+  String get recurringPlanDeletedSuccess;
+
+  /// No description provided for @runtimeRecurringPlanUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update this recurring plan right now.'**
+  String get runtimeRecurringPlanUpdateFailed;
+
+  /// No description provided for @runtimeRecurringPlanTerminateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to stop this recurring plan right now.'**
+  String get runtimeRecurringPlanTerminateFailed;
+
+  /// No description provided for @runtimeRecurringPlanDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to delete this recurring plan right now.'**
+  String get runtimeRecurringPlanDeleteFailed;
+
+  /// No description provided for @runtimeRecurringSalaryConfirmFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to confirm this recurring salary right now.'**
+  String get runtimeRecurringSalaryConfirmFailed;
+
+  /// No description provided for @runtimeRecurringSalaryUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update this recurring salary right now.'**
+  String get runtimeRecurringSalaryUpdateFailed;
+
   /// No description provided for @transactionTypeTransfer.
   ///
   /// In en, this message translates to:
@@ -2721,8 +2874,7 @@ abstract class AppLocalizations {
   String get recurringTypeLabel;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -2731,26 +2883,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'fr'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'fr'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'fr':
-      return AppLocalizationsFr();
+    case 'en': return AppLocalizationsEn();
+    case 'fr': return AppLocalizationsFr();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }
