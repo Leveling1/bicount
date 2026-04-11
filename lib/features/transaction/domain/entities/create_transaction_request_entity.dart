@@ -66,6 +66,8 @@ class CreateTransactionRequestEntity {
     this.isRecurring = false,
     this.recurringFrequency,
     this.recurringTypeId,
+    this.recurringExecutionMode,
+    this.recurringReminderEnabled,
   });
 
   final String name;
@@ -87,4 +89,12 @@ class CreateTransactionRequestEntity {
 
   /// Type id from [RecurringTransfertType].
   final int? recurringTypeId;
+
+  /// Optional execution mode for recurring templates that support backend
+  /// automation versus manual confirmation.
+  final int? recurringExecutionMode;
+
+  /// Optional reminder flag for recurring templates that surface due-date
+  /// reminders.
+  final bool? recurringReminderEnabled;
 }

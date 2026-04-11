@@ -86,6 +86,8 @@ extension _IncomeFormInteractions on _IncomeFormState {
       _isRecurring = false;
       _recurringFrequency = Frequency.monthly;
       _recurringTypeId = TransactionTypes.salaryCode;
+      _recurringExecutionMode = AppExecutionMode.manualConfirmation;
+      _recurringReminderEnabled = true;
       for (final controller in _splitControllers.values) {
         controller.dispose();
       }

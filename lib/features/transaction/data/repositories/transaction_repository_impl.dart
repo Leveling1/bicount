@@ -1,5 +1,7 @@
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/constants/state_app.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
@@ -51,6 +53,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
       // Create a recurring template if the user enabled recurring mode.
       String? recurringTransfertId;
       int? generationMode;
+      var shouldSaveLedgerRows = true;
       if (transaction.isRecurring &&
           transaction.recurringFrequency != null &&
           transaction.recurringTypeId != null) {
@@ -64,8 +67,12 @@ class TransactionRepositoryImpl extends TransactionRepository {
             (transaction.transactionType == 1
                 ? firstBeneficiary.sid
                 : sender.sid);
+        final executionMode = _resolveRecurringExecutionMode(transaction);
         recurringTransfertId = const Uuid().v4();
-        generationMode = 1; // manualConfirmation
+        shouldSaveLedgerRows = _shouldSaveRecurringLedgerRows(transaction);
+        generationMode = shouldSaveLedgerRows
+            ? TransactionTypes.generationManualConfirmation
+            : null;
 
         await _saveRecurringTransfert(
           RecurringTransfertModel(
@@ -81,8 +88,17 @@ class TransactionRepositoryImpl extends TransactionRepository {
             frequency: transaction.recurringFrequency!,
             startDate: transaction.date,
             nextDueDate: transaction.date,
+            executionMode: executionMode,
+            reminderEnabled: _resolveRecurringReminderEnabled(
+              transaction,
+              executionMode,
+            ),
           ),
         );
+      }
+
+      if (!shouldSaveLedgerRows && recurringTransfertId != null) {
+        return;
       }
 
       for (final split in resolvedSplits) {
@@ -209,6 +225,39 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
   int _resolvePartyTransactionType(CreateTransactionRequestEntity transaction) {
     return transaction.recurringTypeId ?? transaction.transactionType;
+  }
+
+  bool _shouldSaveRecurringLedgerRows(
+    CreateTransactionRequestEntity transaction,
+  ) {
+    return !_isRecurringSalary(transaction);
+  }
+
+  int _resolveRecurringExecutionMode(
+    CreateTransactionRequestEntity transaction,
+  ) {
+    if (_isRecurringSalary(transaction)) {
+      return AppExecutionMode.normalize(transaction.recurringExecutionMode);
+    }
+
+    return AppExecutionMode.manualConfirmation;
+  }
+
+  bool _resolveRecurringReminderEnabled(
+    CreateTransactionRequestEntity transaction,
+    int executionMode,
+  ) {
+    if (_isRecurringSalary(transaction) &&
+        AppExecutionMode.isAutomatic(executionMode)) {
+      return false;
+    }
+
+    return transaction.recurringReminderEnabled ?? true;
+  }
+
+  bool _isRecurringSalary(CreateTransactionRequestEntity transaction) {
+    return transaction.isRecurring &&
+        transaction.recurringTypeId == TransactionTypes.salaryCode;
   }
 }
 

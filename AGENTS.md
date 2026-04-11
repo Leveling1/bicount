@@ -1259,3 +1259,5 @@ Rules:
 - recurring salary follow-up is now driven by `lib/features/recurring_fundings/presentation/screens/recurring_salary_screen.dart` and the shared `RecurringTransfertBloc`, not by the dormant legacy salary bloc flow
 - the salary confirmation sheet must let the user adjust the actually received amount before confirming the occurrence, and switching back to automatic mode must use that adjusted amount too
 - the Home recurring follow-up card and the Graphs dashboard recurring sections must both derive from `recurring_transfert` + `transactions`, not from removed `subscription`, `account_funding`, or `recurring_fundings` tables
+- recurring salary creation in `IncomeForm` must expose the old two modes again: manual confirmation or backend automatic
+- creating a recurring salary must save only the `recurring_transfert` template at creation time; do not insert a counted `transactions` row until the user confirms the occurrence or backend automation generates it

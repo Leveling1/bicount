@@ -19,6 +19,10 @@ class TransferFormRecurringSection extends StatelessWidget {
     required this.onTypeChanged,
     required this.subtitle,
     this.enabled = true,
+    this.salaryRequiresConfirmation,
+    this.salaryReminderEnabled,
+    this.onSalaryRequiresConfirmationChanged,
+    this.onSalaryReminderChanged,
   });
 
   final bool isRecurring;
@@ -30,6 +34,10 @@ class TransferFormRecurringSection extends StatelessWidget {
   final ValueChanged<int> onTypeChanged;
   final String subtitle;
   final bool enabled;
+  final bool? salaryRequiresConfirmation;
+  final bool? salaryReminderEnabled;
+  final ValueChanged<bool>? onSalaryRequiresConfirmationChanged;
+  final ValueChanged<bool>? onSalaryReminderChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +65,14 @@ class TransferFormRecurringSection extends StatelessWidget {
               ? _RecurringOptions(
                   frequency: frequency,
                   recurringTypeId: recurringTypeId,
+                  salaryRequiresConfirmation: salaryRequiresConfirmation,
+                  salaryReminderEnabled: salaryReminderEnabled,
                   typeOptions: typeOptions,
                   onFrequencyChanged: onFrequencyChanged,
                   onTypeChanged: onTypeChanged,
+                  onSalaryRequiresConfirmationChanged:
+                      onSalaryRequiresConfirmationChanged,
+                  onSalaryReminderChanged: onSalaryReminderChanged,
                 )
               : const SizedBox.shrink(),
         ),
@@ -75,6 +88,10 @@ class _RecurringOptions extends StatelessWidget {
     required this.typeOptions,
     required this.onFrequencyChanged,
     required this.onTypeChanged,
+    this.salaryRequiresConfirmation,
+    this.salaryReminderEnabled,
+    this.onSalaryRequiresConfirmationChanged,
+    this.onSalaryReminderChanged,
   });
 
   final int frequency;
@@ -82,9 +99,20 @@ class _RecurringOptions extends StatelessWidget {
   final List<int> typeOptions;
   final ValueChanged<int> onFrequencyChanged;
   final ValueChanged<int> onTypeChanged;
+  final bool? salaryRequiresConfirmation;
+  final bool? salaryReminderEnabled;
+  final ValueChanged<bool>? onSalaryRequiresConfirmationChanged;
+  final ValueChanged<bool>? onSalaryReminderChanged;
 
   @override
   Widget build(BuildContext context) {
+    final showSalaryControls =
+        recurringTypeId == TransactionTypes.salaryCode &&
+        salaryRequiresConfirmation != null &&
+        salaryReminderEnabled != null &&
+        onSalaryRequiresConfirmationChanged != null &&
+        onSalaryReminderChanged != null;
+
     return Padding(
       padding: const EdgeInsets.only(top: AppDimens.paddingSmall),
       child: Column(
@@ -100,8 +128,67 @@ class _RecurringOptions extends StatelessWidget {
             options: typeOptions,
             onChanged: onTypeChanged,
           ),
+          if (showSalaryControls) ...[
+            AppDimens.spacerMedium,
+            _SalaryExecutionSection(
+              requiresConfirmation: salaryRequiresConfirmation!,
+              reminderEnabled: salaryReminderEnabled!,
+              onRequiresConfirmationChanged:
+                  onSalaryRequiresConfirmationChanged!,
+              onReminderChanged: onSalaryReminderChanged!,
+            ),
+          ],
         ],
       ),
+    );
+  }
+}
+
+class _SalaryExecutionSection extends StatelessWidget {
+  const _SalaryExecutionSection({
+    required this.requiresConfirmation,
+    required this.reminderEnabled,
+    required this.onRequiresConfirmationChanged,
+    required this.onReminderChanged,
+  });
+
+  final bool requiresConfirmation;
+  final bool reminderEnabled;
+  final ValueChanged<bool> onRequiresConfirmationChanged;
+  final ValueChanged<bool> onReminderChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SwitchListTile.adaptive(
+          value: requiresConfirmation,
+          onChanged: onRequiresConfirmationChanged,
+          title: Text(
+            context.l10n.salaryConfirmBeforeCountingTitle,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          subtitle: Text(
+            context.l10n.salaryConfirmBeforeCountingHelper,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          contentPadding: EdgeInsets.zero,
+        ),
+        if (requiresConfirmation)
+          SwitchListTile.adaptive(
+            value: reminderEnabled,
+            onChanged: onReminderChanged,
+            title: Text(
+              context.l10n.salaryReminderToggleTitle,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            subtitle: Text(
+              context.l10n.salaryReminderToggleHelper,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            contentPadding: EdgeInsets.zero,
+          ),
+      ],
     );
   }
 }

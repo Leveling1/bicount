@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/repositories/transaction_repository_impl.dart';
@@ -41,6 +42,76 @@ void main() {
         FriendConst.subscription,
       );
       expect(localDataSource.savedTransactions.single.generationMode, 1);
+    },
+  );
+
+  test(
+    'recurring salary with manual confirmation only saves the template and keeps reminders enabled',
+    () async {
+      final localDataSource = FakeTransactionLocalDataSource();
+      RecurringTransfertModel? savedRecurringTransfert;
+      final repository = TransactionRepositoryImpl(
+        localDataSource,
+        saveRecurringTransfert: (recurringTransfert) async {
+          savedRecurringTransfert = recurringTransfert;
+        },
+      );
+
+      await repository.createTransaction(
+        recurringSalaryRequest(
+          draftParty(username: 'Employer', relationType: FriendConst.friend),
+          executionMode: AppExecutionMode.manualConfirmation,
+          reminderEnabled: true,
+        ),
+      );
+
+      expect(localDataSource.createFriendCallCount, 1);
+      expect(localDataSource.savedTransactions, isEmpty);
+      expect(savedRecurringTransfert, isNotNull);
+      expect(
+        savedRecurringTransfert?.senderId,
+        localDataSource.createdFriends.single.sid,
+      );
+      expect(savedRecurringTransfert?.beneficiaryId, currentUser().sid);
+      expect(
+        localDataSource.createdFriends.single.relationType,
+        FriendConst.company,
+      );
+      expect(
+        savedRecurringTransfert?.executionMode,
+        AppExecutionMode.manualConfirmation,
+      );
+      expect(savedRecurringTransfert?.reminderEnabled, isTrue);
+    },
+  );
+
+  test(
+    'recurring salary with automatic mode saves only the template and disables reminders',
+    () async {
+      final localDataSource = FakeTransactionLocalDataSource();
+      RecurringTransfertModel? savedRecurringTransfert;
+      final repository = TransactionRepositoryImpl(
+        localDataSource,
+        saveRecurringTransfert: (recurringTransfert) async {
+          savedRecurringTransfert = recurringTransfert;
+        },
+      );
+
+      await repository.createTransaction(
+        recurringSalaryRequest(
+          draftParty(username: 'Employer', relationType: FriendConst.friend),
+          executionMode: AppExecutionMode.backendAutomatic,
+          reminderEnabled: true,
+        ),
+      );
+
+      expect(localDataSource.savedTransactions, isEmpty);
+      expect(savedRecurringTransfert, isNotNull);
+      expect(
+        savedRecurringTransfert?.executionMode,
+        AppExecutionMode.backendAutomatic,
+      );
+      expect(savedRecurringTransfert?.reminderEnabled, isFalse);
     },
   );
 

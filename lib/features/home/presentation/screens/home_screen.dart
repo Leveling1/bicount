@@ -55,6 +55,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                   child: Center(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           context.l10n.homeBalance,

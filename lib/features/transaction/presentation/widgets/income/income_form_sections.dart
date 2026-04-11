@@ -56,6 +56,13 @@ extension _IncomeFormSections on _IncomeFormState {
           isRecurring: _isRecurring,
           frequency: _recurringFrequency,
           recurringTypeId: _recurringTypeId,
+          salaryRequiresConfirmation:
+              _recurringTypeId == TransactionTypes.salaryCode
+              ? AppExecutionMode.requiresConfirmation(_recurringExecutionMode)
+              : null,
+          salaryReminderEnabled: _recurringTypeId == TransactionTypes.salaryCode
+              ? _recurringReminderEnabled
+              : null,
           typeOptions: TransactionTypes.incomeTypes,
           subtitle: context.l10n.recurringToggleSubtitleIncome,
           enabled: !_isEditing,
@@ -71,6 +78,17 @@ extension _IncomeFormSections on _IncomeFormState {
           }),
           onTypeChanged: (value) => _update(() {
             _recurringTypeId = value;
+          }),
+          onSalaryRequiresConfirmationChanged: (value) => _update(() {
+            _recurringExecutionMode = value
+                ? AppExecutionMode.manualConfirmation
+                : AppExecutionMode.backendAutomatic;
+            if (!value) {
+              _recurringReminderEnabled = false;
+            }
+          }),
+          onSalaryReminderChanged: (value) => _update(() {
+            _recurringReminderEnabled = value;
           }),
         ),
       ],

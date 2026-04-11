@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
@@ -151,5 +152,28 @@ CreateTransactionRequestEntity recurringExpenseRequest(FriendsModel party) {
     isRecurring: true,
     recurringFrequency: 1,
     recurringTypeId: TransactionTypes.subscriptionCode,
+  );
+}
+
+CreateTransactionRequestEntity recurringSalaryRequest(
+  FriendsModel employer, {
+  int executionMode = AppExecutionMode.manualConfirmation,
+  bool reminderEnabled = true,
+}) {
+  return CreateTransactionRequestEntity(
+    name: 'Monthly salary',
+    date: DateTime(2026, 4, 11).toIso8601String(),
+    totalAmount: 1200,
+    currency: 'USD',
+    sender: employer,
+    note: '',
+    transactionType: TransactionTypes.incomeCode,
+    splitMode: TransactionSplitMode.equal,
+    splits: [TransactionSplitInputEntity(beneficiary: currentUser())],
+    isRecurring: true,
+    recurringFrequency: 1,
+    recurringTypeId: TransactionTypes.salaryCode,
+    recurringExecutionMode: executionMode,
+    recurringReminderEnabled: reminderEnabled,
   );
 }

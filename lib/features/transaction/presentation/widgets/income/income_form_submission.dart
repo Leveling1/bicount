@@ -6,11 +6,11 @@ extension _IncomeFormSubmission on _IncomeFormState {
     TransactionState state,
   ) {
     if (state is TransactionCreated) {
+      final successMessage = _isRecurring
+          ? context.l10n.accountFundingRecurringSavedSuccess
+          : context.l10n.transactionSavedSuccess;
       _runAfterFrame(() {
-        NotificationHelper.showSuccessNotification(
-          context,
-          context.l10n.transactionSavedSuccess,
-        );
+        NotificationHelper.showSuccessNotification(context, successMessage);
         clearForm();
         widget.onCompleted?.call();
       });
@@ -84,6 +84,14 @@ extension _IncomeFormSubmission on _IncomeFormState {
         isRecurring: _isRecurring,
         recurringFrequency: _isRecurring ? _recurringFrequency : null,
         recurringTypeId: _isRecurring ? _recurringTypeId : null,
+        recurringExecutionMode:
+            _isRecurring && _recurringTypeId == TransactionTypes.salaryCode
+            ? _recurringExecutionMode
+            : null,
+        recurringReminderEnabled:
+            _isRecurring && _recurringTypeId == TransactionTypes.salaryCode
+            ? _recurringReminderEnabled
+            : null,
       );
       _splitResolver.resolve(request);
       if (_isEditing) {
