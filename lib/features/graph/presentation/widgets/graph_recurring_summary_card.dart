@@ -70,29 +70,36 @@ class GraphRecurringSummaryCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppDimens.spacingMedium),
-                Wrap(
-                  spacing: AppDimens.spacingMedium,
-                  runSpacing: AppDimens.spacingMedium,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _MetricChip(
-                      label: context.l10n.graphActive,
-                      value: '${summary.activeCount}',
-                      color: color,
-                    ),
-                    _MetricChip(
-                      label: context.l10n.graphMonthlyLoad,
-                      value: NumberFormatUtils.compactCurrency(
-                        summary.monthlyReferenceAmount,
-                        currencyCode: currencyCode,
+                    Expanded(
+                      child: _MetricChip(
+                        label: context.l10n.graphActive,
+                        value: '${summary.activeCount}',
+                        color: color,
                       ),
-                      color: color,
                     ),
-                    _MetricChip(
-                      label: upcomingLabel,
-                      value: summary.nextExpectedDate == null
-                          ? '-'
-                          : formatDateWithoutYear(summary.nextExpectedDate!),
-                      color: color,
+                    const SizedBox(width: AppDimens.spacingMedium),
+                    Expanded(
+                      child: _MetricChip(
+                        label: context.l10n.graphMonthlyLoad,
+                        value: NumberFormatUtils.compactCurrency(
+                          summary.monthlyReferenceAmount,
+                          currencyCode: currencyCode,
+                        ),
+                        color: color,
+                      ),
+                    ),
+                    const SizedBox(width: AppDimens.spacingMedium),
+                    Expanded(
+                      child: _MetricChip(
+                        label: upcomingLabel,
+                        value: summary.nextExpectedDate == null
+                            ? '-'
+                            : formatDateWithoutYear(summary.nextExpectedDate!),
+                        color: color,
+                      ),
                     ),
                   ],
                 ),
@@ -119,7 +126,6 @@ class _MetricChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(minWidth: 110),
       padding: const EdgeInsets.symmetric(
         horizontal: AppDimens.paddingSmall,
         vertical: AppDimens.paddingSmall,
@@ -131,13 +137,22 @@ class _MetricChip extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: Theme.of(context).textTheme.bodySmall),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
           const SizedBox(height: AppDimens.spacingExtraSmall),
           Text(
             value,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(
               context,
-            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700, color: Theme.of(
+              context,
+            ).textTheme.titleLarge?.color),
           ),
         ],
       ),

@@ -33,7 +33,7 @@ class HomeSalaryStatusCard extends StatelessWidget {
 
     final accentColor = dashboard.hasAttention
         ? Theme.of(context).extension<OtherTheme>()!.expense!
-        : Theme.of(context).primaryColor;
+        : Theme.of(context).textTheme.bodySmall?.color;
 
     return Container(
       width: double.infinity,
@@ -51,14 +51,25 @@ class HomeSalaryStatusCard extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
+                  flex: 1,
+                  child: Icon(
+                    Icons.arrow_forward_outlined,
+                    color: accentColor,
+                    size: 30,
+                  ),
+                ),
+                Expanded(
+                  flex: 4,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         context.l10n.salaryHomeCardTitle,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).textTheme.titleLarge?.color,
+                        ),
                       ),
-                      const SizedBox(height: AppDimens.spacingSmall),
                       Text(
                         dashboard.hasAttention
                             ? context.l10n.salaryHomeCardAttention(
@@ -74,27 +85,13 @@ class HomeSalaryStatusCard extends StatelessWidget {
                                         dashboard.nextExpectedDate!,
                                       ),
                               ),
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: accentColor,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: AppDimens.spacingExtraSmall),
-                      Text(
-                        dashboard.hasAttention
-                            ? context.l10n.salaryHomeCardCount(
-                                dashboard.overdueCount +
-                                    dashboard.dueTodayCount,
-                              )
-                            : context.l10n.salaryPlansCount(
-                                dashboard.plans.length,
-                              ),
-                        style: Theme.of(context).textTheme.bodySmall,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: accentColor),
                       ),
                     ],
                   ),
                 ),
-                Icon(Icons.arrow_forward_ios_rounded, color: accentColor),
               ],
             ),
           ),

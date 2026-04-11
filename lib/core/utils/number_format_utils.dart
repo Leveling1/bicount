@@ -48,7 +48,7 @@ class NumberFormatUtils {
     num value, {
     String? locale,
     String? currencyCode,
-    num compactThreshold = 100000,
+    num compactThreshold = 1000,
     String thousandSuffix = 'K',
   }) {
     final normalizedCode = _normalizeCurrencyCode(currencyCode);

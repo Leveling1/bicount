@@ -17,7 +17,7 @@ class GraphIncomeBreakdownCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = [
       Theme.of(context).extension<OtherTheme>()!.personnalIncome!,
-      AppColors.secondaryColorBasic,
+      AppColors.primaryColorBasic,
       AppColors.quaternaryColorBasic,
     ];
 

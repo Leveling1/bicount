@@ -142,18 +142,16 @@ class _GraphScreenContent extends StatelessWidget {
                   ),
                   const SizedBox(height: AppDimens.marginLarge),
                   BicountReveal(
-                    delay: const Duration(milliseconds: 210),
+                    delay: const Duration(milliseconds: 260),
                     child: GraphRecurringSummaryCard(
-                      title: context.l10n.graphRecurringChargesTitle,
+                      title: context.l10n.graphRecurringIncomesTitle,
                       description:
-                          context.l10n.graphRecurringChargesDescription,
-                      summary: dashboard.recurringCharges,
+                          context.l10n.graphRecurringIncomesDescription,
+                      summary: dashboard.recurringIncomes,
                       currencyCode: dashboard.displayCurrencyCode,
-                      color: Theme.of(
-                        context,
-                      ).extension<OtherTheme>()!.expense!,
-                      upcomingLabel: context.l10n.graphUpcomingCharges,
-                      onTap: () => context.push('/subscriptions'),
+                      color: Theme.of(context).extension<OtherTheme>()!.income!,
+                      upcomingLabel: context.l10n.graphRecurringIncomesUpcoming,
+                      onTap: () => context.push('/recurring-incomes'),
                     ),
                   ),
                   const SizedBox(height: AppDimens.marginLarge),
@@ -172,16 +170,18 @@ class _GraphScreenContent extends StatelessWidget {
                   ),
                   const SizedBox(height: AppDimens.marginLarge),
                   BicountReveal(
-                    delay: const Duration(milliseconds: 260),
+                    delay: const Duration(milliseconds: 210),
                     child: GraphRecurringSummaryCard(
-                      title: context.l10n.graphRecurringIncomesTitle,
+                      title: context.l10n.graphRecurringChargesTitle,
                       description:
-                          context.l10n.graphRecurringIncomesDescription,
-                      summary: dashboard.recurringIncomes,
+                          context.l10n.graphRecurringChargesDescription,
+                      summary: dashboard.recurringCharges,
                       currencyCode: dashboard.displayCurrencyCode,
-                      color: Theme.of(context).extension<OtherTheme>()!.income!,
-                      upcomingLabel: context.l10n.graphRecurringIncomesUpcoming,
-                      onTap: () => context.push('/recurring-incomes'),
+                      color: Theme.of(
+                        context,
+                      ).extension<OtherTheme>()!.expense!,
+                      upcomingLabel: context.l10n.graphUpcomingCharges,
+                      onTap: () => context.push('/subscriptions'),
                     ),
                   ),
                 ],
