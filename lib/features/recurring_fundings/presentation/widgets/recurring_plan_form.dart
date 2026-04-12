@@ -1,4 +1,5 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_choice_chip.dart';
@@ -40,7 +41,7 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
     _date.text = DateFormat(
       'dd/MM/yyyy',
     ).format(DateTime.tryParse(recurringTransfert.startDate) ?? DateTime.now());
-    _frequency = recurringTransfert.frequency;
+    _frequency = _normalizeFrequency(recurringTransfert.frequency);
   }
 
   @override
@@ -127,6 +128,14 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
         ? amount.toStringAsFixed(0)
         : amount.toString();
   }
+
+  int _normalizeFrequency(int frequency) {
+    return switch (frequency) {
+      4 => Frequency.quarterly,
+      5 => Frequency.yearly,
+      _ => frequency,
+    };
+  }
 }
 
 class _FrequencySelector extends StatelessWidget {
@@ -135,7 +144,12 @@ class _FrequencySelector extends StatelessWidget {
   final int selected;
   final ValueChanged<int> onChanged;
 
-  static const _frequencies = [2, 3, 4, 5];
+  static const _frequencies = [
+    Frequency.weekly,
+    Frequency.monthly,
+    Frequency.quarterly,
+    Frequency.yearly,
+  ];
 
   @override
   Widget build(BuildContext context) {

@@ -1268,6 +1268,12 @@ Rules:
 - recurring charge and recurring income detail sheets must rebuild their displayed summary from the current `MainBloc` `MainLoaded.startData`, not from a one-time snapshot captured when the user tapped a card
 - modal recurring detail sheets opened from `/subscriptions`, `/recurring-charges`, or `/recurring-incomes` must forward the page-scoped `RecurringTransfertBloc` with `BlocProvider.value`, because modal routes do not inherit providers created below the navigator
 
+## Recurring Frequency Constants Update (2026-04-12)
+
+Rules:
+- recurring plan monthly-load calculations and recurring-plan edit frequency pickers must use the shared `Frequency.weekly`, `Frequency.monthly`, `Frequency.quarterly`, and `Frequency.yearly` constants from `lib/core/constants/subscription_const.dart`
+- do not reintroduce local hardcoded frequency ids like `2, 3, 4, 5` in recurring plan builders or forms, because recurring templates are created elsewhere with the shared `Frequency` constants and the mismatch corrupts monthly normalization
+
 ## Historical FX Update (2026-04-12)
 
 Rules:
@@ -1277,3 +1283,4 @@ Rules:
 - if the currently displayed/reference currency already matches the record's original currency, keep the original amount without conversion
 - recurring plan aggregate projections that do not have a counted transaction row yet must anchor FX to the plan `createdAt` when available, falling back only when older records predate that field
 - salary occurrence confirmation must allow adjusting both amount and currency before creating the counted transaction row
+- when converting recurring plan aggregates, load historical snapshots for both the current reference currency and the recurring plan source currencies, including when the current reference currency is `CDF`; recurring templates do not persist `amount_cdf` or `rate_to_cdf`, so target-only history or an early `CDF` return is insufficient for multi-currency sums

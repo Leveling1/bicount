@@ -115,23 +115,38 @@ class CurrencyRepositoryImpl {
     final normalizedCode = CurrencyConfigEntity.normalizeCode(currencyCode);
     await _refreshLatestSnapshots({normalizedCode});
 
-    if (normalizedCode == CurrencyConfigEntity.defaultReferenceCurrencyCode ||
-        !includeStoredDates) {
+    if (!includeStoredDates) {
       return;
     }
 
     final rateDates = await _recordHistoryService.collectStoredRateDates();
-    final missingDates = currentConfig.missingRateDates(
-      currencyCode: normalizedCode,
-      rateDates: rateDates,
-    );
-    if (missingDates.isEmpty) {
+    final historyCurrencyCodes = {
+      normalizedCode,
+      ...await _recordHistoryService.collectRecurringTransfertCurrencies(),
+    }.map(CurrencyConfigEntity.normalizeCode).toSet();
+    final missingCurrencyCodes = <String>{};
+    final missingDates = <String>{};
+
+    for (final code in historyCurrencyCodes) {
+      final codeMissingDates = currentConfig.missingRateDates(
+        currencyCode: code,
+        rateDates: rateDates,
+      );
+      if (codeMissingDates.isEmpty) {
+        continue;
+      }
+
+      missingCurrencyCodes.add(code);
+      missingDates.addAll(codeMissingDates);
+    }
+
+    if (missingCurrencyCodes.isEmpty || missingDates.isEmpty) {
       return;
     }
 
     try {
       final snapshots = await _remoteDataSource.fetchSnapshotsForDates(
-        currencyCodes: [normalizedCode],
+        currencyCodes: missingCurrencyCodes.toList(growable: false),
         rateDates: missingDates.toList(growable: false),
       );
       await _mergeSnapshots(snapshots);

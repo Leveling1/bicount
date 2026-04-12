@@ -36,6 +36,15 @@ class CurrencyRecordHistoryService {
     }.where((value) => value.isNotEmpty).toSet();
   }
 
+  Future<Set<String>> collectRecurringTransfertCurrencies() async {
+    final recurringTransferts = await _safeLocalGet<RecurringTransfertModel>();
+
+    return recurringTransferts
+        .map((item) => item.currency.trim().toUpperCase())
+        .where((value) => value.isNotEmpty)
+        .toSet();
+  }
+
   Future<List<T>>
   _safeLocalGet<T extends OfflineFirstWithSupabaseModel>() async {
     try {

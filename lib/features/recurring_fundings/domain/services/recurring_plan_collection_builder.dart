@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/state_app.dart';
+import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/services/recurring_funding_schedule_service.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
@@ -111,10 +112,11 @@ class RecurringPlanCollectionBuilder {
       return null;
     }
     final endDate = scheduleService.parseDate(plan.endDate);
+    final frequency = _effectiveFrequency(plan.frequency);
     var cursor = scheduleService.startOfDay(startDate);
 
     while (cursor.isBefore(today)) {
-      cursor = scheduleService.nextOccurrence(cursor, plan.frequency);
+      cursor = scheduleService.nextOccurrence(cursor, frequency);
     }
 
     if (endDate != null &&
@@ -129,6 +131,7 @@ class RecurringPlanCollectionBuilder {
     RecurringTransfertModel plan,
     CurrencyConfigEntity currencyConfig,
   ) {
+    final frequency = _effectiveFrequency(plan.frequency);
     final referenceAmount = currencyAmountService.record(
       originalAmount: plan.amount,
       originalCurrencyCode: plan.currency,
@@ -136,12 +139,20 @@ class RecurringPlanCollectionBuilder {
       config: currencyConfig,
     );
 
-    return switch (plan.frequency) {
-      2 => referenceAmount * 52 / 12,
-      3 => referenceAmount,
-      4 => referenceAmount / 3,
-      5 => referenceAmount / 12,
+    return switch (frequency) {
+      Frequency.weekly => referenceAmount * 52 / 12,
+      Frequency.monthly => referenceAmount,
+      Frequency.quarterly => referenceAmount / 3,
+      Frequency.yearly => referenceAmount / 12,
       _ => referenceAmount,
+    };
+  }
+
+  int _effectiveFrequency(int frequency) {
+    return switch (frequency) {
+      4 => Frequency.quarterly,
+      5 => Frequency.yearly,
+      _ => frequency,
     };
   }
 

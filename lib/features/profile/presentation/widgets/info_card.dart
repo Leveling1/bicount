@@ -25,7 +25,11 @@ class InfoCardAmount extends StatelessWidget {
       title: title,
       color: color,
       child: Text(
-        NumberFormatUtils.formatCurrency(value, currencyCode: currencyCode),
+        NumberFormatUtils.compactCurrency(
+          value,
+          currencyCode: currencyCode,
+          compactThreshold: 100000,
+        ),
         style: TextStyle(
           fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
           fontWeight: FontWeight.bold,
