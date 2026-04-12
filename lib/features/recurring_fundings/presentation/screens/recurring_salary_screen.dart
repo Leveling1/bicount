@@ -161,21 +161,23 @@ class _RecurringSalaryScreenState extends State<RecurringSalaryScreen> {
         isLoading:
             targetId == occurrence.occurrenceId ||
             targetId == occurrence.recurringTransfert.recurringTransfertId,
-        onConfirmPressed: (confirmedAmount) {
+        onConfirmPressed: (confirmedAmount, confirmedCurrency) {
           Navigator.of(context).maybePop();
           context.read<RecurringTransfertBloc>().add(
             ConfirmSalaryOccurrenceRequested(
               occurrence: occurrence,
               confirmedAmount: confirmedAmount,
+              confirmedCurrency: confirmedCurrency,
             ),
           );
         },
-        onAutomaticModePressed: (confirmedAmount) {
+        onAutomaticModePressed: (confirmedAmount, confirmedCurrency) {
           Navigator.of(context).maybePop();
           context.read<RecurringTransfertBloc>().add(
             ContinueSalaryAutomaticallyRequested(
               occurrence: occurrence,
               confirmedAmount: confirmedAmount,
+              confirmedCurrency: confirmedCurrency,
             ),
           );
         },

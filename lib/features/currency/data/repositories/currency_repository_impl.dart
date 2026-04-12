@@ -180,6 +180,52 @@ class CurrencyRepositoryImpl {
     );
   }
 
+  Future<CurrencyQuoteEntity> resolveHistoricalQuote({
+    required double amount,
+    required String originalCurrencyCode,
+    required String rateDate,
+    String? referenceCurrencyCode,
+  }) async {
+    final normalizedOriginal = CurrencyConfigEntity.normalizeCode(
+      originalCurrencyCode,
+    );
+    final normalizedReference = CurrencyConfigEntity.normalizeCode(
+      referenceCurrencyCode ?? currentConfig.referenceCurrencyCode,
+    );
+    final normalizedRateDate = CurrencyConfigEntity.normalizeDate(rateDate);
+
+    await _ensureSnapshotsForDate(
+      currencyCodes: {normalizedOriginal, normalizedReference},
+      rateDate: normalizedRateDate,
+    );
+
+    final originalSnapshot = _resolveSnapshotForDate(
+      normalizedOriginal,
+      normalizedRateDate,
+    );
+    final referenceSnapshot = _resolveSnapshotForDate(
+      normalizedReference,
+      normalizedRateDate,
+    );
+    final amountCdf =
+        normalizedOriginal == CurrencyConfigEntity.defaultReferenceCurrencyCode
+        ? amount
+        : amount * originalSnapshot.rateToCdf;
+
+    return CurrencyQuoteEntity(
+      referenceCurrencyCode: normalizedReference,
+      convertedAmount:
+          normalizedReference ==
+              CurrencyConfigEntity.defaultReferenceCurrencyCode
+          ? amountCdf
+          : amountCdf / referenceSnapshot.rateToCdf,
+      amountCdf: amountCdf,
+      rateToCdf: originalSnapshot.rateToCdf,
+      fxRateDate: normalizedRateDate,
+      fxSnapshotId: originalSnapshot.snapshotId,
+    );
+  }
+
   Future<List<ExchangeRateSnapshotEntity>> _refreshLatestSnapshots(
     Set<String> codes,
   ) async {
@@ -205,6 +251,66 @@ class CurrencyRepositoryImpl {
       }
       rethrow;
     }
+  }
+
+  Future<void> _ensureSnapshotsForDate({
+    required Set<String> currencyCodes,
+    required String rateDate,
+  }) async {
+    final missingCodes = currencyCodes
+        .map(CurrencyConfigEntity.normalizeCode)
+        .where(
+          (code) =>
+              code != CurrencyConfigEntity.defaultReferenceCurrencyCode &&
+              currentConfig.snapshotFor(
+                    currencyCode: code,
+                    rateDate: rateDate,
+                  ) ==
+                  null,
+        )
+        .toSet();
+    if (missingCodes.isEmpty) {
+      return;
+    }
+
+    final snapshots = await _remoteDataSource.fetchSnapshotsForDates(
+      currencyCodes: missingCodes.toList(growable: false),
+      rateDates: [rateDate],
+    );
+    await _mergeSnapshots(snapshots);
+
+    final unresolvedCodes = missingCodes.where(
+      (code) =>
+          currentConfig.snapshotFor(currencyCode: code, rateDate: rateDate) ==
+          null,
+    );
+    if (unresolvedCodes.isNotEmpty) {
+      throw MessageFailure(
+        message: 'Unable to load the exchange rate for this record date.',
+      );
+    }
+  }
+
+  ExchangeRateSnapshotEntity _resolveSnapshotForDate(
+    String currencyCode,
+    String rateDate,
+  ) {
+    final normalizedCode = CurrencyConfigEntity.normalizeCode(currencyCode);
+    final snapshot = currentConfig.snapshotFor(
+      currencyCode: normalizedCode,
+      rateDate: rateDate,
+    );
+    if (snapshot != null) {
+      return snapshot;
+    }
+
+    if (normalizedCode == CurrencyConfigEntity.defaultReferenceCurrencyCode) {
+      return ExchangeRateSnapshotEntity.cdf(rateDate);
+    }
+
+    throw MessageFailure(
+      message: 'Unable to load the exchange rate for this record date.',
+    );
   }
 
   ExchangeRateSnapshotEntity _resolveSnapshot(

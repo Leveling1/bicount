@@ -15,6 +15,7 @@ abstract class RecurringTransfertLocalDataSource {
   Future<void> confirmSalaryOccurrence(
     SalaryOccurrenceEntity occurrence, {
     required double confirmedAmount,
+    required String confirmedCurrency,
     bool switchToAutomatic = false,
   });
 }

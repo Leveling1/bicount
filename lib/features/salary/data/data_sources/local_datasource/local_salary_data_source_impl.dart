@@ -22,6 +22,7 @@ class LocalSalaryDataSourceImpl implements SalaryLocalDataSource {
     await _delegate.confirmSalaryOccurrence(
       occurrence,
       confirmedAmount: occurrence.amount,
+      confirmedCurrency: occurrence.currency,
     );
   }
 
@@ -32,6 +33,7 @@ class LocalSalaryDataSourceImpl implements SalaryLocalDataSource {
     await _delegate.confirmSalaryOccurrence(
       occurrence,
       confirmedAmount: occurrence.amount,
+      confirmedCurrency: occurrence.currency,
       switchToAutomatic: true,
     );
   }

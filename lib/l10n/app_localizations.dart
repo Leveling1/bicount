@@ -2741,6 +2741,12 @@ abstract class AppLocalizations {
   /// **'Subscription'**
   String get transactionTypeSubscription;
 
+  /// No description provided for @transactionTypeSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get transactionTypeSalary;
+
   /// No description provided for @transactionTypeAddFund.
   ///
   /// In en, this message translates to:

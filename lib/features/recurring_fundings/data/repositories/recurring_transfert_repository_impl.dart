@@ -53,12 +53,14 @@ class RecurringTransfertRepositoryImpl implements RecurringTransfertRepository {
   Future<void> confirmSalaryOccurrence(
     SalaryOccurrenceEntity occurrence, {
     required double confirmedAmount,
+    required String confirmedCurrency,
     bool switchToAutomatic = false,
   }) async {
     try {
       await localDataSource.confirmSalaryOccurrence(
         occurrence,
         confirmedAmount: confirmedAmount,
+        confirmedCurrency: confirmedCurrency,
         switchToAutomatic: switchToAutomatic,
       );
     } catch (_) {

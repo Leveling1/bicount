@@ -132,7 +132,7 @@ class RecurringPlanCollectionBuilder {
     final referenceAmount = currencyAmountService.record(
       originalAmount: plan.amount,
       originalCurrencyCode: plan.currency,
-      fxRateDate: plan.startDate,
+      fxRateDate: _fxAnchorDate(plan),
       config: currencyConfig,
     );
 
@@ -143,6 +143,15 @@ class RecurringPlanCollectionBuilder {
       5 => referenceAmount / 12,
       _ => referenceAmount,
     };
+  }
+
+  String _fxAnchorDate(RecurringTransfertModel plan) {
+    final createdAt = plan.createdAt;
+    if (createdAt != null && createdAt.isNotEmpty) {
+      return createdAt;
+    }
+
+    return scheduleService.normalizeDate(plan.startDate);
   }
 
   int _compareSummaries(

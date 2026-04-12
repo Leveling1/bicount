@@ -1261,3 +1261,19 @@ Rules:
 - the Home recurring follow-up card and the Graphs dashboard recurring sections must both derive from `recurring_transfert` + `transactions`, not from removed `subscription`, `account_funding`, or `recurring_fundings` tables
 - recurring salary creation in `IncomeForm` must expose the old two modes again: manual confirmation or backend automatic
 - creating a recurring salary must save only the `recurring_transfert` template at creation time; do not insert a counted `transactions` row until the user confirms the occurrence or backend automation generates it
+
+## Recurring Detail Sheet Update (2026-04-12)
+
+Rules:
+- recurring charge and recurring income detail sheets must rebuild their displayed summary from the current `MainBloc` `MainLoaded.startData`, not from a one-time snapshot captured when the user tapped a card
+- modal recurring detail sheets opened from `/subscriptions`, `/recurring-charges`, or `/recurring-incomes` must forward the page-scoped `RecurringTransfertBloc` with `BlocProvider.value`, because modal routes do not inherit providers created below the navigator
+
+## Historical FX Update (2026-04-12)
+
+Rules:
+- historical FX for persisted finance rows must stay anchored to the original record registration time; do not recalculate an existing row with the latest rate during edit flows when `created_at` or the stored FX date already exists
+- transaction edits must preserve the original `reference_currency_code` of the row when it already exists, and recompute FX metadata against the historical record date instead of the current day
+- the pivot currency remains `CDF`; global balances and analytics should still reconvert from the stored or reconstructed CDF amount into the user's current reference currency
+- if the currently displayed/reference currency already matches the record's original currency, keep the original amount without conversion
+- recurring plan aggregate projections that do not have a counted transaction row yet must anchor FX to the plan `createdAt` when available, falling back only when older records predate that field
+- salary occurrence confirmation must allow adjusting both amount and currency before creating the counted transaction row

@@ -28,18 +28,22 @@ class ConfirmSalaryOccurrenceRequested extends RecurringTransfertEvent {
   const ConfirmSalaryOccurrenceRequested({
     required this.occurrence,
     required this.confirmedAmount,
+    required this.confirmedCurrency,
   });
 
   final SalaryOccurrenceEntity occurrence;
   final double confirmedAmount;
+  final String confirmedCurrency;
 }
 
 class ContinueSalaryAutomaticallyRequested extends RecurringTransfertEvent {
   const ContinueSalaryAutomaticallyRequested({
     required this.occurrence,
     required this.confirmedAmount,
+    required this.confirmedCurrency,
   });
 
   final SalaryOccurrenceEntity occurrence;
   final double confirmedAmount;
+  final String confirmedCurrency;
 }

@@ -163,10 +163,24 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     }
 
     try {
-      final quote = await _currencyRepository.resolveCreationQuote(
-        amount: amount,
-        originalCurrencyCode: currency,
+      final currentRecord = await _findStoredTransaction(
+        previousTransaction.tid,
       );
+      final historicalRateDate = _resolveHistoricalRateDate(
+        currentRecord,
+        previousTransaction,
+      );
+      final quote = historicalRateDate == null
+          ? await _currencyRepository.resolveCreationQuote(
+              amount: amount,
+              originalCurrencyCode: currency,
+            )
+          : await _currencyRepository.resolveHistoricalQuote(
+              amount: amount,
+              originalCurrencyCode: currency,
+              rateDate: historicalRateDate,
+              referenceCurrencyCode: currentRecord?.referenceCurrencyCode,
+            );
 
       final transactionModel = TransactionModel(
         tid: previousTransaction.tid,
@@ -180,7 +194,8 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         note: note,
         amount: amount,
         currency: currency,
-        referenceCurrencyCode: quote.referenceCurrencyCode,
+        referenceCurrencyCode:
+            currentRecord?.referenceCurrencyCode ?? quote.referenceCurrencyCode,
         convertedAmount: quote.convertedAmount,
         amountCdf: quote.amountCdf,
         rateToCdf: quote.rateToCdf,
@@ -191,6 +206,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         category: category,
         recurringTransfertId: previousTransaction.recurringTransfertId,
         createdAt:
+            currentRecord?.createdAt ??
             previousTransaction.createdAt?.toIso8601String() ??
             DateTime.now().toIso8601String(),
       );
@@ -208,5 +224,36 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
 
   Left<Failure, T> _messageFailure<T>(String message) {
     return Left(MessageFailure(message: message));
+  }
+
+  Future<TransactionModel?> _findStoredTransaction(String tid) async {
+    if (tid.isEmpty) {
+      return null;
+    }
+
+    final items = await Repository().get<TransactionModel>(
+      policy: OfflineFirstGetPolicy.localOnly,
+      query: Query(where: [Where.exact('tid', tid)]),
+    );
+    return items.isEmpty ? null : items.first;
+  }
+
+  String? _resolveHistoricalRateDate(
+    TransactionModel? currentRecord,
+    TransactionEntity previousTransaction,
+  ) {
+    final createdAt =
+        currentRecord?.createdAt ??
+        previousTransaction.createdAt?.toIso8601String();
+    if (createdAt != null && createdAt.isNotEmpty) {
+      return createdAt;
+    }
+
+    final fxRateDate = currentRecord?.fxRateDate;
+    if (fxRateDate != null && fxRateDate.isNotEmpty) {
+      return fxRateDate;
+    }
+
+    return null;
   }
 }

@@ -93,6 +93,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
               transaction,
               executionMode,
             ),
+            createdAt: DateTime.now().toIso8601String(),
           ),
         );
       }

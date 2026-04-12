@@ -219,7 +219,7 @@ class SalaryDashboardBuilder {
         ? currencyAmountService.record(
             originalAmount: recurringTransfert.amount,
             originalCurrencyCode: recurringTransfert.currency,
-            fxRateDate: expectedDate.toIso8601String(),
+            fxRateDate: _fxAnchorDate(recurringTransfert),
             config: currencyConfig,
           )
         : currencyAmountService.transaction(
@@ -239,6 +239,15 @@ class SalaryDashboardBuilder {
       ),
       referenceAmount: referenceAmount,
     );
+  }
+
+  String _fxAnchorDate(RecurringTransfertModel recurringTransfert) {
+    final createdAt = recurringTransfert.createdAt;
+    if (createdAt != null && createdAt.isNotEmpty) {
+      return createdAt;
+    }
+
+    return scheduleService.normalizeDate(recurringTransfert.startDate);
   }
 
   DateTime? _resolveNextExpectedDate({

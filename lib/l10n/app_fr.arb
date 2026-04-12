@@ -528,6 +528,7 @@
   "runtimeRecurringSalaryUpdateFailed": "Impossible de mettre à jour ce salaire récurrent pour le moment.",
   "transactionTypeTransfer": "Transfert",
   "transactionTypeSubscription": "Abonnement",
+  "transactionTypeSalary": "Salaire",
   "transactionTypeAddFund": "Ajouter des fonds",
   "transactionTypeIncome": "Revenus",
   "transactionTypeExpense": "Dépenses",

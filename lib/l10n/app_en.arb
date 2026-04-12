@@ -527,6 +527,7 @@
   "runtimeRecurringSalaryConfirmFailed": "Unable to confirm this recurring salary right now.",
   "runtimeRecurringSalaryUpdateFailed": "Unable to update this recurring salary right now.",
   "transactionTypeTransfer": "Transfer",
+  "transactionTypeSalary": "Salary",
   "transactionTypeSubscription": "Subscription",
   "transactionTypeAddFund": "Add funds",
   "transactionTypeIncome": "Income",

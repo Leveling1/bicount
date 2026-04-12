@@ -49,6 +49,10 @@ extension L10nBuildContextX on BuildContext {
         return l10n.transactionTypeIncome;
       case TransactionTypes.expenseCode:
         return l10n.transactionTypeExpense;
+      case TransactionTypes.subscriptionCode:
+        return l10n.transactionTypeSubscription;
+      case TransactionTypes.salaryCode:
+        return l10n.transactionTypeSalary;
       default:
         return l10n.transactionTypeOther;
     }

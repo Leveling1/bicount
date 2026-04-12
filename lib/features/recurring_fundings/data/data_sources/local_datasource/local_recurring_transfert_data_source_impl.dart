@@ -132,6 +132,7 @@ class LocalRecurringTransfertDataSourceImpl
   Future<void> confirmSalaryOccurrence(
     SalaryOccurrenceEntity occurrence, {
     required double confirmedAmount,
+    required String confirmedCurrency,
     bool switchToAutomatic = false,
   }) async {
     final currentPlan = await _findRecurringTransfert(
@@ -148,7 +149,7 @@ class LocalRecurringTransfertDataSourceImpl
     if (existingTransaction == null) {
       final quote = await _currencyRepository.resolveCreationQuote(
         amount: confirmedAmount,
-        originalCurrencyCode: currentPlan.currency,
+        originalCurrencyCode: confirmedCurrency,
       );
       final transaction = TransactionModel(
         uid: _currentUid ?? currentPlan.uid,
@@ -162,7 +163,7 @@ class LocalRecurringTransfertDataSourceImpl
             .toIso8601String(),
         note: currentPlan.note,
         amount: confirmedAmount,
-        currency: currentPlan.currency,
+        currency: confirmedCurrency,
         referenceCurrencyCode: quote.referenceCurrencyCode,
         convertedAmount: quote.convertedAmount,
         amountCdf: quote.amountCdf,

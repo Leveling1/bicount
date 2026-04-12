@@ -90,6 +90,7 @@ class RecurringTransfertBloc
       await repository.confirmSalaryOccurrence(
         event.occurrence,
         confirmedAmount: event.confirmedAmount,
+        confirmedCurrency: event.confirmedCurrency,
       );
       emit(
         RecurringTransfertActionSuccess(
@@ -113,6 +114,7 @@ class RecurringTransfertBloc
       await repository.confirmSalaryOccurrence(
         event.occurrence,
         confirmedAmount: event.confirmedAmount,
+        confirmedCurrency: event.confirmedCurrency,
         switchToAutomatic: true,
       );
       emit(

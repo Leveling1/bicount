@@ -1366,6 +1366,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionTypeSubscription => 'Subscription';
 
   @override
+  String get transactionTypeSalary => 'Salary';
+
+  @override
   String get transactionTypeAddFund => 'Add funds';
 
   @override

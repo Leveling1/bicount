@@ -2,6 +2,7 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
+import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/salary/domain/entities/salary_occurrence_entity.dart';
 import 'package:bicount/features/salary/presentation/widgets/salary_status_badge.dart';
@@ -21,8 +22,10 @@ class SalaryOccurrenceSheet extends StatefulWidget {
 
   final SalaryOccurrenceEntity occurrence;
   final bool isLoading;
-  final ValueChanged<double> onConfirmPressed;
-  final ValueChanged<double> onAutomaticModePressed;
+  final void Function(double confirmedAmount, String confirmedCurrency)
+  onConfirmPressed;
+  final void Function(double confirmedAmount, String confirmedCurrency)
+  onAutomaticModePressed;
 
   @override
   State<SalaryOccurrenceSheet> createState() => _SalaryOccurrenceSheetState();
@@ -31,6 +34,7 @@ class SalaryOccurrenceSheet extends StatefulWidget {
 class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _amountController;
+  late final TextEditingController _currencyController;
 
   @override
   void initState() {
@@ -38,11 +42,15 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
     _amountController = TextEditingController(
       text: widget.occurrence.amount.toStringAsFixed(2).replaceAll('.', ','),
     );
+    _currencyController = TextEditingController(
+      text: widget.occurrence.currency,
+    );
   }
 
   @override
   void dispose() {
     _amountController.dispose();
+    _currencyController.dispose();
     super.dispose();
   }
 
@@ -54,7 +62,7 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
     return double.tryParse(rawValue.replaceAll(' ', '').replaceAll(',', '.'));
   }
 
-  void _submit(ValueChanged<double> callback) {
+  void _submit(void Function(double, String) callback) {
     if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
@@ -62,7 +70,11 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
     if (amount == null || amount <= 0) {
       return;
     }
-    callback(amount);
+    final currency = _currencyController.text.trim().toUpperCase();
+    if (currency.isEmpty) {
+      return;
+    }
+    callback(amount, currency);
   }
 
   @override
@@ -145,9 +157,15 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
                 hintText: occurrence.amount
                     .toStringAsFixed(2)
                     .replaceAll('.', ','),
-                suffixText: occurrence.currency,
               ),
             ),
+            const SizedBox(height: AppDimens.spacingMedium),
+            Text(
+              context.l10n.fieldSelectCurrency,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: AppDimens.spacingSmall),
+            CurrencyField(controller: _currencyController),
             const SizedBox(height: AppDimens.spacingSmall),
             Text(
               context.l10n.transactionSetExactAmountReceived,

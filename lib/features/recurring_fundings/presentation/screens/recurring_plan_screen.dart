@@ -38,8 +38,8 @@ class RecurringPlanScreen extends StatelessWidget {
               onTap: (summary) => showRecurringPlanDetailSheet(
                 context,
                 scope: scope,
-                data: state.startData,
-                summary: summary,
+                recurringTransfertId:
+                    summary.recurringTransfert.recurringTransfertId ?? '',
               ),
             ),
             MainError() => _RecurringPlanErrorState(
