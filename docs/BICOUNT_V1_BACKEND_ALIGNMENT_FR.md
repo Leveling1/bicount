@@ -9,7 +9,7 @@ Date de référence:
 
 Portée V1:
 - mobile uniquement: Android + iOS
-- navigation visible: `Home / Graphs / Transaction / Profile`
+- navigation visible: `Home / Analyses / Transaction / Profile`
 - la partie `company` reste dans le code source mais n'est plus dans le parcours release
 - partage de profil par lien HTTPS + QR code
 - notifications push via FCM + rappels locaux sur l'appareil
@@ -300,7 +300,7 @@ Activer Supabase Realtime sur:
 Pourquoi:
 - `friend_invites`: mise à jour instantanée des invitations envoyées / reçues
 - `friends`: affichage instantané des nouvelles relations
-- `transactions`, `subscriptions`, `account_funding`: alimentation des graphes en temps réel
+- `transactions`, `subscriptions`, `account_funding`: alimentation des analyses en temps réel
 
 ## Notifications push FCM
 

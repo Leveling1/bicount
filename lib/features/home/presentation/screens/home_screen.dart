@@ -120,7 +120,7 @@ class HomeScreen extends StatelessWidget {
                             label: context.l10n.profileRecurring,
                             amount: 0.0,
                             icon: SvgPicture.asset(
-                              IconLinks.graph,
+                              IconLinks.analysis,
                               width: AppDimens.iconSizeSmall,
                               height: AppDimens.iconSizeSmall,
                               colorFilter: const ColorFilter.mode(

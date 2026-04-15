@@ -54,12 +54,12 @@ class SubscriptionScreenContent extends StatelessWidget {
             runSpacing: AppDimens.spacingMedium,
             children: [
               _OverviewCard(
-                label: context.l10n.graphActive,
+                label: context.l10n.analysisActive,
                 value: '$activeCount',
                 color: Theme.of(context).primaryColor,
               ),
               _OverviewCard(
-                label: context.l10n.graphMonthlyLoad,
+                label: context.l10n.analysisMonthlyLoad,
                 value: NumberFormatUtils.compactCurrency(
                   0.0,
                   currencyCode: data.referenceCurrencyCode,
@@ -69,7 +69,7 @@ class SubscriptionScreenContent extends StatelessWidget {
                 ).extension<OtherTheme>()!.personnalIncome!,
               ),
               _OverviewCard(
-                label: context.l10n.graphUpcomingCharges,
+                label: context.l10n.analysisUpcomingCharges,
                 value: '$upcomingCount',
                 color: Theme.of(
                   context,

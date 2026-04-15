@@ -21,7 +21,7 @@ class SubscriptionItemList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (items.isEmpty) {
       return _SubscriptionEmptyState(
-        message: emptyMessage ?? context.l10n.graphNoActiveSubscriptions,
+        message: emptyMessage ?? context.l10n.analysisNoActiveSubscriptions,
       );
     }
 

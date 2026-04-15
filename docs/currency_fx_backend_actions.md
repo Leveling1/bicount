@@ -9,7 +9,7 @@ Current mobile expectation:
 - the allowed currencies come from the backend, not from hardcoded app logic
 - forms default to the current reference currency
 - transactions, subscriptions, and add-fund entries keep their original amount and original currency
-- global totals in `Home` and `Graph` are displayed in the user's current reference currency
+- global totals in `Home` and `Analysis` are displayed in the user's current reference currency
 - the FX rate used for a record is the rate available at save time
 - the app stores enough FX metadata locally to keep historical totals stable
 

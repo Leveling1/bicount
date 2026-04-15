@@ -123,7 +123,7 @@ Convention recommandée :
 
 Règles métier :
 
-- `recurring_transfert` ne doit jamais être compté directement dans les soldes, graphes, revenus, ou dépenses
+- `recurring_transfert` ne doit jamais être compté directement dans les soldes, analyses, revenus, ou dépenses
 - cette table ne représente jamais de l’argent réellement compté
 - elle représente uniquement une règle de génération ou de confirmation
 - si `execution_mode = manual_confirmation`, le backend ne doit pas insérer automatiquement l’occurrence réelle dans `transactions`
@@ -232,7 +232,7 @@ Activer le realtime sur :
 
 Pourquoi :
 
-- les occurrences réelles doivent rafraîchir immédiatement les soldes et graphes
+- les occurrences réelles doivent rafraîchir immédiatement les soldes et analyses
 - les modèles récurrents doivent rafraîchir l’écran de suivi et les détails de configuration
 - la résolution des parties `friends` doit rester cohérente sur plusieurs appareils
 

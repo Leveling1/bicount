@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 List<String> localizedMainShellTitles(BuildContext context) {
   return [
     '',
-    context.l10n.navGraphs,
+    context.l10n.navAnalysis,
     context.l10n.navTransaction,
     context.l10n.navProfile,
   ];

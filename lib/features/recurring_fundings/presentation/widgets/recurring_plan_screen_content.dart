@@ -58,12 +58,12 @@ class RecurringPlanScreenContent extends StatelessWidget {
             runSpacing: AppDimens.spacingMedium,
             children: [
               _OverviewCard(
-                label: context.l10n.graphActive,
+                label: context.l10n.analysisActive,
                 value: '${collection.activeCount}',
                 color: Theme.of(context).primaryColor,
               ),
               _OverviewCard(
-                label: context.l10n.graphMonthlyLoad,
+                label: context.l10n.analysisMonthlyLoad,
                 value: NumberFormatUtils.compactCurrency(
                   collection.monthlyReferenceAmount,
                   currencyCode: referenceCurrencyCode,
@@ -71,7 +71,7 @@ class RecurringPlanScreenContent extends StatelessWidget {
                 color: accentColor,
               ),
               _OverviewCard(
-                label: context.l10n.graphUpcomingCharges,
+                label: context.l10n.analysisUpcomingCharges,
                 value: '${collection.upcomingCount}',
                 color: Theme.of(
                   context,

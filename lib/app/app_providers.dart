@@ -18,7 +18,7 @@ import 'package:bicount/features/friend/data/data_sources/local_datasource/local
 import 'package:bicount/features/friend/data/data_sources/remote_datasource/supabase_friend_remote_data_source.dart';
 import 'package:bicount/features/friend/data/repositories/friend_repository_impl.dart';
 import 'package:bicount/features/friend/presentation/bloc/friend_bloc.dart';
-import 'package:bicount/features/graph/presentation/bloc/graph_bloc.dart';
+import 'package:bicount/features/analysis/presentation/bloc/analysis_bloc.dart';
 import 'package:bicount/features/group/data/repositories/group_repository_impl.dart';
 import 'package:bicount/features/group/presentation/bloc/group_bloc.dart';
 import 'package:bicount/features/home/data/data_sources/local_datasource/local_home_data_source_impl.dart';
@@ -145,11 +145,11 @@ List<BlocProvider> buildBlocProviders(bool enableCompanySurface) {
       create: (context) =>
           TransactionBloc(context.read<TransactionRepositoryImpl>()),
     ),
-    BlocProvider<GraphBloc>(
-      create: (context) => GraphBloc(
+    BlocProvider<AnalysisBloc>(
+      create: (context) => AnalysisBloc(
         mainBloc: context.read<MainBloc>(),
         currencyRepository: context.read<CurrencyRepositoryImpl>(),
-      )..add(const GraphStarted()),
+      )..add(const AnalysisStarted()),
     ),
     BlocProvider<FriendBloc>(
       create: (context) =>

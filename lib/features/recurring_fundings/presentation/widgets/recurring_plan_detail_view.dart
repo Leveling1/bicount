@@ -90,7 +90,7 @@ class RecurringPlanDetailView extends StatelessWidget {
                   ),
                   MetaPill(
                     icon: Icons.insights_outlined,
-                    label: context.l10n.graphMonthlyLoad,
+                    label: context.l10n.analysisMonthlyLoad,
                     value: NumberFormatUtils.compactCurrency(
                       summary.monthlyReferenceAmount,
                       currencyCode: data.referenceCurrencyCode,

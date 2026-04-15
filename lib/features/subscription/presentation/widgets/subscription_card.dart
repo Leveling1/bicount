@@ -93,7 +93,7 @@ class SubscriptionCard extends StatelessWidget {
                     ),
                     MetaPill(
                       icon: Icons.insights_outlined,
-                      label: context.l10n.graphMonthlyLoad,
+                      label: context.l10n.analysisMonthlyLoad,
                       value: monthlyLoad,
                       color: accentColor,
                     ),

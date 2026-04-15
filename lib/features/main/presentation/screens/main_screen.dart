@@ -5,7 +5,7 @@ import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/features/add_fund/presentation/screens/add_fund_handler.dart';
-import 'package:bicount/features/graph/presentation/screens/graph_screen.dart';
+import 'package:bicount/features/analysis/presentation/screens/analysis_screen.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
@@ -48,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final currentUri = GoRouterState.of(context).uri;
-    if (currentUri.path == '/graphs') {
+    if (currentUri.path == '/analysis' || currentUri.path == '/graphs') {
       _goToPage(1);
     } else if (currentUri.path == '/transaction') {
       _goToPage(2);
@@ -135,7 +135,7 @@ class _MainScreenState extends State<MainScreen> {
   List<Widget> _buildScreens(MainEntity data) {
     return [
       HomeScreen(onCardTap: _goToPage, data: data),
-      const GraphScreen(),
+      const AnalysisScreen(),
       TransactionScreen(
         data: data,
         showSearchBar: showSearchBar,

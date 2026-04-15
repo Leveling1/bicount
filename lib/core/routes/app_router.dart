@@ -56,7 +56,8 @@ class AppRouter {
               state: state,
             ),
           ),
-          GoRoute(path: '/graphs', builder: (context, state) => MainScreen()),
+          GoRoute(path: '/analysis', builder: (context, state) => MainScreen()),
+          GoRoute(path: '/graphs', redirect: (context, state) => '/analysis'),
           GoRoute(
             path: '/transaction',
             builder: (context, state) => MainScreen(),
@@ -204,7 +205,7 @@ class AppRouter {
                   path == '/companyDetail' ||
                   path == '/project' ||
                   path == '/group')) {
-            return '/graphs';
+            return '/analysis';
           }
           if ((path == '/companyDetail' ||
                   path == '/project' ||

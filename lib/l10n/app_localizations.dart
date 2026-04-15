@@ -803,11 +803,11 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get navHome;
 
-  /// No description provided for @navGraphs.
+  /// No description provided for @navAnalysis.
   ///
   /// In en, this message translates to:
-  /// **'Graphs'**
-  String get navGraphs;
+  /// **'Analysis'**
+  String get navAnalysis;
 
   /// No description provided for @navTransaction.
   ///
@@ -1052,7 +1052,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsCurrencyDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose the currency used for balances, graphs, and totals.'**
+  /// **'Choose the currency used for balances, analysis views, and totals.'**
   String get settingsCurrencyDescription;
 
   /// No description provided for @settingsCurrencySheetTitle.
@@ -1319,161 +1319,161 @@ abstract class AppLocalizations {
   /// **'Your account deletion request has been submitted.'**
   String get settingsDeleteRequestedSuccess;
 
-  /// No description provided for @graphOverview.
+  /// No description provided for @analysisOverview.
   ///
   /// In en, this message translates to:
   /// **'Overview'**
-  String get graphOverview;
+  String get analysisOverview;
 
-  /// No description provided for @graphOverviewDescription.
+  /// No description provided for @analysisOverviewDescription.
   ///
   /// In en, this message translates to:
   /// **'Track your flow, spot your recurring costs, and keep the useful signals close.'**
-  String get graphOverviewDescription;
+  String get analysisOverviewDescription;
 
-  /// No description provided for @graphUnableToLoad.
+  /// No description provided for @analysisUnableToLoad.
   ///
   /// In en, this message translates to:
-  /// **'Unable to load analytics'**
-  String get graphUnableToLoad;
+  /// **'Unable to load analysis'**
+  String get analysisUnableToLoad;
 
-  /// No description provided for @graphCashflowTrend.
+  /// No description provided for @analysisCashflowTrend.
   ///
   /// In en, this message translates to:
   /// **'Cashflow trend'**
-  String get graphCashflowTrend;
+  String get analysisCashflowTrend;
 
-  /// No description provided for @graphIncomeMix.
+  /// No description provided for @analysisIncomeMix.
   ///
   /// In en, this message translates to:
   /// **'Income sources'**
-  String get graphIncomeMix;
+  String get analysisIncomeMix;
 
-  /// No description provided for @graphExpenseMix.
+  /// No description provided for @analysisExpenseMix.
   ///
   /// In en, this message translates to:
   /// **'Expense mix'**
-  String get graphExpenseMix;
+  String get analysisExpenseMix;
 
-  /// No description provided for @graphSubscriptions.
+  /// No description provided for @analysisSubscriptions.
   ///
   /// In en, this message translates to:
   /// **'Subscriptions'**
-  String get graphSubscriptions;
+  String get analysisSubscriptions;
 
-  /// No description provided for @graphNetFlow.
+  /// No description provided for @analysisNetFlow.
   ///
   /// In en, this message translates to:
   /// **'Net flow'**
-  String get graphNetFlow;
+  String get analysisNetFlow;
 
-  /// No description provided for @graphIncome.
+  /// No description provided for @analysisIncome.
   ///
   /// In en, this message translates to:
   /// **'Income'**
-  String get graphIncome;
+  String get analysisIncome;
 
-  /// No description provided for @graphExpenses.
+  /// No description provided for @analysisExpenses.
   ///
   /// In en, this message translates to:
   /// **'Expenses'**
-  String get graphExpenses;
+  String get analysisExpenses;
 
-  /// No description provided for @graphActive.
+  /// No description provided for @analysisActive.
   ///
   /// In en, this message translates to:
   /// **'Active'**
-  String get graphActive;
+  String get analysisActive;
 
-  /// No description provided for @graphMonthlyLoad.
+  /// No description provided for @analysisMonthlyLoad.
   ///
   /// In en, this message translates to:
   /// **'Monthly load'**
-  String get graphMonthlyLoad;
+  String get analysisMonthlyLoad;
 
-  /// No description provided for @graphNext7Days.
+  /// No description provided for @analysisNext7Days.
   ///
   /// In en, this message translates to:
   /// **'Next 7 days'**
-  String get graphNext7Days;
+  String get analysisNext7Days;
 
-  /// No description provided for @graphUpcomingCharges.
+  /// No description provided for @analysisUpcomingCharges.
   ///
   /// In en, this message translates to:
   /// **'Upcoming charges'**
-  String get graphUpcomingCharges;
+  String get analysisUpcomingCharges;
 
-  /// No description provided for @graphRecurringChargesTitle.
+  /// No description provided for @analysisRecurringChargesTitle.
   ///
   /// In en, this message translates to:
   /// **'Recurring charges'**
-  String get graphRecurringChargesTitle;
+  String get analysisRecurringChargesTitle;
 
-  /// No description provided for @graphRecurringChargesDescription.
+  /// No description provided for @analysisRecurringChargesDescription.
   ///
   /// In en, this message translates to:
   /// **'Review the plans that keep leaving your balance and manage them before they drift.'**
-  String get graphRecurringChargesDescription;
+  String get analysisRecurringChargesDescription;
 
-  /// No description provided for @graphRecurringIncomesTitle.
+  /// No description provided for @analysisRecurringIncomesTitle.
   ///
   /// In en, this message translates to:
   /// **'Recurring incomes'**
-  String get graphRecurringIncomesTitle;
+  String get analysisRecurringIncomesTitle;
 
-  /// No description provided for @graphRecurringIncomesDescription.
+  /// No description provided for @analysisRecurringIncomesDescription.
   ///
   /// In en, this message translates to:
   /// **'Track your repeating income sources and open the full follow-up when one needs attention.'**
-  String get graphRecurringIncomesDescription;
+  String get analysisRecurringIncomesDescription;
 
-  /// No description provided for @graphRecurringIncomesUpcoming.
+  /// No description provided for @analysisRecurringIncomesUpcoming.
   ///
   /// In en, this message translates to:
   /// **'Upcoming incomes'**
-  String get graphRecurringIncomesUpcoming;
+  String get analysisRecurringIncomesUpcoming;
 
-  /// No description provided for @graphNoActiveSubscriptions.
+  /// No description provided for @analysisNoActiveSubscriptions.
   ///
   /// In en, this message translates to:
   /// **'No active subscriptions scheduled yet.'**
-  String get graphNoActiveSubscriptions;
+  String get analysisNoActiveSubscriptions;
 
-  /// No description provided for @graphPeriodAll.
+  /// No description provided for @analysisPeriodAll.
   ///
   /// In en, this message translates to:
   /// **'All'**
-  String get graphPeriodAll;
+  String get analysisPeriodAll;
 
-  /// No description provided for @graphBreakdownAddFunds.
+  /// No description provided for @analysisBreakdownAddFunds.
   ///
   /// In en, this message translates to:
   /// **'Add funds'**
-  String get graphBreakdownAddFunds;
+  String get analysisBreakdownAddFunds;
 
-  /// No description provided for @graphBreakdownReceivedTransfers.
+  /// No description provided for @analysisBreakdownReceivedTransfers.
   ///
   /// In en, this message translates to:
   /// **'Received transfers'**
-  String get graphBreakdownReceivedTransfers;
+  String get analysisBreakdownReceivedTransfers;
 
-  /// No description provided for @graphBreakdownExpenses.
+  /// No description provided for @analysisBreakdownExpenses.
   ///
   /// In en, this message translates to:
   /// **'Expenses'**
-  String get graphBreakdownExpenses;
+  String get analysisBreakdownExpenses;
 
-  /// No description provided for @graphBreakdownSubscriptions.
+  /// No description provided for @analysisBreakdownSubscriptions.
   ///
   /// In en, this message translates to:
   /// **'Subscriptions'**
-  String get graphBreakdownSubscriptions;
+  String get analysisBreakdownSubscriptions;
 
-  /// No description provided for @graphBreakdownOther.
+  /// No description provided for @analysisBreakdownOther.
   ///
   /// In en, this message translates to:
   /// **'Other'**
-  String get graphBreakdownOther;
+  String get analysisBreakdownOther;
 
   /// No description provided for @friendsTitle.
   ///
@@ -2735,17 +2735,17 @@ abstract class AppLocalizations {
   /// **'Transfer'**
   String get transactionTypeTransfer;
 
-  /// No description provided for @transactionTypeSubscription.
-  ///
-  /// In en, this message translates to:
-  /// **'Subscription'**
-  String get transactionTypeSubscription;
-
   /// No description provided for @transactionTypeSalary.
   ///
   /// In en, this message translates to:
   /// **'Salary'**
   String get transactionTypeSalary;
+
+  /// No description provided for @transactionTypeSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription'**
+  String get transactionTypeSubscription;
 
   /// No description provided for @transactionTypeAddFund.
   ///

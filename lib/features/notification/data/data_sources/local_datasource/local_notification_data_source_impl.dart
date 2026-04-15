@@ -85,7 +85,7 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
       data: {
         'subscription_id': subscription.subscriptionId ?? subscription.sid,
       },
-      route: '/graphs',
+      route: '/analysis',
     );
 
     await plugin.zonedSchedule(

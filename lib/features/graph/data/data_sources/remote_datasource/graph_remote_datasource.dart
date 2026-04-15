@@ -1,3 +1,0 @@
-class GraphRemoteDataSource {
-  const GraphRemoteDataSource();
-}

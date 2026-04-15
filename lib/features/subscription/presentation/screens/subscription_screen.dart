@@ -18,7 +18,7 @@ class SubscriptionScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: CustomAppBar(
-            title: context.l10n.graphSubscriptions,
+            title: context.l10n.analysisSubscriptions,
             actions: [
               if (state is MainLoaded && false) // subscriptions removed
                 // ignore: dead_code

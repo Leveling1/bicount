@@ -216,7 +216,7 @@ Why:
 - `friends`: the share button disappears automatically when `friends.uid` becomes non-null
 - `friends`: the dedicated friend list and detail page refresh live
 - `friend_invites`: sent/received invitation state updates live
-- `transactions`, `subscriptions`, `account_funding`: graphs and summaries refresh live
+- `transactions`, `subscriptions`, `account_funding`: analysis and summaries refresh live
 
 ### 6. Keep `fcm_tokens` compatible with the current app policy
 

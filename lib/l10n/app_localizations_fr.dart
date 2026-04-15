@@ -365,7 +365,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navHome => 'Accueil';
 
   @override
-  String get navGraphs => 'Graphiques';
+  String get navAnalysis => 'Analyses';
 
   @override
   String get navTransaction => 'Transactions';
@@ -488,7 +488,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsCurrencyTitle => 'Devise de référence';
 
   @override
-  String get settingsCurrencyDescription => 'Choisissez la devise utilisée pour les soldes, les graphiques et les totaux.';
+  String get settingsCurrencyDescription => 'Choisissez la devise utilisée pour les soldes, les analyses et les totaux.';
 
   @override
   String get settingsCurrencySheetTitle => 'Choisir une devise de référence';
@@ -623,82 +623,82 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsDeleteRequestedSuccess => 'Votre demande de suppression de compte a bien été envoyée.';
 
   @override
-  String get graphOverview => 'Vue d\'ensemble';
+  String get analysisOverview => 'Vue d\'ensemble';
 
   @override
-  String get graphOverviewDescription => 'Suivez vos flux, repérez vos dépenses récurrentes et gardez les signaux utiles à portée de vue.';
+  String get analysisOverviewDescription => 'Suivez vos flux, repérez vos dépenses récurrentes et gardez les signaux utiles à portée de vue.';
 
   @override
-  String get graphUnableToLoad => 'Impossible de charger les analyses';
+  String get analysisUnableToLoad => 'Impossible de charger les analyses';
 
   @override
-  String get graphCashflowTrend => 'Tendance des flux';
+  String get analysisCashflowTrend => 'Tendance des flux';
 
   @override
-  String get graphIncomeMix => 'Sources d\'entree d\'argent';
+  String get analysisIncomeMix => 'Sources d\'entree d\'argent';
 
   @override
-  String get graphExpenseMix => 'Répartition des dépenses';
+  String get analysisExpenseMix => 'Répartition des dépenses';
 
   @override
-  String get graphSubscriptions => 'Abonnements';
+  String get analysisSubscriptions => 'Abonnements';
 
   @override
-  String get graphNetFlow => 'Flux net';
+  String get analysisNetFlow => 'Flux net';
 
   @override
-  String get graphIncome => 'Revenus';
+  String get analysisIncome => 'Revenus';
 
   @override
-  String get graphExpenses => 'Dépenses';
+  String get analysisExpenses => 'Dépenses';
 
   @override
-  String get graphActive => 'Actifs';
+  String get analysisActive => 'Actifs';
 
   @override
-  String get graphMonthlyLoad => 'Charge mensuelle';
+  String get analysisMonthlyLoad => 'Charge mensuelle';
 
   @override
-  String get graphNext7Days => '7 prochains jours';
+  String get analysisNext7Days => '7 prochains jours';
 
   @override
-  String get graphUpcomingCharges => 'Prélèvements à venir';
+  String get analysisUpcomingCharges => 'Prélèvements à venir';
 
   @override
-  String get graphRecurringChargesTitle => 'Charges récurrentes';
+  String get analysisRecurringChargesTitle => 'Charges récurrentes';
 
   @override
-  String get graphRecurringChargesDescription => 'Retrouvez les charges qui sortent régulièrement de votre solde et gérez-les avant qu\'elles ne dérivent.';
+  String get analysisRecurringChargesDescription => 'Retrouvez les charges qui sortent régulièrement de votre solde et gérez-les avant qu\'elles ne dérivent.';
 
   @override
-  String get graphRecurringIncomesTitle => 'Revenus récurrents';
+  String get analysisRecurringIncomesTitle => 'Revenus récurrents';
 
   @override
-  String get graphRecurringIncomesDescription => 'Suivez vos sources de revenus récurrentes et ouvrez le suivi complet dès qu\'une échéance demande votre attention.';
+  String get analysisRecurringIncomesDescription => 'Suivez vos sources de revenus récurrentes et ouvrez le suivi complet dès qu\'une échéance demande votre attention.';
 
   @override
-  String get graphRecurringIncomesUpcoming => 'Revenus à venir';
+  String get analysisRecurringIncomesUpcoming => 'Revenus à venir';
 
   @override
-  String get graphNoActiveSubscriptions => 'Aucun abonnement actif planifié pour le moment.';
+  String get analysisNoActiveSubscriptions => 'Aucun abonnement actif planifié pour le moment.';
 
   @override
-  String get graphPeriodAll => 'Tout';
+  String get analysisPeriodAll => 'Tout';
 
   @override
-  String get graphBreakdownAddFunds => 'Fonds ajoutes';
+  String get analysisBreakdownAddFunds => 'Fonds ajoutes';
 
   @override
-  String get graphBreakdownReceivedTransfers => 'Transferts recus';
+  String get analysisBreakdownReceivedTransfers => 'Transferts recus';
 
   @override
-  String get graphBreakdownExpenses => 'Dépenses';
+  String get analysisBreakdownExpenses => 'Dépenses';
 
   @override
-  String get graphBreakdownSubscriptions => 'Abonnements';
+  String get analysisBreakdownSubscriptions => 'Abonnements';
 
   @override
-  String get graphBreakdownOther => 'Autre';
+  String get analysisBreakdownOther => 'Autre';
 
   @override
   String get friendsTitle => 'Amis';
@@ -1363,10 +1363,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transactionTypeTransfer => 'Transfert';
 
   @override
-  String get transactionTypeSubscription => 'Abonnement';
+  String get transactionTypeSalary => 'Salaire';
 
   @override
-  String get transactionTypeSalary => 'Salaire';
+  String get transactionTypeSubscription => 'Abonnement';
 
   @override
   String get transactionTypeAddFund => 'Ajouter des fonds';

@@ -13,7 +13,7 @@ Elle permet de suivre les entrées et sorties d’argent, gérer des abonnements
 - ajouter des fonds ponctuels
 - gérer des revenus récurrents comme un salaire
 - consulter une timeline unique qui rassemble transactions et fonds ajoutés
-- suivre ses statistiques dans `Home` et `Graphs`
+- suivre ses statistiques dans `Home` et `Analyses`
 - partager son profil avec des amis via lien ou QR code
 - recevoir des rappels locaux pour les abonnements
 
@@ -23,14 +23,14 @@ Elle permet de suivre les entrées et sorties d’argent, gérer des abonnements
 - il peut continuer avec Google, Apple ou email + code
 - une fois connecté, il accède aux 4 surfaces visibles de la V1 :
   - `Home`
-  - `Graphs`
+  - `Analyses`
   - `Transaction`
   - `Profile`
 
 ### Ce qu’on voit dans la V1
 
 - `Home` : vue synthétique et activité récente
-- `Graphs` : revenus, dépenses, abonnements et tendances
+- `Analyses` : revenus, dépenses, abonnements et tendances
 - `Transaction` : timeline et création de mouvements d’argent
 - `Profile` : identité, partage social et accès aux réglages
 
@@ -60,7 +60,7 @@ Elle permet de suivre les entrées et sorties d’argent, gérer des abonnements
 - `lib/features/authentification`
 - `lib/features/main`
 - `lib/features/home`
-- `lib/features/graph`
+- `lib/features/analysis`
 - `lib/features/transaction`
 - `lib/features/subscription`
 - `lib/features/add_fund`

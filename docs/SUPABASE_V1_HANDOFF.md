@@ -7,7 +7,7 @@ This document covers the backend work required to support the current Bicount V1
 V1 assumptions:
 - mobile only: Android and iOS
 - `company`, `group`, and `project` remain in source but are hidden from the released user flow
-- visible navigation is now `Home / Graphs / Transaction / Profile`
+- visible navigation is now `Home / Analysis / Transaction / Profile`
 - friend sharing uses invitation links and QR codes
 - notifications use `FCM + local reminders`
 - the app remains offline-first and realtime where backend support exists
@@ -202,7 +202,7 @@ Enable realtime on:
 V1 uses realtime for:
 - friend invite updates
 - accepted friend list updates
-- graph refresh from transactions, subscriptions, and account funding
+- analysis refresh from transactions, subscriptions, and account funding
 
 ## Push notifications via FCM
 

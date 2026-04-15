@@ -44,7 +44,7 @@ The key product decision was:
 
 - keep company, group, and project in source code
 - remove them from the visible release surface
-- focus the V1 on Home, Graphs, Transaction, and Profile
+- focus the V1 on Home, Analysis, Transaction, and Profile
 
 This preserved future roadmap flexibility while reducing V1 complexity.
 
@@ -74,11 +74,11 @@ Hide the company surface without deleting the domain code.
 The visible navigation was redesigned around:
 
 - Home
-- Graphs
+- Analysis
 - Transaction
 - Profile
 
-Company was replaced by Graphs in the visible app shell.
+Company was replaced by Analysis in the visible app shell.
 
 ### Implementation details
 
@@ -98,8 +98,8 @@ Key actions:
 - defaulted that flag to hidden
 - prevented company blocs and repositories from being registered when hidden
 - removed company routes from the visible release path
-- redirected hidden company routes to /graphs
-- updated the app shell to show Graphs instead of Company
+- redirected hidden company routes to /analysis
+- updated the app shell to show Analysis instead of Company
 - rebalanced the visible UX so the app still feels complete with four tabs
 
 ### Product impact
@@ -126,7 +126,7 @@ The design was intentionally not replaced with a generic redesign. Instead, the 
 ### Main UI outcomes
 
 - the main shell still feels native to the existing app
-- Graphs fits naturally where Company used to sit in navigation
+- Analysis fits naturally where Company used to sit in navigation
 - friend sharing, analytics, and profile actions were added with consistent visual treatment
 - micro animations were used where helpful, including animated title switching, chart metrics, FAB switching, and search visibility
 
@@ -140,7 +140,7 @@ Respect the existing BLoC architecture more consistently and reduce business log
 
 - visible V1 flows now rely more clearly on repositories, blocs, and domain services
 - typed request entities were introduced for complex transaction creation
-- graph aggregation logic lives in repository or domain-style logic rather than widget code
+- analysis aggregation logic lives in repository or domain-style logic rather than widget code
 - invite state and notification orchestration are handled through dedicated feature layers
 
 ### Concrete examples
@@ -151,12 +151,12 @@ Transactions:
 - split calculation is handled by TransactionSplitResolver
 - repository persistence receives a resolved business request
 
-Graphs:
+Analysis:
 
-- analytics aggregation is centralized in GraphRepositoryImpl
+- analytics aggregation is centralized in AnalysisRepositoryImpl
 - widgets receive already prepared dashboard data
 
-## Workstream 5 - Graph Feature Creation And Integration
+## Workstream 5 - Analysis Feature Creation And Integration
 
 ### Goal
 
@@ -168,11 +168,11 @@ The feature skeleton was generated with clean_structure, then corrected and inte
 
 ### Main files
 
-- lib/features/graph/presentation/screens/graph_screen.dart
-- lib/features/graph/presentation/bloc/graph_bloc.dart
-- lib/features/graph/data/repositories/graph_repository_impl.dart
-- lib/features/graph/data/data_sources/local_datasource/local_graph_data_source_impl.dart
-- test/features/graph/data/repositories/graph_repository_impl_test.dart
+- lib/features/analysis/presentation/screens/analysis_screen.dart
+- lib/features/analysis/presentation/bloc/analysis_bloc.dart
+- lib/features/analysis/data/repositories/analysis_repository_impl.dart
+- lib/features/analysis/data/data_sources/local_datasource/local_analysis_data_source_impl.dart
+- test/features/analysis/data/repositories/analysis_repository_impl_test.dart
 
 ### Functional result
 
@@ -188,7 +188,7 @@ The app now exposes analytics that are useful for daily usage:
 
 ### Data model and behavior
 
-The graph dashboard is built from:
+The analysis dashboard is built from:
 
 - transactions
 - subscriptions
@@ -203,7 +203,7 @@ Supported periods:
 
 ### Technical implementation
 
-GraphRepositoryImpl combines multiple local realtime streams and derives:
+AnalysisRepositoryImpl combines multiple local realtime streams and derives:
 
 - inflow
 - outflow
@@ -213,7 +213,7 @@ GraphRepositoryImpl combines multiple local realtime streams and derives:
 - upcoming charges
 - cumulative cashflow points
 
-This keeps graph rendering reactive and offline friendly.
+This keeps analysis rendering reactive and offline friendly.
 
 ## Workstream 6 - Friend Sharing And Social Connection
 
@@ -361,12 +361,12 @@ Main file involved:
 
 The Android debug build could proceed again and app assembleDebug completed successfully.
 
-## Workstream 10 - Realtime Stream Stability And Graph Loading Fix
+## Workstream 10 - Realtime Stream Stability And Analysis Loading Fix
 
 ### Problem
 
 During runtime navigation, the app produced the error Bad state: Stream has already been listened to.
-The graph screen also remained stuck on a loading state.
+The analysis screen also remained stuck on a loading state.
 
 ### Root cause
 
@@ -383,11 +383,11 @@ Main file:
 Supporting changes:
 
 - lib/features/main/data/data_sources/local_datasource/local_main_data_source_impl.dart
-- lib/features/graph/data/data_sources/local_datasource/local_graph_data_source_impl.dart
+- lib/features/analysis/data/data_sources/local_datasource/local_analysis_data_source_impl.dart
 
 ### Result
 
-- the graph feature receives stable live data
+- the analysis feature receives stable live data
 - multiple visible V1 features can listen to the same underlying data without crashing
 
 ## Workstream 11 - Brick Remote Delete Reconciliation
@@ -510,12 +510,12 @@ Offline-first and sync:
 
 - lib/brick/repository.dart
 - lib/features/main/data/data_sources/local_datasource/local_main_data_source_impl.dart
-- lib/features/graph/data/data_sources/local_datasource/local_graph_data_source_impl.dart
+- lib/features/analysis/data/data_sources/local_datasource/local_analysis_data_source_impl.dart
 - lib/features/main/presentation/bloc/main_bloc.dart
 
-Graphs:
+Analysis:
 
-- lib/features/graph
+- lib/features/analysis
 
 Friends:
 
@@ -579,7 +579,7 @@ As of this report, the application state is:
 The work completed on Bicount transformed the app in four major ways:
 
 1. It focused the product around a realistic V1 release.
-2. It added missing user-facing value through graphs, friend sharing, notifications, and grouped splits.
+2. It added missing user-facing value through analysis, friend sharing, notifications, and grouped splits.
 3. It improved technical robustness around offline-first, realtime, and Android build reliability.
 4. It produced backend handoff material so the mobile and Supabase sides can converge cleanly.
 

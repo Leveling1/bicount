@@ -14,7 +14,7 @@ Bicount is a Flutter mobile application focused on personal finance and shared m
 Current visible V1 scope:
 
 - Home
-- Graphs
+- Analysis
 - Transaction
 - Profile
 
@@ -44,7 +44,7 @@ Release target:
 Visible navigation:
 
 - Home
-- Graphs
+- Analysis
 - Transaction
 - Profile
 
@@ -64,7 +64,7 @@ When the flag is disabled:
 
 - company repositories and blocs are not wired in main.dart
 - company routes are not exposed in app_router.dart
-- hidden company URLs redirect to /graphs
+- hidden company URLs redirect to /analysis
 
 ## Architecture Overview
 
@@ -78,7 +78,7 @@ Main layout:
 - lib/features/authentification
 - lib/features/company
 - lib/features/friend
-- lib/features/graph
+- lib/features/analysis
 - lib/features/group
 - lib/features/home
 - lib/features/main
@@ -119,7 +119,7 @@ Dependency wiring:
 
 - repositories are registered with MultiRepositoryProvider
 - blocs are registered with MultiBlocProvider
-- active visible V1 blocs include AuthentificationBloc, MainBloc, HomeBloc, TransactionBloc, SubscriptionBloc, AddFundBloc, SalaryBloc, GraphBloc, FriendBloc, and NotificationBloc
+- active visible V1 blocs include AuthentificationBloc, MainBloc, HomeBloc, TransactionBloc, SubscriptionBloc, AddFundBloc, SalaryBloc, AnalysisBloc, FriendBloc, and NotificationBloc
 
 The router lives in lib/core/routes/app_router.dart.
 The app theme lives in lib/core/themes/app_theme.dart.
@@ -129,7 +129,8 @@ The app theme lives in lib/core/themes/app_theme.dart.
 Visible routes:
 
 - /
-- /graphs
+- /analysis
+- /graphs as a legacy alias redirecting to /analysis
 - /recurring-fundings
 - /salary
 - /transaction
@@ -148,7 +149,7 @@ Guard behavior:
 
 - unauthenticated users are redirected to /auth
 - logged-in users trying to access auth routes are redirected to /
-- hidden company routes redirect to /graphs
+- hidden company routes redirect to /analysis
 - detail routes without state.extra redirect to /
 
 ## Runtime Model
@@ -252,7 +253,7 @@ Purpose:
 
 - dashboard-like landing page for V1
 
-### graph
+### analysis
 
 Purpose:
 
@@ -264,12 +265,12 @@ Feature origin:
 
 Main files:
 
-- lib/features/graph/presentation/screens/graph_screen.dart
-- lib/features/graph/presentation/bloc/graph_bloc.dart
-- lib/features/graph/data/repositories/graph_repository_impl.dart
-- lib/features/graph/data/data_sources/local_datasource/local_graph_data_source_impl.dart
+- lib/features/analysis/presentation/screens/analysis_screen.dart
+- lib/features/analysis/presentation/bloc/analysis_bloc.dart
+- lib/features/analysis/data/repositories/analysis_repository_impl.dart
+- lib/features/analysis/data/data_sources/local_datasource/local_analysis_data_source_impl.dart
 
-Current graph outputs:
+Current analysis outputs:
 
 - net flow
 - income
@@ -293,8 +294,8 @@ Supported periods:
 
 Interaction rule:
 
-- when the user changes graph period, keep the page shell visually stable
-- do not animate or rebuild the whole Graphs screen as if a full page reload happened
+- when the user changes analysis period, keep the page shell visually stable
+- do not animate or rebuild the whole Analysis screen as if a full page reload happened
 - only the data-driven widgets should update, such as metric values, charts, breakdowns, and subscription insights
 - the intro copy, overall layout, and section structure should remain fixed during period changes
 
@@ -528,7 +529,7 @@ When touching UI:
 Current test files:
 
 - test/widget_test.dart
-- test/features/graph/data/repositories/graph_repository_impl_test.dart
+- test/features/analysis/data/repositories/analysis_repository_impl_test.dart
 - test/features/friend/data/repositories/friend_repository_impl_test.dart
 - test/features/notification/domain/entities/app_notification_entity_test.dart
 - test/features/transaction/domain/services/transaction_split_resolver_test.dart
@@ -549,7 +550,7 @@ Practical note:
 Release surface simplification:
 
 - company flow hidden from visible V1
-- visible tabs are now Home, Graphs, Transaction, and Profile
+- visible tabs are now Home, Analysis, Transaction, and Profile
 - router redirects hidden company paths away from release flow
 
 New visible V1 capabilities:
@@ -601,7 +602,7 @@ Be careful when editing these areas:
 3. lib/core/routes/app_router.dart
 4. lib/brick/repository.dart
 5. lib/features/main/presentation/screens/main_screen.dart
-6. lib/features/graph/presentation/screens/graph_screen.dart
+6. lib/features/analysis/presentation/screens/analysis_screen.dart
 7. lib/features/friend/presentation/screens/friend_screen.dart
 8. lib/features/notification/presentation/bloc/notification_bloc.dart
 9. lib/features/transaction/presentation/screens/transaction_handler.dart
@@ -628,7 +629,7 @@ Typical checks:
 Current state of the codebase:
 
 - V1 visible flow is coherent without company
-- graphs, friends, notifications, and grouped splits are implemented
+- analysis, friends, notifications, and grouped splits are implemented
 - transaction, subscription, add_fund, and recurring_fundings now have separate active feature ownership
 - offline-first and realtime scaffolding is stronger than at project start
 - backend still needs to match the documented contracts for full production behavior
@@ -710,10 +711,10 @@ Recent structural refactors already applied:
 
 - main.dart was reduced by moving app wiring into lib/app/bicount_app.dart
 - provider lists were extracted into lib/app/app_providers.dart
-- graph_screen.dart was split into dedicated widget files under lib/features/graph/presentation/widgets
+- analysis_screen.dart was split into dedicated widget files under lib/features/analysis/presentation/widgets
 - friend_screen.dart was split into dedicated widget files under lib/features/friend/presentation/widgets
 - main_screen.dart was split with shell widgets under lib/features/main/presentation/widgets/main_shell
-- graph_repository_impl.dart was reduced by moving aggregation logic into graph domain services
+- analysis_repository_impl.dart was reduced by moving aggregation logic into analysis domain services
 - profile info cards were factorized with a shared base widget
 
 When continuing this cleanup, prioritize visible V1 files first, then dormant company or group files, and only then broad theme or infrastructure refactors.
@@ -771,7 +772,7 @@ Current visible motion touchpoints:
 
 - shell tab selection in `custom_bottom_navigation_bar.dart`
 - Home screen section reveals
-- Graphs screen staged reveals
+- Analysis screen staged reveals
 - Profile and friends flow staged reveals
 
 ## Backend Delta Doc Update (2026-03-19)
@@ -984,7 +985,7 @@ Rules:
 - do not generate due `account_funding` rows locally during startup processing anymore
 - explicit user confirmation may create a concrete `account_funding` row from mobile
 - automatic recurring credits must be created by backend automation
-- do not count recurring templates directly in balance, graphs, or funding totals before an actual funding row is created
+- do not count recurring templates directly in balance, analysis, or funding totals before an actual funding row is created
 - `funding_type` is now part of `account_funding` and should stay aligned with the mobile contract
 - the visible `Add funds` form must support both one-time and recurring income without breaking the existing bottom-sheet flow
 - subscription placeholder rows created in `friends` for offline projections must keep `uid = null`; never use `subscriptionId` as `friends.uid`, because backend `friends.uid` is a foreign key to real `users.uid`
@@ -1012,7 +1013,7 @@ Rules:
 
 Rules:
 - recurring fundings with confirmation enabled must stay out of `AccountFundingModel` until the user confirms the payment
-- only confirmed recurring money may impact global balances, graphs, or income totals
+- only confirmed recurring money may impact global balances, analysis, or income totals
 - do not rely on deterministic `funding_id` values for recurring occurrences; `account_funding.funding_id` should remain a real UUID
 - the dedicated recurring follow-up flow belongs to the `recurring_fundings` surface, not back inside `add_fund`
 - backend recurring reminders should deep link to `/recurring-fundings` with `recurringFundingId` and `expectedDate` so the app can open the correct confirmation context
@@ -1075,16 +1076,16 @@ Rules:
 - currency bootstrap callbacks triggered from auth changes, realtime currency streams, or unawaited `hydrate()` calls must catch and log their own failures instead of surfacing as unhandled exceptions during app launch
 - keep the root `GoRouter` instance stable across theme, locale, and currency rebuilds; do not recreate `AppRouter()` from inside `MaterialApp.router` builders or deep-link navigation can reset during startup
 
-## Graph Outflow Update (2026-04-10)
+## Analysis Outflow Update (2026-04-10)
 
 Rules:
-- the graph dashboard inflow, outflow, and cashflow trend must use the same current-user participant identity set as the transaction feed and main finance projection
+- the analysis dashboard inflow, outflow, and cashflow trend must use the same current-user participant identity set as the transaction feed and main finance projection
 - the current user participant identity set means `currentUser.uid` plus any `friends.sid` whose linked `friends.uid` equals the current user
 - `TransactionTypes.salaryCode` stays a dedicated inflow breakdown bucket
 - `TransactionTypes.subscriptionCode` stays a dedicated outflow breakdown bucket
 - `TransactionTypes.otherRecurringIncomeCode` belongs to the income breakdown `Other` bucket when the current user participant set is the beneficiary
 - `TransactionTypes.otherRecurringExpenseCode` belongs to the expense breakdown `Other` bucket when the current user participant set is the sender
-- legacy `TransactionTypes.othersCode` rows should be absorbed into generic `Income` or `Expenses` by participant role, not forced into the graph `Other` bucket
+- legacy `TransactionTypes.othersCode` rows should be absorbed into generic `Income` or `Expenses` by participant role, not forced into the analysis `Other` bucket
 
 ## Friend Detail Currency Update (2026-04-01)
 
@@ -1182,12 +1183,12 @@ Rules:
 - `IncomeForm` must reject a sender that resolves to the current user, because that would collapse the flow into a self-to-self transaction and break `type` inference
 - the local transaction type inference still depends on `sender_id == current user` for expense and `beneficiary_id == current user` for income, so mobile transaction forms must preserve these participant semantics when creating or editing rows
 
-## Graph Session-Aware Source Update (2026-04-07)
+## Analysis Session-Aware Source Update (2026-04-07)
 
 Rules:
-- the visible V1 graph dashboard must derive from the same session-aware `MainBloc` finance data used by the app shell, not from an independent raw finance subscription path
-- graph-specific logic should only add period slicing, breakdown composition, and presentation state on top of `MainBloc` data
-- when `MainBloc` returns to loading, initial, or error states during auth/session changes, the graph dashboard must clear its previous in-memory dashboard so stale values from an old account are not shown
+- the visible V1 analysis dashboard must derive from the same session-aware `MainBloc` finance data used by the app shell, not from an independent raw finance subscription path
+- analysis-specific logic should only add period slicing, breakdown composition, and presentation state on top of `MainBloc` data
+- when `MainBloc` returns to loading, initial, or error states during auth/session changes, the analysis dashboard must clear its previous in-memory dashboard so stale values from an old account are not shown
 
 ## Unified Architecture Migration (2026-04-09)
 
@@ -1217,8 +1218,8 @@ Data flow:
 - `MainEntity` now carries `recurringTransferts` (List<RecurringTransfertModel>) instead of `subscriptions`, `accountFundings`, and `recurringFundings`
 - `MainRepositoryImpl` uses `Rx.combineLatest6` (users, friends, transactions, recurringTransferts, connectionState, currencyConfig)
 - `MainFinanceProjectionService` derives all balances from transactions only
-- graph, home, profile, and transaction feed all consume transactions exclusively
-- subscription insight section was removed from the graph dashboard
+- analysis, home, profile, and transaction feed all consume transactions exclusively
+- subscription insight section was removed from the analysis dashboard
 
 Filter list:
 - `TransactionTypes.allTypesInt` is now `[-1, incomeCode, expenseCode, personal]`
@@ -1258,7 +1259,7 @@ Rules:
 - recurring incomes now have a dedicated management route at `/recurring-incomes`
 - recurring salary follow-up is now driven by `lib/features/recurring_fundings/presentation/screens/recurring_salary_screen.dart` and the shared `RecurringTransfertBloc`, not by the dormant legacy salary bloc flow
 - the salary confirmation sheet must let the user adjust the actually received amount before confirming the occurrence, and switching back to automatic mode must use that adjusted amount too
-- the Home recurring follow-up card and the Graphs dashboard recurring sections must both derive from `recurring_transfert` + `transactions`, not from removed `subscription`, `account_funding`, or `recurring_fundings` tables
+- the Home recurring follow-up card and the Analysis dashboard recurring sections must both derive from `recurring_transfert` + `transactions`, not from removed `subscription`, `account_funding`, or `recurring_fundings` tables
 - recurring salary creation in `IncomeForm` must expose the old two modes again: manual confirmation or backend automatic
 - creating a recurring salary must save only the `recurring_transfert` template at creation time; do not insert a counted `transactions` row until the user confirms the occurrence or backend automation generates it
 

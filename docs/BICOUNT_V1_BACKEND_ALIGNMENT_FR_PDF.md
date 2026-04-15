@@ -9,7 +9,7 @@ Date de référence:
 
 Portée fonctionnelle de la V1:
 - application mobile uniquement
-- navigation visible: Home, Graphs, Transaction, Profile
+- navigation visible: Home, Analyses, Transaction, Profile
 - la partie company reste présente dans le code source mais n'est plus visible dans le parcours release
 - partage de profil par lien HTTPS et QR code
 - notifications push via FCM et rappels locaux sur appareil

@@ -4,7 +4,7 @@ import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
-import 'package:bicount/features/graph/domain/entities/graph_dashboard_entity.dart';
+import 'package:bicount/features/analysis/domain/entities/analysis_dashboard_entity.dart';
 import 'package:bicount/features/settings/domain/entities/theme_preference.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
 import 'package:flutter/material.dart';
@@ -13,31 +13,31 @@ import 'package:bicount/l10n/app_localizations.dart';
 extension L10nBuildContextX on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this)!;
 
-  String graphPeriodLabel(GraphPeriod period) {
+  String analysisPeriodLabel(AnalysisPeriod period) {
     switch (period) {
-      case GraphPeriod.week7:
+      case AnalysisPeriod.week7:
         return '7D';
-      case GraphPeriod.month30:
+      case AnalysisPeriod.month30:
         return '30D';
-      case GraphPeriod.quarter90:
+      case AnalysisPeriod.quarter90:
         return '90D';
-      case GraphPeriod.all:
-        return l10n.graphPeriodAll;
+      case AnalysisPeriod.all:
+        return l10n.analysisPeriodAll;
     }
   }
 
-  String graphBreakdownLabel(String label) {
+  String analysisBreakdownLabel(String label) {
     switch (label) {
       case 'AddFunds':
         return l10n.transactionTypeAddFund;
       case 'ReceivedTransfers':
         return l10n.transactionTypeIncome;
       case 'Expenses':
-        return l10n.graphBreakdownExpenses;
+        return l10n.analysisBreakdownExpenses;
       case 'Subscriptions':
-        return l10n.graphBreakdownSubscriptions;
+        return l10n.analysisBreakdownSubscriptions;
       case 'Other':
-        return l10n.graphBreakdownOther;
+        return l10n.analysisBreakdownOther;
       default:
         return label;
     }
@@ -87,7 +87,7 @@ extension L10nBuildContextX on BuildContext {
   String subscriptionStatusLabel(int status) {
     switch (SubscriptionConst.normalize(status)) {
       case SubscriptionConst.active:
-        return l10n.graphActive;
+        return l10n.analysisActive;
       case SubscriptionConst.unsubscribed:
         return l10n.statusUnsubscribed;
       default:

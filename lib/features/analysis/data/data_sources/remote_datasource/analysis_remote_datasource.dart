@@ -1,0 +1,3 @@
+class AnalysisRemoteDataSource {
+  const AnalysisRemoteDataSource();
+}

@@ -84,7 +84,7 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(width: AppDimens.marginMedium),
                 Flexible(
                   child: InfoCardAmount(
-                    icon: IconLinks.graph,
+                    icon: IconLinks.analysis,
                     title: context.l10n.profileRecurring,
                     value: recurringSpend,
                     color: Theme.of(context).primaryColor,

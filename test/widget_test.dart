@@ -30,7 +30,7 @@ void main() {
     });
   });
 
-  testWidgets('bottom navigation shows Graphs and hides Company', (
+  testWidgets('bottom navigation shows Analysis and hides Company', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
@@ -49,7 +49,7 @@ void main() {
       ),
     );
 
-    expect(find.text('Graphs'), findsOneWidget);
+    expect(find.text('Analysis'), findsOneWidget);
     expect(find.text('Company'), findsNothing);
     expect(find.text('Home'), findsOneWidget);
     expect(find.text('Transaction'), findsOneWidget);
