@@ -41,7 +41,10 @@ class FriendViewService {
     final totalGiven = friend.give ?? 0;
     final totalReceived = friend.receive ?? 0;
 
-    final canShareProfile = isShareableFriend(friend);
+    final canEditProfile =
+        friend.relationType == FriendConst.friend &&
+        friend.uid != data.user.uid;
+    final canShareProfile = canEditProfile && isShareableFriend(friend);
 
     return FriendDetailEntity(
       friend: friend,
@@ -50,6 +53,7 @@ class FriendViewService {
       totalGiven: totalGiven,
       totalReceived: totalReceived,
       netBalance: totalReceived - totalGiven,
+      canEditProfile: canEditProfile,
       canShareProfile: canShareProfile,
       isLinkedProfile: !canShareProfile,
     );

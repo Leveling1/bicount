@@ -174,6 +174,7 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
       onTap: () => widget.controller.setSelectedIndex(index),
       child: Container(
         alignment: Alignment.center,
+        width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         child: Text(
           text,

@@ -3,7 +3,6 @@ import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/constants/app_config.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
-import 'package:brick_core/query.dart';
 import 'package:bicount/features/friend/data/data_sources/local_datasource/friend_local_datasource.dart';
 import 'package:bicount/features/friend/data/data_sources/remote_datasource/friend_remote_datasource.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
@@ -137,8 +136,9 @@ class FriendRepositoryImpl implements FriendRepository {
     required String username,
     required String image,
   }) async {
-    if ((friend.uid ?? '').isNotEmpty ||
-        friend.relationType == FriendConst.subscription) {
+    final currentUserId = _currentUserId;
+    if (friend.relationType != FriendConst.friend ||
+        (currentUserId != null && friend.uid == currentUserId)) {
       throw MessageFailure(message: 'Unable to update this friend right now.');
     }
 

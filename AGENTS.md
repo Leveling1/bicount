@@ -1268,6 +1268,15 @@ Rules:
 - recurring charge and recurring income detail sheets must rebuild their displayed summary from the current `MainBloc` `MainLoaded.startData`, not from a one-time snapshot captured when the user tapped a card
 - modal recurring detail sheets opened from `/subscriptions`, `/recurring-charges`, or `/recurring-incomes` must forward the page-scoped `RecurringTransfertBloc` with `BlocProvider.value`, because modal routes do not inherit providers created below the navigator
 
+## Friend Profile Override Update (2026-04-15)
+
+Rules:
+- a `friends` row may keep its own editable `username` and `image` even when `friends.uid` is already linked to an existing Bicount user
+- editing a linked friend must update only the `FriendsModel` row, never the linked `UserModel` profile of the remote account
+- the edit action in friend detail should remain available for real friend entries even when they are linked
+- the share action and the local-link hint must stay reserved for unlinked friend entries only
+- subscription, company, or self-profile rows should not reuse the friend profile edit flow
+
 ## Recurring Frequency Constants Update (2026-04-12)
 
 Rules:

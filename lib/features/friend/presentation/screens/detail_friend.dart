@@ -37,7 +37,7 @@ class DetailFriend extends StatelessWidget {
           appBar: CustomAppBar(
             title: context.l10n.friendDetailTitle,
             actions: [
-              if (detail != null && detail.canShareProfile)
+              if (detail != null && detail.canEditProfile)
                 IconButton(
                   onPressed: () => _openEditFlow(context, currentFriend),
                   icon: const Icon(Icons.edit_outlined),

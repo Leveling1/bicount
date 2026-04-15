@@ -10,6 +10,7 @@ class FriendDetailEntity extends Equatable {
     required this.totalGiven,
     required this.totalReceived,
     required this.netBalance,
+    required this.canEditProfile,
     required this.canShareProfile,
     required this.isLinkedProfile,
   });
@@ -20,6 +21,7 @@ class FriendDetailEntity extends Equatable {
   final double totalGiven;
   final double totalReceived;
   final double netBalance;
+  final bool canEditProfile;
   final bool canShareProfile;
   final bool isLinkedProfile;
 
@@ -31,6 +33,7 @@ class FriendDetailEntity extends Equatable {
     totalGiven,
     totalReceived,
     netBalance,
+    canEditProfile,
     canShareProfile,
     isLinkedProfile,
   ];
