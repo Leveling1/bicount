@@ -266,9 +266,10 @@ class CurrencyAmountFormatter extends TextInputFormatter {
 }
 
 class CurrencyField extends StatelessWidget {
-  const CurrencyField({super.key, required this.controller});
+  const CurrencyField({super.key, this.color, required this.controller});
 
   final TextEditingController controller;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -294,7 +295,7 @@ class CurrencyField extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
             inputDecorationTheme: InputDecorationTheme(
-              fillColor: Theme.of(context).scaffoldBackgroundColor,
+              fillColor: color ?? Theme.of(context).scaffoldBackgroundColor,
               filled: true,
               isCollapsed: true,
               constraints: const BoxConstraints(minHeight: 0, maxHeight: 40),
@@ -353,6 +354,9 @@ class _CurrencyChipShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(width: 95.sp, child: child);
+    return SizedBox(
+      width: 95.sp,
+      child: Center(child: child),
+    );
   }
 }

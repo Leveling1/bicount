@@ -153,19 +153,17 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
                 }
                 return null;
               },
+
               decoration: InputDecoration(
                 hintText: occurrence.amount
                     .toStringAsFixed(2)
                     .replaceAll('.', ','),
+                suffixIcon: CurrencyField(
+                  controller: _currencyController,
+                  color: Theme.of(context).cardColor,
+                ),
               ),
             ),
-            const SizedBox(height: AppDimens.spacingMedium),
-            Text(
-              context.l10n.fieldSelectCurrency,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: AppDimens.spacingSmall),
-            CurrencyField(controller: _currencyController),
             const SizedBox(height: AppDimens.spacingSmall),
             Text(
               context.l10n.transactionSetExactAmountReceived,
