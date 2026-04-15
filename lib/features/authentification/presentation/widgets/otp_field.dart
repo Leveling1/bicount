@@ -33,6 +33,13 @@ class OtpField extends StatelessWidget {
             horizontal: 20,
             vertical: 18,
           ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.error,
+              width: 1.2,
+            ),
+          ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
             borderSide: BorderSide(

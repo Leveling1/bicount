@@ -219,8 +219,13 @@ class CustomAppleAuthButton extends StatelessWidget {
 }
 
 class CustomAuthIconButton extends StatelessWidget {
-  const CustomAuthIconButton({super.key, required this.onPressed});
+  const CustomAuthIconButton({
+    super.key,
+    required this.loading,
+    required this.onPressed,
+  });
 
+  final bool loading;
   final VoidCallback onPressed;
 
   @override
@@ -252,10 +257,12 @@ class CustomAuthIconButton extends StatelessWidget {
           onTap: onPressed,
           child: Padding(
             padding: const EdgeInsets.all(8),
-            child: Icon(
-              Icons.arrow_forward,
-              color: Theme.of(context).cardColor,
-            ),
+            child: loading
+                ? LoadingAnimationWidget.hexagonDots(
+                    color: Theme.of(context).cardColor,
+                    size: 15,
+                  )
+                : Icon(Icons.arrow_forward, color: Theme.of(context).cardColor),
           ),
         ),
       ),

@@ -45,7 +45,7 @@ class _AuthEmailRequestFormState extends State<AuthEmailRequestForm> {
             valueListenable: _emailController,
             builder: (context, value, _) {
               final hasValidEmail =
-                  _hasValidEmail(value.text) && !widget.loading;
+                  _hasValidEmail(value.text);
 
               return TextFormField(
                 controller: _emailController,
@@ -58,7 +58,10 @@ class _AuthEmailRequestFormState extends State<AuthEmailRequestForm> {
                     vertical: 12,
                   ),
                   suffixIcon: hasValidEmail
-                      ? CustomAuthIconButton(onPressed: _submit)
+                      ? CustomAuthIconButton(
+                          loading: widget.loading,
+                          onPressed: _submit,
+                        )
                       : null,
                 ),
                 onFieldSubmitted: (_) => _submit(),
