@@ -39,6 +39,8 @@ class BicountHomeWidgetService {
   bool _retryScheduled = false;
   String? _lastSignature;
 
+  BicountHomeWidgetAction? get pendingAction => _pendingAction;
+
   bool get _isSupportedPlatform =>
       !kIsWeb &&
       (defaultTargetPlatform == TargetPlatform.android ||
@@ -163,6 +165,10 @@ class BicountHomeWidgetService {
     );
   }
 
+  void clearPendingAction() {
+    _pendingAction = null;
+  }
+
   void _handleWidgetUri(Uri? uri) {
     final action = uri == null ? null : BicountHomeWidgetAction.fromUri(uri);
     if (action == null) {
@@ -192,7 +198,10 @@ class BicountHomeWidgetService {
       return;
     }
 
-    _pendingAction = null;
+    if (action.type != BicountHomeWidgetActionType.addTransaction) {
+      _pendingAction = null;
+    }
+
     context.go(action.buildRoute(_launchToken()));
   }
 

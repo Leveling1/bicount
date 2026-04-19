@@ -62,19 +62,19 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
 
             views.setTextColor(
                 R.id.widget_title,
-                widgetData.getInt(KEY_TITLE_COLOR, 0xFF212121.toInt()),
+                widgetData.getColorCompat(KEY_TITLE_COLOR, 0xFF212121.toInt()),
             )
             views.setTextColor(
                 R.id.widget_amount,
-                widgetData.getInt(KEY_AMOUNT_COLOR, 0xFF76A646.toInt()),
+                widgetData.getColorCompat(KEY_AMOUNT_COLOR, 0xFF76A646.toInt()),
             )
             views.setTextColor(
                 R.id.widget_subtitle,
-                widgetData.getInt(KEY_SUBTITLE_COLOR, 0xFF757575.toInt()),
+                widgetData.getColorCompat(KEY_SUBTITLE_COLOR, 0xFF757575.toInt()),
             )
             views.setTextColor(
                 R.id.widget_button,
-                widgetData.getInt(
+                widgetData.getColorCompat(
                     KEY_BUTTON_TEXT_COLOR,
                     if (isDarkTheme) 0xFF2C2C2C.toInt() else 0xFFF9F9F9.toInt(),
                 ),
@@ -118,5 +118,16 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
         private const val KEY_AMOUNT_COLOR = "bicount_widget_amount_color"
         private const val KEY_SUBTITLE_COLOR = "bicount_widget_subtitle_color"
         private const val KEY_BUTTON_TEXT_COLOR = "bicount_widget_button_text_color"
+    }
+}
+
+private fun SharedPreferences.getColorCompat(key: String, defaultValue: Int): Int {
+    val value = all[key] ?: return defaultValue
+    return when (value) {
+        is Int -> value
+        is Long -> value.toInt()
+        is Float -> value.toInt()
+        is String -> value.toLongOrNull()?.toInt() ?: defaultValue
+        else -> defaultValue
     }
 }

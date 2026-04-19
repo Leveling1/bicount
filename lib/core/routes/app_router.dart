@@ -26,6 +26,56 @@ import '../utils/custom_transition.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
+String _widgetLaunchToken(GoRouterState state) {
+  return state.uri.queryParameters['widgetLaunch'] ??
+      DateTime.now().microsecondsSinceEpoch.toString();
+}
+
+String _buildWidgetShellRoute(GoRouterState state) {
+  return Uri(
+    path: '/',
+    queryParameters: {'widgetLaunch': _widgetLaunchToken(state)},
+  ).toString();
+}
+
+String _buildWidgetRecurringConfirmationRoute(GoRouterState state) {
+  return Uri(
+    path: '/recurring-fundings',
+    queryParameters: {
+      'widgetLaunch': _widgetLaunchToken(state),
+      if ((state.uri.queryParameters['recurringFundingId'] ?? '').isNotEmpty)
+        'recurringFundingId': state.uri.queryParameters['recurringFundingId']!,
+      if ((state.uri.queryParameters['expectedDate'] ?? '').isNotEmpty)
+        'expectedDate': state.uri.queryParameters['expectedDate']!,
+    },
+  ).toString();
+}
+
+String _buildWidgetRecurringChargesRoute(GoRouterState state) {
+  return Uri(
+    path: '/recurring-charges',
+    queryParameters: {'widgetLaunch': _widgetLaunchToken(state)},
+  ).toString();
+}
+
+String _buildWidgetRecurringIncomesRoute(GoRouterState state) {
+  return Uri(
+    path: '/recurring-incomes',
+    queryParameters: {'widgetLaunch': _widgetLaunchToken(state)},
+  ).toString();
+}
+
+String _redirectWidgetAlias(GoRouterState state) {
+  final action = state.pathParameters['action'];
+  return switch (action) {
+    'add-transaction' => _buildWidgetShellRoute(state),
+    'recurring-confirmation' => _buildWidgetRecurringConfirmationRoute(state),
+    'recurring-charges' => _buildWidgetRecurringChargesRoute(state),
+    'recurring-incomes' => _buildWidgetRecurringIncomesRoute(state),
+    _ => _buildWidgetShellRoute(state),
+  };
+}
+
 class AppRouter {
   final GoRouter _router;
 
@@ -33,6 +83,23 @@ class AppRouter {
     : _router = GoRouter(
         navigatorKey: rootNavigatorKey,
         routes: [
+          GoRoute(
+            path: '/open-home',
+            redirect: (context, state) => _buildWidgetShellRoute(state),
+          ),
+          GoRoute(
+            path: '/add-transaction',
+            redirect: (context, state) => _buildWidgetShellRoute(state),
+          ),
+          GoRoute(
+            path: '/recurring-confirmation',
+            redirect: (context, state) =>
+                _buildWidgetRecurringConfirmationRoute(state),
+          ),
+          GoRoute(
+            path: '/widget/:action',
+            redirect: (context, state) => _redirectWidgetAlias(state),
+          ),
           GoRoute(path: '/', builder: (context, state) => MainScreen()),
           GoRoute(
             path: '/auth',

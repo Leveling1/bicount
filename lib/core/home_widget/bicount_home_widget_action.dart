@@ -75,11 +75,8 @@ class BicountHomeWidgetAction {
         queryParameters: {'widgetLaunch': launchToken},
       ).toString(),
       BicountHomeWidgetActionType.addTransaction => Uri(
-        path: '/transaction',
-        queryParameters: {
-          'widgetLaunch': launchToken,
-          'widgetComposer': launchToken,
-        },
+        path: '/',
+        queryParameters: {'widgetLaunch': launchToken},
       ).toString(),
       BicountHomeWidgetActionType.openRecurringConfirmation => Uri(
         path: '/recurring-fundings',

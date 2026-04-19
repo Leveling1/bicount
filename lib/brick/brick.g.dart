@@ -15,7 +15,7 @@ import '../../../../core/constants/account_funding_const.dart';
 // ignore: unused_import, unused_shown_name, unnecessary_import
 import '../../../../core/constants/tables_name.dart';
 // ignore: unused_import, unused_shown_name, unnecessary_import
-import 'package:bicount/core/constants/account_funding_const.dart';// GENERATED CODE DO NOT EDIT
+// GENERATED CODE DO NOT EDIT
 // ignore: unused_import
 import 'dart:convert';
 import 'package:brick_sqlite/brick_sqlite.dart' show SqliteModel, SqliteAdapter, SqliteModelDictionary, RuntimeSqliteColumnDefinition, SqliteProvider;

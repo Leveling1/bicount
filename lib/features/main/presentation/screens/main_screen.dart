@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/network_status.dart';
+import 'package:bicount/core/home_widget/bicount_home_widget_action.dart';
 import 'package:bicount/core/home_widget/bicount_home_widget_service.dart';
 import 'package:bicount/core/routes/friend_invite_route.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
@@ -38,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
   bool showSearchBar = false;
   int _selectedIndex = 0;
   int _selectedIndexTransaction = 0;
-  String? _lastHandledWidgetComposerToken;
+  String? _lastHandledWidgetActionToken;
 
   @override
   void initState() {
@@ -87,7 +88,11 @@ class _MainScreenState extends State<MainScreen> {
           data: preparedData,
           currencyConfig: currencyConfig,
         );
-        _maybeOpenWidgetComposer(currentUri, state: state, data: preparedData);
+        _maybeHandlePendingWidgetAction(
+          currentUri,
+          state: state,
+          data: preparedData,
+        );
 
         return Scaffold(
           backgroundColor: Theme.of(
@@ -202,27 +207,36 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void _maybeOpenWidgetComposer(
+  void _maybeHandlePendingWidgetAction(
     Uri currentUri, {
     required MainState state,
     required MainEntity data,
   }) {
-    final composerToken = currentUri.queryParameters['widgetComposer'];
-    if (currentUri.path != '/transaction' ||
-        composerToken == null ||
-        composerToken.isEmpty ||
-        composerToken == _lastHandledWidgetComposerToken ||
+    final widgetLaunchToken = currentUri.queryParameters['widgetLaunch'];
+    final pendingAction = BicountHomeWidgetService.instance.pendingAction;
+
+    if (widgetLaunchToken == null ||
+        widgetLaunchToken.isEmpty ||
+        widgetLaunchToken == _lastHandledWidgetActionToken ||
+        pendingAction?.type != BicountHomeWidgetActionType.addTransaction ||
         state is! MainLoaded) {
       return;
     }
 
-    _lastHandledWidgetComposerToken = composerToken;
+    _lastHandledWidgetActionToken = widgetLaunchToken;
+    BicountHomeWidgetService.instance.clearPendingAction();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
         return;
       }
-      _goToPage(2);
-      _openTransactionSheet(data);
+      _onItemTapped(2);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        _openTransactionSheet(data);
+      });
     });
   }
 

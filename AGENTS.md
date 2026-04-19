@@ -1284,13 +1284,15 @@ Rules:
 - the Android home widget is now driven by `home_widget` with the XML provider `android/app/src/main/kotlin/com/youngsolver/bicount/BicountHomeWidgetProvider.kt`
 - the iOS home widget now uses the WidgetKit extension under `ios/BicountHomeWidget` with kind `BicountHomeWidget`
 - widget content priority is `salary confirmation needed` then `next recurring plan due within 2 days` then `current balance`
-- the widget add button must launch the app to `/transaction` and `MainScreen` must open the transaction bottom sheet when the `widgetComposer` query token is present
+- the widget add button must not navigate to a dedicated add-transaction page because none exists; keep it as a shell action routed through the home-widget service so `MainScreen` selects the Transaction tab and opens the same bottom sheet used by the floating action button
 - a salary confirmation card from the widget must launch `/recurring-fundings` with `recurringFundingId` and `expectedDate`
 - recurring charge cards from the widget must launch `/subscriptions`; recurring income cards must launch `/recurring-incomes`
 - widget text must be written from Flutter using the active locale, and widget visuals must follow the active light or dark theme snapshot
 - local sign out must reset the widget to a neutral signed-out state so old finance data is not left visible on the device
 - all widget launch URLs must include the `homeWidget` query marker so `home_widget` can detect taps on iOS
 - the shared widget app group is `group.com.youngsolver.bicount` and must stay enabled for both Runner and the WidgetKit extension
+- Android widget numeric values written through `HomeWidget.saveWidgetData<int>` may be stored as `Long` in `SharedPreferences`; native widget code must read them through a `Number`-safe path instead of `SharedPreferences.getInt()`
+- raw widget launch paths such as `/open-home`, `/add-transaction`, `/recurring-confirmation`, or `/widget/...` can still reach `GoRouter` on cold start; keep internal alias redirects so those widget commands are normalized before route matching fails
 
 ## Recurring Frequency Constants Update (2026-04-12)
 
