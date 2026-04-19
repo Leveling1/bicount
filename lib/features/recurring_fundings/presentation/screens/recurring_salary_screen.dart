@@ -16,6 +16,7 @@ import 'package:bicount/features/salary/presentation/widgets/salary_occurrence_c
 import 'package:bicount/features/salary/presentation/widgets/salary_occurrence_sheet.dart';
 import 'package:bicount/features/salary/presentation/widgets/salary_overview_metrics.dart';
 import 'package:bicount/features/salary/presentation/widgets/salary_plan_card.dart';
+import 'package:bicount/features/salary/presentation/widgets/salary_screen_skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -69,7 +70,7 @@ class _RecurringSalaryScreenState extends State<RecurringSalaryScreen> {
                   onRetry: () =>
                       context.read<MainBloc>().add(GetAllStartData()),
                 ),
-                _ => const Center(child: CircularProgressIndicator()),
+                _ => const SalaryScreenSkeleton(),
               },
             );
           },

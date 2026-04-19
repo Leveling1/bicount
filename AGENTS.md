@@ -903,6 +903,7 @@ Implementation rules:
 Loading rules:
 - visible screen loading states should prefer the shared skeleton components in `lib/core/widgets/bicount_skeleton.dart`
 - avoid introducing new `CircularProgressIndicator` screen states in visible V1 flows when a skeleton is more appropriate
+- page and sheet skeletons should mirror the real card structure of the destination screen instead of using a generic centered placeholder
 - button-level pending states may still use compact inline loading indicators when a skeleton would not fit the interaction
 - use `lib/core/themes/app_dimens.dart` for spacing, sizes, and repeated UI measurements in new loading and picker widgets
 

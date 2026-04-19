@@ -12,6 +12,7 @@ import 'package:bicount/features/recurring_fundings/domain/services/recurring_pl
 import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_transfert_bloc.dart';
 import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_transfert_event.dart';
 import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_transfert_state.dart';
+import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_detail_skeleton.dart';
 import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_detail_view.dart';
 import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_form.dart';
 import 'package:flutter/material.dart';
@@ -133,10 +134,7 @@ class _RecurringPlanDetailSheetState extends State<RecurringPlanDetailSheet> {
               );
             }
 
-            return const Padding(
-              padding: EdgeInsets.only(bottom: 16),
-              child: Center(child: CircularProgressIndicator()),
-            );
+            return const RecurringPlanDetailSkeleton();
           },
         );
       },
