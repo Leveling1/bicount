@@ -8,6 +8,7 @@ import 'package:bicount/features/recurring_fundings/presentation/widgets/recurri
 import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_screen_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class RecurringPlanScreen extends StatelessWidget {
   const RecurringPlanScreen({super.key, required this.scope});
@@ -23,7 +24,11 @@ class RecurringPlanScreen extends StatelessWidget {
     return BlocBuilder<MainBloc, MainState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: CustomAppBar(title: _title(context)),
+          appBar: CustomAppBar(
+            title: _title(context),
+            leading: _buildBackButton(context),
+            automaticallyImplyLeading: false,
+          ),
           body: switch (state) {
             MainLoaded() => RecurringPlanScreenContent(
               scope: scope,
@@ -48,6 +53,19 @@ class RecurringPlanScreen extends StatelessWidget {
             _ => const RecurringPlanLoadingView(),
           },
         );
+      },
+    );
+  }
+
+  Widget _buildBackButton(BuildContext context) {
+    return BackButton(
+      onPressed: () {
+        final navigator = Navigator.of(context);
+        if (navigator.canPop()) {
+          navigator.pop();
+          return;
+        }
+        context.go('/');
       },
     );
   }

@@ -1228,6 +1228,7 @@ Filter list:
 Migration:
 - Brick migration `20260409080526` handles the schema changes
 - `Repository.repairRecurringTransfertMigrationStateIfNeeded()` protects partially migrated devices
+- that repair must validate both the `TransactionModel` recurring columns and every expected `RecurringTransfertModel` column, because `CREATE TABLE IF NOT EXISTS` alone does not fix an already existing incomplete table
 - the manual migration file `20260409120000` was deleted as a duplicate
 
 Backend delta:
@@ -1287,6 +1288,9 @@ Rules:
 - the widget add button must not navigate to a dedicated add-transaction page because none exists; keep it as a shell action routed through the home-widget service so `MainScreen` selects the Transaction tab and opens the same bottom sheet used by the floating action button
 - a salary confirmation card from the widget must launch `/recurring-fundings` with `recurringFundingId` and `expectedDate`
 - recurring charge cards from the widget must launch `/subscriptions`; recurring income cards must launch `/recurring-incomes`
+- widget taps should normalize to the shell first and let `MainScreen` consume the pending widget action, so recurring destinations open like normal pushed pages instead of replacing the app stack with a root route
+- widget recurring destinations must open as pushed secondary pages over the shell flow when possible, so the app bar/system back returns to the app instead of leaving the user stranded on a root route
+- recurring salary, charge, and income screens opened from the widget should still expose an explicit app-bar back action with fallback to `/` when they land as the root route during a cold start
 - widget text must be written from Flutter using the active locale, and widget visuals must follow the active light or dark theme snapshot
 - local sign out must reset the widget to a neutral signed-out state so old finance data is not left visible on the device
 - all widget launch URLs must include the `homeWidget` query marker so `home_widget` can detect taps on iOS

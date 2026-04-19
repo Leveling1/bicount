@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bicount/core/constants/app_config.dart';
+import 'package:bicount/core/home_widget/bicount_home_widget_action.dart';
 import 'package:bicount/core/routes/friend_invite_route.dart';
 import 'package:bicount/features/authentification/presentation/screens/auth_email_code_screen.dart';
 import 'package:bicount/features/authentification/presentation/screens/auth_screen.dart';
@@ -27,52 +28,59 @@ import '../utils/custom_transition.dart';
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 String _widgetLaunchToken(GoRouterState state) {
-  return state.uri.queryParameters['widgetLaunch'] ??
+  return state.uri.queryParameters[BicountHomeWidgetAction
+          .launchTokenQueryParam] ??
       DateTime.now().microsecondsSinceEpoch.toString();
 }
 
-String _buildWidgetShellRoute(GoRouterState state) {
+String _buildWidgetShellRoute(
+  GoRouterState state, {
+  required String actionKey,
+  Map<String, String>? extraQueryParameters,
+}) {
   return Uri(
     path: '/',
-    queryParameters: {'widgetLaunch': _widgetLaunchToken(state)},
+    queryParameters: {
+      BicountHomeWidgetAction.homeWidgetQueryParam: '1',
+      BicountHomeWidgetAction.launchTokenQueryParam: _widgetLaunchToken(state),
+      BicountHomeWidgetAction.shellActionQueryParam: actionKey,
+      ...?extraQueryParameters,
+    },
   ).toString();
 }
 
 String _buildWidgetRecurringConfirmationRoute(GoRouterState state) {
-  return Uri(
-    path: '/recurring-fundings',
-    queryParameters: {
-      'widgetLaunch': _widgetLaunchToken(state),
+  return _buildWidgetShellRoute(
+    state,
+    actionKey: 'recurring-confirmation',
+    extraQueryParameters: {
       if ((state.uri.queryParameters['recurringFundingId'] ?? '').isNotEmpty)
         'recurringFundingId': state.uri.queryParameters['recurringFundingId']!,
       if ((state.uri.queryParameters['expectedDate'] ?? '').isNotEmpty)
         'expectedDate': state.uri.queryParameters['expectedDate']!,
     },
-  ).toString();
+  );
 }
 
 String _buildWidgetRecurringChargesRoute(GoRouterState state) {
-  return Uri(
-    path: '/recurring-charges',
-    queryParameters: {'widgetLaunch': _widgetLaunchToken(state)},
-  ).toString();
+  return _buildWidgetShellRoute(state, actionKey: 'recurring-charges');
 }
 
 String _buildWidgetRecurringIncomesRoute(GoRouterState state) {
-  return Uri(
-    path: '/recurring-incomes',
-    queryParameters: {'widgetLaunch': _widgetLaunchToken(state)},
-  ).toString();
+  return _buildWidgetShellRoute(state, actionKey: 'recurring-incomes');
 }
 
 String _redirectWidgetAlias(GoRouterState state) {
   final action = state.pathParameters['action'];
   return switch (action) {
-    'add-transaction' => _buildWidgetShellRoute(state),
+    'add-transaction' => _buildWidgetShellRoute(
+      state,
+      actionKey: 'add-transaction',
+    ),
     'recurring-confirmation' => _buildWidgetRecurringConfirmationRoute(state),
     'recurring-charges' => _buildWidgetRecurringChargesRoute(state),
     'recurring-incomes' => _buildWidgetRecurringIncomesRoute(state),
-    _ => _buildWidgetShellRoute(state),
+    _ => _buildWidgetShellRoute(state, actionKey: 'open-home'),
   };
 }
 
@@ -85,11 +93,13 @@ class AppRouter {
         routes: [
           GoRoute(
             path: '/open-home',
-            redirect: (context, state) => _buildWidgetShellRoute(state),
+            redirect: (context, state) =>
+                _buildWidgetShellRoute(state, actionKey: 'open-home'),
           ),
           GoRoute(
             path: '/add-transaction',
-            redirect: (context, state) => _buildWidgetShellRoute(state),
+            redirect: (context, state) =>
+                _buildWidgetShellRoute(state, actionKey: 'add-transaction'),
           ),
           GoRoute(
             path: '/recurring-confirmation',

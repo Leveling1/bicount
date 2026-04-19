@@ -18,6 +18,7 @@ import 'package:bicount/features/salary/presentation/widgets/salary_overview_met
 import 'package:bicount/features/salary/presentation/widgets/salary_plan_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class RecurringSalaryScreen extends StatefulWidget {
   const RecurringSalaryScreen({
@@ -48,7 +49,11 @@ class _RecurringSalaryScreenState extends State<RecurringSalaryScreen> {
         return BlocBuilder<MainBloc, MainState>(
           builder: (context, state) {
             return Scaffold(
-              appBar: CustomAppBar(title: context.l10n.salaryTrackingTitle),
+              appBar: CustomAppBar(
+                title: context.l10n.salaryTrackingTitle,
+                leading: _buildBackButton(context),
+                automaticallyImplyLeading: false,
+              ),
               body: switch (state) {
                 MainLoaded() => _buildContent(
                   context,
@@ -69,6 +74,19 @@ class _RecurringSalaryScreenState extends State<RecurringSalaryScreen> {
             );
           },
         );
+      },
+    );
+  }
+
+  Widget _buildBackButton(BuildContext context) {
+    return BackButton(
+      onPressed: () {
+        final navigator = Navigator.of(context);
+        if (navigator.canPop()) {
+          navigator.pop();
+          return;
+        }
+        context.go('/');
       },
     );
   }

@@ -16,10 +16,33 @@ class BicountHomeWidgetAction {
   });
 
   static const _widgetHost = 'widget';
+  static const homeWidgetQueryParam = 'homeWidget';
+  static const shellActionQueryParam = 'widgetAction';
+  static const launchTokenQueryParam = 'widgetLaunch';
 
   final BicountHomeWidgetActionType type;
   final String? recurringFundingId;
   final String? expectedDate;
+
+  String get actionKey {
+    return switch (type) {
+      BicountHomeWidgetActionType.openHome => 'open-home',
+      BicountHomeWidgetActionType.addTransaction => 'add-transaction',
+      BicountHomeWidgetActionType.openRecurringConfirmation =>
+        'recurring-confirmation',
+      BicountHomeWidgetActionType.openRecurringCharges => 'recurring-charges',
+      BicountHomeWidgetActionType.openRecurringIncomes => 'recurring-incomes',
+    };
+  }
+
+  bool get opensSecondaryPage {
+    return switch (type) {
+      BicountHomeWidgetActionType.openRecurringConfirmation ||
+      BicountHomeWidgetActionType.openRecurringCharges ||
+      BicountHomeWidgetActionType.openRecurringIncomes => true,
+      _ => false,
+    };
+  }
 
   static Uri openHomeUri() => _uri('/open-home');
 
@@ -47,14 +70,79 @@ class BicountHomeWidgetAction {
       return null;
     }
 
-    return switch (uri.path) {
+    return _fromActionPath(
+      uri.path,
+      recurringFundingId: uri.queryParameters['recurringFundingId'],
+      expectedDate: uri.queryParameters['expectedDate'],
+    );
+  }
+
+  static BicountHomeWidgetAction? fromShellUri(Uri uri) {
+    if (uri.queryParameters[homeWidgetQueryParam] != '1') {
+      return null;
+    }
+
+    final actionKey = uri.queryParameters[shellActionQueryParam];
+    if (actionKey == null || actionKey.isEmpty) {
+      return null;
+    }
+
+    return _fromActionKey(
+      actionKey,
+      recurringFundingId: uri.queryParameters['recurringFundingId'],
+      expectedDate: uri.queryParameters['expectedDate'],
+    );
+  }
+
+  bool matches(BicountHomeWidgetAction other) {
+    return type == other.type &&
+        recurringFundingId == other.recurringFundingId &&
+        expectedDate == other.expectedDate;
+  }
+
+  String? buildSecondaryRoute() {
+    return switch (type) {
+      BicountHomeWidgetActionType.openRecurringConfirmation => Uri(
+        path: '/recurring-fundings',
+        queryParameters: {
+          if ((recurringFundingId ?? '').isNotEmpty)
+            'recurringFundingId': recurringFundingId!,
+          if ((expectedDate ?? '').isNotEmpty) 'expectedDate': expectedDate!,
+        },
+      ).toString(),
+      BicountHomeWidgetActionType.openRecurringCharges => '/subscriptions',
+      BicountHomeWidgetActionType.openRecurringIncomes => '/recurring-incomes',
+      _ => null,
+    };
+  }
+
+  String buildRoute(String launchToken) {
+    return Uri(
+      path: '/',
+      queryParameters: {
+        homeWidgetQueryParam: '1',
+        launchTokenQueryParam: launchToken,
+        shellActionQueryParam: actionKey,
+        if ((recurringFundingId ?? '').isNotEmpty)
+          'recurringFundingId': recurringFundingId!,
+        if ((expectedDate ?? '').isNotEmpty) 'expectedDate': expectedDate!,
+      },
+    ).toString();
+  }
+
+  static BicountHomeWidgetAction? _fromActionPath(
+    String path, {
+    String? recurringFundingId,
+    String? expectedDate,
+  }) {
+    return switch (path) {
       '/add-transaction' => const BicountHomeWidgetAction._(
         type: BicountHomeWidgetActionType.addTransaction,
       ),
       '/recurring-confirmation' => BicountHomeWidgetAction._(
         type: BicountHomeWidgetActionType.openRecurringConfirmation,
-        recurringFundingId: uri.queryParameters['recurringFundingId'],
-        expectedDate: uri.queryParameters['expectedDate'],
+        recurringFundingId: recurringFundingId,
+        expectedDate: expectedDate,
       ),
       '/recurring-charges' => const BicountHomeWidgetAction._(
         type: BicountHomeWidgetActionType.openRecurringCharges,
@@ -68,40 +156,36 @@ class BicountHomeWidgetAction {
     };
   }
 
-  String buildRoute(String launchToken) {
-    return switch (type) {
-      BicountHomeWidgetActionType.openHome => Uri(
-        path: '/',
-        queryParameters: {'widgetLaunch': launchToken},
-      ).toString(),
-      BicountHomeWidgetActionType.addTransaction => Uri(
-        path: '/',
-        queryParameters: {'widgetLaunch': launchToken},
-      ).toString(),
-      BicountHomeWidgetActionType.openRecurringConfirmation => Uri(
-        path: '/recurring-fundings',
-        queryParameters: {
-          'widgetLaunch': launchToken,
-          if ((recurringFundingId ?? '').isNotEmpty)
-            'recurringFundingId': recurringFundingId!,
-          if ((expectedDate ?? '').isNotEmpty) 'expectedDate': expectedDate!,
-        },
-      ).toString(),
-      BicountHomeWidgetActionType.openRecurringCharges => Uri(
-        path: '/subscriptions',
-        queryParameters: {'widgetLaunch': launchToken},
-      ).toString(),
-      BicountHomeWidgetActionType.openRecurringIncomes => Uri(
-        path: '/recurring-incomes',
-        queryParameters: {'widgetLaunch': launchToken},
-      ).toString(),
+  static BicountHomeWidgetAction? _fromActionKey(
+    String actionKey, {
+    String? recurringFundingId,
+    String? expectedDate,
+  }) {
+    return switch (actionKey) {
+      'add-transaction' => const BicountHomeWidgetAction._(
+        type: BicountHomeWidgetActionType.addTransaction,
+      ),
+      'recurring-confirmation' => BicountHomeWidgetAction._(
+        type: BicountHomeWidgetActionType.openRecurringConfirmation,
+        recurringFundingId: recurringFundingId,
+        expectedDate: expectedDate,
+      ),
+      'recurring-charges' => const BicountHomeWidgetAction._(
+        type: BicountHomeWidgetActionType.openRecurringCharges,
+      ),
+      'recurring-incomes' => const BicountHomeWidgetAction._(
+        type: BicountHomeWidgetActionType.openRecurringIncomes,
+      ),
+      _ => const BicountHomeWidgetAction._(
+        type: BicountHomeWidgetActionType.openHome,
+      ),
     };
   }
 
   static Uri _uri(String path, {Map<String, String>? queryParameters}) {
     final mergedQueryParameters = <String, String>{
       ...?queryParameters,
-      'homeWidget': '1',
+      homeWidgetQueryParam: '1',
     };
 
     return Uri(

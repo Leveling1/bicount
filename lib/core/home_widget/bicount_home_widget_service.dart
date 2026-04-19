@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class BicountHomeWidgetService {
+class BicountHomeWidgetService extends ChangeNotifier {
   BicountHomeWidgetService._();
 
   static final BicountHomeWidgetService instance = BicountHomeWidgetService._();
@@ -35,11 +35,13 @@ class BicountHomeWidgetService {
   static const _buttonTextColorKey = 'bicount_widget_button_text_color';
 
   BicountHomeWidgetAction? _pendingAction;
+  int _pendingActionSequence = 0;
   bool _initialized = false;
   bool _retryScheduled = false;
   String? _lastSignature;
 
   BicountHomeWidgetAction? get pendingAction => _pendingAction;
+  int get pendingActionSequence => _pendingActionSequence;
 
   bool get _isSupportedPlatform =>
       !kIsWeb &&
@@ -175,6 +177,7 @@ class BicountHomeWidgetService {
       return;
     }
     _pendingAction = action;
+    _pendingActionSequence++;
     _processPendingAction();
   }
 
@@ -198,11 +201,69 @@ class BicountHomeWidgetService {
       return;
     }
 
-    if (action.type != BicountHomeWidgetActionType.addTransaction) {
-      _pendingAction = null;
+    final currentUri = GoRouter.of(context).state.uri;
+    if (_isShellLocation(currentUri)) {
+      notifyListeners();
+      return;
     }
 
-    context.go(action.buildRoute(_launchToken()));
+    _restoreShellOrNavigate(context, action.buildRoute(_launchToken()));
+  }
+
+  void _restoreShellOrNavigate(BuildContext context, String route) {
+    final navigator = Navigator.of(context, rootNavigator: true);
+    if (navigator.canPop()) {
+      navigator.popUntil((route) => route.isFirst);
+      _resumePendingActionWhenShellReady(route);
+      return;
+    }
+
+    context.go(route);
+  }
+
+  void _resumePendingActionWhenShellReady(
+    String route, {
+    int attemptsRemaining = 4,
+  }) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final shellContext = rootNavigatorKey.currentContext;
+      if (shellContext == null) {
+        if (attemptsRemaining > 0) {
+          _resumePendingActionWhenShellReady(
+            route,
+            attemptsRemaining: attemptsRemaining - 1,
+          );
+        } else {
+          _scheduleRetry();
+        }
+        return;
+      }
+
+      if (Supabase.instance.client.auth.currentSession == null) {
+        return;
+      }
+
+      final activeUri = GoRouter.of(shellContext).state.uri;
+      if (!_isShellLocation(activeUri)) {
+        if (attemptsRemaining > 0) {
+          _resumePendingActionWhenShellReady(
+            route,
+            attemptsRemaining: attemptsRemaining - 1,
+          );
+        } else {
+          shellContext.go(route);
+        }
+        return;
+      }
+
+      notifyListeners();
+    });
+  }
+
+  bool _isShellLocation(Uri uri) {
+    return uri.path == '/' ||
+        uri.path == '/analysis' ||
+        uri.path == '/transaction';
   }
 
   void _scheduleRetry() {

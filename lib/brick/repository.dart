@@ -336,14 +336,30 @@ class Repository extends OfflineFirstWithSupabaseRepository {
         'TransactionModel',
         'recurring_transfert_id',
       );
+      final hasRecurringOccurrenceDate = await _columnExists(
+        database,
+        'TransactionModel',
+        'recurring_occurrence_date',
+      );
+      final hasGenerationMode = await _columnExists(
+        database,
+        'TransactionModel',
+        'generation_mode',
+      );
       final hasRecurringTransfertTable = await _tableExists(
         database,
         'RecurringTransfertModel',
       );
+      final hasRecurringTransfertColumns = hasRecurringTransfertTable
+          ? await _hasAllRecurringTransfertColumns(database)
+          : false;
 
       if (isMigrationRecorded &&
           hasRecurringTransfertId &&
-          hasRecurringTransfertTable) {
+          hasRecurringOccurrenceDate &&
+          hasGenerationMode &&
+          hasRecurringTransfertTable &&
+          hasRecurringTransfertColumns) {
         return;
       }
 
@@ -807,6 +823,121 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       )
     ''');
 
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'recurring_transfert_id',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'uid',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'transaction_type',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'title',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'note',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'amount',
+      definition: 'REAL',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'currency',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'sender_id',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'beneficiary_id',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'frequency',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'start_date',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'next_due_date',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'end_date',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'status',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'execution_mode',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'reminder_enabled',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'last_generated_at',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'last_confirmed_at',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'RecurringTransfertModel',
+      columnName: 'created_at',
+      definition: 'TEXT',
+    );
+
     await database.execute(
       'CREATE UNIQUE INDEX IF NOT EXISTS '
       '`index_RecurringTransfertModel_on_recurring_transfert_id` '
@@ -858,6 +989,38 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       columnName: 'fx_snapshot_id',
       definition: 'TEXT',
     );
+  }
+
+  Future<bool> _hasAllRecurringTransfertColumns(Database database) async {
+    const columns = [
+      'recurring_transfert_id',
+      'uid',
+      'transaction_type',
+      'title',
+      'note',
+      'amount',
+      'currency',
+      'sender_id',
+      'beneficiary_id',
+      'frequency',
+      'start_date',
+      'next_due_date',
+      'end_date',
+      'status',
+      'execution_mode',
+      'reminder_enabled',
+      'last_generated_at',
+      'last_confirmed_at',
+      'created_at',
+    ];
+
+    for (final column in columns) {
+      if (!await _columnExists(database, 'RecurringTransfertModel', column)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   Future<bool> _hasAllCurrencyFxColumns(

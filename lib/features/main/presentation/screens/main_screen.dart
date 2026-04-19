@@ -44,6 +44,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    BicountHomeWidgetService.instance.addListener(_handleWidgetActionChange);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MainBloc>().add(GetAllStartData());
     });
@@ -62,9 +63,17 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void dispose() {
+    BicountHomeWidgetService.instance.removeListener(_handleWidgetActionChange);
     pageController.dispose();
     searchTransaction.dispose();
     super.dispose();
+  }
+
+  void _handleWidgetActionChange() {
+    if (!mounted) {
+      return;
+    }
+    setState(() {});
   }
 
   @override
@@ -212,32 +221,117 @@ class _MainScreenState extends State<MainScreen> {
     required MainState state,
     required MainEntity data,
   }) {
-    final widgetLaunchToken = currentUri.queryParameters['widgetLaunch'];
-    final pendingAction = BicountHomeWidgetService.instance.pendingAction;
+    final service = BicountHomeWidgetService.instance;
+    final serviceAction = service.pendingAction;
+    final uriAction = BicountHomeWidgetAction.fromShellUri(currentUri);
+    final pendingAction = serviceAction ?? uriAction;
+    final widgetLaunchToken = _resolveWidgetActionToken(
+      currentUri,
+      serviceAction: serviceAction,
+      uriAction: uriAction,
+      service: service,
+    );
 
-    if (widgetLaunchToken == null ||
+    if (pendingAction == null ||
+        widgetLaunchToken == null ||
         widgetLaunchToken.isEmpty ||
         widgetLaunchToken == _lastHandledWidgetActionToken ||
-        pendingAction?.type != BicountHomeWidgetActionType.addTransaction ||
         state is! MainLoaded) {
       return;
     }
 
     _lastHandledWidgetActionToken = widgetLaunchToken;
-    BicountHomeWidgetService.instance.clearPendingAction();
+    service.clearPendingAction();
+
+    if (uriAction != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        context.replace(_shellRouteForWidgetAction(pendingAction));
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) {
+            return;
+          }
+          _performPendingWidgetAction(pendingAction, data);
+        });
+      });
+      return;
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
         return;
       }
-      _onItemTapped(2);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) {
-          return;
-        }
-        _openTransactionSheet(data);
-      });
+      _performPendingWidgetAction(pendingAction, data);
     });
+  }
+
+  String? _resolveWidgetActionToken(
+    Uri currentUri, {
+    required BicountHomeWidgetAction? serviceAction,
+    required BicountHomeWidgetAction? uriAction,
+    required BicountHomeWidgetService service,
+  }) {
+    if (serviceAction != null) {
+      final uriToken = currentUri
+          .queryParameters[BicountHomeWidgetAction.launchTokenQueryParam];
+      if (uriToken != null &&
+          uriToken.isNotEmpty &&
+          uriAction != null &&
+          serviceAction.matches(uriAction)) {
+        return uriToken;
+      }
+
+      return 'pending:${service.pendingActionSequence}';
+    }
+
+    return currentUri.queryParameters[BicountHomeWidgetAction
+        .launchTokenQueryParam];
+  }
+
+  String _shellRouteForWidgetAction(BicountHomeWidgetAction action) {
+    return switch (action.type) {
+      BicountHomeWidgetActionType.openHome => '/',
+      BicountHomeWidgetActionType.addTransaction => '/transaction',
+      _ => _currentShellRoute(),
+    };
+  }
+
+  String _currentShellRoute() {
+    return switch (_selectedIndex) {
+      1 => '/analysis',
+      2 => '/transaction',
+      _ => '/',
+    };
+  }
+
+  void _performPendingWidgetAction(
+    BicountHomeWidgetAction action,
+    MainEntity data,
+  ) {
+    switch (action.type) {
+      case BicountHomeWidgetActionType.openHome:
+        _onItemTapped(0);
+        return;
+      case BicountHomeWidgetActionType.addTransaction:
+        _onItemTapped(2);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) {
+            return;
+          }
+          _openTransactionSheet(data);
+        });
+        return;
+      case BicountHomeWidgetActionType.openRecurringConfirmation:
+      case BicountHomeWidgetActionType.openRecurringCharges:
+      case BicountHomeWidgetActionType.openRecurringIncomes:
+        final route = action.buildSecondaryRoute();
+        if (route != null) {
+          context.push(route);
+        }
+        return;
+    }
   }
 
   void _onItemTappedTransaction(int index) {
