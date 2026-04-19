@@ -1278,6 +1278,20 @@ Rules:
 - the share action and the local-link hint must stay reserved for unlinked friend entries only
 - subscription, company, or self-profile rows should not reuse the friend profile edit flow
 
+## Home Widget Update (2026-04-19)
+
+Rules:
+- the Android home widget is now driven by `home_widget` with the XML provider `android/app/src/main/kotlin/com/youngsolver/bicount/BicountHomeWidgetProvider.kt`
+- the iOS home widget now uses the WidgetKit extension under `ios/BicountHomeWidget` with kind `BicountHomeWidget`
+- widget content priority is `salary confirmation needed` then `next recurring plan due within 2 days` then `current balance`
+- the widget add button must launch the app to `/transaction` and `MainScreen` must open the transaction bottom sheet when the `widgetComposer` query token is present
+- a salary confirmation card from the widget must launch `/recurring-fundings` with `recurringFundingId` and `expectedDate`
+- recurring charge cards from the widget must launch `/subscriptions`; recurring income cards must launch `/recurring-incomes`
+- widget text must be written from Flutter using the active locale, and widget visuals must follow the active light or dark theme snapshot
+- local sign out must reset the widget to a neutral signed-out state so old finance data is not left visible on the device
+- all widget launch URLs must include the `homeWidget` query marker so `home_widget` can detect taps on iOS
+- the shared widget app group is `group.com.youngsolver.bicount` and must stay enabled for both Runner and the WidgetKit extension
+
 ## Recurring Frequency Constants Update (2026-04-12)
 
 Rules:

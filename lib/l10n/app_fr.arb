@@ -131,6 +131,14 @@
   "networkOfflineMessage": "Connexion Internet perdue : vous êtes en mode hors ligne",
   "networkUnstableMessage": "Connexion Internet instable",
   "homeBalance": "Votre solde",
+  "homeWidgetAddTransactionCta": "Ajouter une transaction",
+  "homeWidgetBalanceFallbackSubtitle": "Aucune activite recurrente n'est prevue dans les 2 prochains jours.",
+  "homeWidgetDueOn": "Prevue le {date}",
+  "@homeWidgetDueOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "homeAccounts": "Comptes",
   "homeTransactions": "Transactions",
   "homeShowMore": "Voir plus",

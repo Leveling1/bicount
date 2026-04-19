@@ -6,9 +6,5 @@
 	<array>
 		<string>group.com.youngsolver.bicount</string>
 	</array>
-	<key>com.apple.developer.associated-domains</key>
-	<array>
-		<string>applinks:bicount.levelingcoder.com</string>
-	</array>
 </dict>
 </plist>

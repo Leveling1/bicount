@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bicount_home_widget_name">Bicount overview</string>
+    <string name="bicount_home_widget_default_title">Open Bicount</string>
+    <string name="bicount_home_widget_default_subtitle">Sign in to refresh your finance snapshot.</string>
+    <string name="bicount_home_widget_default_button">Open app</string>
+</resources>

@@ -851,6 +851,24 @@ abstract class AppLocalizations {
   /// **'Your balance'**
   String get homeBalance;
 
+  /// No description provided for @homeWidgetAddTransactionCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Add transaction'**
+  String get homeWidgetAddTransactionCta;
+
+  /// No description provided for @homeWidgetBalanceFallbackSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring activity is due in the next 2 days.'**
+  String get homeWidgetBalanceFallbackSubtitle;
+
+  /// No description provided for @homeWidgetDueOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Due on {date}'**
+  String homeWidgetDueOn(Object date);
+
   /// No description provided for @homeAccounts.
   ///
   /// In en, this message translates to:

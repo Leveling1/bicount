@@ -389,6 +389,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeBalance => 'Your balance';
 
   @override
+  String get homeWidgetAddTransactionCta => 'Add transaction';
+
+  @override
+  String get homeWidgetBalanceFallbackSubtitle => 'No recurring activity is due in the next 2 days.';
+
+  @override
+  String homeWidgetDueOn(Object date) {
+    return 'Due on $date';
+  }
+
+  @override
   String get homeAccounts => 'Accounts';
 
   @override

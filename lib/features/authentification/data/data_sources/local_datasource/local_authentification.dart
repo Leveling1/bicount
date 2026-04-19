@@ -1,5 +1,6 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/errors/failure.dart';
+import 'package:bicount/core/home_widget/bicount_home_widget_service.dart';
 import 'package:bicount/features/authentification/data/data_sources/local_datasource/authentification_local_datasource.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:brick_core/query.dart';
@@ -73,6 +74,7 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
       await Repository().clearLocalSessionData();
       final preferences = await SharedPreferences.getInstance();
       await preferences.clear();
+      await BicountHomeWidgetService.instance.resetToSignedOut();
       return const Right(null);
     } catch (e) {
       return Left(AuthenticationFailure(message: 'Local sign out failed: $e'));

@@ -131,6 +131,14 @@
   "networkOfflineMessage": "Internet connection lost: you are in offline mode",
   "networkUnstableMessage": "Unstable internet connection",
   "homeBalance": "Your balance",
+  "homeWidgetAddTransactionCta": "Add transaction",
+  "homeWidgetBalanceFallbackSubtitle": "No recurring activity is due in the next 2 days.",
+  "homeWidgetDueOn": "Due on {date}",
+  "@homeWidgetDueOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "homeAccounts": "Accounts",
   "homeTransactions": "Transactions",
   "homeShowMore": "Show more",

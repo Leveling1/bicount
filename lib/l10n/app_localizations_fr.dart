@@ -389,6 +389,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get homeBalance => 'Votre solde';
 
   @override
+  String get homeWidgetAddTransactionCta => 'Ajouter une transaction';
+
+  @override
+  String get homeWidgetBalanceFallbackSubtitle => 'Aucune activite recurrente n\'est prevue dans les 2 prochains jours.';
+
+  @override
+  String homeWidgetDueOn(Object date) {
+    return 'Prevue le $date';
+  }
+
+  @override
   String get homeAccounts => 'Comptes';
 
   @override

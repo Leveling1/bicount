@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/network_status.dart';
+import 'package:bicount/core/home_widget/bicount_home_widget_service.dart';
 import 'package:bicount/core/routes/friend_invite_route.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/notification_helper.dart';
@@ -6,6 +7,8 @@ import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/features/add_fund/presentation/screens/add_fund_handler.dart';
 import 'package:bicount/features/analysis/presentation/screens/analysis_screen.dart';
+import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
+import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/home/presentation/screens/home_screen.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
@@ -35,6 +38,7 @@ class _MainScreenState extends State<MainScreen> {
   bool showSearchBar = false;
   int _selectedIndex = 0;
   int _selectedIndexTransaction = 0;
+  String? _lastHandledWidgetComposerToken;
 
   @override
   void initState() {
@@ -66,6 +70,8 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     _scheduleInvitePresentation(GoRouterState.of(context).uri);
     final titles = localizedMainShellTitles(context);
+    final currentUri = GoRouterState.of(context).uri;
+    final currencyConfig = context.watch<CurrencyCubit>().state.config;
 
     return BlocConsumer<MainBloc, MainState>(
       listener: _onStateChanged,
@@ -74,6 +80,14 @@ class _MainScreenState extends State<MainScreen> {
             ? state.startData
             : MainEntity.fromEmpty();
         final preparedData = prepareMainScreenData(data);
+
+        _scheduleHomeWidgetSync(
+          context,
+          state: state,
+          data: preparedData,
+          currencyConfig: currencyConfig,
+        );
+        _maybeOpenWidgetComposer(currentUri, state: state, data: preparedData);
 
         return Scaffold(
           backgroundColor: Theme.of(
@@ -164,6 +178,52 @@ class _MainScreenState extends State<MainScreen> {
         );
       }
     }
+  }
+
+  void _scheduleHomeWidgetSync(
+    BuildContext context, {
+    required MainState state,
+    required MainEntity data,
+    required CurrencyConfigEntity currencyConfig,
+  }) {
+    if (state is! MainLoaded || data.user.uid.isEmpty) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      BicountHomeWidgetService.instance.sync(
+        context: context,
+        data: data,
+        currencyConfig: currencyConfig,
+      );
+    });
+  }
+
+  void _maybeOpenWidgetComposer(
+    Uri currentUri, {
+    required MainState state,
+    required MainEntity data,
+  }) {
+    final composerToken = currentUri.queryParameters['widgetComposer'];
+    if (currentUri.path != '/transaction' ||
+        composerToken == null ||
+        composerToken.isEmpty ||
+        composerToken == _lastHandledWidgetComposerToken ||
+        state is! MainLoaded) {
+      return;
+    }
+
+    _lastHandledWidgetComposerToken = composerToken;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      _goToPage(2);
+      _openTransactionSheet(data);
+    });
   }
 
   void _onItemTappedTransaction(int index) {
