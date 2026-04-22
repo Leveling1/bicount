@@ -66,6 +66,15 @@ String _buildWidgetRecurringChargesRoute(GoRouterState state) {
   return _buildWidgetShellRoute(state, actionKey: 'recurring-charges');
 }
 
+String _canonicalRecurringChargesRoute(GoRouterState state) {
+  return Uri(
+    path: '/subscriptions',
+    queryParameters: state.uri.queryParameters.isEmpty
+        ? null
+        : state.uri.queryParameters,
+  ).toString();
+}
+
 String _buildWidgetRecurringIncomesRoute(GoRouterState state) {
   return _buildWidgetShellRoute(state, actionKey: 'recurring-incomes');
 }
@@ -162,17 +171,8 @@ class AppRouter {
           ),
           GoRoute(
             path: '/recurring-charges',
-            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
-              child: BlocProvider(
-                create: (context) => RecurringTransfertBloc(
-                  context.read<RecurringTransfertRepositoryImpl>(),
-                ),
-                child: const RecurringPlanScreen(
-                  scope: RecurringPlanScope.charge,
-                ),
-              ),
-              state: state,
-            ),
+            redirect: (context, state) =>
+                _canonicalRecurringChargesRoute(state),
           ),
           GoRoute(
             path: '/recurring-incomes',

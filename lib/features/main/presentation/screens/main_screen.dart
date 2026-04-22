@@ -20,6 +20,7 @@ import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell
 import 'package:bicount/features/profile/presentation/screens/profile_screen.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_handler.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -327,11 +328,29 @@ class _MainScreenState extends State<MainScreen> {
       case BicountHomeWidgetActionType.openRecurringCharges:
       case BicountHomeWidgetActionType.openRecurringIncomes:
         final route = action.buildSecondaryRoute();
-        if (route != null) {
+        if (route != null && !_isCurrentWidgetDestination(route)) {
           context.push(route);
         }
         return;
     }
+  }
+
+  bool _isCurrentWidgetDestination(String route) {
+    final currentUri = GoRouterState.of(context).uri;
+    final targetUri = Uri.parse(route);
+    if (currentUri.path != targetUri.path) {
+      return false;
+    }
+
+    final currentParameters =
+        Map<String, String>.from(currentUri.queryParameters)
+          ..remove(BicountHomeWidgetAction.homeWidgetQueryParam)
+          ..remove(BicountHomeWidgetAction.launchTokenQueryParam)
+          ..remove(BicountHomeWidgetAction.shellActionQueryParam);
+    final targetParameters = Map<String, String>.from(
+      targetUri.queryParameters,
+    );
+    return mapEquals(currentParameters, targetParameters);
   }
 
   void _onItemTappedTransaction(int index) {

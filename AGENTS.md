@@ -1258,6 +1258,7 @@ Rules:
 - when creating a `RecurringTransfertModel`, the owner `uid` must be the authenticated user when available, even for recurring income flows where the sender is an external party
 - recurring ledger rows created together with a recurring template must persist `recurring_occurrence_date` using the chosen transaction date so salary and recurring follow-up screens can match occurrences reliably
 - `/subscriptions` is now a live recurring charges route again and should surface the new recurring charge management screen; `/recurring-charges` is an explicit alias for the same surface
+- keep `/recurring-charges` as a redirect alias to `/subscriptions` rather than a second page builder, so widget/deep-link launches cannot stack two visually identical recurring charge pages
 - recurring incomes now have a dedicated management route at `/recurring-incomes`
 - recurring salary follow-up is now driven by `lib/features/recurring_fundings/presentation/screens/recurring_salary_screen.dart` and the shared `RecurringTransfertBloc`, not by the dormant legacy salary bloc flow
 - the salary confirmation sheet must let the user adjust the actually received amount before confirming the occurrence, and switching back to automatic mode must use that adjusted amount too
@@ -1291,6 +1292,7 @@ Rules:
 - recurring charge cards from the widget must launch `/subscriptions`; recurring income cards must launch `/recurring-incomes`
 - widget taps should normalize to the shell first and let `MainScreen` consume the pending widget action, so recurring destinations open like normal pushed pages instead of replacing the app stack with a root route
 - widget recurring destinations must open as pushed secondary pages over the shell flow when possible, so the app bar/system back returns to the app instead of leaving the user stranded on a root route
+- widget launch handling must de-duplicate the same widget URI across immediate `initiallyLaunchedFromHomeWidget()` and `widgetClicked` emissions so recurring screens are not pushed twice onto the stack
 - recurring salary, charge, and income screens opened from the widget should still expose an explicit app-bar back action with fallback to `/` when they land as the root route during a cold start
 - widget text must be written from Flutter using the active locale, and widget visuals must follow the active light or dark theme snapshot
 - local sign out must reset the widget to a neutral signed-out state so old finance data is not left visible on the device

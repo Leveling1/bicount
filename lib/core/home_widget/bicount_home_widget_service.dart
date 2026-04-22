@@ -33,12 +33,15 @@ class BicountHomeWidgetService extends ChangeNotifier {
   static const _amountColorKey = 'bicount_widget_amount_color';
   static const _subtitleColorKey = 'bicount_widget_subtitle_color';
   static const _buttonTextColorKey = 'bicount_widget_button_text_color';
+  static const _duplicateLaunchWindow = Duration(milliseconds: 1200);
 
   BicountHomeWidgetAction? _pendingAction;
   int _pendingActionSequence = 0;
   bool _initialized = false;
   bool _retryScheduled = false;
   String? _lastSignature;
+  String? _lastHandledWidgetUriSignature;
+  DateTime? _lastHandledWidgetUriAt;
 
   BicountHomeWidgetAction? get pendingAction => _pendingAction;
   int get pendingActionSequence => _pendingActionSequence;
@@ -176,6 +179,18 @@ class BicountHomeWidgetService extends ChangeNotifier {
     if (action == null) {
       return;
     }
+
+    final signature = uri.toString();
+    final handledAt = _lastHandledWidgetUriAt;
+    final now = DateTime.now();
+    if (_lastHandledWidgetUriSignature == signature &&
+        handledAt != null &&
+        now.difference(handledAt) <= _duplicateLaunchWindow) {
+      return;
+    }
+
+    _lastHandledWidgetUriSignature = signature;
+    _lastHandledWidgetUriAt = now;
     _pendingAction = action;
     _pendingActionSequence++;
     _processPendingAction();
