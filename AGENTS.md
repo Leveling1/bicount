@@ -1317,3 +1317,9 @@ Rules:
 - recurring plan aggregate projections that do not have a counted transaction row yet must anchor FX to the plan `createdAt` when available, falling back only when older records predate that field
 - salary occurrence confirmation must allow adjusting both amount and currency before creating the counted transaction row
 - when converting recurring plan aggregates, load historical snapshots for both the current reference currency and the recurring plan source currencies, including when the current reference currency is `CDF`; recurring templates do not persist `amount_cdf` or `rate_to_cdf`, so target-only history or an early `CDF` return is insufficient for multi-currency sums
+
+## Currency Dropdown Edit Update (2026-04-26)
+
+Rules:
+- the shared `CurrencyField` in `lib/core/widgets/custom_amount_field.dart` must keep prefilled transaction currencies editable during form updates
+- do not drive the transaction currency `DropdownMenuFormField` directly from both `controller` text and a sticky internal initial value; derive the selected code from the external controller and keep controller sync one-way so editing an existing transaction can still switch currency cleanly

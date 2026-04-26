@@ -33,15 +33,116 @@ class CustomSuggestionTextField extends StatefulWidget {
 }
 
 class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
-  late final TextEditingController _controller;
+  late final TextEditingController _fallbackController;
+  TextEditingController? _autocompleteController;
+  String? _selectedOption;
+
+  TextEditingController get _effectiveController =>
+      widget.controller ?? _fallbackController;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? TextEditingController();
-    _controller.addListener(() {
-      widget.onChanged?.call(_controller.text);
-      setState(() {});
+    _fallbackController = TextEditingController(text: widget.controller?.text);
+    widget.controller?.addListener(_handleExternalControllerChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomSuggestionTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller == widget.controller) {
+      return;
+    }
+
+    oldWidget.controller?.removeListener(_handleExternalControllerChanged);
+    if (widget.controller == null && oldWidget.controller != null) {
+      _fallbackController.value = oldWidget.controller!.value;
+    }
+    widget.controller?.addListener(_handleExternalControllerChanged);
+    if (_autocompleteController != null &&
+        _autocompleteController!.text != _effectiveController.text) {
+      _autocompleteController!.value = _effectiveController.value;
+    }
+  }
+
+  String _normalize(String value) => value.trim().toLowerCase();
+
+  void _attachAutocompleteController(TextEditingController controller) {
+    if (identical(_autocompleteController, controller)) {
+      return;
+    }
+
+    _autocompleteController?.removeListener(
+      _handleAutocompleteControllerChanged,
+    );
+    _autocompleteController = controller;
+    _autocompleteController!.addListener(_handleAutocompleteControllerChanged);
+
+    if (_autocompleteController!.text != _effectiveController.text) {
+      _autocompleteController!.value = _effectiveController.value;
+    }
+  }
+
+  void _handleAutocompleteControllerChanged() {
+    final controller = _autocompleteController;
+    if (controller == null) {
+      return;
+    }
+
+    final text = controller.text;
+    if (_effectiveController.text != text) {
+      _effectiveController.value = controller.value;
+    }
+
+    final shouldClearSelection =
+        _selectedOption != null &&
+        _normalize(text) != _normalize(_selectedOption!);
+
+    widget.onChanged?.call(text);
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      if (shouldClearSelection) {
+        _selectedOption = null;
+      }
+    });
+  }
+
+  void _handleExternalControllerChanged() {
+    final controller = widget.controller;
+    if (controller == null) {
+      return;
+    }
+
+    if (_autocompleteController != null &&
+        _autocompleteController!.text != controller.text) {
+      _autocompleteController!.value = controller.value;
+    }
+
+    final shouldClearSelection =
+        _selectedOption != null &&
+        _normalize(controller.text) != _normalize(_selectedOption!);
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      if (shouldClearSelection) {
+        _selectedOption = null;
+      }
+    });
+  }
+
+  void _handleSelected(String option) {
+    _effectiveController.value = TextEditingValue(
+      text: option,
+      selection: TextSelection.collapsed(offset: option.length),
+    );
+    setState(() {
+      _selectedOption = option;
     });
   }
 
@@ -55,14 +156,18 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
   @override
   Widget build(BuildContext context) {
     return Autocomplete<String>(
+      initialValue: TextEditingValue(text: _effectiveController.text),
+      onSelected: _handleSelected,
       optionsBuilder: (TextEditingValue textEditingValue) {
-        if (textEditingValue.text.isEmpty) {
+        final query = _normalize(textEditingValue.text);
+        if (query.isEmpty) {
+          return const Iterable<String>.empty();
+        }
+        if (_selectedOption != null && query == _normalize(_selectedOption!)) {
           return const Iterable<String>.empty();
         }
         return widget.options.where((String option) {
-          return option.toLowerCase().contains(
-            textEditingValue.text.toLowerCase(),
-          );
+          return _normalize(option).contains(query);
         });
       },
       optionsViewBuilder:
@@ -104,24 +209,9 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
             FocusNode focusNode,
             VoidCallback onFieldSubmitted,
           ) {
-            if (widget.controller != null &&
-                widget.controller != textEditingController) {
-              textEditingController.text = widget.controller!.text;
-
-              widget.controller!.addListener(() {
-                if (textEditingController.text != widget.controller!.text) {
-                  textEditingController.text = widget.controller!.text;
-                }
-              });
-
-              textEditingController.addListener(() {
-                if (widget.controller!.text != textEditingController.text) {
-                  widget.controller!.text = textEditingController.text;
-                }
-              });
-            }
+            _attachAutocompleteController(textEditingController);
             return TextFormField(
-              controller: widget.controller ?? textEditingController,
+              controller: textEditingController,
               focusNode: focusNode,
               onFieldSubmitted: (String value) => onFieldSubmitted(),
               textAlign: TextAlign.start,
@@ -149,9 +239,11 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
 
   @override
   void dispose() {
-    if (widget.controller == null) {
-      _controller.dispose();
-    }
+    widget.controller?.removeListener(_handleExternalControllerChanged);
+    _autocompleteController?.removeListener(
+      _handleAutocompleteControllerChanged,
+    );
+    _fallbackController.dispose();
     super.dispose();
   }
 }
