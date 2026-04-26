@@ -1324,3 +1324,10 @@ Rules:
 Rules:
 - the shared `CurrencyField` in `lib/core/widgets/custom_amount_field.dart` must keep prefilled transaction currencies editable during form updates
 - do not drive the transaction currency `DropdownMenuFormField` directly from both `controller` text and a sticky internal initial value; derive the selected code from the external controller and keep controller sync one-way so editing an existing transaction can still switch currency cleanly
+
+## Profile Monthly Summary Update (2026-04-26)
+
+Rules:
+- the second row summary cards on the Profile screen keep the existing Profile card design
+- the data shown in those two cards should mirror the Home monthly flow metrics: `Entrées du mois` uses the Home monthly inflow value and `Sorties du mois` uses the Home monthly outflow value
+- when updating those Profile values, reuse `HomeMonthlyFlowService` instead of duplicating a separate monthly calculation path
