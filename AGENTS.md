@@ -1311,6 +1311,7 @@ Rules:
 
 Rules:
 - historical FX for persisted finance rows must stay anchored to the original record registration time; do not recalculate an existing row with the latest rate during edit flows when `created_at` or the stored FX date already exists
+- when editing an existing transaction that already stores `fx_rate_date`, prefer that stored FX day before falling back to `created_at`; bank snapshots are daily and `created_at` can land on a calendar day with no published snapshot even though the original stored FX day is valid
 - transaction edits must preserve the original `reference_currency_code` of the row when it already exists, and recompute FX metadata against the historical record date instead of the current day
 - the pivot currency remains `CDF`; global balances and analytics should still reconvert from the stored or reconstructed CDF amount into the user's current reference currency
 - if the currently displayed/reference currency already matches the record's original currency, keep the original amount without conversion

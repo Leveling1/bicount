@@ -77,6 +77,7 @@ String localizeRuntimeMessage(BuildContext context, String message) {
       return context.l10n.runtimeSalaryTrackingSaveFailed;
     case 'Unable to save your profile right now.':
       return context.l10n.runtimeProfileSaveFailed;
+    case 'Unable to load the exchange rate for this record date.':
     case 'Unable to load the latest exchange rates right now.':
       return context.l10n.runtimeCurrencyRateLoadFailed;
     case 'Connect to update this reference currency first.':

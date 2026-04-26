@@ -3,6 +3,7 @@ import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
+import 'package:bicount/features/currency/domain/entities/currency_quote_entity.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
@@ -166,21 +167,12 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       final currentRecord = await _findStoredTransaction(
         previousTransaction.tid,
       );
-      final historicalRateDate = _resolveHistoricalRateDate(
-        currentRecord,
-        previousTransaction,
+      final quote = await _resolveUpdateQuote(
+        currentRecord: currentRecord,
+        previousTransaction: previousTransaction,
+        amount: amount,
+        currency: currency,
       );
-      final quote = historicalRateDate == null
-          ? await _currencyRepository.resolveCreationQuote(
-              amount: amount,
-              originalCurrencyCode: currency,
-            )
-          : await _currencyRepository.resolveHistoricalQuote(
-              amount: amount,
-              originalCurrencyCode: currency,
-              rateDate: historicalRateDate,
-              referenceCurrencyCode: currentRecord?.referenceCurrencyCode,
-            );
 
       final transactionModel = TransactionModel(
         tid: previousTransaction.tid,
@@ -213,6 +205,8 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
 
       await Repository().upsert<TransactionModel>(transactionModel);
       return const Right(null);
+    } on Failure catch (error) {
+      return Left(error);
     } catch (_) {
       return _messageFailure('Unable to update this transaction right now.');
     }
@@ -238,22 +232,55 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     return items.isEmpty ? null : items.first;
   }
 
-  String? _resolveHistoricalRateDate(
+  Future<CurrencyQuoteEntity> _resolveUpdateQuote({
+    required TransactionModel? currentRecord,
+    required TransactionEntity previousTransaction,
+    required double amount,
+    required String currency,
+  }) async {
+    final referenceCurrencyCode = currentRecord?.referenceCurrencyCode;
+    MessageFailure? historicalRateFailure;
+
+    for (final rateDate in _resolveHistoricalRateDateCandidates(
+      currentRecord,
+      previousTransaction,
+    )) {
+      try {
+        return await _currencyRepository.resolveHistoricalQuote(
+          amount: amount,
+          originalCurrencyCode: currency,
+          rateDate: rateDate,
+          referenceCurrencyCode: referenceCurrencyCode,
+        );
+      } on MessageFailure catch (error) {
+        historicalRateFailure = error;
+      }
+    }
+
+    if (historicalRateFailure != null) {
+      throw historicalRateFailure;
+    }
+
+    return _currencyRepository.resolveCreationQuote(
+      amount: amount,
+      originalCurrencyCode: currency,
+    );
+  }
+
+  Iterable<String> _resolveHistoricalRateDateCandidates(
     TransactionModel? currentRecord,
     TransactionEntity previousTransaction,
-  ) {
+  ) sync* {
+    final fxRateDate = currentRecord?.fxRateDate;
+    if (fxRateDate != null && fxRateDate.isNotEmpty) {
+      yield fxRateDate;
+    }
+
     final createdAt =
         currentRecord?.createdAt ??
         previousTransaction.createdAt?.toIso8601String();
-    if (createdAt != null && createdAt.isNotEmpty) {
-      return createdAt;
+    if (createdAt != null && createdAt.isNotEmpty && createdAt != fxRateDate) {
+      yield createdAt;
     }
-
-    final fxRateDate = currentRecord?.fxRateDate;
-    if (fxRateDate != null && fxRateDate.isNotEmpty) {
-      return fxRateDate;
-    }
-
-    return null;
   }
 }
