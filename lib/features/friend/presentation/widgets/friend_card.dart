@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
@@ -61,7 +62,7 @@ class FriendCard extends StatelessWidget {
                               : Row(
                                   children: [
                                     Text(
-                                      'Given: ',
+                                      '${context.l10n.friendGiven}: ',
                                       style: TextStyle(
                                         color: Theme.of(
                                           context,
@@ -88,8 +89,8 @@ class FriendCard extends StatelessWidget {
                             children: [
                               Text(
                                 friend.relationType == FriendConst.subscription
-                                    ? 'Cumulative expenses: '
-                                    : 'Received: ',
+                                    ? '${context.l10n.subscriptionCumulativeExpenses}: '
+                                    : '${context.l10n.friendReceived}: ',
                                 style: TextStyle(
                                   color: Theme.of(
                                     context,

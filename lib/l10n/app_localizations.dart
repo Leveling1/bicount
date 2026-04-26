@@ -608,13 +608,13 @@ abstract class AppLocalizations {
   /// No description provided for @runtimeFriendSaveFailed.
   ///
   /// In en, this message translates to:
-  /// **'Unable to save this friend right now.'**
+  /// **'Unable to save this contact right now.'**
   String get runtimeFriendSaveFailed;
 
   /// No description provided for @runtimeFriendUpdateFailed.
   ///
   /// In en, this message translates to:
-  /// **'Unable to update this friend right now.'**
+  /// **'Unable to update this contact right now.'**
   String get runtimeFriendUpdateFailed;
 
   /// No description provided for @runtimeTransactionSaveFailed.
@@ -908,13 +908,13 @@ abstract class AppLocalizations {
   /// No description provided for @profileRecurring.
   ///
   /// In en, this message translates to:
-  /// **'Recurring'**
+  /// **'Recurring plans'**
   String get profileRecurring;
 
   /// No description provided for @profileFriends.
   ///
   /// In en, this message translates to:
-  /// **'Friends'**
+  /// **'Contacts'**
   String get profileFriends;
 
   /// No description provided for @profileSeeAll.
@@ -926,7 +926,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileFirstFriendHint.
   ///
   /// In en, this message translates to:
-  /// **'Create a transaction with someone to add your first friend. Their profile can be linked later when they join Bicount.'**
+  /// **'Create a transaction with someone to add your first contact. Their profile can be linked later when they join Bicount.'**
   String get profileFirstFriendHint;
 
   /// No description provided for @profileLanguageTitle.
@@ -992,13 +992,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFriendsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Friends and links'**
+  /// **'Contacts and links'**
   String get settingsFriendsTitle;
 
   /// No description provided for @settingsFriendsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Review your local friends and linked profiles.'**
+  /// **'Review your local contacts and linked profiles.'**
   String get settingsFriendsDescription;
 
   /// No description provided for @settingsThemeTitle.
@@ -1472,7 +1472,7 @@ abstract class AppLocalizations {
   /// No description provided for @analysisBreakdownReceivedTransfers.
   ///
   /// In en, this message translates to:
-  /// **'Received transfers'**
+  /// **'Inbound transfers'**
   String get analysisBreakdownReceivedTransfers;
 
   /// No description provided for @analysisBreakdownExpenses.
@@ -1496,19 +1496,19 @@ abstract class AppLocalizations {
   /// No description provided for @friendsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Friends'**
+  /// **'Contacts'**
   String get friendsTitle;
 
   /// No description provided for @friendDetailTitle.
   ///
   /// In en, this message translates to:
-  /// **'Friend details'**
+  /// **'Contact details'**
   String get friendDetailTitle;
 
   /// No description provided for @friendsDirectoryIntro.
   ///
   /// In en, this message translates to:
-  /// **'Tap a friend to review the live transaction history or link a local profile to a real account.'**
+  /// **'Tap a contact to review the live transaction history or link a local profile to a real account.'**
   String get friendsDirectoryIntro;
 
   /// No description provided for @friendsDirectoryEmpty.
@@ -1520,13 +1520,13 @@ abstract class AppLocalizations {
   /// No description provided for @friendsSearchHint.
   ///
   /// In en, this message translates to:
-  /// **'Search a friend…'**
+  /// **'Search a contact…'**
   String get friendsSearchHint;
 
   /// No description provided for @friendsSearchEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No friend matches your search.'**
+  /// **'No contact matches your search.'**
   String get friendsSearchEmpty;
 
   /// No description provided for @friendsTotal.
@@ -1550,13 +1550,13 @@ abstract class AppLocalizations {
   /// No description provided for @friendInviteLandingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Friend invite'**
+  /// **'Contact invite'**
   String get friendInviteLandingTitle;
 
   /// No description provided for @friendInvitationsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Friend invitations'**
+  /// **'Contact invitations'**
   String get friendInvitationsTitle;
 
   /// No description provided for @friendLinkTitle.
@@ -1574,7 +1574,7 @@ abstract class AppLocalizations {
   /// No description provided for @friendLinkIntro.
   ///
   /// In en, this message translates to:
-  /// **'Share this local friend profile when the person has created a Bicount account so the backend can link both profiles together.'**
+  /// **'Share this local contact profile when the person has created a Bicount account so the backend can link both profiles together.'**
   String get friendLinkIntro;
 
   /// No description provided for @friendShareProfileTitle.
@@ -1586,7 +1586,7 @@ abstract class AppLocalizations {
   /// No description provided for @friendShareProfileDescription.
   ///
   /// In en, this message translates to:
-  /// **'Generate a QR code or a link for this specific friend profile.'**
+  /// **'Generate a QR code or a link for this specific contact profile.'**
   String get friendShareProfileDescription;
 
   /// No description provided for @friendShareMessage.
@@ -1634,13 +1634,13 @@ abstract class AppLocalizations {
   /// No description provided for @friendSentEmpty.
   ///
   /// In en, this message translates to:
-  /// **'You have not shared a friend profile yet.'**
+  /// **'You have not shared a contact profile yet.'**
   String get friendSentEmpty;
 
   /// No description provided for @friendCurrentFriends.
   ///
   /// In en, this message translates to:
-  /// **'Current friends'**
+  /// **'Active contacts'**
   String get friendCurrentFriends;
 
   /// No description provided for @friendCurrentEmpty.
@@ -1790,43 +1790,43 @@ abstract class AppLocalizations {
   /// No description provided for @friendLocalFriend.
   ///
   /// In en, this message translates to:
-  /// **'Local friend'**
+  /// **'Local contact'**
   String get friendLocalFriend;
 
   /// No description provided for @friendLinkHint.
   ///
   /// In en, this message translates to:
-  /// **'This friend is still local to your account. Use the share button to link it when the person has created a Bicount profile.'**
+  /// **'This contact is still local to your account. Use the share button to link it when the person has created a Bicount profile.'**
   String get friendLinkHint;
 
   /// No description provided for @friendGiven.
   ///
   /// In en, this message translates to:
-  /// **'Given'**
+  /// **'Paid out'**
   String get friendGiven;
 
   /// No description provided for @friendReceived.
   ///
   /// In en, this message translates to:
-  /// **'Received'**
+  /// **'Collected'**
   String get friendReceived;
 
   /// No description provided for @friendNet.
   ///
   /// In en, this message translates to:
-  /// **'Net'**
+  /// **'Net balance'**
   String get friendNet;
 
   /// No description provided for @friendSharedTransactions.
   ///
   /// In en, this message translates to:
-  /// **'Shared transactions'**
+  /// **'Shared operations'**
   String get friendSharedTransactions;
 
   /// No description provided for @friendTransactionsEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Transactions with this friend will appear here in real time.'**
+  /// **'Transactions with this contact will appear here in real time.'**
   String get friendTransactionsEmpty;
 
   /// No description provided for @friendUnableToReadInvite.
@@ -1838,19 +1838,19 @@ abstract class AppLocalizations {
   /// No description provided for @friendEditTitle.
   ///
   /// In en, this message translates to:
-  /// **'Edit friend'**
+  /// **'Edit contact'**
   String get friendEditTitle;
 
   /// No description provided for @friendEditDescription.
   ///
   /// In en, this message translates to:
-  /// **'Update the local name and avatar you use for this friend.'**
+  /// **'Update the local name and avatar used for this contact.'**
   String get friendEditDescription;
 
   /// No description provided for @friendProfileUpdated.
   ///
   /// In en, this message translates to:
-  /// **'Friend updated.'**
+  /// **'Contact updated.'**
   String get friendProfileUpdated;
 
   /// No description provided for @statusPending.

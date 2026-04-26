@@ -266,10 +266,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get runtimeUnexpectedError => 'Something went wrong. Please try again.';
 
   @override
-  String get runtimeFriendSaveFailed => 'Unable to save this friend right now.';
+  String get runtimeFriendSaveFailed => 'Unable to save this contact right now.';
 
   @override
-  String get runtimeFriendUpdateFailed => 'Unable to update this friend right now.';
+  String get runtimeFriendUpdateFailed => 'Unable to update this contact right now.';
 
   @override
   String get runtimeTransactionSaveFailed => 'The transaction could not be saved.';
@@ -418,16 +418,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profilePersonal => 'Personal';
 
   @override
-  String get profileRecurring => 'Recurring';
+  String get profileRecurring => 'Recurring plans';
 
   @override
-  String get profileFriends => 'Friends';
+  String get profileFriends => 'Contacts';
 
   @override
   String get profileSeeAll => 'See all';
 
   @override
-  String get profileFirstFriendHint => 'Create a transaction with someone to add your first friend. Their profile can be linked later when they join Bicount.';
+  String get profileFirstFriendHint => 'Create a transaction with someone to add your first contact. Their profile can be linked later when they join Bicount.';
 
   @override
   String get profileLanguageTitle => 'App language';
@@ -460,10 +460,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsEditProfileCta => 'Update profile';
 
   @override
-  String get settingsFriendsTitle => 'Friends and links';
+  String get settingsFriendsTitle => 'Contacts and links';
 
   @override
-  String get settingsFriendsDescription => 'Review your local friends and linked profiles.';
+  String get settingsFriendsDescription => 'Review your local contacts and linked profiles.';
 
   @override
   String get settingsThemeTitle => 'Theme';
@@ -700,7 +700,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analysisBreakdownAddFunds => 'Add funds';
 
   @override
-  String get analysisBreakdownReceivedTransfers => 'Received transfers';
+  String get analysisBreakdownReceivedTransfers => 'Inbound transfers';
 
   @override
   String get analysisBreakdownExpenses => 'Expenses';
@@ -712,22 +712,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analysisBreakdownOther => 'Other';
 
   @override
-  String get friendsTitle => 'Friends';
+  String get friendsTitle => 'Contacts';
 
   @override
-  String get friendDetailTitle => 'Friend details';
+  String get friendDetailTitle => 'Contact details';
 
   @override
-  String get friendsDirectoryIntro => 'Tap a friend to review the live transaction history or link a local profile to a real account.';
+  String get friendsDirectoryIntro => 'Tap a contact to review the live transaction history or link a local profile to a real account.';
 
   @override
   String get friendsDirectoryEmpty => 'Create a transaction with someone and they will appear here. When they join Bicount, open their detail screen to share and link the profile.';
 
   @override
-  String get friendsSearchHint => 'Search a friend…';
+  String get friendsSearchHint => 'Search a contact…';
 
   @override
-  String get friendsSearchEmpty => 'No friend matches your search.';
+  String get friendsSearchEmpty => 'No contact matches your search.';
 
   @override
   String get friendsTotal => 'Total';
@@ -739,10 +739,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendsToLink => 'To link';
 
   @override
-  String get friendInviteLandingTitle => 'Friend invite';
+  String get friendInviteLandingTitle => 'Contact invite';
 
   @override
-  String get friendInvitationsTitle => 'Friend invitations';
+  String get friendInvitationsTitle => 'Contact invitations';
 
   @override
   String friendLinkTitle(Object name) {
@@ -753,7 +753,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendScreenIntro => 'Scan an invite, review pending links, and track shared profiles in real time.';
 
   @override
-  String get friendLinkIntro => 'Share this local friend profile when the person has created a Bicount account so the backend can link both profiles together.';
+  String get friendLinkIntro => 'Share this local contact profile when the person has created a Bicount account so the backend can link both profiles together.';
 
   @override
   String friendShareProfileTitle(Object name) {
@@ -761,7 +761,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get friendShareProfileDescription => 'Generate a QR code or a link for this specific friend profile.';
+  String get friendShareProfileDescription => 'Generate a QR code or a link for this specific contact profile.';
 
   @override
   String friendShareMessage(Object name, Object url) {
@@ -787,10 +787,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendSentInvitations => 'Sent invitations';
 
   @override
-  String get friendSentEmpty => 'You have not shared a friend profile yet.';
+  String get friendSentEmpty => 'You have not shared a contact profile yet.';
 
   @override
-  String get friendCurrentFriends => 'Current friends';
+  String get friendCurrentFriends => 'Active contacts';
 
   @override
   String get friendCurrentEmpty => 'Your accepted contacts will show up here in real time.';
@@ -873,37 +873,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendLinkedAccount => 'Linked account';
 
   @override
-  String get friendLocalFriend => 'Local friend';
+  String get friendLocalFriend => 'Local contact';
 
   @override
-  String get friendLinkHint => 'This friend is still local to your account. Use the share button to link it when the person has created a Bicount profile.';
+  String get friendLinkHint => 'This contact is still local to your account. Use the share button to link it when the person has created a Bicount profile.';
 
   @override
-  String get friendGiven => 'Given';
+  String get friendGiven => 'Paid out';
 
   @override
-  String get friendReceived => 'Received';
+  String get friendReceived => 'Collected';
 
   @override
-  String get friendNet => 'Net';
+  String get friendNet => 'Net balance';
 
   @override
-  String get friendSharedTransactions => 'Shared transactions';
+  String get friendSharedTransactions => 'Shared operations';
 
   @override
-  String get friendTransactionsEmpty => 'Transactions with this friend will appear here in real time.';
+  String get friendTransactionsEmpty => 'Transactions with this contact will appear here in real time.';
 
   @override
   String get friendUnableToReadInvite => 'Unable to read this invitation.';
 
   @override
-  String get friendEditTitle => 'Edit friend';
+  String get friendEditTitle => 'Edit contact';
 
   @override
-  String get friendEditDescription => 'Update the local name and avatar you use for this friend.';
+  String get friendEditDescription => 'Update the local name and avatar used for this contact.';
 
   @override
-  String get friendProfileUpdated => 'Friend updated.';
+  String get friendProfileUpdated => 'Contact updated.';
 
   @override
   String get statusPending => 'Pending';
