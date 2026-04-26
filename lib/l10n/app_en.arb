@@ -140,6 +140,8 @@
     }
   },
   "homeAccounts": "Accounts",
+  "homeMonthlyInflow": "Monthly inflow",
+  "homeMonthlyOutflow": "Monthly outflow",
   "homeTransactions": "Transactions",
   "homeShowMore": "Show more",
   "profileIncome": "Income",

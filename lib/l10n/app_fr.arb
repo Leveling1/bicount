@@ -140,6 +140,8 @@
     }
   },
   "homeAccounts": "Comptes",
+  "homeMonthlyInflow": "Entrées du mois",
+  "homeMonthlyOutflow": "Sorties du mois",
   "homeTransactions": "Transactions",
   "homeShowMore": "Voir plus",
   "profileIncome": "Revenus",

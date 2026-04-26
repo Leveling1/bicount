@@ -875,6 +875,18 @@ abstract class AppLocalizations {
   /// **'Accounts'**
   String get homeAccounts;
 
+  /// No description provided for @homeMonthlyInflow.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly inflow'**
+  String get homeMonthlyInflow;
+
+  /// No description provided for @homeMonthlyOutflow.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly outflow'**
+  String get homeMonthlyOutflow;
+
   /// No description provided for @homeTransactions.
   ///
   /// In en, this message translates to:

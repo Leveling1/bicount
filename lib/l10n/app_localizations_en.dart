@@ -403,6 +403,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeAccounts => 'Accounts';
 
   @override
+  String get homeMonthlyInflow => 'Monthly inflow';
+
+  @override
+  String get homeMonthlyOutflow => 'Monthly outflow';
+
+  @override
   String get homeTransactions => 'Transactions';
 
   @override

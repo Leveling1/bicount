@@ -4,7 +4,9 @@ import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
+import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/home/presentation/widgets/card_type_revenue.dart';
+import 'package:bicount/features/home/domain/services/home_monthly_flow_service.dart';
 import 'package:bicount/features/home/presentation/widgets/home_recent_activity_section.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/recurring_fundings/presentation/widgets/home_recurring_fundings_status_card.dart';
@@ -22,6 +24,7 @@ typedef CardTapCallback = void Function(int index);
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, this.onCardTap, required this.data});
 
+  static const _monthlyFlowService = HomeMonthlyFlowService();
   final CardTapCallback? onCardTap;
   final MainEntity data;
 
@@ -38,6 +41,11 @@ class HomeScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        final currencyConfig = context.watch<CurrencyCubit>().state.config;
+        final monthlyFlow = _monthlyFlowService.build(
+          data: data,
+          currencyConfig: currencyConfig,
+        );
         return Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppDimens.paddingMedium,
@@ -96,11 +104,11 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: CardTypeRevenue(
-                            onTap: () => onCardTap?.call(3),
-                            label: context.l10n.profilePersonal,
-                            amount: data.user.personalIncome ?? 0.0,
+                            onTap: () => onCardTap?.call(2),
+                            label: context.l10n.homeMonthlyInflow,
+                            amount: monthlyFlow.inflowWithCarryover,
                             icon: SvgPicture.asset(
-                              IconLinks.user,
+                              IconLinks.income,
                               width: AppDimens.iconSizeSmall,
                               height: AppDimens.iconSizeSmall,
                               colorFilter: const ColorFilter.mode(
@@ -110,17 +118,17 @@ class HomeScreen extends StatelessWidget {
                             ),
                             color: Theme.of(
                               context,
-                            ).extension<OtherTheme>()!.personnalIncome!,
+                            ).extension<OtherTheme>()!.income!,
                           ),
                         ),
                         const SizedBox(width: AppDimens.marginMedium),
                         Expanded(
                           child: CardTypeRevenue(
                             onTap: () => onCardTap?.call(1),
-                            label: context.l10n.profileRecurring,
-                            amount: 0.0,
+                            label: context.l10n.homeMonthlyOutflow,
+                            amount: monthlyFlow.currentMonthOutflow,
                             icon: SvgPicture.asset(
-                              IconLinks.analysis,
+                              IconLinks.expense,
                               width: AppDimens.iconSizeSmall,
                               height: AppDimens.iconSizeSmall,
                               colorFilter: const ColorFilter.mode(
@@ -128,7 +136,9 @@ class HomeScreen extends StatelessWidget {
                                 BlendMode.srcIn,
                               ),
                             ),
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(
+                              context,
+                            ).extension<OtherTheme>()!.expense!,
                           ),
                         ),
                       ],
