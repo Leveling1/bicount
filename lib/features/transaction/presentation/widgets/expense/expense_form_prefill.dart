@@ -21,6 +21,7 @@ extension _ExpenseFormPrefill on _ExpenseFormState {
     _currency.text = transaction.currency;
     _note.text = transaction.note;
     _sender.text = _partyLabelForId(transaction.sender);
+    canEditAllFields = transaction.recurringTransfertId == null;
 
     final beneficiary = _findPartyById(transaction.beneficiary);
     _beneficiaryList

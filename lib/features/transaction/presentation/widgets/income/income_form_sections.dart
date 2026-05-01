@@ -6,15 +6,18 @@ extension _IncomeFormSections on _IncomeFormState {
     required TransactionState state,
     required List<String> friendNames,
     required SplitPreviewResult splitPreview,
+    required bool canEditAllFields,
   }) {
     return Column(
       children: [
         CustomAmountField(amount: _amount, currency: _currency),
-        AppDimens.spacerMedium,
-        TransferFormPartySection(
-          senderController: _sender,
-          friendNames: friendNames,
-        ),
+        if (canEditAllFields) ...[
+          AppDimens.spacerMedium,
+          TransferFormPartySection(
+            senderController: _sender,
+            friendNames: friendNames,
+          ),
+        ],
         _buildPrimaryFields(context, friendNames),
         AppDimens.spacerExtraLarge,
         CustomButton(
@@ -38,12 +41,14 @@ extension _IncomeFormSections on _IncomeFormState {
           isDate: true,
           label: context.l10n.commonWhen,
         ),
-        AppDimens.spacerMedium,
-        CustomFormField(
-          controller: _name,
-          label: context.l10n.commonTitle,
-          hint: context.l10n.transferEnterTransactionName,
-        ),
+        if (canEditAllFields) ...[
+          AppDimens.spacerMedium,
+          CustomFormField(
+            controller: _name,
+            label: context.l10n.commonTitle,
+            hint: context.l10n.transferEnterTransactionName,
+          ),
+        ],
         AppDimens.spacerMedium,
         CustomFormField(
           controller: _note,
@@ -51,46 +56,49 @@ extension _IncomeFormSections on _IncomeFormState {
           hint: context.l10n.commonPlaceholderNote,
           enableValidator: false,
         ),
-        AppDimens.spacerMedium,
-        TransferFormRecurringSection(
-          isRecurring: _isRecurring,
-          frequency: _recurringFrequency,
-          recurringTypeId: _recurringTypeId,
-          salaryRequiresConfirmation:
-              _recurringTypeId == TransactionTypes.salaryCode
-              ? AppExecutionMode.requiresConfirmation(_recurringExecutionMode)
-              : null,
-          salaryReminderEnabled: _recurringTypeId == TransactionTypes.salaryCode
-              ? _recurringReminderEnabled
-              : null,
-          typeOptions: TransactionTypes.incomeTypes,
-          subtitle: context.l10n.recurringToggleSubtitleIncome,
-          enabled: !_isEditing,
-          onRecurringChanged: (value) => _update(() {
-            _isRecurring = value;
-            if (_name.text.isEmpty) {
-              _name.text =
-                  "${TransactionTypes.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? _beneficiaryList[0].username : ""}";
-            }
-          }),
-          onFrequencyChanged: (value) => _update(() {
-            _recurringFrequency = value;
-          }),
-          onTypeChanged: (value) => _update(() {
-            _recurringTypeId = value;
-          }),
-          onSalaryRequiresConfirmationChanged: (value) => _update(() {
-            _recurringExecutionMode = value
-                ? AppExecutionMode.manualConfirmation
-                : AppExecutionMode.backendAutomatic;
-            if (!value) {
-              _recurringReminderEnabled = false;
-            }
-          }),
-          onSalaryReminderChanged: (value) => _update(() {
-            _recurringReminderEnabled = value;
-          }),
-        ),
+        if (canEditAllFields) ...[
+          AppDimens.spacerMedium,
+          TransferFormRecurringSection(
+            isRecurring: _isRecurring,
+            frequency: _recurringFrequency,
+            recurringTypeId: _recurringTypeId,
+            salaryRequiresConfirmation:
+                _recurringTypeId == TransactionTypes.salaryCode
+                ? AppExecutionMode.requiresConfirmation(_recurringExecutionMode)
+                : null,
+            salaryReminderEnabled:
+                _recurringTypeId == TransactionTypes.salaryCode
+                ? _recurringReminderEnabled
+                : null,
+            typeOptions: TransactionTypes.incomeTypes,
+            subtitle: context.l10n.recurringToggleSubtitleIncome,
+            enabled: !_isEditing,
+            onRecurringChanged: (value) => _update(() {
+              _isRecurring = value;
+              if (_name.text.isEmpty) {
+                _name.text =
+                    "${TransactionTypes.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? _beneficiaryList[0].username : ""}";
+              }
+            }),
+            onFrequencyChanged: (value) => _update(() {
+              _recurringFrequency = value;
+            }),
+            onTypeChanged: (value) => _update(() {
+              _recurringTypeId = value;
+            }),
+            onSalaryRequiresConfirmationChanged: (value) => _update(() {
+              _recurringExecutionMode = value
+                  ? AppExecutionMode.manualConfirmation
+                  : AppExecutionMode.backendAutomatic;
+              if (!value) {
+                _recurringReminderEnabled = false;
+              }
+            }),
+            onSalaryReminderChanged: (value) => _update(() {
+              _recurringReminderEnabled = value;
+            }),
+          ),
+        ],
       ],
     );
   }

@@ -30,9 +30,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
   Widget build(BuildContext context) {
     final transactionDetail = widget.transaction.transactionDetail;
     final uid = Supabase.instance.client.auth.currentUser!.id;
-    final canManage =
-        transactionDetail.recurringTransfertId == null &&
-        transactionDetail.uid == uid;
+    final canManage = transactionDetail.uid == uid;
 
     return BlocConsumer<TransactionBloc, TransactionState>(
       listenWhen: (previous, current) =>

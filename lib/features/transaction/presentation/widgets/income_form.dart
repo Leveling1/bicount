@@ -70,6 +70,7 @@ class _IncomeFormState extends State<IncomeForm>
 
   TransactionSplitMode _splitMode = TransactionSplitMode.equal;
   bool _didPrefillInitialTransaction = false;
+  bool canEditAllFields = true;
   bool _isRecurring = false;
   int _recurringFrequency = Frequency.monthly;
   int _recurringTypeId = TransactionTypes.salaryCode;
@@ -151,6 +152,7 @@ class _IncomeFormState extends State<IncomeForm>
             state: state,
             friendNames: friendNames,
             splitPreview: splitPreview,
+            canEditAllFields: canEditAllFields,
           ),
         );
       },

@@ -71,6 +71,7 @@ class _ExpenseFormState extends State<ExpenseForm>
   TransactionSplitMode _splitMode = TransactionSplitMode.equal;
   bool _didPrefillInitialTransaction = false;
   bool _isRecurring = false;
+  bool canEditAllFields = true;
   int _recurringFrequency = Frequency.monthly;
   int _recurringTypeId = TransactionTypes.subscriptionCode;
 
@@ -149,6 +150,7 @@ class _ExpenseFormState extends State<ExpenseForm>
             state: state,
             friendNames: friendNames,
             splitPreview: splitPreview,
+            canEditAllFields: canEditAllFields,
           ),
         );
       },

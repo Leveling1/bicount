@@ -6,39 +6,43 @@ extension _ExpenseFormSections on _ExpenseFormState {
     required TransactionState state,
     required List<String> friendNames,
     required SplitPreviewResult splitPreview,
+    required bool canEditAllFields,
   }) {
     return Column(
       children: [
         CustomAmountField(amount: _amount, currency: _currency),
-        AppDimens.spacerMedium,
-        TransferFormBeneficiariesSection(
-          beneficiaryController: _beneficiary,
-          friendNames: friendNames,
-          onAdd: _addBeneficiary,
-          validator: (value) {
-            if (_beneficiaryList.isNotEmpty) {
-              return null;
-            }
-            if (value == null || value.trim().isEmpty) {
-              return context.l10n.validationFieldRequired;
-            }
-            return null;
-          },
-        ),
-        if (_beneficiaryList.isNotEmpty) ...[
+        if (canEditAllFields) ...[
           AppDimens.spacerMedium,
-          TransferFormBeneficiaryList(
-            beneficiaries: _beneficiaryList,
-            sharesByKey: splitPreview.sharesByKey,
-            currency: selectedCurrency,
-            beneficiaryKeyOf: beneficiaryKey,
-            onRemove: _removeBeneficiary,
-            splitMode: _splitMode,
-            onSplitModeChanged: _onSplitModeChanged,
-            splitControllerFor: splitControllerFor,
-            onSplitValueChanged: _onSplitValueChanged,
-            errorMessage: splitPreview.errorMessage,
+          TransferFormBeneficiariesSection(
+            beneficiaryController: _beneficiary,
+            friendNames: friendNames,
+            onAdd: _addBeneficiary,
+            validator: (value) {
+              if (_beneficiaryList.isNotEmpty) {
+                return null;
+              }
+              if (value == null || value.trim().isEmpty) {
+                return context.l10n.validationFieldRequired;
+              }
+              return null;
+            },
           ),
+
+          if (_beneficiaryList.isNotEmpty) ...[
+            AppDimens.spacerMedium,
+            TransferFormBeneficiaryList(
+              beneficiaries: _beneficiaryList,
+              sharesByKey: splitPreview.sharesByKey,
+              currency: selectedCurrency,
+              beneficiaryKeyOf: beneficiaryKey,
+              onRemove: _removeBeneficiary,
+              splitMode: _splitMode,
+              onSplitModeChanged: _onSplitModeChanged,
+              splitControllerFor: splitControllerFor,
+              onSplitValueChanged: _onSplitValueChanged,
+              errorMessage: splitPreview.errorMessage,
+            ),
+          ],
         ],
         _buildPrimaryFields(context, friendNames),
         AppDimens.spacerExtraLarge,
@@ -63,12 +67,14 @@ extension _ExpenseFormSections on _ExpenseFormState {
           isDate: true,
           label: context.l10n.commonWhen,
         ),
-        AppDimens.spacerMedium,
-        CustomFormField(
-          controller: _name,
-          label: context.l10n.commonTitle,
-          hint: context.l10n.transferEnterTransactionName,
-        ),
+        if (canEditAllFields) ...[
+          AppDimens.spacerMedium,
+          CustomFormField(
+            controller: _name,
+            label: context.l10n.commonTitle,
+            hint: context.l10n.transferEnterTransactionName,
+          ),
+        ],
         AppDimens.spacerMedium,
         CustomFormField(
           controller: _note,
@@ -76,28 +82,30 @@ extension _ExpenseFormSections on _ExpenseFormState {
           hint: context.l10n.commonPlaceholderNote,
           enableValidator: false,
         ),
-        AppDimens.spacerMedium,
-        TransferFormRecurringSection(
-          isRecurring: _isRecurring,
-          frequency: _recurringFrequency,
-          recurringTypeId: _recurringTypeId,
-          typeOptions: TransactionTypes.expenseTypes,
-          subtitle: context.l10n.recurringToggleSubtitleExpense,
-          enabled: !_isEditing,
-          onRecurringChanged: (value) => _update(() {
-            _isRecurring = value;
-            if (_name.text.isEmpty) {
-              _name.text =
-                  "${TransactionTypes.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? _beneficiaryList[0].username : ""}";
-            }
-          }),
-          onFrequencyChanged: (value) => _update(() {
-            _recurringFrequency = value;
-          }),
-          onTypeChanged: (value) => _update(() {
-            _recurringTypeId = value;
-          }),
-        ),
+        if (canEditAllFields) ...[
+          AppDimens.spacerMedium,
+          TransferFormRecurringSection(
+            isRecurring: _isRecurring,
+            frequency: _recurringFrequency,
+            recurringTypeId: _recurringTypeId,
+            typeOptions: TransactionTypes.expenseTypes,
+            subtitle: context.l10n.recurringToggleSubtitleExpense,
+            enabled: !_isEditing,
+            onRecurringChanged: (value) => _update(() {
+              _isRecurring = value;
+              if (_name.text.isEmpty) {
+                _name.text =
+                    "${TransactionTypes.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? _beneficiaryList[0].username : ""}";
+              }
+            }),
+            onFrequencyChanged: (value) => _update(() {
+              _recurringFrequency = value;
+            }),
+            onTypeChanged: (value) => _update(() {
+              _recurringTypeId = value;
+            }),
+          ),
+        ],
       ],
     );
   }
