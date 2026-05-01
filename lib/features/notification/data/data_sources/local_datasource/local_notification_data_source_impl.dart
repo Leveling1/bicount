@@ -41,7 +41,10 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
         );
       },
     );
+  }
 
+  @override
+  Future<void> requestPermission() async {
     await plugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin

@@ -1331,3 +1331,11 @@ Rules:
 - the second row summary cards on the Profile screen keep the existing Profile card design
 - the data shown in those two cards should mirror the Home monthly flow metrics: `Entrées du mois` uses the Home monthly inflow value and `Sorties du mois` uses the Home monthly outflow value
 - when updating those Profile values, reuse `HomeMonthlyFlowService` instead of duplicating a separate monthly calculation path
+
+## Notification Auth Timing Update (2026-05-01)
+
+Rules:
+- notification permission prompts must be triggered only after an authenticated Supabase session exists, not during global app bootstrap before login
+- keep notification bootstrap itself active at app start for deep links, foreground listeners, and local notification wiring, but separate that passive initialization from permission or token sync side effects
+- `NotificationBloc` must be instantiated eagerly so notification event streams and auth-session listeners are active even when no screen explicitly reads the bloc
+- FCM token sync should run when the authenticated user session becomes available or changes, so first-install logins still persist the token to `fcm_tokens`

@@ -2,5 +2,6 @@ import 'package:bicount/features/notification/domain/entities/app_notification_e
 
 abstract class NotificationRepository {
   Future<void> initialize();
+  Future<void> enableAuthenticatedNotifications();
   Stream<AppNotificationEntity> watchEvents();
 }

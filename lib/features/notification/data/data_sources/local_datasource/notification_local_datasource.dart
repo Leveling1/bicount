@@ -6,6 +6,7 @@ abstract class NotificationLocalDataSource {
   Future<void> initialize(
     void Function(AppNotificationEntity notification) onTap,
   );
+  Future<void> requestPermission();
   Future<void> showForegroundNotification(AppNotificationEntity notification);
   Future<void> scheduleSubscriptionReminder(SubscriptionModel subscription);
   Future<void> cancelSubscriptionReminder(String subscriptionId);

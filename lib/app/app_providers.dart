@@ -157,6 +157,7 @@ List<BlocProvider> buildBlocProviders(bool enableCompanySurface) {
             ..add(const FriendStarted()),
     ),
     BlocProvider<NotificationBloc>(
+      lazy: false,
       create: (context) =>
           NotificationBloc(context.read<NotificationRepositoryImpl>())
             ..add(const NotificationBootstrapRequested()),

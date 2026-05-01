@@ -16,13 +16,16 @@ part 'notification_state.dart';
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc(this.repository) : super(NotificationState.initial()) {
     on<NotificationBootstrapRequested>(_onNotificationBootstrapRequested);
+    on<_NotificationAuthSessionChanged>(_onNotificationAuthSessionChanged);
     on<_NotificationEventReceived>(_onNotificationEventReceived);
     on<_NotificationFailed>(_onNotificationFailed);
   }
 
   final NotificationRepository repository;
   StreamSubscription<AppNotificationEntity>? _eventsSubscription;
+  StreamSubscription<AuthState>? _authSubscription;
   AppNotificationEntity? _pendingNavigation;
+  String? _activeAuthenticatedUserId;
   bool _navigationRetryScheduled = false;
 
   Future<void> _onNotificationBootstrapRequested(
@@ -34,8 +37,41 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         (notification) => add(_NotificationEventReceived(notification)),
         onError: (error, _) => add(_NotificationFailed(error.toString())),
       );
+      _authSubscription ??= Supabase.instance.client.auth.onAuthStateChange
+          .listen(
+            (authState) => add(
+              _NotificationAuthSessionChanged(authState.session?.user.id),
+            ),
+            onError: (error, _) => add(_NotificationFailed(error.toString())),
+          );
       await repository.initialize();
+      add(
+        _NotificationAuthSessionChanged(
+          Supabase.instance.client.auth.currentUser?.id,
+        ),
+      );
       emit(state.copyWith(isInitialized: true));
+    } catch (error) {
+      add(_NotificationFailed(error.toString()));
+    }
+  }
+
+  Future<void> _onNotificationAuthSessionChanged(
+    _NotificationAuthSessionChanged event,
+    Emitter<NotificationState> emit,
+  ) async {
+    final userId = event.userId;
+    if (userId == _activeAuthenticatedUserId) {
+      return;
+    }
+
+    _activeAuthenticatedUserId = userId;
+    if (userId == null || userId.isEmpty) {
+      return;
+    }
+
+    try {
+      await repository.enableAuthenticatedNotifications();
     } catch (error) {
       add(_NotificationFailed(error.toString()));
     }
@@ -139,6 +175,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   @override
   Future<void> close() async {
     await _eventsSubscription?.cancel();
+    await _authSubscription?.cancel();
     return super.close();
   }
 }
