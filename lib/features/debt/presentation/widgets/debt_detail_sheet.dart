@@ -1,3 +1,4 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
@@ -24,6 +25,8 @@ class DebtDetailSheet extends StatefulWidget {
     required this.invalidAmountMessage,
     required this.isLoading,
     required this.onRecordPayment,
+    this.onEditPressed,
+    this.onDeletePressed,
   });
 
   final DebtSummaryEntity summary;
@@ -40,6 +43,8 @@ class DebtDetailSheet extends StatefulWidget {
   final String invalidAmountMessage;
   final bool isLoading;
   final void Function(double amount, String currency) onRecordPayment;
+  final VoidCallback? onEditPressed;
+  final VoidCallback? onDeletePressed;
 
   @override
   State<DebtDetailSheet> createState() => _DebtDetailSheetState();
@@ -162,6 +167,23 @@ class _DebtDetailSheetState extends State<DebtDetailSheet> {
               widget.permissionHint,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
+          ],
+          if (widget.onEditPressed != null ||
+              widget.onDeletePressed != null) ...[
+            const SizedBox(height: AppDimens.spacingMedium),
+            if (widget.onEditPressed != null) ...[
+              CustomOutlinedButton(
+                text: context.l10n.debtEditAction,
+                onPressed: widget.onEditPressed!,
+                loading: false,
+              ),
+              const SizedBox(height: AppDimens.spacingSmall),
+            ],
+            if (widget.onDeletePressed != null)
+              TextButton(
+                onPressed: widget.isLoading ? null : widget.onDeletePressed,
+                child: Text(context.l10n.debtDeleteAction),
+              ),
           ],
           const SizedBox(height: AppDimens.spacingLarge),
         ],

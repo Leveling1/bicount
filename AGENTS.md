@@ -326,6 +326,9 @@ Rules:
 - debt repayments must be recorded only from `debt_screen.dart`, not from transaction creation or edit forms
 - the debt repayment amount field should mirror the salary occurrence amount field UX, including selectable currency via the shared currency picker
 - debt repayments may be entered in a currency different from the debt currency, but the saved transaction must keep the entered original currency and FX metadata while `repaid_amount` and `remaining_amount` are recomputed in the debt currency
+- editing a principal debt must use the dedicated debt contract form; do not reuse the generic expense or income edit forms with the debt switch visible
+- deleting a debt contract must cascade to the linked principal transaction and every repayment transaction whose `origin_id` matches the debt
+- deleting a debt repayment transaction from the transaction feed must rebuild the linked debt totals instead of leaving stale `repaid_amount` or `remaining_amount`
 - notification payloads for debts should use `route` only, for example `/debts?debtId=...`
 
 ### transaction
@@ -987,6 +990,7 @@ The transaction detail flow now supports editing a simple transaction from its d
 Rules:
 - the edit entry point lives in `lib/features/transaction/presentation/screens/detail_transaction_screen.dart`
 - reuse the matching transaction form for edit mode instead of introducing a visually different editor
+- exception: principal debt transactions must switch to the dedicated debt contract form, and debt repayment rows must not expose the generic transaction edit flow
 - edit mode is intended for a single transaction row, so keep it limited to one beneficiary
 - do not expose the edit action for subscription-generated transaction rows, because subscriptions are managed by a different flow
 - after a successful transaction edit from the detail sheet, close the sheet so the updated data can be reopened from the live list state

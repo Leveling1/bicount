@@ -55,6 +55,12 @@ String localizeRuntimeMessage(BuildContext context, String message) {
       return context.l10n.debtOnlyLenderCanRecord;
     case 'Only the creator can update this debt for now.':
       return context.l10n.debtOnlyCreatorCanUpdate;
+    case 'Only the creator can delete this debt for now.':
+      return context.l10n.debtOnlyCreatorCanDelete;
+    case 'Expected repayment amount cannot be lower than the amount already repaid.':
+      return context.l10n.debtExpectedAmountTooLow;
+    case 'Debt repayments can only be managed from the debts screen.':
+      return context.l10n.debtRepaymentManageFromDebtScreen;
     case 'Unable to save this friend right now.':
     case 'An error occurred while saving your new friend.':
       return context.l10n.runtimeFriendSaveFailed;

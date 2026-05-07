@@ -179,6 +179,12 @@ abstract class AppLocalizations {
   /// **'Reject'**
   String get commonReject;
 
+  /// No description provided for @commonCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get commonCancel;
+
   /// No description provided for @commonPreview.
   ///
   /// In en, this message translates to:
@@ -3071,6 +3077,18 @@ abstract class AppLocalizations {
   /// **'Debt payment recorded successfully.'**
   String get debtPaymentRecordedSuccess;
 
+  /// No description provided for @debtUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt updated successfully.'**
+  String get debtUpdatedSuccess;
+
+  /// No description provided for @debtDeletedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt deleted successfully.'**
+  String get debtDeletedSuccess;
+
   /// No description provided for @debtNotFound.
   ///
   /// In en, this message translates to:
@@ -3089,6 +3107,12 @@ abstract class AppLocalizations {
   /// **'The repayment amount cannot exceed the remaining balance.'**
   String get debtRepaymentAmountTooHigh;
 
+  /// No description provided for @debtRepaymentManageFromDebtScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt repayments can only be managed from the debts screen.'**
+  String get debtRepaymentManageFromDebtScreen;
+
   /// No description provided for @debtOnlyLenderCanRecord.
   ///
   /// In en, this message translates to:
@@ -3100,6 +3124,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Only the creator can update this debt for now.'**
   String get debtOnlyCreatorCanUpdate;
+
+  /// No description provided for @debtOnlyCreatorCanDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the creator can delete this debt for now.'**
+  String get debtOnlyCreatorCanDelete;
+
+  /// No description provided for @debtExpectedAmountTooLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected repayment amount cannot be lower than the amount already repaid.'**
+  String get debtExpectedAmountTooLow;
+
+  /// No description provided for @debtEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit debt'**
+  String get debtEditTitle;
+
+  /// No description provided for @debtTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt title'**
+  String get debtTitleLabel;
+
+  /// No description provided for @debtEditAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit debt'**
+  String get debtEditAction;
+
+  /// No description provided for @debtDeleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete debt'**
+  String get debtDeleteAction;
+
+  /// No description provided for @debtDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this debt?'**
+  String get debtDeleteConfirmTitle;
+
+  /// No description provided for @debtDeleteConfirmDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This action removes the debt contract, the linked initial transaction, and every recorded repayment tied to it.'**
+  String get debtDeleteConfirmDescription;
+
+  /// No description provided for @debtDeleteConfirmCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete debt'**
+  String get debtDeleteConfirmCta;
 
   /// No description provided for @recurringTypeSalary.
   ///

@@ -5,6 +5,8 @@ import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/features/debt/data/data_sources/local_datasource/local_debt_data_source_impl.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
+import 'package:bicount/features/debt/domain/entities/update_debt_request_entity.dart';
+import 'package:bicount/features/debt/domain/repositories/debt_repository.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
@@ -23,12 +25,14 @@ class TransactionRepositoryImpl extends TransactionRepository {
   TransactionRepositoryImpl(
     this.localDataSource, {
     this.splitResolver = const TransactionSplitResolver(),
+    DebtRepository? debtRepository,
     Future<void> Function(DebtModel debt)? saveDebt,
     Future<void> Function(String debtId)? deleteDebt,
     Future<void> Function(RecurringTransfertModel recurringTransfert)?
     saveRecurringTransfert,
   }) : _saveDebt = saveDebt ?? LocalDebtDataSourceImpl().createDebt,
        _deleteDebt = deleteDebt ?? LocalDebtDataSourceImpl().deleteDebt,
+       _debtRepository = debtRepository,
        _saveRecurringTransfert =
            saveRecurringTransfert ??
            OfflineFinanceLocalService().createRecurringTransfert;
@@ -37,6 +41,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
   final TransactionSplitResolver splitResolver;
   final Future<void> Function(DebtModel debt) _saveDebt;
   final Future<void> Function(String debtId) _deleteDebt;
+  final DebtRepository? _debtRepository;
   final Future<void> Function(RecurringTransfertModel recurringTransfert)
   _saveRecurringTransfert;
   late final TransactionPartyResolutionService _partyResolutionService =
@@ -209,6 +214,20 @@ class TransactionRepositoryImpl extends TransactionRepository {
   @override
   Future<void> deleteTransaction(TransactionEntity transaction) async {
     try {
+      final principalDebt = await _findPrincipalDebt(transaction);
+      if (principalDebt != null && _debtRepository != null) {
+        await _debtRepository.deleteDebtContract(principalDebt.debtId ?? '');
+        return;
+      }
+
+      if (transaction.type == TransactionTypes.debtCode &&
+          transaction.originId != null &&
+          transaction.originId!.isNotEmpty &&
+          _debtRepository != null) {
+        await _debtRepository.deleteDebtLinkedTransaction(transaction);
+        return;
+      }
+
       final currentTransactions = await Repository().get<TransactionModel>(
         policy: OfflineFirstGetPolicy.localOnly,
         query: Query(where: [Where.exact('tid', transaction.tid)]),
@@ -236,6 +255,40 @@ class TransactionRepositoryImpl extends TransactionRepository {
     CreateTransactionRequestEntity transaction,
   ) async {
     try {
+      final principalDebt = await _findPrincipalDebt(previousTransaction);
+      if (principalDebt != null && _debtRepository != null) {
+        final resolvedSplits = splitResolver.resolve(transaction);
+        if (resolvedSplits.length != 1) {
+          throw MessageFailure(
+            message: 'Debt creation supports one beneficiary only.',
+          );
+        }
+
+        await _debtRepository.updateDebtContract(
+          UpdateDebtRequestEntity(
+            debtId: principalDebt.debtId ?? '',
+            title: transaction.name,
+            note: transaction.note,
+            principalDate: transaction.date,
+            principalAmount: resolvedSplits.single.amount,
+            currency: transaction.currency,
+            dueDate: transaction.debtDueDate ?? principalDebt.dueDate,
+            expectedRepaymentAmount:
+                transaction.debtExpectedRepaymentAmount ??
+                principalDebt.expectedRepaymentAmount,
+          ),
+        );
+        return;
+      }
+
+      if (previousTransaction.type == TransactionTypes.debtCode &&
+          previousTransaction.originId != null &&
+          previousTransaction.originId!.isNotEmpty) {
+        throw MessageFailure(
+          message: 'Debt repayments can only be managed from the debts screen.',
+        );
+      }
+
       final resolvedSplits = splitResolver.resolve(transaction);
       final partyTransactionType = _resolvePartyTransactionType(transaction);
       if (resolvedSplits.length != 1) {
@@ -290,6 +343,14 @@ class TransactionRepositoryImpl extends TransactionRepository {
     } catch (_) {
       return null;
     }
+  }
+
+  Future<DebtModel?> _findPrincipalDebt(TransactionEntity transaction) async {
+    if (_debtRepository == null) {
+      return null;
+    }
+
+    return _debtRepository.findDebtByPrincipalTransactionId(transaction.tid);
   }
 
   int _resolvePartyTransactionType(CreateTransactionRequestEntity transaction) {

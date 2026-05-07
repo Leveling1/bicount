@@ -51,6 +51,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonReject => 'Reject';
 
   @override
+  String get commonCancel => 'Cancel';
+
+  @override
   String get commonPreview => 'Preview';
 
   @override
@@ -1533,6 +1536,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get debtPaymentRecordedSuccess => 'Debt payment recorded successfully.';
 
   @override
+  String get debtUpdatedSuccess => 'Debt updated successfully.';
+
+  @override
+  String get debtDeletedSuccess => 'Debt deleted successfully.';
+
+  @override
   String get debtNotFound => 'This debt could not be found.';
 
   @override
@@ -1542,10 +1551,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get debtRepaymentAmountTooHigh => 'The repayment amount cannot exceed the remaining balance.';
 
   @override
+  String get debtRepaymentManageFromDebtScreen => 'Debt repayments can only be managed from the debts screen.';
+
+  @override
   String get debtOnlyLenderCanRecord => 'Only the lender can confirm a received repayment.';
 
   @override
   String get debtOnlyCreatorCanUpdate => 'Only the creator can update this debt for now.';
+
+  @override
+  String get debtOnlyCreatorCanDelete => 'Only the creator can delete this debt for now.';
+
+  @override
+  String get debtExpectedAmountTooLow => 'Expected repayment amount cannot be lower than the amount already repaid.';
+
+  @override
+  String get debtEditTitle => 'Edit debt';
+
+  @override
+  String get debtTitleLabel => 'Debt title';
+
+  @override
+  String get debtEditAction => 'Edit debt';
+
+  @override
+  String get debtDeleteAction => 'Delete debt';
+
+  @override
+  String get debtDeleteConfirmTitle => 'Delete this debt?';
+
+  @override
+  String get debtDeleteConfirmDescription => 'This action removes the debt contract, the linked initial transaction, and every recorded repayment tied to it.';
+
+  @override
+  String get debtDeleteConfirmCta => 'Delete debt';
 
   @override
   String get recurringTypeSalary => 'Salary';

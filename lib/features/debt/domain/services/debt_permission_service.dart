@@ -30,6 +30,13 @@ class DebtPermissionService {
     return debt.createdBy == currentUserId;
   }
 
+  bool canManageContract({
+    required DebtModel debt,
+    required String currentUserId,
+  }) {
+    return debt.createdBy == currentUserId;
+  }
+
   String? resolveAccountId(
     String partyId,
     List<FriendsModel> friends,

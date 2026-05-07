@@ -10,9 +10,11 @@ import 'package:bicount/features/debt/domain/entities/debt_list_scope.dart';
 import 'package:bicount/features/debt/domain/entities/debt_summary_entity.dart';
 import 'package:bicount/features/debt/domain/entities/record_debt_payment_request_entity.dart';
 import 'package:bicount/features/debt/domain/services/debt_view_service.dart';
+import 'package:bicount/features/debt/presentation/widgets/debt_contract_form.dart';
 import 'package:bicount/features/debt/presentation/widgets/debt_detail_sheet.dart';
 import 'package:bicount/features/debt/presentation/widgets/debt_summary_card.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
+import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -91,7 +93,7 @@ class _DebtScreenState extends State<DebtScreen> {
       friends: state.startData.friends,
       debts: state.startData.debts,
     );
-    _openFocusedDebtIfNeeded(context, dashboard, debtState);
+    _openFocusedDebtIfNeeded(context, dashboard, debtState, state);
 
     final visibleDebts = dashboard.visibleDebts(widget.initialScope);
     if (visibleDebts.isEmpty) {
@@ -124,7 +126,8 @@ class _DebtScreenState extends State<DebtScreen> {
                 summary: summary,
                 openLabel: context.l10n.debtStatusOpen,
                 overdueLabel: context.l10n.debtStatusOverdue,
-                onTap: () => _openDetailSheet(context, summary, debtState),
+                onTap: () =>
+                    _openDetailSheet(context, summary, debtState, state),
               ),
             ),
           ],
@@ -144,7 +147,8 @@ class _DebtScreenState extends State<DebtScreen> {
                 summary: summary,
                 openLabel: context.l10n.debtStatusOpen,
                 overdueLabel: context.l10n.debtStatusOverdue,
-                onTap: () => _openDetailSheet(context, summary, debtState),
+                onTap: () =>
+                    _openDetailSheet(context, summary, debtState, state),
               ),
             ),
           ],
@@ -157,11 +161,13 @@ class _DebtScreenState extends State<DebtScreen> {
     BuildContext context,
     DebtSummaryEntity summary,
     DebtState debtState,
+    MainLoaded state,
   ) {
     final targetId = switch (debtState) {
       DebtActionInProgress(:final targetId) => targetId,
       _ => '',
     };
+    final principalTransaction = _findPrincipalTransaction(state, summary);
 
     return showCustomBottomSheet<void>(
       context: context,
@@ -192,14 +198,104 @@ class _DebtScreenState extends State<DebtScreen> {
             ),
           );
         },
+        onEditPressed: summary.canManageContract && principalTransaction != null
+            ? () {
+                Navigator.of(context).maybePop();
+                _openEditSheet(context, summary, principalTransaction);
+              }
+            : null,
+        onDeletePressed: summary.canManageContract
+            ? () => _confirmDeleteContract(context, summary.debt.debtId ?? '')
+            : null,
       ),
     );
+  }
+
+  Future<void> _openEditSheet(
+    BuildContext context,
+    DebtSummaryEntity summary,
+    TransactionEntity principalTransaction,
+  ) {
+    return showCustomBottomSheet<void>(
+      context: context,
+      minHeight: 0.85,
+      child: BlocConsumer<DebtBloc, DebtState>(
+        listenWhen: (previous, current) => current is DebtActionSuccess,
+        listener: (context, state) {
+          if (state is DebtActionSuccess &&
+              state.targetId == summary.debt.debtId &&
+              state.message == 'Debt contract updated.') {
+            Navigator.of(context).maybePop();
+          }
+        },
+        builder: (context, state) {
+          final isLoading =
+              state is DebtActionInProgress &&
+              state.targetId == summary.debt.debtId;
+          return DebtContractForm(
+            debt: summary.debt,
+            principalTransaction: principalTransaction,
+            counterpartyName: summary.counterpartyName,
+            isLoading: isLoading,
+            onSubmit: (request) {
+              context.read<DebtBloc>().add(UpdateDebtRequested(request));
+            },
+            onCancel: () => Navigator.of(context).maybePop(),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _confirmDeleteContract(
+    BuildContext context,
+    String debtId,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: Theme.of(dialogContext).dialogTheme.backgroundColor,
+        surfaceTintColor: Colors.transparent,
+        shape: Theme.of(dialogContext).dialogTheme.shape,
+        title: Text(context.l10n.debtDeleteConfirmTitle),
+        content: Text(context.l10n.debtDeleteConfirmDescription),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(context.l10n.commonCancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(context.l10n.debtDeleteConfirmCta),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      Navigator.of(context).maybePop();
+      context.read<DebtBloc>().add(DeleteDebtRequested(debtId));
+    }
+  }
+
+  TransactionEntity? _findPrincipalTransaction(
+    MainLoaded state,
+    DebtSummaryEntity summary,
+  ) {
+    for (final transaction in state.startData.transactions) {
+      if (transaction.tid == summary.debt.principalTransactionId) {
+        return TransactionEntity.fromTransaction(transaction);
+      }
+    }
+
+    return null;
   }
 
   void _openFocusedDebtIfNeeded(
     BuildContext context,
     DebtDashboardEntity dashboard,
     DebtState debtState,
+    MainLoaded state,
   ) {
     if (_hasOpenedFocusedDebt) {
       return;
@@ -220,7 +316,7 @@ class _DebtScreenState extends State<DebtScreen> {
       if (!mounted) {
         return;
       }
-      _openDetailSheet(context, summary, debtState);
+      _openDetailSheet(context, summary, debtState, state);
     });
   }
 
@@ -228,6 +324,8 @@ class _DebtScreenState extends State<DebtScreen> {
     if (state is DebtActionSuccess) {
       final message = switch (state.message) {
         'Debt payment recorded.' => context.l10n.debtPaymentRecordedSuccess,
+        'Debt contract updated.' => context.l10n.debtUpdatedSuccess,
+        'Debt contract deleted.' => context.l10n.debtDeletedSuccess,
         _ => state.message,
       };
       NotificationHelper.showSuccessNotification(context, message);

@@ -51,6 +51,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get commonReject => 'Refuser';
 
   @override
+  String get commonCancel => 'Annuler';
+
+  @override
   String get commonPreview => 'Aperçu';
 
   @override
@@ -1533,6 +1536,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get debtPaymentRecordedSuccess => 'Paiement de dette enregistré avec succès.';
 
   @override
+  String get debtUpdatedSuccess => 'Dette mise à jour avec succès.';
+
+  @override
+  String get debtDeletedSuccess => 'Dette supprimée avec succès.';
+
+  @override
   String get debtNotFound => 'Cette dette est introuvable.';
 
   @override
@@ -1542,10 +1551,40 @@ class AppLocalizationsFr extends AppLocalizations {
   String get debtRepaymentAmountTooHigh => 'Le montant remboursé ne peut pas dépasser le reste à payer.';
 
   @override
+  String get debtRepaymentManageFromDebtScreen => 'Les remboursements de dette ne peuvent être gérés que depuis l\'écran des dettes.';
+
+  @override
   String get debtOnlyLenderCanRecord => 'Seul le prêteur peut confirmer un remboursement reçu.';
 
   @override
   String get debtOnlyCreatorCanUpdate => 'Seul le créateur peut mettre cette dette à jour pour le moment.';
+
+  @override
+  String get debtOnlyCreatorCanDelete => 'Seul le créateur peut supprimer cette dette pour le moment.';
+
+  @override
+  String get debtExpectedAmountTooLow => 'Le montant attendu ne peut pas être inférieur à la somme déjà remboursée.';
+
+  @override
+  String get debtEditTitle => 'Modifier la dette';
+
+  @override
+  String get debtTitleLabel => 'Intitulé de la dette';
+
+  @override
+  String get debtEditAction => 'Modifier la dette';
+
+  @override
+  String get debtDeleteAction => 'Supprimer la dette';
+
+  @override
+  String get debtDeleteConfirmTitle => 'Supprimer cette dette ?';
+
+  @override
+  String get debtDeleteConfirmDescription => 'Cette action supprime le contrat de dette, la transaction initiale liée et tous les remboursements déjà enregistrés pour cette dette.';
+
+  @override
+  String get debtDeleteConfirmCta => 'Supprimer la dette';
 
   @override
   String get recurringTypeSalary => 'Salaire';

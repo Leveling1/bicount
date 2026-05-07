@@ -71,13 +71,6 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
         LocalHomeDataSourceImpl(),
       ),
     ),
-    RepositoryProvider<TransactionRepositoryImpl>(
-      create: (context) => TransactionRepositoryImpl(
-        LocalTransactionDataSourceImpl(
-          currencyRepository: context.read<CurrencyRepositoryImpl>(),
-        ),
-      ),
-    ),
     RepositoryProvider<DebtRepositoryImpl>(
       create: (context) => DebtRepositoryImpl(
         LocalDebtDataSourceImpl(),
@@ -85,6 +78,14 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
           currencyRepository: context.read<CurrencyRepositoryImpl>(),
         ),
         currencyRepository: context.read<CurrencyRepositoryImpl>(),
+      ),
+    ),
+    RepositoryProvider<TransactionRepositoryImpl>(
+      create: (context) => TransactionRepositoryImpl(
+        LocalTransactionDataSourceImpl(
+          currencyRepository: context.read<CurrencyRepositoryImpl>(),
+        ),
+        debtRepository: context.read<DebtRepositoryImpl>(),
       ),
     ),
     RepositoryProvider<RecurringTransfertRepositoryImpl>(

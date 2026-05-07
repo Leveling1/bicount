@@ -36,6 +36,23 @@ class LocalDebtDataSourceImpl implements DebtLocalDataSource {
   }
 
   @override
+  Future<DebtModel?> findDebtByPrincipalTransactionId(
+    String principalTransactionId,
+  ) async {
+    if (principalTransactionId.isEmpty) {
+      return null;
+    }
+
+    final items = await Repository().get<DebtModel>(
+      policy: OfflineFirstGetPolicy.localOnly,
+      query: Query(
+        where: [Where.exact('principalTransactionId', principalTransactionId)],
+      ),
+    );
+    return items.isEmpty ? null : items.first;
+  }
+
+  @override
   Future<List<DebtModel>> getAllDebts() {
     return Repository().get<DebtModel>(policy: OfflineFirstGetPolicy.localOnly);
   }

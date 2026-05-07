@@ -19,6 +19,7 @@ void showTransactionFeedDetails(
         user: data.user,
         transactionDetail: item.transaction,
         friends: data.friends,
+        debts: data.debts,
       ),
     ),
   );

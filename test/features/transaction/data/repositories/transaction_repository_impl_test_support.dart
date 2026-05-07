@@ -2,6 +2,10 @@ import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
+import 'package:bicount/features/debt/data/models/debt.model.dart';
+import 'package:bicount/features/debt/domain/entities/record_debt_payment_request_entity.dart';
+import 'package:bicount/features/debt/domain/entities/update_debt_request_entity.dart';
+import 'package:bicount/features/debt/domain/repositories/debt_repository.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
@@ -117,6 +121,63 @@ class SavedTransactionRecord {
   final int? generationMode;
 }
 
+class FakeDebtRepository implements DebtRepository {
+  FakeDebtRepository({this.principalDebt});
+
+  DebtModel? principalDebt;
+  UpdateDebtRequestEntity? updatedDebtRequest;
+  String? deletedDebtId;
+  TransactionEntity? deletedDebtLinkedTransaction;
+
+  @override
+  Future<void> createDebt(DebtModel debt) async {}
+
+  @override
+  Future<void> deleteDebt(String debtId) async {
+    deletedDebtId = debtId;
+  }
+
+  @override
+  Future<void> deleteDebtContract(String debtId) async {
+    deletedDebtId = debtId;
+  }
+
+  @override
+  Future<void> deleteDebtLinkedTransaction(
+    TransactionEntity transaction,
+  ) async {
+    deletedDebtLinkedTransaction = transaction;
+  }
+
+  @override
+  Future<DebtModel?> findDebtById(String debtId) async {
+    if (principalDebt?.debtId == debtId) {
+      return principalDebt;
+    }
+    return null;
+  }
+
+  @override
+  Future<DebtModel?> findDebtByPrincipalTransactionId(
+    String principalTransactionId,
+  ) async {
+    if (principalDebt?.principalTransactionId == principalTransactionId) {
+      return principalDebt;
+    }
+    return null;
+  }
+
+  @override
+  Future<void> recordDebtPayment(
+    RecordDebtPaymentRequestEntity request,
+  ) async {}
+
+  @override
+  Future<void> updateDebtContract(UpdateDebtRequestEntity request) async {
+    updatedDebtRequest = request;
+  }
+}
+
 FriendsModel currentUser() {
   return FriendsModel(
     sid: 'user-1',
@@ -176,5 +237,79 @@ CreateTransactionRequestEntity recurringSalaryRequest(
     recurringTypeId: TransactionTypes.salaryCode,
     recurringExecutionMode: executionMode,
     recurringReminderEnabled: reminderEnabled,
+  );
+}
+
+CreateTransactionRequestEntity debtUpdateRequest() {
+  return CreateTransactionRequestEntity(
+    name: 'Updated debt',
+    date: DateTime(2026, 4, 11).toIso8601String(),
+    totalAmount: 80,
+    currency: 'USD',
+    sender: currentUser(),
+    note: 'Updated note',
+    transactionType: TransactionTypes.expenseCode,
+    splitMode: TransactionSplitMode.equal,
+    splits: [
+      TransactionSplitInputEntity(
+        beneficiary: draftParty(
+          username: 'Alice',
+          relationType: FriendConst.friend,
+        ),
+      ),
+    ],
+    isDebt: true,
+    debtDueDate: DateTime(2026, 5, 1).toIso8601String(),
+    debtExpectedRepaymentAmount: 95,
+  );
+}
+
+TransactionEntity debtPrincipalTransaction() {
+  return TransactionEntity(
+    uid: 'user-1',
+    tid: 'principal-1',
+    gtid: 'group-1',
+    name: 'Debt',
+    type: TransactionTypes.debtCode,
+    date: DateTime(2026, 4, 10),
+    amount: 100,
+    currency: 'USD',
+    originId: 'debt-1',
+    sender: 'user-1',
+    beneficiary: 'friend-1',
+    note: '',
+  );
+}
+
+TransactionEntity debtRepaymentTransaction() {
+  return TransactionEntity(
+    uid: 'user-1',
+    tid: 'repayment-1',
+    gtid: 'group-2',
+    name: 'Repayment',
+    type: TransactionTypes.debtCode,
+    date: DateTime(2026, 4, 12),
+    amount: 20,
+    currency: 'USD',
+    originId: 'debt-1',
+    sender: 'friend-1',
+    beneficiary: 'user-1',
+    note: '',
+  );
+}
+
+DebtModel principalDebtModel() {
+  return DebtModel(
+    debtId: 'debt-1',
+    createdBy: 'user-1',
+    lenderId: 'user-1',
+    borrowerId: 'friend-1',
+    principalTransactionId: 'principal-1',
+    title: 'Debt',
+    currency: 'USD',
+    principalAmount: 100,
+    expectedRepaymentAmount: 100,
+    remainingAmount: 100,
+    dueDate: DateTime(2026, 5, 1).toIso8601String(),
   );
 }

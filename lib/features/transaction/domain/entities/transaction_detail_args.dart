@@ -1,3 +1,4 @@
+import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 
@@ -7,10 +8,12 @@ class TransactionDetailArgs {
   final UserModel user;
   final TransactionEntity transactionDetail;
   final List<FriendsModel> friends;
+  final List<DebtModel> debts;
 
   TransactionDetailArgs({
     required this.user,
     required this.transactionDetail,
     required this.friends,
+    this.debts = const [],
   });
 }

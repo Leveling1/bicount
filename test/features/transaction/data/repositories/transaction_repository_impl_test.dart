@@ -1,5 +1,6 @@
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/state_app.dart';
+import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/repositories/transaction_repository_impl.dart';
@@ -150,6 +151,84 @@ void main() {
       expect(
         localDataSource.savedTransactions.single.beneficiaryId,
         existingFriend.sid,
+      );
+    },
+  );
+
+  test('principal debt update delegates to the debt repository', () async {
+    final localDataSource = FakeTransactionLocalDataSource();
+    final debtRepository = FakeDebtRepository(
+      principalDebt: principalDebtModel(),
+    );
+    final repository = TransactionRepositoryImpl(
+      localDataSource,
+      debtRepository: debtRepository,
+    );
+
+    await repository.updateTransaction(
+      debtPrincipalTransaction(),
+      debtUpdateRequest(),
+    );
+
+    expect(debtRepository.updatedDebtRequest, isNotNull);
+    expect(debtRepository.updatedDebtRequest?.debtId, 'debt-1');
+    expect(debtRepository.updatedDebtRequest?.title, 'Updated debt');
+    expect(localDataSource.savedTransactions, isEmpty);
+  });
+
+  test('principal debt delete delegates to the debt repository', () async {
+    final localDataSource = FakeTransactionLocalDataSource();
+    final debtRepository = FakeDebtRepository(
+      principalDebt: principalDebtModel(),
+    );
+    final repository = TransactionRepositoryImpl(
+      localDataSource,
+      debtRepository: debtRepository,
+    );
+
+    await repository.deleteTransaction(debtPrincipalTransaction());
+
+    expect(debtRepository.deletedDebtId, 'debt-1');
+  });
+
+  test('debt repayment delete delegates to the debt repository', () async {
+    final localDataSource = FakeTransactionLocalDataSource();
+    final debtRepository = FakeDebtRepository();
+    final repository = TransactionRepositoryImpl(
+      localDataSource,
+      debtRepository: debtRepository,
+    );
+
+    await repository.deleteTransaction(debtRepaymentTransaction());
+
+    expect(
+      debtRepository.deletedDebtLinkedTransaction?.tid,
+      debtRepaymentTransaction().tid,
+    );
+  });
+
+  test(
+    'debt repayment edit stays blocked from the transaction form flow',
+    () async {
+      final localDataSource = FakeTransactionLocalDataSource();
+      final debtRepository = FakeDebtRepository();
+      final repository = TransactionRepositoryImpl(
+        localDataSource,
+        debtRepository: debtRepository,
+      );
+
+      expect(
+        () => repository.updateTransaction(
+          debtRepaymentTransaction(),
+          debtUpdateRequest(),
+        ),
+        throwsA(
+          isA<MessageFailure>().having(
+            (failure) => failure.message,
+            'message',
+            'Debt repayments can only be managed from the debts screen.',
+          ),
+        ),
       );
     },
   );

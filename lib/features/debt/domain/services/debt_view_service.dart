@@ -55,6 +55,10 @@ class DebtViewService {
           currentUserId: currentUserId,
           friends: friends,
         ),
+        canManageContract: permissionService.canManageContract(
+          debt: debt,
+          currentUserId: currentUserId,
+        ),
         dueDate: DateTime.tryParse(debt.dueDate),
         isOverdue: AppDebtState.normalize(debt.status) == AppDebtState.overdue,
       );
