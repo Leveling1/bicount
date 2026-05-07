@@ -1,15 +1,13 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
 import 'package:bicount/core/utils/form_date_utils.dart';
-import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/debt/domain/entities/update_debt_request_entity.dart';
+import 'package:bicount/features/debt/presentation/widgets/debt_contract_form_fields.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import '../../../../core/themes/app_dimens.dart';
 
 class DebtContractForm extends StatefulWidget {
@@ -29,7 +27,6 @@ class DebtContractForm extends StatefulWidget {
   final bool isLoading;
   final ValueChanged<UpdateDebtRequestEntity> onSubmit;
   final VoidCallback? onCancel;
-
   @override
   State<DebtContractForm> createState() => _DebtContractFormState();
 }
@@ -43,20 +40,22 @@ class _DebtContractFormState extends State<DebtContractForm> {
   late final TextEditingController _dueDateController;
   late final TextEditingController _expectedAmountController;
   late final TextEditingController _noteController;
+  bool _syncExpectedToPrincipal = false;
+  bool _isPatchingExpectedAmount = false;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.debt.title);
     _dateController = TextEditingController(
-      text: formatDate(widget.principalTransaction.date),
+      text: formatedDateTimeNumericFullYear(widget.principalTransaction.date),
     );
     _amountController = TextEditingController(
       text: widget.debt.principalAmount.toStringAsFixed(2).replaceAll('.', ','),
     );
     _currencyController = TextEditingController(text: widget.debt.currency);
     _dueDateController = TextEditingController(
-      text: formatDate(
+      text: formatedDateTimeNumericFullYear(
         DateTime.tryParse(widget.debt.dueDate) ?? DateTime.now(),
       ),
     );
@@ -66,6 +65,11 @@ class _DebtContractFormState extends State<DebtContractForm> {
           .replaceAll('.', ','),
     );
     _noteController = TextEditingController(text: widget.debt.note);
+    _syncExpectedToPrincipal =
+        _parseAmount(_amountController.text) ==
+        _parseAmount(_expectedAmountController.text);
+    _amountController.addListener(_syncExpectedAmountFromPrincipal);
+    _expectedAmountController.addListener(_trackExpectedAmountMode);
   }
 
   @override
@@ -92,10 +96,14 @@ class _DebtContractFormState extends State<DebtContractForm> {
             style: Theme.of(context).textTheme.headlineLarge,
           ),
           const SizedBox(height: AppDimens.spacingMedium),
-          _line(context.l10n.debtCounterpartyLabel, widget.counterpartyName),
-          _line(
-            context.l10n.debtRepaidLabel,
-            '${widget.debt.repaidAmount.toStringAsFixed(2)} ${widget.debt.currency}',
+          DebtContractInfoLine(
+            label: context.l10n.debtCounterpartyLabel,
+            value: widget.counterpartyName,
+          ),
+          DebtContractInfoLine(
+            label: context.l10n.debtRepaidLabel,
+            value:
+                '${widget.debt.repaidAmount.toStringAsFixed(2)} ${widget.debt.currency}',
           ),
           const SizedBox(height: AppDimens.spacingMedium),
           CustomFormField(
@@ -111,10 +119,11 @@ class _DebtContractFormState extends State<DebtContractForm> {
             isDate: true,
           ),
           const SizedBox(height: AppDimens.spacingMedium),
-          _buildAmountField(
-            context,
+          DebtContractAmountField(
             controller: _amountController,
             label: context.l10n.commonAmount,
+            validatorMessage: context.l10n.transactionEnterValidAmount,
+            currencyController: _currencyController,
           ),
           const SizedBox(height: AppDimens.spacingMedium),
           CustomFormField(
@@ -124,11 +133,11 @@ class _DebtContractFormState extends State<DebtContractForm> {
             isDate: true,
           ),
           const SizedBox(height: AppDimens.spacingMedium),
-          _buildAmountField(
-            context,
+          DebtContractAmountField(
             controller: _expectedAmountController,
             label: context.l10n.transactionDebtExpectedAmountLabel,
-            showCurrencyPicker: false,
+            validatorMessage: context.l10n.transactionEnterValidAmount,
+            allowEmpty: true,
           ),
           const SizedBox(height: AppDimens.spacingMedium),
           CustomFormField(
@@ -143,63 +152,7 @@ class _DebtContractFormState extends State<DebtContractForm> {
             onPressed: _submit,
             loading: widget.isLoading,
           ),
-          if (widget.onCancel != null) ...[
-            const SizedBox(height: AppDimens.spacingSmall),
-            CustomOutlinedButton(
-              text: context.l10n.commonCancel,
-              onPressed: widget.onCancel!,
-              loading: false,
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAmountField(
-    BuildContext context, {
-    required TextEditingController controller,
-    required String label,
-    bool showCurrencyPicker = true,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: Theme.of(context).textTheme.titleMedium),
-        TextFormField(
-          controller: controller,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9,\. ]')),
-          ],
-          validator: (value) {
-            final amount = _parseAmount(value);
-            if (amount == null || amount <= 0) {
-              return context.l10n.transactionEnterValidAmount;
-            }
-            return null;
-          },
-          decoration: InputDecoration(
-            suffixIcon: showCurrencyPicker
-                ? CurrencyField(
-                    controller: _currencyController,
-                    color: Theme.of(context).cardColor,
-                  )
-                : null,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _line(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppDimens.spacingSmall),
-      child: Row(
-        children: [
-          Expanded(child: Text(label)),
-          const SizedBox(width: AppDimens.spacingSmall),
-          Flexible(child: Text(value, textAlign: TextAlign.end)),
+          AppDimens.spacerMedium,
         ],
       ),
     );
@@ -211,13 +164,31 @@ class _DebtContractFormState extends State<DebtContractForm> {
     );
   }
 
+  void _syncExpectedAmountFromPrincipal() {
+    if (!_syncExpectedToPrincipal || _isPatchingExpectedAmount) return;
+    if (_expectedAmountController.text == _amountController.text) {
+      return;
+    }
+    _isPatchingExpectedAmount = true;
+    _expectedAmountController.text = _amountController.text;
+    _isPatchingExpectedAmount = false;
+  }
+
+  void _trackExpectedAmountMode() {
+    if (_isPatchingExpectedAmount) return;
+    final expectedText = _expectedAmountController.text.trim();
+    _syncExpectedToPrincipal =
+        expectedText.isEmpty ||
+        _parseAmount(expectedText) == _parseAmount(_amountController.text);
+  }
+
   void _submit() {
     if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
-
     final principalAmount = _parseAmount(_amountController.text);
-    final expectedAmount = _parseAmount(_expectedAmountController.text);
+    final expectedAmount =
+        _parseAmount(_expectedAmountController.text) ?? principalAmount;
     if (principalAmount == null || expectedAmount == null) {
       return;
     }

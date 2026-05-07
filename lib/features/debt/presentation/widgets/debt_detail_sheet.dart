@@ -1,12 +1,11 @@
-import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
-import 'package:bicount/core/widgets/custom_amount_field.dart';
-import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/features/debt/domain/entities/debt_summary_entity.dart';
+import 'package:bicount/features/debt/presentation/widgets/debt_detail_meta_line.dart';
+import 'package:bicount/features/debt/presentation/widgets/debt_detail_payment_section.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_actions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class DebtDetailSheet extends StatefulWidget {
   const DebtDetailSheet({
@@ -79,88 +78,59 @@ class _DebtDetailSheetState extends State<DebtDetailSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          TransactionDetailActions(
+            iconSize: 20,
+            isLoading: widget.isLoading,
+            onDeletePressed: widget.onDeletePressed,
+            onEditPressed: widget.onEditPressed,
+          ),
           Text(widget.titleText, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: AppDimens.spacingMedium),
-          _line(
-            context,
-            widget.counterpartyLabel,
-            widget.summary.counterpartyName,
+          DebtDetailMetaLine(
+            label: widget.counterpartyLabel,
+            value: widget.summary.counterpartyName,
           ),
-          _line(
-            context,
-            widget.expectedLabel,
-            NumberFormatUtils.formatCurrency(
+          DebtDetailMetaLine(
+            label: widget.expectedLabel,
+            value: NumberFormatUtils.formatCurrency(
               debt.expectedRepaymentAmount,
               currencyCode: debt.currency,
             ),
           ),
-          _line(
-            context,
-            widget.repaidLabel,
-            NumberFormatUtils.formatCurrency(
+          DebtDetailMetaLine(
+            label: widget.repaidLabel,
+            value: NumberFormatUtils.formatCurrency(
               debt.repaidAmount,
               currencyCode: debt.currency,
             ),
           ),
-          _line(
-            context,
-            widget.remainingLabel,
-            NumberFormatUtils.formatCurrency(
+          DebtDetailMetaLine(
+            label: widget.remainingLabel,
+            value: NumberFormatUtils.formatCurrency(
               debt.remainingAmount,
               currencyCode: debt.currency,
             ),
           ),
-          _line(
-            context,
-            widget.dueDateLabel,
-            widget.summary.dueDate == null
+          DebtDetailMetaLine(
+            label: widget.dueDateLabel,
+            value: widget.summary.dueDate == null
                 ? '-'
                 : formatDate(widget.summary.dueDate!),
           ),
           const SizedBox(height: AppDimens.spacingLarge),
           if (widget.summary.canRecordPayment && debt.remainingAmount > 0) ...[
-            Text(
-              widget.amountFieldLabel,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: AppDimens.spacingSmall),
-            TextFormField(
-              controller: _amountController,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9,\. ]')),
-              ],
-              validator: (value) {
-                final amount = double.tryParse(
-                  (value ?? '').trim().replaceAll(' ', '').replaceAll(',', '.'),
-                );
-                if (amount == null || amount <= 0) {
-                  return widget.invalidAmountMessage;
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                hintText: debt.remainingAmount
-                    .toStringAsFixed(2)
-                    .replaceAll('.', ','),
-                suffixIcon: CurrencyField(
-                  controller: _currencyController,
-                  color: Theme.of(context).cardColor,
-                ),
-              ),
-            ),
-            const SizedBox(height: AppDimens.spacingSmall),
-            Text(
-              widget.amountFieldHint,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: AppDimens.spacingLarge),
-            CustomButton(
-              text: widget.recordPaymentLabel,
-              loading: widget.isLoading,
-              onPressed: _submit,
+            DebtDetailPaymentSection(
+              amountController: _amountController,
+              currencyController: _currencyController,
+              amountFieldLabel: widget.amountFieldLabel,
+              amountFieldHint: widget.amountFieldHint,
+              invalidAmountMessage: widget.invalidAmountMessage,
+              hintText: debt.remainingAmount
+                  .toStringAsFixed(2)
+                  .replaceAll('.', ','),
+              recordPaymentLabel: widget.recordPaymentLabel,
+              isLoading: widget.isLoading,
+              onSubmit: _submit,
             ),
           ] else ...[
             Text(
@@ -168,46 +138,7 @@ class _DebtDetailSheetState extends State<DebtDetailSheet> {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
-          if (widget.onEditPressed != null ||
-              widget.onDeletePressed != null) ...[
-            const SizedBox(height: AppDimens.spacingMedium),
-            if (widget.onEditPressed != null) ...[
-              CustomOutlinedButton(
-                text: context.l10n.debtEditAction,
-                onPressed: widget.onEditPressed!,
-                loading: false,
-              ),
-              const SizedBox(height: AppDimens.spacingSmall),
-            ],
-            if (widget.onDeletePressed != null)
-              TextButton(
-                onPressed: widget.isLoading ? null : widget.onDeletePressed,
-                child: Text(context.l10n.debtDeleteAction),
-              ),
-          ],
           const SizedBox(height: AppDimens.spacingLarge),
-        ],
-      ),
-    );
-  }
-
-  Widget _line(BuildContext context, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppDimens.spacingSmall),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Text(label, style: Theme.of(context).textTheme.bodySmall),
-          ),
-          const SizedBox(width: AppDimens.spacingSmall),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.end,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
         ],
       ),
     );
