@@ -84,6 +84,7 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
         LocalTransactionDataSourceImpl(
           currencyRepository: context.read<CurrencyRepositoryImpl>(),
         ),
+        currencyRepository: context.read<CurrencyRepositoryImpl>(),
       ),
     ),
     RepositoryProvider<RecurringTransfertRepositoryImpl>(

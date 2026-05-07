@@ -113,6 +113,13 @@ void main() {
       beneficiaryId: currentUserId,
       name: 'Misc',
     ),
+    transaction(
+      tid: 'debt-payment',
+      type: TransactionTypes.debtCode,
+      senderId: 'friend-2',
+      beneficiaryId: currentUserId,
+      name: 'Debt payment',
+    ),
   ];
 
   test('income filter matches current user beneficiary identities', () {
@@ -156,12 +163,25 @@ void main() {
       data: data,
       source: buildTransactionFeed(data),
       query: '',
-      selectedIndex: 5,
+      selectedIndex: 6,
     );
 
     expect(filtered.map((item) => item.id), [
       'incoming-other',
       'other-expense',
     ]);
+  });
+
+  test('debt filter only keeps debt transactions', () {
+    final data = buildMainEntity(transactions);
+
+    final filtered = filterTransactionFeed(
+      data: data,
+      source: buildTransactionFeed(data),
+      query: '',
+      selectedIndex: 5,
+    );
+
+    expect(filtered.map((item) => item.id), ['debt-payment']);
   });
 }

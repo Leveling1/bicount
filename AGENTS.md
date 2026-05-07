@@ -324,6 +324,8 @@ Rules:
 - creating a debt still writes the principal money movement into `transactions`
 - the linked contract row lives in `debts`
 - debt repayments must be recorded only from `debt_screen.dart`, not from transaction creation or edit forms
+- the debt repayment amount field should mirror the salary occurrence amount field UX, including selectable currency via the shared currency picker
+- debt repayments may be entered in a currency different from the debt currency, but the saved transaction must keep the entered original currency and FX metadata while `repaid_amount` and `remaining_amount` are recomputed in the debt currency
 - notification payloads for debts should use `route` only, for example `/debts?debtId=...`
 
 ### transaction
@@ -1097,6 +1099,7 @@ Rules:
 - `Subscription` still matches `TransactionTypes.subscriptionCode`
 - `Salary` still matches `TransactionTypes.salaryCode`
 - `Other` in the transaction feed must match `TransactionTypes.otherRecurringExpenseCode` and `TransactionTypes.otherRecurringIncomeCode`, not `TransactionTypes.othersCode`
+- `Debt` in the transaction feed must match `TransactionTypes.debtCode` and display as `Debt` or `Dette`, not as `Other`
 
 ## Startup Robustness Update (2026-04-10)
 

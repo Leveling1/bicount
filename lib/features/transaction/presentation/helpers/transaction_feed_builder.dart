@@ -43,7 +43,8 @@ List<TransactionFeedItem> filterTransactionFeed({
       2 => currentUserParticipantIds.contains(item.transaction.sender),
       3 => item.filterType == TransactionTypes.subscriptionCode,
       4 => item.filterType == TransactionTypes.salaryCode,
-      5 =>
+      5 => item.filterType == TransactionTypes.debtCode,
+      6 =>
         item.filterType == TransactionTypes.otherRecurringExpenseCode ||
             item.filterType == TransactionTypes.otherRecurringIncomeCode,
       _ => true,

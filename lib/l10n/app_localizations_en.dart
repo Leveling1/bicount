@@ -963,6 +963,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionFilterOther => 'Other';
 
   @override
+  String get transactionFilterDebt => 'Debt';
+
+  @override
   String get transactionFilterPersonal => 'Personal';
 
   @override
@@ -1423,6 +1426,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transactionTypeOther => 'Other';
+
+  @override
+  String get transactionTypeDebt => 'Debt';
 
   @override
   String get frequencyWeekly => 'Weekly';

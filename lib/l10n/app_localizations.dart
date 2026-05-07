@@ -1967,6 +1967,12 @@ abstract class AppLocalizations {
   /// **'Other'**
   String get transactionFilterOther;
 
+  /// No description provided for @transactionFilterDebt.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt'**
+  String get transactionFilterDebt;
+
   /// No description provided for @transactionFilterPersonal.
   ///
   /// In en, this message translates to:
@@ -2854,6 +2860,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get transactionTypeOther;
+
+  /// No description provided for @transactionTypeDebt.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt'**
+  String get transactionTypeDebt;
 
   /// No description provided for @frequencyWeekly.
   ///

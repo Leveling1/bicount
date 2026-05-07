@@ -180,13 +180,14 @@ class _DebtScreenState extends State<DebtScreen> {
         permissionHint: context.l10n.debtPermissionHint,
         invalidAmountMessage: context.l10n.debtInvalidPaymentAmount,
         isLoading: targetId == summary.debt.debtId,
-        onRecordPayment: (amount) {
+        onRecordPayment: (amount, currency) {
           Navigator.of(context).maybePop();
           context.read<DebtBloc>().add(
             RecordDebtPaymentRequested(
               RecordDebtPaymentRequestEntity(
                 debtId: summary.debt.debtId ?? '',
                 amount: amount,
+                currency: currency,
               ),
             ),
           );

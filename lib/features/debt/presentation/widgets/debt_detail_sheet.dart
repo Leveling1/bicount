@@ -1,10 +1,11 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
+import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
-import 'package:bicount/core/widgets/custom_form_text_field.dart';
 import 'package:bicount/features/debt/domain/entities/debt_summary_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class DebtDetailSheet extends StatefulWidget {
   const DebtDetailSheet({
@@ -38,18 +39,29 @@ class DebtDetailSheet extends StatefulWidget {
   final String permissionHint;
   final String invalidAmountMessage;
   final bool isLoading;
-  final ValueChanged<double> onRecordPayment;
+  final void Function(double amount, String currency) onRecordPayment;
 
   @override
   State<DebtDetailSheet> createState() => _DebtDetailSheetState();
 }
 
 class _DebtDetailSheetState extends State<DebtDetailSheet> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _amountController = TextEditingController();
+  late final TextEditingController _currencyController;
+
+  @override
+  void initState() {
+    super.initState();
+    _currencyController = TextEditingController(
+      text: widget.summary.debt.currency,
+    );
+  }
 
   @override
   void dispose() {
     _amountController.dispose();
+    _currencyController.dispose();
     super.dispose();
   }
 
@@ -57,69 +69,103 @@ class _DebtDetailSheetState extends State<DebtDetailSheet> {
   Widget build(BuildContext context) {
     final debt = widget.summary.debt;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(widget.titleText, style: Theme.of(context).textTheme.titleLarge),
-        const SizedBox(height: AppDimens.spacingMedium),
-        _line(
-          context,
-          widget.counterpartyLabel,
-          widget.summary.counterpartyName,
-        ),
-        _line(
-          context,
-          widget.expectedLabel,
-          NumberFormatUtils.formatCurrency(
-            debt.expectedRepaymentAmount,
-            currencyCode: debt.currency,
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.titleText, style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: AppDimens.spacingMedium),
+          _line(
+            context,
+            widget.counterpartyLabel,
+            widget.summary.counterpartyName,
           ),
-        ),
-        _line(
-          context,
-          widget.repaidLabel,
-          NumberFormatUtils.formatCurrency(
-            debt.repaidAmount,
-            currencyCode: debt.currency,
+          _line(
+            context,
+            widget.expectedLabel,
+            NumberFormatUtils.formatCurrency(
+              debt.expectedRepaymentAmount,
+              currencyCode: debt.currency,
+            ),
           ),
-        ),
-        _line(
-          context,
-          widget.remainingLabel,
-          NumberFormatUtils.formatCurrency(
-            debt.remainingAmount,
-            currencyCode: debt.currency,
+          _line(
+            context,
+            widget.repaidLabel,
+            NumberFormatUtils.formatCurrency(
+              debt.repaidAmount,
+              currencyCode: debt.currency,
+            ),
           ),
-        ),
-        _line(
-          context,
-          widget.dueDateLabel,
-          widget.summary.dueDate == null
-              ? '-'
-              : formatDate(widget.summary.dueDate!),
-        ),
-        const SizedBox(height: AppDimens.spacingLarge),
-        if (widget.summary.canRecordPayment && debt.remainingAmount > 0) ...[
-          CustomFormField(
-            controller: _amountController,
-            label: widget.amountFieldLabel,
-            hint: widget.amountFieldHint,
-            inputType: const TextInputType.numberWithOptions(decimal: true),
+          _line(
+            context,
+            widget.remainingLabel,
+            NumberFormatUtils.formatCurrency(
+              debt.remainingAmount,
+              currencyCode: debt.currency,
+            ),
+          ),
+          _line(
+            context,
+            widget.dueDateLabel,
+            widget.summary.dueDate == null
+                ? '-'
+                : formatDate(widget.summary.dueDate!),
           ),
           const SizedBox(height: AppDimens.spacingLarge),
-          CustomButton(
-            text: widget.recordPaymentLabel,
-            loading: widget.isLoading,
-            onPressed: _submit,
-          ),
-        ] else ...[
-          Text(
-            widget.permissionHint,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          if (widget.summary.canRecordPayment && debt.remainingAmount > 0) ...[
+            Text(
+              widget.amountFieldLabel,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: AppDimens.spacingSmall),
+            TextFormField(
+              controller: _amountController,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9,\. ]')),
+              ],
+              validator: (value) {
+                final amount = double.tryParse(
+                  (value ?? '').trim().replaceAll(' ', '').replaceAll(',', '.'),
+                );
+                if (amount == null || amount <= 0) {
+                  return widget.invalidAmountMessage;
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                hintText: debt.remainingAmount
+                    .toStringAsFixed(2)
+                    .replaceAll('.', ','),
+                suffixIcon: CurrencyField(
+                  controller: _currencyController,
+                  color: Theme.of(context).cardColor,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppDimens.spacingSmall),
+            Text(
+              widget.amountFieldHint,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: AppDimens.spacingLarge),
+            CustomButton(
+              text: widget.recordPaymentLabel,
+              loading: widget.isLoading,
+              onPressed: _submit,
+            ),
+          ] else ...[
+            Text(
+              widget.permissionHint,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+          const SizedBox(height: AppDimens.spacingLarge),
         ],
-        const SizedBox(height: AppDimens.spacingLarge),
-      ],
+      ),
     );
   }
 
@@ -146,16 +192,18 @@ class _DebtDetailSheetState extends State<DebtDetailSheet> {
   }
 
   void _submit() {
-    final amount = double.tryParse(_amountController.text.replaceAll(',', '.'));
-    if (amount == null ||
-        amount <= 0 ||
-        amount > widget.summary.debt.remainingAmount) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(widget.invalidAmountMessage)));
+    if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
 
-    widget.onRecordPayment(amount);
+    final amount = double.tryParse(
+      _amountController.text.trim().replaceAll(' ', '').replaceAll(',', '.'),
+    );
+    final currency = _currencyController.text.trim().toUpperCase();
+    if (amount == null || amount <= 0 || currency.isEmpty) {
+      return;
+    }
+
+    widget.onRecordPayment(amount, currency);
   }
 }

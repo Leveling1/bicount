@@ -3,6 +3,8 @@ import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
+import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
+import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/debt/data/data_sources/local_datasource/debt_local_datasource.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/debt/domain/entities/record_debt_payment_request_entity.dart';
@@ -20,13 +22,16 @@ class DebtRepositoryImpl implements DebtRepository {
   DebtRepositoryImpl(
     this.localDataSource,
     this.transactionLocalDataSource, {
+    required CurrencyRepositoryImpl currencyRepository,
     this.participantIdentityService =
         const TransactionParticipantIdentityService(),
-  });
+  }) : _currencyRepository = currencyRepository;
 
   final DebtLocalDataSource localDataSource;
   final TransactionLocalDataSource transactionLocalDataSource;
   final TransactionParticipantIdentityService participantIdentityService;
+  final CurrencyRepositoryImpl _currencyRepository;
+  static const _amountTolerance = 0.000001;
 
   String? get _currentUserId => Supabase.instance.client.auth.currentUser?.id;
 
@@ -46,10 +51,20 @@ class DebtRepositoryImpl implements DebtRepository {
     if (debt == null) {
       throw MessageFailure(message: 'Debt not found.');
     }
-    if (request.amount <= 0) {
+    final requestCurrency = CurrencyConfigEntity.normalizeCode(
+      request.currency,
+    );
+    if (request.amount <= 0 || requestCurrency.isEmpty) {
       throw MessageFailure(message: 'Enter a valid repayment amount.');
     }
-    if (request.amount > debt.remainingAmount) {
+
+    final debtCurrencyAmount = await _convertToDebtCurrency(
+      amount: request.amount,
+      originalCurrencyCode: requestCurrency,
+      debtCurrencyCode: debt.currency,
+    );
+
+    if (debtCurrencyAmount > debt.remainingAmount + _amountTolerance) {
       throw MessageFailure(
         message: 'Repayment amount cannot exceed the remaining balance.',
       );
@@ -65,7 +80,7 @@ class DebtRepositoryImpl implements DebtRepository {
       date: DateTime.now().toIso8601String(),
       amount: request.amount,
       category: Constants.personal,
-      currency: debt.currency,
+      currency: requestCurrency,
       note: debt.note,
       senderId: debt.borrowerId,
       beneficiaryId: debt.lenderId,
@@ -142,12 +157,18 @@ class DebtRepositoryImpl implements DebtRepository {
       query: Query(where: [Where.exact('originId', debt.debtId)]),
     );
 
-    final repaidAmount = linkedTransactions.fold<double>(0, (sum, transaction) {
+    var repaidAmount = 0.0;
+    for (final transaction in linkedTransactions) {
       if (transaction.tid == debt.principalTransactionId) {
-        return sum;
+        continue;
       }
-      return sum + transaction.amount;
-    });
+
+      repaidAmount += await _convertTransactionToDebtCurrency(
+        transaction,
+        debtCurrencyCode: debt.currency,
+      );
+    }
+
     final remainingAmount =
         (debt.expectedRepaymentAmount - repaidAmount).clamp(0, double.infinity)
             as double;
@@ -204,5 +225,134 @@ class DebtRepositoryImpl implements DebtRepository {
 
   Future<T> _throwFailure<T>(Failure failure) async {
     throw failure;
+  }
+
+  Future<double> _convertToDebtCurrency({
+    required double amount,
+    required String originalCurrencyCode,
+    required String debtCurrencyCode,
+  }) async {
+    final normalizedOriginal = CurrencyConfigEntity.normalizeCode(
+      originalCurrencyCode,
+    );
+    final normalizedDebt = CurrencyConfigEntity.normalizeCode(debtCurrencyCode);
+    if (normalizedOriginal == normalizedDebt) {
+      return amount;
+    }
+
+    final quote = await _currencyRepository.resolveCreationQuote(
+      amount: amount,
+      originalCurrencyCode: normalizedOriginal,
+    );
+    return _convertCdfAmountToCurrency(
+      amountCdf: quote.amountCdf,
+      targetCurrencyCode: normalizedDebt,
+      fxRateDate: quote.fxRateDate,
+    );
+  }
+
+  Future<double> _convertTransactionToDebtCurrency(
+    TransactionModel transaction, {
+    required String debtCurrencyCode,
+  }) async {
+    final normalizedDebt = CurrencyConfigEntity.normalizeCode(debtCurrencyCode);
+    final normalizedOriginal = CurrencyConfigEntity.normalizeCode(
+      transaction.currency,
+    );
+    if (normalizedOriginal == normalizedDebt) {
+      return transaction.amount;
+    }
+
+    final amountCdf =
+        transaction.amountCdf ??
+        await _resolveTransactionAmountCdf(transaction);
+    return _convertCdfAmountToCurrency(
+      amountCdf: amountCdf,
+      targetCurrencyCode: normalizedDebt,
+      fxRateDate: transaction.fxRateDate,
+    );
+  }
+
+  Future<double> _resolveTransactionAmountCdf(
+    TransactionModel transaction,
+  ) async {
+    final fxRateDate = transaction.fxRateDate;
+    if (fxRateDate != null && fxRateDate.isNotEmpty) {
+      final quote = await _currencyRepository.resolveHistoricalQuote(
+        amount: transaction.amount,
+        originalCurrencyCode: transaction.currency,
+        rateDate: fxRateDate,
+        referenceCurrencyCode:
+            CurrencyConfigEntity.defaultReferenceCurrencyCode,
+      );
+      return quote.amountCdf;
+    }
+
+    final quote = await _currencyRepository.resolveCreationQuote(
+      amount: transaction.amount,
+      originalCurrencyCode: transaction.currency,
+    );
+    return quote.amountCdf;
+  }
+
+  Future<double> _convertCdfAmountToCurrency({
+    required double amountCdf,
+    required String targetCurrencyCode,
+    String? fxRateDate,
+  }) async {
+    final normalizedTarget = CurrencyConfigEntity.normalizeCode(
+      targetCurrencyCode,
+    );
+    if (normalizedTarget == CurrencyConfigEntity.defaultReferenceCurrencyCode) {
+      return amountCdf;
+    }
+
+    final rateToCdf = await _resolveCurrencyRateToCdf(
+      currencyCode: normalizedTarget,
+      fxRateDate: fxRateDate,
+    );
+    if (rateToCdf == null || rateToCdf <= 0) {
+      throw MessageFailure(
+        message: 'Unable to load the latest exchange rates right now.',
+      );
+    }
+
+    return amountCdf / rateToCdf;
+  }
+
+  Future<double?> _resolveCurrencyRateToCdf({
+    required String currencyCode,
+    String? fxRateDate,
+  }) async {
+    if (currencyCode == CurrencyConfigEntity.defaultReferenceCurrencyCode) {
+      return 1;
+    }
+
+    if (fxRateDate != null && fxRateDate.isNotEmpty) {
+      try {
+        final quote = await _currencyRepository.resolveHistoricalQuote(
+          amount: 1,
+          originalCurrencyCode: currencyCode,
+          rateDate: fxRateDate,
+          referenceCurrencyCode:
+              CurrencyConfigEntity.defaultReferenceCurrencyCode,
+        );
+        return quote.amountCdf;
+      } on MessageFailure {
+        rethrow;
+      } catch (_) {}
+    }
+
+    try {
+      final quote = await _currencyRepository.resolveCreationQuote(
+        amount: 1,
+        originalCurrencyCode: currencyCode,
+      );
+      return quote.amountCdf;
+    } on MessageFailure {
+      rethrow;
+    } catch (_) {
+      return _currencyRepository.currentConfig.latestRateToCdf(currencyCode);
+    }
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 /// Transaction type codes aligned with the unified architecture.
 ///
 /// `type` describes the direction of the money flow.
-/// Recurrence information lives on `recurring_transfert_id` /
+/// Recurrence information lives on `origin_id` /
 /// `generation_mode`, not on `type`.
 class TransactionTypes {
   // ── New canonical direction-based types ──
@@ -22,16 +22,17 @@ class TransactionTypes {
   // ── Legacy type aliases kept for backward migration reading ──
 
   /// Transaction filter chip order: [all, income, expense, subscription,
-  /// salary, others].
+  /// salary, debt, others].
   ///
   /// Income and expense chips are resolved from participant roles in the
-  /// transaction feed. Subscription, salary, and others stay type-based.
+  /// transaction feed. Subscription, salary, debt, and others stay type-based.
   static const List<int> allTypesInt = [
     -1, // all
     incomeCode,
     expenseCode,
     subscriptionCode,
     salaryCode,
+    debtCode,
     othersCode,
   ];
 

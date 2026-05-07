@@ -53,6 +53,8 @@ extension L10nBuildContextX on BuildContext {
         return l10n.transactionTypeSubscription;
       case TransactionTypes.salaryCode:
         return l10n.transactionTypeSalary;
+      case TransactionTypes.debtCode:
+        return l10n.transactionTypeDebt;
       default:
         return l10n.transactionTypeOther;
     }
@@ -108,6 +110,8 @@ extension L10nBuildContextX on BuildContext {
       case 4:
         return l10n.transactionFilterSalary;
       case 5:
+        return l10n.transactionFilterDebt;
+      case 6:
         return l10n.transactionFilterOther;
       default:
         return l10n.transactionFilterOther;
