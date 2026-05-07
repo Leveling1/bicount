@@ -1,12 +1,12 @@
-import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
-import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/analysis/data/models/analysis_source_data.dart';
 import 'package:bicount/features/analysis/domain/entities/analysis_dashboard_entity.dart';
+import 'package:bicount/features/analysis/domain/services/analysis_debt_balance_resolver.dart';
+import 'package:bicount/features/analysis/domain/services/analysis_debt_transaction_classifier.dart';
 import 'package:bicount/features/analysis/domain/services/analysis_time_series_builder.dart';
-import 'package:bicount/features/debt/data/models/debt.model.dart';
+import 'package:bicount/features/analysis/domain/services/analysis_transaction_breakdown_matcher.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
 import 'package:bicount/features/recurring_fundings/domain/services/recurring_plan_collection_builder.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
@@ -36,73 +36,74 @@ class AnalysisDashboardBuilder {
       period,
     );
     final currentUserParticipantIds = _resolveCurrentUserParticipantIds(source);
+    final debtClassifier = AnalysisDebtTransactionClassifier(source.debts);
+    final debtBalanceResolver = AnalysisDebtBalanceResolver(
+      currentUserParticipantIds: currentUserParticipantIds,
+      currencyAmountService: currencyAmountService,
+    );
+    final matcher = AnalysisTransactionBreakdownMatcher(
+      debtClassifier: debtClassifier,
+      currentUserParticipantIds: currentUserParticipantIds,
+    );
 
     final incomeAmount = _sumTransactions(
       filteredTransactions,
       currencyConfig,
-      (transaction) => _matchesGenericIncome(
-        transaction,
-        currentUserParticipantIds: currentUserParticipantIds,
-      ),
+      matcher.matchesGenericIncome,
     );
     final salaryAmount = _sumTransactions(
       filteredTransactions,
       currencyConfig,
-      (transaction) => _matchesSalary(
-        transaction,
-        currentUserParticipantIds: currentUserParticipantIds,
-      ),
+      matcher.matchesSalary,
+    );
+    final debtRepaymentIncomeAmount = _sumTransactions(
+      filteredTransactions,
+      currencyConfig,
+      matcher.matchesDebtRepaymentIncome,
     );
     final otherIncomeAmount = _sumTransactions(
       filteredTransactions,
       currencyConfig,
-      (transaction) => _matchesOtherIncome(
-        transaction,
-        currentUserParticipantIds: currentUserParticipantIds,
-      ),
+      matcher.matchesOtherIncome,
     );
     final expenseAmount = _sumTransactions(
       filteredTransactions,
       currencyConfig,
-      (transaction) => _matchesGenericExpense(
-        transaction,
-        currentUserParticipantIds: currentUserParticipantIds,
-      ),
+      matcher.matchesGenericExpense,
     );
     final subscriptionAmount = _sumTransactions(
       filteredTransactions,
       currencyConfig,
-      (transaction) => _matchesSubscription(
-        transaction,
-        currentUserParticipantIds: currentUserParticipantIds,
-      ),
+      matcher.matchesSubscription,
+    );
+    final debtExpenseAmount = _sumTransactions(
+      filteredTransactions,
+      currencyConfig,
+      matcher.matchesDebtExpense,
     );
     final otherExpenseAmount = _sumTransactions(
       filteredTransactions,
       currencyConfig,
-      (transaction) => _matchesOtherExpense(
-        transaction,
-        currentUserParticipantIds: currentUserParticipantIds,
-      ),
+      matcher.matchesOtherExpense,
     );
 
-    final inflow = incomeAmount + salaryAmount + otherIncomeAmount;
-    final outflow = expenseAmount + subscriptionAmount + otherExpenseAmount;
-    final receivableDebt = _sumDebtBalances(
+    final inflow =
+        incomeAmount +
+        salaryAmount +
+        debtRepaymentIncomeAmount +
+        otherIncomeAmount;
+    final outflow =
+        expenseAmount +
+        subscriptionAmount +
+        debtExpenseAmount +
+        otherExpenseAmount;
+    final receivableDebt = debtBalanceResolver.receivableBalance(
       source.debts,
       currencyConfig,
-      (debt) => _matchesReceivableDebt(
-        debt,
-        currentUserParticipantIds: currentUserParticipantIds,
-      ),
     );
-    final payableDebt = _sumDebtBalances(
+    final payableDebt = debtBalanceResolver.payableBalance(
       source.debts,
       currencyConfig,
-      (debt) => _matchesPayableDebt(
-        debt,
-        currentUserParticipantIds: currentUserParticipantIds,
-      ),
     );
     final recurringCharges = recurringPlanCollectionBuilder.build(
       recurringTransferts: source.recurringTransferts,
@@ -133,6 +134,10 @@ class AnalysisDashboardBuilder {
       incomeBreakdown: [
         AnalysisBreakdownItem(label: 'Income', value: incomeAmount),
         AnalysisBreakdownItem(label: 'Salary', value: salaryAmount),
+        AnalysisBreakdownItem(
+          label: 'Repayments',
+          value: debtRepaymentIncomeAmount,
+        ),
         AnalysisBreakdownItem(label: 'Other', value: otherIncomeAmount),
       ].where((item) => item.value > 0).toList(),
       expenseBreakdown: [
@@ -141,6 +146,7 @@ class AnalysisDashboardBuilder {
           label: 'Subscriptions',
           value: subscriptionAmount,
         ),
+        AnalysisBreakdownItem(label: 'Debt', value: debtExpenseAmount),
         AnalysisBreakdownItem(label: 'Other', value: otherExpenseAmount),
       ].where((item) => item.value > 0).toList(),
       recurringCharges: AnalysisRecurringSummary(
@@ -185,131 +191,5 @@ class AnalysisDashboardBuilder {
               sum +
               currencyAmountService.transaction(transaction, currencyConfig),
         );
-  }
-
-  double _sumDebtBalances(
-    List<DebtModel> debts,
-    CurrencyConfigEntity currencyConfig,
-    bool Function(DebtModel debt) predicate,
-  ) {
-    return debts.where(predicate).fold<double>(0, (sum, debt) {
-      final anchorDate = debt.createdAt ?? debt.dueDate;
-      return sum +
-          currencyAmountService.record(
-            originalAmount: debt.remainingAmount,
-            originalCurrencyCode: debt.currency,
-            fxRateDate: anchorDate,
-            config: currencyConfig,
-          );
-    });
-  }
-
-  bool _matchesGenericIncome(
-    TransactionModel transaction, {
-    Set<String>? currentUserParticipantIds,
-  }) {
-    if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds.contains(transaction.beneficiaryId) &&
-          transaction.type != TransactionTypes.salaryCode &&
-          transaction.type != TransactionTypes.otherRecurringIncomeCode;
-    }
-
-    return transaction.type == TransactionTypes.incomeCode;
-  }
-
-  bool _matchesSalary(
-    TransactionModel transaction, {
-    Set<String>? currentUserParticipantIds,
-  }) {
-    if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds.contains(transaction.beneficiaryId) &&
-          transaction.type == TransactionTypes.salaryCode;
-    }
-
-    return transaction.type == TransactionTypes.salaryCode;
-  }
-
-  bool _matchesOtherIncome(
-    TransactionModel transaction, {
-    Set<String>? currentUserParticipantIds,
-  }) {
-    if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds.contains(transaction.beneficiaryId) &&
-          transaction.type == TransactionTypes.otherRecurringIncomeCode;
-    }
-
-    return transaction.type == TransactionTypes.otherRecurringIncomeCode;
-  }
-
-  bool _matchesGenericExpense(
-    TransactionModel transaction, {
-    Set<String>? currentUserParticipantIds,
-  }) {
-    if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds.contains(transaction.senderId) &&
-          transaction.type != TransactionTypes.subscriptionCode &&
-          transaction.type != TransactionTypes.otherRecurringExpenseCode;
-    }
-
-    return transaction.type == TransactionTypes.expenseCode;
-  }
-
-  bool _matchesSubscription(
-    TransactionModel transaction, {
-    Set<String>? currentUserParticipantIds,
-  }) {
-    if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds.contains(transaction.senderId) &&
-          transaction.type == TransactionTypes.subscriptionCode;
-    }
-
-    return transaction.type == TransactionTypes.subscriptionCode;
-  }
-
-  bool _matchesOtherExpense(
-    TransactionModel transaction, {
-    Set<String>? currentUserParticipantIds,
-  }) {
-    if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds.contains(transaction.senderId) &&
-          transaction.type == TransactionTypes.otherRecurringExpenseCode;
-    }
-
-    return transaction.type == TransactionTypes.otherRecurringExpenseCode ||
-        transaction.type == TransactionTypes.othersCode;
-  }
-
-  bool _matchesReceivableDebt(
-    DebtModel debt, {
-    Set<String>? currentUserParticipantIds,
-  }) {
-    if (!_isOpenDebt(debt)) {
-      return false;
-    }
-
-    if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds.contains(debt.lenderId);
-    }
-
-    return false;
-  }
-
-  bool _matchesPayableDebt(
-    DebtModel debt, {
-    Set<String>? currentUserParticipantIds,
-  }) {
-    if (!_isOpenDebt(debt)) {
-      return false;
-    }
-
-    if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds.contains(debt.borrowerId);
-    }
-
-    return false;
-  }
-
-  bool _isOpenDebt(DebtModel debt) {
-    return debt.remainingAmount > 0 && AppDebtState.isOpen(debt.status);
   }
 }

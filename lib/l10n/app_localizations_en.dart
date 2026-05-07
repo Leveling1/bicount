@@ -718,6 +718,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analysisBreakdownSubscriptions => 'Subscriptions';
 
   @override
+  String get analysisBreakdownRepayments => 'Repayments';
+
+  @override
   String get analysisBreakdownOther => 'Other';
 
   @override

@@ -718,6 +718,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get analysisBreakdownSubscriptions => 'Abonnements';
 
   @override
+  String get analysisBreakdownRepayments => 'Remboursements';
+
+  @override
   String get analysisBreakdownOther => 'Autre';
 
   @override

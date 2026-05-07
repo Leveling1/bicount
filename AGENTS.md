@@ -1119,6 +1119,8 @@ Rules:
 - the analysis dashboard inflow, outflow, and cashflow trend must use the same current-user participant identity set as the transaction feed and main finance projection
 - the current user participant identity set means `currentUser.uid` plus any `friends.sid` whose linked `friends.uid` equals the current user
 - `TransactionTypes.salaryCode` stays a dedicated inflow breakdown bucket
+- debt principal rows where the current user participant set is the sender should appear in the analysis expense breakdown as a dedicated `Debt` bucket instead of being merged into generic `Expenses`
+- debt repayment rows where the current user participant set is the beneficiary should appear in the analysis income breakdown as a dedicated `Repayments` bucket instead of being merged into generic `Income`
 - `TransactionTypes.subscriptionCode` stays a dedicated outflow breakdown bucket
 - `TransactionTypes.otherRecurringIncomeCode` belongs to the income breakdown `Other` bucket when the current user participant set is the beneficiary
 - `TransactionTypes.otherRecurringExpenseCode` belongs to the expense breakdown `Other` bucket when the current user participant set is the sender

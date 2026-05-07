@@ -1505,6 +1505,12 @@ abstract class AppLocalizations {
   /// **'Subscriptions'**
   String get analysisBreakdownSubscriptions;
 
+  /// No description provided for @analysisBreakdownRepayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Repayments'**
+  String get analysisBreakdownRepayments;
+
   /// No description provided for @analysisBreakdownOther.
   ///
   /// In en, this message translates to:

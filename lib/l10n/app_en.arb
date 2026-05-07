@@ -245,6 +245,7 @@
   "analysisBreakdownReceivedTransfers": "Inbound transfers",
   "analysisBreakdownExpenses": "Expenses",
   "analysisBreakdownSubscriptions": "Subscriptions",
+  "analysisBreakdownRepayments": "Repayments",
   "analysisBreakdownOther": "Other",
   "friendsTitle": "Contacts",
   "friendDetailTitle": "Contact details",

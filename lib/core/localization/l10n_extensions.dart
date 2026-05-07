@@ -36,6 +36,10 @@ extension L10nBuildContextX on BuildContext {
         return l10n.analysisBreakdownExpenses;
       case 'Subscriptions':
         return l10n.analysisBreakdownSubscriptions;
+      case 'Debt':
+        return l10n.transactionTypeDebt;
+      case 'Repayments':
+        return l10n.analysisBreakdownRepayments;
       case 'Other':
         return l10n.analysisBreakdownOther;
       default:
