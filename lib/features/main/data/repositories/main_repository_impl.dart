@@ -2,6 +2,7 @@ import 'package:bicount/brick/repository.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/main/data/data_sources/local_datasource/main_local_datasource.dart';
 import 'package:bicount/features/main/data/data_sources/remote_datasource/main_remote_datasource.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
@@ -43,15 +44,17 @@ class MainRepositoryImpl implements MainRepository {
       final userStream = localDataSource.getUserDetails();
       final friendsStream = localDataSource.getFriends();
       final transactionsStream = localDataSource.getTransaction();
+      final debtsStream = localDataSource.getDebts();
       final recurringTransfertsStream = localDataSource
           .getRecurringTransferts();
       final connectionStateStream = remoteDataSource.connectionState();
       final currencyConfigStream = currencyRepository.watchConfig();
 
-      return Rx.combineLatest6<
+      return Rx.combineLatest7<
             UserModel,
             List<FriendsModel>,
             List<TransactionModel>,
+            List<DebtModel>,
             List<RecurringTransfertModel>,
             int,
             CurrencyConfigEntity,
@@ -60,6 +63,7 @@ class MainRepositoryImpl implements MainRepository {
             userStream,
             friendsStream,
             transactionsStream,
+            debtsStream,
             recurringTransfertsStream,
             connectionStateStream,
             currencyConfigStream,
@@ -67,6 +71,7 @@ class MainRepositoryImpl implements MainRepository {
               user,
               friends,
               transactions,
+              debts,
               recurringTransferts,
               connectionState,
               currencyConfig,
@@ -75,6 +80,7 @@ class MainRepositoryImpl implements MainRepository {
                 user: user,
                 friends: friends,
                 transactions: transactions,
+                debts: debts,
                 recurringTransferts: recurringTransferts,
                 connectionState: connectionState,
                 currencyConfig: currencyConfig,

@@ -3,6 +3,8 @@ import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
+import 'package:bicount/features/debt/data/data_sources/local_datasource/local_debt_data_source_impl.dart';
+import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
@@ -21,14 +23,20 @@ class TransactionRepositoryImpl extends TransactionRepository {
   TransactionRepositoryImpl(
     this.localDataSource, {
     this.splitResolver = const TransactionSplitResolver(),
+    Future<void> Function(DebtModel debt)? saveDebt,
+    Future<void> Function(String debtId)? deleteDebt,
     Future<void> Function(RecurringTransfertModel recurringTransfert)?
     saveRecurringTransfert,
-  }) : _saveRecurringTransfert =
+  }) : _saveDebt = saveDebt ?? LocalDebtDataSourceImpl().createDebt,
+       _deleteDebt = deleteDebt ?? LocalDebtDataSourceImpl().deleteDebt,
+       _saveRecurringTransfert =
            saveRecurringTransfert ??
            OfflineFinanceLocalService().createRecurringTransfert;
 
   final TransactionLocalDataSource localDataSource;
   final TransactionSplitResolver splitResolver;
+  final Future<void> Function(DebtModel debt) _saveDebt;
+  final Future<void> Function(String debtId) _deleteDebt;
   final Future<void> Function(RecurringTransfertModel recurringTransfert)
   _saveRecurringTransfert;
   late final TransactionPartyResolutionService _partyResolutionService =
@@ -49,12 +57,62 @@ class TransactionRepositoryImpl extends TransactionRepository {
       );
       final gtid = const Uuid().v4();
       final authenticatedUserId = _authenticatedUserIdOrNull();
+      String? debtId;
+      String? principalTransactionId;
 
       // Create a recurring template if the user enabled recurring mode.
-      String? recurringTransfertId;
+      String? originId;
       int? generationMode;
       var shouldSaveLedgerRows = true;
-      if (transaction.isRecurring &&
+      if (transaction.isDebt) {
+        if (resolvedSplits.length != 1) {
+          throw MessageFailure(
+            message: 'Debt creation supports one beneficiary only.',
+          );
+        }
+        if (authenticatedUserId == null || authenticatedUserId.isEmpty) {
+          throw AuthenticationFailure(message: 'Authentication failure');
+        }
+
+        final dueDate = transaction.debtDueDate;
+        if (dueDate == null || dueDate.isEmpty) {
+          throw MessageFailure(message: 'Debt due date is required.');
+        }
+
+        final firstBeneficiary = await _partyResolutionService.resolveParty(
+          resolvedSplits.first.beneficiary,
+          transactionType: partyTransactionType,
+          resolvedParties: resolvedParties,
+        );
+        final now = DateTime.now().toIso8601String();
+        final expectedRepaymentAmount =
+            transaction.debtExpectedRepaymentAmount ?? transaction.totalAmount;
+        debtId = const Uuid().v4();
+        principalTransactionId = const Uuid().v4();
+        originId = debtId;
+
+        await _saveDebt(
+          DebtModel(
+            debtId: debtId,
+            createdBy: authenticatedUserId,
+            lenderId: sender.sid,
+            borrowerId: firstBeneficiary.sid,
+            principalTransactionId: principalTransactionId,
+            title: transaction.name,
+            note: transaction.note,
+            currency: transaction.currency,
+            principalAmount: transaction.totalAmount,
+            expectedRepaymentAmount: expectedRepaymentAmount,
+            remainingAmount: expectedRepaymentAmount,
+            dueDate: dueDate,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+      }
+
+      if (!transaction.isDebt &&
+          transaction.isRecurring &&
           transaction.recurringFrequency != null &&
           transaction.recurringTypeId != null) {
         final firstBeneficiary = await _partyResolutionService.resolveParty(
@@ -68,7 +126,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
                 ? firstBeneficiary.sid
                 : sender.sid);
         final executionMode = _resolveRecurringExecutionMode(transaction);
-        recurringTransfertId = const Uuid().v4();
+        originId = const Uuid().v4();
         shouldSaveLedgerRows = _shouldSaveRecurringLedgerRows(transaction);
         generationMode = shouldSaveLedgerRows
             ? TransactionTypes.generationManualConfirmation
@@ -76,7 +134,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
         await _saveRecurringTransfert(
           RecurringTransfertModel(
-            recurringTransfertId: recurringTransfertId,
+            recurringTransfertId: originId,
             uid: recurringOwnerId,
             recurringTransfertTypeId: transaction.recurringTypeId!,
             title: transaction.name,
@@ -98,7 +156,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
         );
       }
 
-      if (!shouldSaveLedgerRows && recurringTransfertId != null) {
+      if (!shouldSaveLedgerRows && originId != null) {
         return;
       }
 
@@ -110,6 +168,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
         );
         final saveResult = await localDataSource.saveTransaction(
           gtid,
+          transactionId: principalTransactionId,
           title: transaction.name,
           type: partyTransactionType,
           date: transaction.date,
@@ -122,14 +181,23 @@ class TransactionRepositoryImpl extends TransactionRepository {
           image: beneficiary.image.isEmpty
               ? Constants.memojiDefault
               : beneficiary.image,
-          recurringTransfertId: recurringTransfertId,
-          recurringOccurrenceDate: recurringTransfertId == null
+          originId: originId,
+          originOccurrenceDate: transaction.isDebt || originId == null
               ? null
               : transaction.date,
           generationMode: generationMode,
         );
 
-        await saveResult.fold(_throwFailure, (_) async => null);
+        final failure = saveResult.fold<Failure?>(
+          (error) => error,
+          (_) => null,
+        );
+        if (failure != null) {
+          if (debtId != null) {
+            await _deleteDebt(debtId);
+          }
+          await _throwFailure(failure);
+        }
       }
     } on Failure {
       rethrow;
@@ -225,6 +293,10 @@ class TransactionRepositoryImpl extends TransactionRepository {
   }
 
   int _resolvePartyTransactionType(CreateTransactionRequestEntity transaction) {
+    if (transaction.isDebt) {
+      return TransactionTypes.debtCode;
+    }
+
     return transaction.recurringTypeId ?? transaction.transactionType;
   }
 

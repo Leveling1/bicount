@@ -112,8 +112,9 @@ Bootstrap sequence:
 1. WidgetsFlutterBinding.ensureInitialized()
 2. Firebase.initializeApp(...)
 3. Repository.configure(databaseFactory)
-4. Repository().initialize()
-5. runApp(MyApp())
+4. Repository() repair passes run before Brick initialization
+5. Repository().initialize()
+6. runApp(MyApp())
 
 Dependency wiring:
 
@@ -131,6 +132,7 @@ Visible routes:
 - /
 - /analysis
 - /graphs as a legacy alias redirecting to /analysis
+- /debts
 - /recurring-fundings
 - /salary
 - /transaction
@@ -278,6 +280,8 @@ Current analysis outputs:
 - cashflow trend
 - expense breakdown
 - subscription insights
+- receivable debt card when nonzero
+- payable debt card when nonzero
 
 Inputs:
 
@@ -298,6 +302,29 @@ Interaction rule:
 - do not animate or rebuild the whole Analysis screen as if a full page reload happened
 - only the data-driven widgets should update, such as metric values, charts, breakdowns, and subscription insights
 - the intro copy, overall layout, and section structure should remain fixed during period changes
+
+### debt
+
+Purpose:
+
+- track debt contracts created from expense or income entry
+- separate the principal money row from the debt follow-up metadata
+- record repayments only from the dedicated debt management screen
+
+Main files:
+
+- lib/features/debt/data/models/debt.model.dart
+- lib/features/debt/data/repositories/debt_repository_impl.dart
+- lib/features/debt/presentation/screens/debt_screen.dart
+
+Rules:
+
+- debt management is a secondary route at `/debts`, not a main tab
+- analysis cards `À percevoir` and `À rembourser` are the visible entry point when their values are nonzero
+- creating a debt still writes the principal money movement into `transactions`
+- the linked contract row lives in `debts`
+- debt repayments must be recorded only from `debt_screen.dart`, not from transaction creation or edit forms
+- notification payloads for debts should use `route` only, for example `/debts?debtId=...`
 
 ### transaction
 
@@ -330,6 +357,7 @@ Important V1 work:
 - fixed currency handling so the form value is used
 - added grouped split support
 - split the transaction entry UI into dedicated expense and income forms with shared presentational widgets
+- added an optional debt mode in expense and income creation, with repayment follow-up kept outside the forms
 
 Grouped split modes:
 
@@ -593,7 +621,8 @@ Be careful when editing these areas:
 10. Keep documents in docs updated when backend contracts change.
 11. Treat `UserModel.uid` as the only user primary key; if you see current-user logic still using `sid`, migrate it instead of patching around it.
 12. Do not remove `FriendsModel.sid` unless the user explicitly confirms a backend change for the friends domain too.
-11. Do not hardcode SQLite table names for local cache cleanup; use the generated Brick schema so sign out stays aligned with real local tables.
+13. Do not hardcode SQLite table names for local cache cleanup; use the generated Brick schema so sign out stays aligned with real local tables.
+14. Never ship schema, migration, or repair changes that can drop, overwrite, or orphan user data without a verified additive migration or backfill path. Prefer additive columns, idempotent repair passes, and explicit Brick migration version recording over destructive steps.
 
 ## Suggested Read Order
 

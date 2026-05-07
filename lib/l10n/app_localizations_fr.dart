@@ -1008,6 +1008,33 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transactionAddAtLeastOneBeneficiary => 'Ajoutez au moins un bénéficiaire.';
 
   @override
+  String get transactionDebtToggleTitle => 'Suivre comme dette';
+
+  @override
+  String get transactionDebtToggleSubtitleExpense => 'Utilisez ceci quand vous avez avancé de l\'argent qui doit vous être remboursé plus tard.';
+
+  @override
+  String get transactionDebtToggleSubtitleIncome => 'Utilisez ceci quand vous avez reçu de l\'argent que vous prévoyez de rembourser plus tard.';
+
+  @override
+  String get transactionDebtDueDateLabel => 'Date limite de remboursement';
+
+  @override
+  String get transactionDebtDueDateRequired => 'Choisissez une date limite de remboursement.';
+
+  @override
+  String get transactionDebtExpectedAmountLabel => 'Montant attendu du remboursement (optionnel)';
+
+  @override
+  String get transactionDebtExpectedAmountHint => 'Laissez vide pour reprendre le montant total de la transaction';
+
+  @override
+  String get transactionDebtExpectedAmountInvalid => 'Saisissez un montant attendu de remboursement valide.';
+
+  @override
+  String get transactionDebtSingleBeneficiaryOnly => 'Le suivi de dette ne prend en charge qu\'une seule contrepartie.';
+
+  @override
   String get transactionIncomeSenderCannotBeCurrentUser => 'L\'expéditeur d\'un revenu ne peut pas être vous. Pour un revenu, l\'utilisateur courant est toujours le bénéficiaire.';
 
   @override
@@ -1441,6 +1468,78 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get recurringTypeOther => 'Autre récurrent';
+
+  @override
+  String get analysisReceivableDebt => 'À percevoir';
+
+  @override
+  String get analysisPayableDebt => 'À rembourser';
+
+  @override
+  String get debtScreenTitle => 'Dettes';
+
+  @override
+  String get debtReceivableSectionTitle => 'À percevoir';
+
+  @override
+  String get debtPayableSectionTitle => 'À rembourser';
+
+  @override
+  String get debtEmptyState => 'Aucune dette active ne demande votre attention pour le moment.';
+
+  @override
+  String get debtStatusOpen => 'Ouverte';
+
+  @override
+  String get debtStatusOverdue => 'En retard';
+
+  @override
+  String get debtCounterpartyLabel => 'Contrepartie';
+
+  @override
+  String get debtExpectedLabel => 'Attendu';
+
+  @override
+  String get debtRepaidLabel => 'Déjà enregistré';
+
+  @override
+  String get debtRemainingLabel => 'Reste';
+
+  @override
+  String get debtDueDateLabel => 'Échéance';
+
+  @override
+  String get debtPaymentAmountLabel => 'Montant reçu';
+
+  @override
+  String get debtPaymentAmountHint => 'Saisissez le montant reçu';
+
+  @override
+  String get debtRecordPaymentCta => 'Enregistrer le paiement';
+
+  @override
+  String get debtPermissionHint => 'Seule la partie autorisée peut enregistrer les remboursements reçus pour cette dette.';
+
+  @override
+  String get debtInvalidPaymentAmount => 'Saisissez un montant valide qui ne dépasse pas le reste à payer.';
+
+  @override
+  String get debtPaymentRecordedSuccess => 'Paiement de dette enregistré avec succès.';
+
+  @override
+  String get debtNotFound => 'Cette dette est introuvable.';
+
+  @override
+  String get debtRepaymentAmountInvalid => 'Saisissez un montant de remboursement valide.';
+
+  @override
+  String get debtRepaymentAmountTooHigh => 'Le montant remboursé ne peut pas dépasser le reste à payer.';
+
+  @override
+  String get debtOnlyLenderCanRecord => 'Seul le prêteur peut confirmer un remboursement reçu.';
+
+  @override
+  String get debtOnlyCreatorCanUpdate => 'Seul le créateur peut mettre cette dette à jour pour le moment.';
 
   @override
   String get recurringTypeSalary => 'Salaire';

@@ -23,6 +23,7 @@ MainEntity prepareMainScreenData(MainEntity data) {
     referenceCurrencyCode: data.referenceCurrencyCode,
     friends: data.friends,
     transactions: sortedTransactions,
+    debts: data.debts,
     recurringTransferts: data.recurringTransferts,
   );
 }

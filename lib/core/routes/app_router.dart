@@ -5,6 +5,10 @@ import 'package:bicount/core/home_widget/bicount_home_widget_action.dart';
 import 'package:bicount/core/routes/friend_invite_route.dart';
 import 'package:bicount/features/authentification/presentation/screens/auth_email_code_screen.dart';
 import 'package:bicount/features/authentification/presentation/screens/auth_screen.dart';
+import 'package:bicount/features/debt/data/repositories/debt_repository_impl.dart';
+import 'package:bicount/features/debt/domain/entities/debt_list_scope.dart';
+import 'package:bicount/features/debt/presentation/bloc/debt_bloc.dart';
+import 'package:bicount/features/debt/presentation/screens/debt_screen.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_invite_landing_screen.dart';
 import 'package:bicount/features/recurring_fundings/data/repositories/recurring_transfert_repository_impl.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
@@ -152,6 +156,22 @@ class AppRouter {
             path: '/settings',
             pageBuilder: (context, state) => buildFadeSlideTransitionPage(
               child: const SettingsScreen(),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/debts',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: BlocProvider(
+                create: (context) =>
+                    DebtBloc(context.read<DebtRepositoryImpl>()),
+                child: DebtScreen(
+                  initialScope: DebtListScopeX.fromQuery(
+                    state.uri.queryParameters['scope'],
+                  ),
+                  focusDebtId: state.uri.queryParameters['debtId'],
+                ),
+              ),
               state: state,
             ),
           ),

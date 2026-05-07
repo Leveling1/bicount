@@ -68,6 +68,9 @@ class CreateTransactionRequestEntity {
     this.recurringTypeId,
     this.recurringExecutionMode,
     this.recurringReminderEnabled,
+    this.isDebt = false,
+    this.debtDueDate,
+    this.debtExpectedRepaymentAmount,
   });
 
   final String name;
@@ -97,4 +100,13 @@ class CreateTransactionRequestEntity {
   /// Optional reminder flag for recurring templates that surface due-date
   /// reminders.
   final bool? recurringReminderEnabled;
+
+  /// When true the transaction also creates a tracked debt contract.
+  final bool isDebt;
+
+  /// Due date used by the debt contract.
+  final String? debtDueDate;
+
+  /// Optional repayment target. When omitted, the total amount is expected.
+  final double? debtExpectedRepaymentAmount;
 }

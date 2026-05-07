@@ -80,6 +80,27 @@ extension _ExpenseFormSubmission on _ExpenseFormState {
       return;
     }
 
+    if (_isDebt && _beneficiaryList.length != 1) {
+      NotificationHelper.showFailureNotification(
+        context,
+        context.l10n.transactionDebtSingleBeneficiaryOnly,
+      );
+      return;
+    }
+
+    final expectedRepaymentAmount = parseAmount(
+      _debtExpectedRepaymentAmount.text,
+    );
+    if (_isDebt &&
+        _debtExpectedRepaymentAmount.text.trim().isNotEmpty &&
+        (expectedRepaymentAmount == null || expectedRepaymentAmount <= 0)) {
+      NotificationHelper.showFailureNotification(
+        context,
+        context.l10n.transactionDebtExpectedAmountInvalid,
+      );
+      return;
+    }
+
     try {
       final request = CreateTransactionRequestEntity(
         name: _name.text.trim(),
@@ -91,9 +112,14 @@ extension _ExpenseFormSubmission on _ExpenseFormState {
         transactionType: transactionFormType,
         splitMode: _isEditing ? TransactionSplitMode.equal : _splitMode,
         splits: _buildSplitInputs(),
-        isRecurring: _isRecurring,
-        recurringFrequency: _isRecurring ? _recurringFrequency : null,
-        recurringTypeId: _isRecurring ? _recurringTypeId : null,
+        isRecurring: _isRecurring && !_isDebt,
+        recurringFrequency: _isRecurring && !_isDebt
+            ? _recurringFrequency
+            : null,
+        recurringTypeId: _isRecurring && !_isDebt ? _recurringTypeId : null,
+        isDebt: _isDebt,
+        debtDueDate: _isDebt ? resolveFormDateToIso(_debtDueDate.text) : null,
+        debtExpectedRepaymentAmount: _isDebt ? expectedRepaymentAmount : null,
       );
       _splitResolver.resolve(request);
       if (_isEditing) {

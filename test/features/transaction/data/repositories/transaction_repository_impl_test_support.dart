@@ -50,6 +50,7 @@ class FakeTransactionLocalDataSource implements TransactionLocalDataSource {
   @override
   Future<Either<Failure, void>> saveTransaction(
     String gtid, {
+    String? transactionId,
     required String title,
     required String date,
     required double amount,
@@ -60,8 +61,8 @@ class FakeTransactionLocalDataSource implements TransactionLocalDataSource {
     required String beneficiaryId,
     required String image,
     required int type,
-    String? recurringTransfertId,
-    String? recurringOccurrenceDate,
+    String? originId,
+    String? originOccurrenceDate,
     int? generationMode,
   }) async {
     savedTransactions.add(
@@ -70,8 +71,8 @@ class FakeTransactionLocalDataSource implements TransactionLocalDataSource {
         senderId: senderId,
         beneficiaryId: beneficiaryId,
         type: type,
-        recurringTransfertId: recurringTransfertId,
-        recurringOccurrenceDate: recurringOccurrenceDate,
+        originId: originId,
+        originOccurrenceDate: originOccurrenceDate,
         generationMode: generationMode,
       ),
     );
@@ -102,8 +103,8 @@ class SavedTransactionRecord {
     required this.senderId,
     required this.beneficiaryId,
     required this.type,
-    required this.recurringTransfertId,
-    required this.recurringOccurrenceDate,
+    required this.originId,
+    required this.originOccurrenceDate,
     required this.generationMode,
   });
 
@@ -111,8 +112,8 @@ class SavedTransactionRecord {
   final String senderId;
   final String beneficiaryId;
   final int type;
-  final String? recurringTransfertId;
-  final String? recurringOccurrenceDate;
+  final String? originId;
+  final String? originOccurrenceDate;
   final int? generationMode;
 }
 

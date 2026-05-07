@@ -21,7 +21,7 @@ extension _IncomeFormPrefill on _IncomeFormState {
     _currency.text = transaction.currency;
     _note.text = transaction.note;
     _sender.text = _partyLabelForId(transaction.sender);
-    canEditAllFields = transaction.recurringTransfertId == null;
+    canEditAllFields = transaction.originId == null;
 
     if (widget.user != null) {
       _beneficiaryList

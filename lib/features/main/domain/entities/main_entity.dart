@@ -1,5 +1,6 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:equatable/equatable.dart';
@@ -12,6 +13,7 @@ class MainEntity extends Equatable {
   final String referenceCurrencyCode;
   final List<FriendsModel> friends;
   final List<TransactionModel> transactions;
+  final List<DebtModel> debts;
   final List<RecurringTransfertModel> recurringTransferts;
 
   const MainEntity({
@@ -20,6 +22,7 @@ class MainEntity extends Equatable {
     required this.referenceCurrencyCode,
     required this.friends,
     required this.transactions,
+    required this.debts,
     required this.recurringTransferts,
   });
 
@@ -29,6 +32,7 @@ class MainEntity extends Equatable {
     referenceCurrencyCode,
     friends,
     transactions,
+    debts,
     recurringTransferts,
   ];
 
@@ -50,6 +54,7 @@ class MainEntity extends Equatable {
       referenceCurrencyCode: 'CDF',
       friends: [],
       transactions: [],
+      debts: [],
       recurringTransferts: [],
     );
   }

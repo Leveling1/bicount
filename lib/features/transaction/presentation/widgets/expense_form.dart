@@ -6,6 +6,7 @@ import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/utils/form_date_utils.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';
@@ -17,6 +18,7 @@ import 'package:bicount/features/transaction/domain/services/transaction_split_r
 import 'package:bicount/features/transaction/presentation/widgets/split_preview_result.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transfer_form_beneficiaries_section.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transfer_form_beneficiary_list.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transfer_form_debt_section.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transfer_form_recurring_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -59,6 +61,9 @@ class _ExpenseFormState extends State<ExpenseForm>
   final TextEditingController _amount = TextEditingController();
   final TextEditingController _currency = TextEditingController();
   final TextEditingController _beneficiary = TextEditingController();
+  final TextEditingController _debtDueDate = TextEditingController();
+  final TextEditingController _debtExpectedRepaymentAmount =
+      TextEditingController();
   final TextEditingController _sender = TextEditingController();
   final TextEditingController _note = TextEditingController();
 
@@ -70,6 +75,7 @@ class _ExpenseFormState extends State<ExpenseForm>
 
   TransactionSplitMode _splitMode = TransactionSplitMode.equal;
   bool _didPrefillInitialTransaction = false;
+  bool _isDebt = false;
   bool _isRecurring = false;
   bool canEditAllFields = true;
   int _recurringFrequency = Frequency.monthly;
@@ -82,8 +88,11 @@ class _ExpenseFormState extends State<ExpenseForm>
   int get transactionFormType => TransactionTypes.expenseCode;
 
   @override
-  int get transactionFormPartyType =>
-      _isRecurring ? _recurringTypeId : transactionFormType;
+  int get transactionFormPartyType => _isDebt
+      ? TransactionTypes.debtCode
+      : _isRecurring
+      ? _recurringTypeId
+      : transactionFormType;
 
   @override
   List<FriendsModel> get transactionFormFriends => widget.friends;
@@ -121,6 +130,8 @@ class _ExpenseFormState extends State<ExpenseForm>
     _amount.dispose();
     _currency.dispose();
     _beneficiary.dispose();
+    _debtDueDate.dispose();
+    _debtExpectedRepaymentAmount.dispose();
     _sender.dispose();
     _note.dispose();
     for (final controller in _splitControllers.values) {

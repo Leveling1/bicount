@@ -2057,6 +2057,60 @@ abstract class AppLocalizations {
   /// **'Add at least one beneficiary.'**
   String get transactionAddAtLeastOneBeneficiary;
 
+  /// No description provided for @transactionDebtToggleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track as a debt'**
+  String get transactionDebtToggleTitle;
+
+  /// No description provided for @transactionDebtToggleSubtitleExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this when you paid money that should be repaid later.'**
+  String get transactionDebtToggleSubtitleExpense;
+
+  /// No description provided for @transactionDebtToggleSubtitleIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this when you received money that you plan to repay later.'**
+  String get transactionDebtToggleSubtitleIncome;
+
+  /// No description provided for @transactionDebtDueDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Repayment due date'**
+  String get transactionDebtDueDateLabel;
+
+  /// No description provided for @transactionDebtDueDateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a repayment due date.'**
+  String get transactionDebtDueDateRequired;
+
+  /// No description provided for @transactionDebtExpectedAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected repayment amount (optional)'**
+  String get transactionDebtExpectedAmountLabel;
+
+  /// No description provided for @transactionDebtExpectedAmountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty to use the full transaction amount'**
+  String get transactionDebtExpectedAmountHint;
+
+  /// No description provided for @transactionDebtExpectedAmountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid expected repayment amount.'**
+  String get transactionDebtExpectedAmountInvalid;
+
+  /// No description provided for @transactionDebtSingleBeneficiaryOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt tracking supports one counterparty only.'**
+  String get transactionDebtSingleBeneficiaryOnly;
+
   /// No description provided for @transactionIncomeSenderCannotBeCurrentUser.
   ///
   /// In en, this message translates to:
@@ -2890,6 +2944,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other recurring'**
   String get recurringTypeOther;
+
+  /// No description provided for @analysisReceivableDebt.
+  ///
+  /// In en, this message translates to:
+  /// **'To collect'**
+  String get analysisReceivableDebt;
+
+  /// No description provided for @analysisPayableDebt.
+  ///
+  /// In en, this message translates to:
+  /// **'To repay'**
+  String get analysisPayableDebt;
+
+  /// No description provided for @debtScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Debts'**
+  String get debtScreenTitle;
+
+  /// No description provided for @debtReceivableSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'To collect'**
+  String get debtReceivableSectionTitle;
+
+  /// No description provided for @debtPayableSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'To repay'**
+  String get debtPayableSectionTitle;
+
+  /// No description provided for @debtEmptyState.
+  ///
+  /// In en, this message translates to:
+  /// **'No active debt needs your attention right now.'**
+  String get debtEmptyState;
+
+  /// No description provided for @debtStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get debtStatusOpen;
+
+  /// No description provided for @debtStatusOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get debtStatusOverdue;
+
+  /// No description provided for @debtCounterpartyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Counterparty'**
+  String get debtCounterpartyLabel;
+
+  /// No description provided for @debtExpectedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected'**
+  String get debtExpectedLabel;
+
+  /// No description provided for @debtRepaidLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Already recorded'**
+  String get debtRepaidLabel;
+
+  /// No description provided for @debtRemainingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get debtRemainingLabel;
+
+  /// No description provided for @debtDueDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Due date'**
+  String get debtDueDateLabel;
+
+  /// No description provided for @debtPaymentAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Received amount'**
+  String get debtPaymentAmountLabel;
+
+  /// No description provided for @debtPaymentAmountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the amount received'**
+  String get debtPaymentAmountHint;
+
+  /// No description provided for @debtRecordPaymentCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Record payment'**
+  String get debtRecordPaymentCta;
+
+  /// No description provided for @debtPermissionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the authorized side can register received repayments for this debt.'**
+  String get debtPermissionHint;
+
+  /// No description provided for @debtInvalidPaymentAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid amount that does not exceed the remaining balance.'**
+  String get debtInvalidPaymentAmount;
+
+  /// No description provided for @debtPaymentRecordedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt payment recorded successfully.'**
+  String get debtPaymentRecordedSuccess;
+
+  /// No description provided for @debtNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This debt could not be found.'**
+  String get debtNotFound;
+
+  /// No description provided for @debtRepaymentAmountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid repayment amount.'**
+  String get debtRepaymentAmountInvalid;
+
+  /// No description provided for @debtRepaymentAmountTooHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'The repayment amount cannot exceed the remaining balance.'**
+  String get debtRepaymentAmountTooHigh;
+
+  /// No description provided for @debtOnlyLenderCanRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the lender can confirm a received repayment.'**
+  String get debtOnlyLenderCanRecord;
+
+  /// No description provided for @debtOnlyCreatorCanUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the creator can update this debt for now.'**
+  String get debtOnlyCreatorCanUpdate;
 
   /// No description provided for @recurringTypeSalary.
   ///

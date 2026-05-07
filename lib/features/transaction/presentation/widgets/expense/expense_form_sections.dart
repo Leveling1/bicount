@@ -84,6 +84,32 @@ extension _ExpenseFormSections on _ExpenseFormState {
         ),
         if (canEditAllFields) ...[
           AppDimens.spacerMedium,
+          TransferFormDebtSection(
+            isDebt: _isDebt,
+            subtitle: context.l10n.transactionDebtToggleSubtitleExpense,
+            enabled: !_isEditing,
+            dueDateController: _debtDueDate,
+            expectedAmountController: _debtExpectedRepaymentAmount,
+            onDebtChanged: (value) {
+              if (value && _beneficiaryList.length > 1) {
+                NotificationHelper.showFailureNotification(
+                  context,
+                  context.l10n.transactionDebtSingleBeneficiaryOnly,
+                );
+                return;
+              }
+
+              _update(() {
+                _isDebt = value;
+                if (value) {
+                  _isRecurring = false;
+                }
+              });
+            },
+          ),
+        ],
+        if (canEditAllFields && !_isDebt) ...[
+          AppDimens.spacerMedium,
           TransferFormRecurringSection(
             isRecurring: _isRecurring,
             frequency: _recurringFrequency,
@@ -93,6 +119,9 @@ extension _ExpenseFormSections on _ExpenseFormState {
             enabled: !_isEditing,
             onRecurringChanged: (value) => _update(() {
               _isRecurring = value;
+              if (value) {
+                _isDebt = false;
+              }
               if (_name.text.isEmpty) {
                 _name.text =
                     "${TransactionTypes.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? _beneficiaryList[0].username : ""}";

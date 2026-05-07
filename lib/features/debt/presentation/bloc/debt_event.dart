@@ -1,6 +1,11 @@
 part of 'debt_bloc.dart';
 
-abstract class DebtEvent {}
+sealed class DebtEvent {
+  const DebtEvent();
+}
 
-// Add your events here
-class ExampleDebtEvent extends DebtEvent {}
+final class RecordDebtPaymentRequested extends DebtEvent {
+  const RecordDebtPaymentRequested(this.request);
+
+  final RecordDebtPaymentRequestEntity request;
+}

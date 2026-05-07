@@ -6,6 +6,7 @@ class TablesName {
   static const String friends = 'friends';
   static const String projects = 'projects';
   static const String transactions = 'transactions';
+  static const String debts = 'debts';
   static const String recurringTransfert = 'recurring_transfert';
   static const String accounts = 'accounts';
 
@@ -22,6 +23,7 @@ class TablesName {
     TablesName.friends,
     TablesName.projects,
     TablesName.transactions,
+    TablesName.debts,
     TablesName.recurringTransfert,
     TablesName.accounts,
   ];

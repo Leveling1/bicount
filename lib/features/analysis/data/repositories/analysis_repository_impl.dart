@@ -32,6 +32,7 @@ class AnalysisRepositoryImpl implements AnalysisRepository {
           AnalysisSourceData(
             transactions: transactions,
             recurringTransferts: const [],
+            debts: const [],
           ),
           period,
           currencyConfig,

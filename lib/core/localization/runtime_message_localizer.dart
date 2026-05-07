@@ -41,6 +41,20 @@ String localizeRuntimeMessage(BuildContext context, String message) {
       return context.l10n.transactionEnterValidAmount;
     case 'Enter a valid total amount to preview the split.':
       return context.l10n.transactionPreviewEnterValidTotal;
+    case 'Debt creation supports one beneficiary only.':
+      return context.l10n.transactionDebtSingleBeneficiaryOnly;
+    case 'Debt due date is required.':
+      return context.l10n.transactionDebtDueDateRequired;
+    case 'Debt not found.':
+      return context.l10n.debtNotFound;
+    case 'Enter a valid repayment amount.':
+      return context.l10n.debtRepaymentAmountInvalid;
+    case 'Repayment amount cannot exceed the remaining balance.':
+      return context.l10n.debtRepaymentAmountTooHigh;
+    case 'Only the lender can confirm received repayments.':
+      return context.l10n.debtOnlyLenderCanRecord;
+    case 'Only the creator can update this debt for now.':
+      return context.l10n.debtOnlyCreatorCanUpdate;
     case 'Unable to save this friend right now.':
     case 'An error occurred while saving your new friend.':
       return context.l10n.runtimeFriendSaveFailed;

@@ -31,6 +31,7 @@ import '../features/add_fund/data/models/recurring_funding.model.dart';
 import '../features/authentification/data/models/user.model.dart';
 import '../features/company/data/models/company.model.dart';
 import '../features/company/data/models/company_with_user_link.model.dart';
+import '../features/debt/data/models/debt.model.dart';
 import '../features/group/data/models/group.model.dart';
 import '../features/main/data/models/friends.model.dart';
 import '../features/project/data/models/project.model.dart';
@@ -44,6 +45,7 @@ part 'adapters/recurring_funding_model_adapter.g.dart';
 part 'adapters/user_model_adapter.g.dart';
 part 'adapters/company_model_adapter.g.dart';
 part 'adapters/company_with_user_link_model_adapter.g.dart';
+part 'adapters/debt_model_adapter.g.dart';
 part 'adapters/group_model_adapter.g.dart';
 part 'adapters/friends_model_adapter.g.dart';
 part 'adapters/project_model_adapter.g.dart';
@@ -59,6 +61,7 @@ final Map<Type, SupabaseAdapter<SupabaseModel>> supabaseMappings = {
   UserModel: UserModelAdapter(),
   CompanyModel: CompanyModelAdapter(),
   CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
+  DebtModel: DebtModelAdapter(),
   GroupModel: GroupModelAdapter(),
   FriendsModel: FriendsModelAdapter(),
   ProjectModel: ProjectModelAdapter(),
@@ -76,6 +79,7 @@ final Map<Type, SqliteAdapter<SqliteModel>> sqliteMappings = {
   UserModel: UserModelAdapter(),
   CompanyModel: CompanyModelAdapter(),
   CompanyWithUserLinkModel: CompanyWithUserLinkModelAdapter(),
+  DebtModel: DebtModelAdapter(),
   GroupModel: GroupModelAdapter(),
   FriendsModel: FriendsModelAdapter(),
   ProjectModel: ProjectModelAdapter(),

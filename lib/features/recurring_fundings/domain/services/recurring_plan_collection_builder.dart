@@ -77,9 +77,7 @@ class RecurringPlanCollectionBuilder {
   }) {
     final linkedTransactions =
         transactions
-            .where(
-              (item) => item.recurringTransfertId == plan.recurringTransfertId,
-            )
+            .where((item) => item.originId == plan.recurringTransfertId)
             .toList(growable: false)
           ..sort((left, right) => right.date.compareTo(left.date));
 

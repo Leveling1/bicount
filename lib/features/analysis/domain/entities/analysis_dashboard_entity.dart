@@ -37,6 +37,8 @@ class AnalysisDashboardEntity extends Equatable {
     required this.inflow,
     required this.outflow,
     required this.netFlow,
+    required this.receivableDebt,
+    required this.payableDebt,
     required this.cashflowPoints,
     required this.incomeBreakdown,
     required this.expenseBreakdown,
@@ -49,6 +51,8 @@ class AnalysisDashboardEntity extends Equatable {
   final double inflow;
   final double outflow;
   final double netFlow;
+  final double receivableDebt;
+  final double payableDebt;
   final List<AnalysisCashflowPoint> cashflowPoints;
   final List<AnalysisBreakdownItem> incomeBreakdown;
   final List<AnalysisBreakdownItem> expenseBreakdown;
@@ -62,6 +66,8 @@ class AnalysisDashboardEntity extends Equatable {
     inflow,
     outflow,
     netFlow,
+    receivableDebt,
+    payableDebt,
     cashflowPoints,
     incomeBreakdown,
     expenseBreakdown,

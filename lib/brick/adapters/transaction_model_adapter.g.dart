@@ -41,12 +41,10 @@ Future<TransactionModel> _$TransactionModelFromSupabase(
     createdAt: data['created_at'] == null
         ? null
         : data['created_at'] as String?,
-    recurringTransfertId: data['recurring_transfert_id'] == null
+    originId: data['origin_id'] == null ? null : data['origin_id'] as String?,
+    originOccurrenceDate: data['origin_occurrence_date'] == null
         ? null
-        : data['recurring_transfert_id'] as String?,
-    recurringOccurrenceDate: data['recurring_occurrence_date'] == null
-        ? null
-        : data['recurring_occurrence_date'] as String?,
+        : data['origin_occurrence_date'] as String?,
     generationMode: data['generation_mode'] == null
         ? null
         : data['generation_mode'] as int?,
@@ -80,8 +78,8 @@ Future<Map<String, dynamic>> _$TransactionModelToSupabase(
     'frequency': instance.frequency,
     'category': instance.category,
     'created_at': instance.createdAt,
-    'recurring_transfert_id': instance.recurringTransfertId,
-    'recurring_occurrence_date': instance.recurringOccurrenceDate,
+    'origin_id': instance.originId,
+    'origin_occurrence_date': instance.originOccurrenceDate,
     'generation_mode': instance.generationMode,
     'tid': instance.tid,
   };
@@ -127,12 +125,10 @@ Future<TransactionModel> _$TransactionModelFromSqlite(
     createdAt: data['created_at'] == null
         ? null
         : data['created_at'] as String?,
-    recurringTransfertId: data['recurring_transfert_id'] == null
+    originId: data['origin_id'] == null ? null : data['origin_id'] as String?,
+    originOccurrenceDate: data['origin_occurrence_date'] == null
         ? null
-        : data['recurring_transfert_id'] as String?,
-    recurringOccurrenceDate: data['recurring_occurrence_date'] == null
-        ? null
-        : data['recurring_occurrence_date'] as String?,
+        : data['origin_occurrence_date'] as String?,
     generationMode: data['generation_mode'] == null
         ? null
         : data['generation_mode'] as int?,
@@ -166,8 +162,8 @@ Future<Map<String, dynamic>> _$TransactionModelToSqlite(
     'frequency': instance.frequency,
     'category': instance.category,
     'created_at': instance.createdAt,
-    'recurring_transfert_id': instance.recurringTransfertId,
-    'recurring_occurrence_date': instance.recurringOccurrenceDate,
+    'origin_id': instance.originId,
+    'origin_occurrence_date': instance.originOccurrenceDate,
     'generation_mode': instance.generationMode,
     'tid': instance.tid,
   };
@@ -264,13 +260,13 @@ class TransactionModelAdapter
       association: false,
       columnName: 'created_at',
     ),
-    'recurringTransfertId': const RuntimeSupabaseColumnDefinition(
+    'originId': const RuntimeSupabaseColumnDefinition(
       association: false,
-      columnName: 'recurring_transfert_id',
+      columnName: 'origin_id',
     ),
-    'recurringOccurrenceDate': const RuntimeSupabaseColumnDefinition(
+    'originOccurrenceDate': const RuntimeSupabaseColumnDefinition(
       association: false,
-      columnName: 'recurring_occurrence_date',
+      columnName: 'origin_occurrence_date',
     ),
     'generationMode': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -413,15 +409,15 @@ class TransactionModelAdapter
       iterable: false,
       type: String,
     ),
-    'recurringTransfertId': const RuntimeSqliteColumnDefinition(
+    'originId': const RuntimeSqliteColumnDefinition(
       association: false,
-      columnName: 'recurring_transfert_id',
+      columnName: 'origin_id',
       iterable: false,
       type: String,
     ),
-    'recurringOccurrenceDate': const RuntimeSqliteColumnDefinition(
+    'originOccurrenceDate': const RuntimeSqliteColumnDefinition(
       association: false,
-      columnName: 'recurring_occurrence_date',
+      columnName: 'origin_occurrence_date',
       iterable: false,
       type: String,
     ),

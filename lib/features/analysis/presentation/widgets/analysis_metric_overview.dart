@@ -6,6 +6,7 @@ import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/themes/other_theme.dart';
 import '../../domain/entities/analysis_dashboard_entity.dart';
 import 'analysis_metric_card.dart';
+import 'package:go_router/go_router.dart';
 
 class AnalysisMetricOverview extends StatelessWidget {
   const AnalysisMetricOverview({super.key, required this.dashboard});
@@ -54,6 +55,26 @@ class AnalysisMetricOverview extends StatelessWidget {
               color: Theme.of(context).extension<OtherTheme>()!.expense!,
               icon: IconLinks.expense,
             ),
+            if (dashboard.receivableDebt > 0)
+              AnalysisMetricCard(
+                width: cardWidth,
+                title: context.l10n.analysisReceivableDebt,
+                value: dashboard.receivableDebt,
+                currencyCode: dashboard.displayCurrencyCode,
+                color: Theme.of(context).extension<OtherTheme>()!.income!,
+                icon: IconLinks.moneyIcon,
+                onTap: () => context.push('/debts?scope=receivable'),
+              ),
+            if (dashboard.payableDebt > 0)
+              AnalysisMetricCard(
+                width: cardWidth,
+                title: context.l10n.analysisPayableDebt,
+                value: dashboard.payableDebt,
+                currencyCode: dashboard.displayCurrencyCode,
+                color: Theme.of(context).extension<OtherTheme>()!.expense!,
+                icon: IconLinks.wallet,
+                onTap: () => context.push('/debts?scope=payable'),
+              ),
           ],
         );
       },

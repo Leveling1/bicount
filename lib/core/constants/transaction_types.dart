@@ -16,7 +16,8 @@ class TransactionTypes {
   static const int salaryCode = 3;
   static const int otherRecurringExpenseCode = 4;
   static const int otherRecurringIncomeCode = 5;
-  static const int othersCode = 6;
+  static const int debtCode = 6;
+  static const int othersCode = 7;
 
   // ── Legacy type aliases kept for backward migration reading ──
 
@@ -88,5 +89,9 @@ class TransactionTypes {
 
   static bool isExpenseType(int typeId) {
     return typeId == expenseCode || expenseTypes.contains(typeId);
+  }
+
+  static bool isDebtType(int typeId) {
+    return typeId == debtCode;
   }
 }

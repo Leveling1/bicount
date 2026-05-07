@@ -81,8 +81,11 @@ extension _IncomeFormInteractions on _IncomeFormState {
       _beneficiary.clear();
       _sender.clear();
       _note.clear();
+      _debtDueDate.clear();
+      _debtExpectedRepaymentAmount.clear();
       _beneficiaryList.clear();
       _splitMode = TransactionSplitMode.equal;
+      _isDebt = false;
       _isRecurring = false;
       _recurringFrequency = Frequency.monthly;
       _recurringTypeId = TransactionTypes.salaryCode;

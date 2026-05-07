@@ -3,6 +3,7 @@ import 'package:bicount/core/services/transaction_participant_identity_service.d
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
@@ -22,6 +23,7 @@ class MainFinanceProjectionService {
     required UserModel user,
     required List<FriendsModel> friends,
     required List<TransactionModel> transactions,
+    required List<DebtModel> debts,
     required List<RecurringTransfertModel> recurringTransferts,
     required int connectionState,
     required CurrencyConfigEntity currencyConfig,
@@ -51,6 +53,7 @@ class MainFinanceProjectionService {
         currencyConfig: currencyConfig,
       ),
       transactions: relevantTransactions,
+      debts: debts,
       recurringTransferts: recurringTransferts,
     );
   }

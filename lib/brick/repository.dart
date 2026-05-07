@@ -39,6 +39,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
   static const _userReferenceCurrencySchemaVersion = 20260329194500;
   static const _salaryTrackingSchemaVersion = 20260331113000;
   static const _recurringTransfertSchemaVersion = 20260409080526;
+  static const _debtOriginSchemaVersion = 20260507143446;
   static final _uuidRegExp = RegExp(
     r'^[0-9a-fA-F]{8}-'
     r'[0-9a-fA-F]{4}-'
@@ -386,6 +387,83 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       await database.execute(
         'PRAGMA user_version = $_recurringTransfertSchemaVersion',
       );
+    } finally {
+      await database.close();
+    }
+  }
+
+  Future<void> repairDebtAndOriginMigrationStateIfNeeded() async {
+    final databasePath = path.join(
+      await _databaseFactory.getDatabasesPath(),
+      _sqliteDatabaseName,
+    );
+    final database = await _openRepairDatabase(databasePath);
+
+    try {
+      if (!await _tableExists(database, 'TransactionModel')) {
+        return;
+      }
+
+      final latestBrickMigrationVersion = await _lastBrickMigrationVersion(
+        database,
+      );
+      final isMigrationRecorded =
+          latestBrickMigrationVersion >= _debtOriginSchemaVersion;
+      final hasOriginId = await _columnExists(
+        database,
+        'TransactionModel',
+        'origin_id',
+      );
+      final hasOriginOccurrenceDate = await _columnExists(
+        database,
+        'TransactionModel',
+        'origin_occurrence_date',
+      );
+      final hasLegacyRecurringTransfertId = await _columnExists(
+        database,
+        'TransactionModel',
+        'recurring_transfert_id',
+      );
+      final hasLegacyRecurringOccurrenceDate = await _columnExists(
+        database,
+        'TransactionModel',
+        'recurring_occurrence_date',
+      );
+      final hasDebtTable = await _tableExists(database, 'DebtModel');
+      final hasDebtColumns = hasDebtTable
+          ? await _hasAllDebtColumns(database)
+          : false;
+
+      if (isMigrationRecorded &&
+          hasOriginId &&
+          hasOriginOccurrenceDate &&
+          hasDebtTable &&
+          hasDebtColumns &&
+          !hasLegacyRecurringTransfertId &&
+          !hasLegacyRecurringOccurrenceDate) {
+        return;
+      }
+
+      await _ensureColumn(
+        database,
+        tableName: 'TransactionModel',
+        columnName: 'origin_id',
+        definition: 'TEXT',
+      );
+      await _ensureColumn(
+        database,
+        tableName: 'TransactionModel',
+        columnName: 'origin_occurrence_date',
+        definition: 'TEXT',
+      );
+      await _backfillOriginColumnsFromLegacyRecurringColumns(
+        database,
+        copyOriginId: hasLegacyRecurringTransfertId,
+        copyOriginOccurrenceDate: hasLegacyRecurringOccurrenceDate,
+      );
+      await _ensureDebtTable(database);
+      await _recordMigrationVersion(database, _debtOriginSchemaVersion);
+      await database.execute('PRAGMA user_version = $_debtOriginSchemaVersion');
     } finally {
       await database.close();
     }
@@ -949,6 +1027,170 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     );
   }
 
+  Future<void> _ensureDebtTable(Database database) async {
+    await database.execute('''
+      CREATE TABLE IF NOT EXISTS `DebtModel` (
+        `_brick_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        `debt_id` TEXT,
+        `created_by` TEXT,
+        `lender_id` TEXT,
+        `borrower_id` TEXT,
+        `principal_transaction_id` TEXT,
+        `title` TEXT,
+        `note` TEXT,
+        `currency` TEXT,
+        `principal_amount` REAL,
+        `expected_repayment_amount` REAL,
+        `repaid_amount` REAL,
+        `remaining_amount` REAL,
+        `due_date` TEXT,
+        `status` INTEGER,
+        `reminder_enabled` INTEGER,
+        `last_due_notification_at` TEXT,
+        `closed_at` TEXT,
+        `created_at` TEXT,
+        `updated_at` TEXT
+      )
+    ''');
+
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'debt_id',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'created_by',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'lender_id',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'borrower_id',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'principal_transaction_id',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'title',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'note',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'currency',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'principal_amount',
+      definition: 'REAL',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'expected_repayment_amount',
+      definition: 'REAL',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'repaid_amount',
+      definition: 'REAL',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'remaining_amount',
+      definition: 'REAL',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'due_date',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'status',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'reminder_enabled',
+      definition: 'INTEGER',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'last_due_notification_at',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'closed_at',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'created_at',
+      definition: 'TEXT',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'updated_at',
+      definition: 'TEXT',
+    );
+
+    await database.execute(
+      'CREATE UNIQUE INDEX IF NOT EXISTS `index_DebtModel_on_debt_id` '
+      'ON `DebtModel`(`debt_id`)',
+    );
+    await database.execute(
+      'CREATE INDEX IF NOT EXISTS `index_DebtModel_on_created_by` '
+      'ON `DebtModel`(`created_by`)',
+    );
+    await database.execute(
+      'CREATE INDEX IF NOT EXISTS `index_DebtModel_on_lender_id` '
+      'ON `DebtModel`(`lender_id`)',
+    );
+    await database.execute(
+      'CREATE INDEX IF NOT EXISTS `index_DebtModel_on_borrower_id` '
+      'ON `DebtModel`(`borrower_id`)',
+    );
+    await database.execute(
+      'CREATE UNIQUE INDEX IF NOT EXISTS '
+      '`index_DebtModel_on_principal_transaction_id` '
+      'ON `DebtModel`(`principal_transaction_id`)',
+    );
+  }
+
   Future<void> _ensureCurrencyFxColumns(
     Database database,
     String tableName,
@@ -1021,6 +1263,65 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     }
 
     return true;
+  }
+
+  Future<bool> _hasAllDebtColumns(Database database) async {
+    const columns = [
+      'debt_id',
+      'created_by',
+      'lender_id',
+      'borrower_id',
+      'principal_transaction_id',
+      'title',
+      'note',
+      'currency',
+      'principal_amount',
+      'expected_repayment_amount',
+      'repaid_amount',
+      'remaining_amount',
+      'due_date',
+      'status',
+      'reminder_enabled',
+      'last_due_notification_at',
+      'closed_at',
+      'created_at',
+      'updated_at',
+    ];
+
+    for (final column in columns) {
+      if (!await _columnExists(database, 'DebtModel', column)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  Future<void> _backfillOriginColumnsFromLegacyRecurringColumns(
+    Database database, {
+    required bool copyOriginId,
+    required bool copyOriginOccurrenceDate,
+  }) async {
+    if (copyOriginId) {
+      await database.execute(
+        'UPDATE `TransactionModel` '
+        'SET `origin_id` = `recurring_transfert_id` '
+        'WHERE (`origin_id` IS NULL OR `origin_id` = \'\') '
+        'AND `recurring_transfert_id` IS NOT NULL '
+        'AND `recurring_transfert_id` != \'\'',
+      );
+    }
+
+    if (copyOriginOccurrenceDate) {
+      await database.execute(
+        'UPDATE `TransactionModel` '
+        'SET `origin_occurrence_date` = `recurring_occurrence_date` '
+        'WHERE (`origin_occurrence_date` IS NULL '
+        'OR `origin_occurrence_date` = \'\') '
+        'AND `recurring_occurrence_date` IS NOT NULL '
+        'AND `recurring_occurrence_date` != \'\'',
+      );
+    }
   }
 
   Future<bool> _hasAllCurrencyFxColumns(

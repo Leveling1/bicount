@@ -81,6 +81,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   @override
   Future<Either<Failure, void>> saveTransaction(
     String gtid, {
+    String? transactionId,
     required String title,
     required int type,
     required String date,
@@ -91,8 +92,8 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     required String senderId,
     required String beneficiaryId,
     required String image,
-    String? recurringTransfertId,
-    String? recurringOccurrenceDate,
+    String? originId,
+    String? originOccurrenceDate,
     int? generationMode,
   }) async {
     final uid = _currentUid;
@@ -107,6 +108,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       );
 
       final transactionModel = TransactionModel(
+        tid: transactionId,
         uid: uid,
         gtid: gtid,
         name: title,
@@ -127,8 +129,8 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         frequency: Frequency.oneTime,
         createdAt: DateTime.now().toIso8601String(),
         category: category,
-        recurringTransfertId: recurringTransfertId,
-        recurringOccurrenceDate: recurringOccurrenceDate,
+        originId: originId,
+        originOccurrenceDate: originOccurrenceDate,
         generationMode: generationMode ?? 0,
       );
 
@@ -196,7 +198,8 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         image: image,
         frequency: previousTransaction.frequency,
         category: category,
-        recurringTransfertId: previousTransaction.recurringTransfertId,
+        originId: previousTransaction.originId,
+        originOccurrenceDate: previousTransaction.originOccurrenceDate,
         createdAt:
             currentRecord?.createdAt ??
             previousTransaction.createdAt?.toIso8601String() ??

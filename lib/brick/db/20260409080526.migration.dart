@@ -10,9 +10,7 @@ part of 'schema.g.dart';
 // The migration version must **always** mirror the file name
 
 const List<MigrationCommand> _migration_20260409080526_up = [
-  DropColumn('uid', onTable: 'UserModel'),
   InsertTable('RecurringTransfertModel'),
-  InsertColumn('uid', Column.varchar, onTable: 'UserModel', unique: true),
   InsertColumn(
     'recurring_transfert_id',
     Column.varchar,
@@ -94,12 +92,10 @@ const List<MigrationCommand> _migration_20260409080526_up = [
     onTable: 'RecurringTransfertModel',
     unique: false,
   ),
-  CreateIndex(columns: ['sid'], onTable: 'UserModel', unique: true),
 ];
 
 const List<MigrationCommand> _migration_20260409080526_down = [
   DropTable('RecurringTransfertModel'),
-  DropColumn('uid', onTable: 'UserModel'),
   DropColumn('recurring_transfert_id', onTable: 'RecurringTransfertModel'),
   DropColumn('uid', onTable: 'RecurringTransfertModel'),
   DropColumn('transaction_type', onTable: 'RecurringTransfertModel'),
@@ -124,7 +120,6 @@ const List<MigrationCommand> _migration_20260409080526_down = [
   DropColumn('generation_mode', onTable: 'TransactionModel'),
   DropIndex('index_RecurringTransfertModel_on_recurring_transfert_id'),
   DropIndex('index_RecurringTransfertModel_on_uid'),
-  DropIndex('index_UserModel_on_sid'),
 ];
 
 //

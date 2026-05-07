@@ -1,6 +1,7 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
+part '20260507153810.migration.dart';
 part '20251130001532.migration.dart';
 part '20251201154524.migration.dart';
 part '20251201172247.migration.dart';
@@ -13,9 +14,12 @@ part '20260329123000.migration.dart';
 part '20260329194500.migration.dart';
 part '20260331113000.migration.dart';
 part '20260409080526.migration.dart';
+part '20260507143446.migration.dart';
+part '20260507144610.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
+  const Migration20260507153810(),
   const Migration20251130001532(),
   const Migration20251201154524(),
   const Migration20251201172247(),
@@ -28,11 +32,13 @@ final migrations = <Migration>{
   const Migration20260329194500(),
   const Migration20260331113000(),
   const Migration20260409080526(),
+  const Migration20260507143446(),
+  const Migration20260507144610(),
 };
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  20260409080526,
+  20260507144610,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -184,6 +190,44 @@ final schema = Schema(
       },
       indices: <SchemaIndex>{
         SchemaIndex(columns: ['lid'], unique: true),
+      },
+    ),
+    SchemaTable(
+      'DebtModel',
+      columns: <SchemaColumn>{
+        SchemaColumn(
+          '_brick_id',
+          Column.integer,
+          autoincrement: true,
+          nullable: false,
+          isPrimaryKey: true,
+        ),
+        SchemaColumn('debt_id', Column.varchar, unique: true),
+        SchemaColumn('created_by', Column.varchar),
+        SchemaColumn('lender_id', Column.varchar),
+        SchemaColumn('borrower_id', Column.varchar),
+        SchemaColumn('principal_transaction_id', Column.varchar, unique: true),
+        SchemaColumn('title', Column.varchar),
+        SchemaColumn('note', Column.varchar),
+        SchemaColumn('currency', Column.varchar),
+        SchemaColumn('principal_amount', Column.Double),
+        SchemaColumn('expected_repayment_amount', Column.Double),
+        SchemaColumn('repaid_amount', Column.Double),
+        SchemaColumn('remaining_amount', Column.Double),
+        SchemaColumn('due_date', Column.varchar),
+        SchemaColumn('status', Column.integer),
+        SchemaColumn('reminder_enabled', Column.boolean),
+        SchemaColumn('last_due_notification_at', Column.varchar),
+        SchemaColumn('closed_at', Column.varchar),
+        SchemaColumn('created_at', Column.varchar),
+        SchemaColumn('updated_at', Column.varchar),
+      },
+      indices: <SchemaIndex>{
+        SchemaIndex(columns: ['debt_id'], unique: true),
+        SchemaIndex(columns: ['created_by'], unique: false),
+        SchemaIndex(columns: ['lender_id'], unique: false),
+        SchemaIndex(columns: ['borrower_id'], unique: false),
+        SchemaIndex(columns: ['principal_transaction_id'], unique: true),
       },
     ),
     SchemaTable(
@@ -359,8 +403,8 @@ final schema = Schema(
         SchemaColumn('frequency', Column.integer),
         SchemaColumn('category', Column.integer),
         SchemaColumn('created_at', Column.varchar),
-        SchemaColumn('recurring_transfert_id', Column.varchar),
-        SchemaColumn('recurring_occurrence_date', Column.varchar),
+        SchemaColumn('origin_id', Column.varchar),
+        SchemaColumn('origin_occurrence_date', Column.varchar),
         SchemaColumn('generation_mode', Column.integer),
         SchemaColumn('tid', Column.varchar, unique: true),
       },

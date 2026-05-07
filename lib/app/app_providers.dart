@@ -14,6 +14,8 @@ import 'package:bicount/features/company/presentation/bloc/company_bloc.dart';
 import 'package:bicount/features/company/presentation/bloc/detail_bloc/detail_bloc.dart';
 import 'package:bicount/features/company/presentation/bloc/list_bloc/list_bloc.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
+import 'package:bicount/features/debt/data/data_sources/local_datasource/local_debt_data_source_impl.dart';
+import 'package:bicount/features/debt/data/repositories/debt_repository_impl.dart';
 import 'package:bicount/features/friend/data/data_sources/local_datasource/local_friend_data_source_impl.dart';
 import 'package:bicount/features/friend/data/data_sources/remote_datasource/supabase_friend_remote_data_source.dart';
 import 'package:bicount/features/friend/data/repositories/friend_repository_impl.dart';
@@ -71,6 +73,14 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
     ),
     RepositoryProvider<TransactionRepositoryImpl>(
       create: (context) => TransactionRepositoryImpl(
+        LocalTransactionDataSourceImpl(
+          currencyRepository: context.read<CurrencyRepositoryImpl>(),
+        ),
+      ),
+    ),
+    RepositoryProvider<DebtRepositoryImpl>(
+      create: (context) => DebtRepositoryImpl(
+        LocalDebtDataSourceImpl(),
         LocalTransactionDataSourceImpl(
           currencyRepository: context.read<CurrencyRepositoryImpl>(),
         ),

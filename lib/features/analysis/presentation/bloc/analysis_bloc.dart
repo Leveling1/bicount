@@ -155,6 +155,7 @@ class AnalysisBloc extends Bloc<AnalysisEvent, AnalysisState> {
     return dashboardBuilder.build(
       AnalysisSourceData(
         transactions: mainData.transactions,
+        debts: mainData.debts,
         recurringTransferts: mainData.recurringTransferts,
         currentUserId: mainData.user.uid,
         friends: mainData.friends,

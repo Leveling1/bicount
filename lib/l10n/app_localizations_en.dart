@@ -1008,6 +1008,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionAddAtLeastOneBeneficiary => 'Add at least one beneficiary.';
 
   @override
+  String get transactionDebtToggleTitle => 'Track as a debt';
+
+  @override
+  String get transactionDebtToggleSubtitleExpense => 'Use this when you paid money that should be repaid later.';
+
+  @override
+  String get transactionDebtToggleSubtitleIncome => 'Use this when you received money that you plan to repay later.';
+
+  @override
+  String get transactionDebtDueDateLabel => 'Repayment due date';
+
+  @override
+  String get transactionDebtDueDateRequired => 'Choose a repayment due date.';
+
+  @override
+  String get transactionDebtExpectedAmountLabel => 'Expected repayment amount (optional)';
+
+  @override
+  String get transactionDebtExpectedAmountHint => 'Leave empty to use the full transaction amount';
+
+  @override
+  String get transactionDebtExpectedAmountInvalid => 'Enter a valid expected repayment amount.';
+
+  @override
+  String get transactionDebtSingleBeneficiaryOnly => 'Debt tracking supports one counterparty only.';
+
+  @override
   String get transactionIncomeSenderCannotBeCurrentUser => 'Income sender cannot be you. Income always uses the current user as beneficiary.';
 
   @override
@@ -1441,6 +1468,78 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recurringTypeOther => 'Other recurring';
+
+  @override
+  String get analysisReceivableDebt => 'To collect';
+
+  @override
+  String get analysisPayableDebt => 'To repay';
+
+  @override
+  String get debtScreenTitle => 'Debts';
+
+  @override
+  String get debtReceivableSectionTitle => 'To collect';
+
+  @override
+  String get debtPayableSectionTitle => 'To repay';
+
+  @override
+  String get debtEmptyState => 'No active debt needs your attention right now.';
+
+  @override
+  String get debtStatusOpen => 'Open';
+
+  @override
+  String get debtStatusOverdue => 'Overdue';
+
+  @override
+  String get debtCounterpartyLabel => 'Counterparty';
+
+  @override
+  String get debtExpectedLabel => 'Expected';
+
+  @override
+  String get debtRepaidLabel => 'Already recorded';
+
+  @override
+  String get debtRemainingLabel => 'Remaining';
+
+  @override
+  String get debtDueDateLabel => 'Due date';
+
+  @override
+  String get debtPaymentAmountLabel => 'Received amount';
+
+  @override
+  String get debtPaymentAmountHint => 'Enter the amount received';
+
+  @override
+  String get debtRecordPaymentCta => 'Record payment';
+
+  @override
+  String get debtPermissionHint => 'Only the authorized side can register received repayments for this debt.';
+
+  @override
+  String get debtInvalidPaymentAmount => 'Enter a valid amount that does not exceed the remaining balance.';
+
+  @override
+  String get debtPaymentRecordedSuccess => 'Debt payment recorded successfully.';
+
+  @override
+  String get debtNotFound => 'This debt could not be found.';
+
+  @override
+  String get debtRepaymentAmountInvalid => 'Enter a valid repayment amount.';
+
+  @override
+  String get debtRepaymentAmountTooHigh => 'The repayment amount cannot exceed the remaining balance.';
+
+  @override
+  String get debtOnlyLenderCanRecord => 'Only the lender can confirm a received repayment.';
+
+  @override
+  String get debtOnlyCreatorCanUpdate => 'Only the creator can update this debt for now.';
 
   @override
   String get recurringTypeSalary => 'Salary';

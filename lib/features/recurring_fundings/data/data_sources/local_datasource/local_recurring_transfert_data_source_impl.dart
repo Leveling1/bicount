@@ -108,10 +108,7 @@ class LocalRecurringTransfertDataSourceImpl
       policy: OfflineFirstGetPolicy.localOnly,
       query: Query(
         where: [
-          Where.exact(
-            'recurringTransfertId',
-            recurringTransfert.recurringTransfertId,
-          ),
+          Where.exact('originId', recurringTransfert.recurringTransfertId),
         ],
       ),
     );
@@ -173,8 +170,8 @@ class LocalRecurringTransfertDataSourceImpl
         frequency: Frequency.oneTime,
         category: Constants.personal,
         createdAt: DateTime.now().toIso8601String(),
-        recurringTransfertId: currentPlan.recurringTransfertId,
-        recurringOccurrenceDate: occurrence.expectedDate.toIso8601String(),
+        originId: currentPlan.recurringTransfertId,
+        originOccurrenceDate: occurrence.expectedDate.toIso8601String(),
         generationMode: TransactionTypes.generationManualConfirmation,
       );
       await Repository().upsert<TransactionModel>(transaction);
@@ -237,15 +234,13 @@ class LocalRecurringTransfertDataSourceImpl
   ) async {
     final items = await Repository().get<TransactionModel>(
       policy: OfflineFirstGetPolicy.localOnly,
-      query: Query(
-        where: [Where.exact('recurringTransfertId', recurringTransfertId)],
-      ),
+      query: Query(where: [Where.exact('originId', recurringTransfertId)]),
     );
     final targetDay = _scheduleService.startOfDay(expectedDate);
 
     for (final item in items) {
       final occurrenceDate =
-          _scheduleService.parseDate(item.recurringOccurrenceDate) ??
+          _scheduleService.parseDate(item.originOccurrenceDate) ??
           _scheduleService.parseDate(item.date);
       if (occurrenceDate == null) {
         continue;

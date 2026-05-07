@@ -26,6 +26,7 @@ Future<void> bootstrapBicountApp() async {
   await Repository().repairUserReferenceCurrencyMigrationStateIfNeeded();
   await Repository().repairSalaryTrackingMigrationStateIfNeeded();
   await Repository().repairRecurringTransfertMigrationStateIfNeeded();
+  await Repository().repairDebtAndOriginMigrationStateIfNeeded();
   await Repository().repairLegacyOfflineQueueIfNeeded();
   await Repository().initialize();
 }

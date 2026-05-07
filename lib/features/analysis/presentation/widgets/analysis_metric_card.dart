@@ -13,6 +13,7 @@ class AnalysisMetricCard extends StatelessWidget {
     required this.currencyCode,
     required this.color,
     required this.icon,
+    this.onTap,
   });
 
   final double width;
@@ -21,58 +22,67 @@ class AnalysisMetricCard extends StatelessWidget {
   final String currencyCode;
   final Color color;
   final String icon;
+  final VoidCallback? onTap;
   static const _compactThreshold = 10000;
 
   @override
   Widget build(BuildContext context) {
+    final content = DetailsCard(
+      isMargin: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: color.withValues(alpha: 0.14),
+            child: SvgPicture.asset(
+              icon,
+              width: AppDimens.iconSizeSmall,
+              height: AppDimens.iconSizeSmall,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+            ),
+          ),
+          const SizedBox(height: AppDimens.marginMedium),
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 6),
+          TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0, end: value),
+            duration: const Duration(milliseconds: 450),
+            curve: Curves.easeOutCubic,
+            builder: (context, animatedValue, _) {
+              return Text(
+                NumberFormatUtils.compactCurrency(
+                  animatedValue,
+                  currencyCode: currencyCode,
+                  compactThreshold: _compactThreshold,
+                  thousandSuffix: 'k',
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+
     return SizedBox(
       width: width,
-      child: DetailsCard(
-        isMargin: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              radius: 18,
-              backgroundColor: color.withValues(alpha: 0.14),
-              child: SvgPicture.asset(
-                icon,
-                width: AppDimens.iconSizeSmall,
-                height: AppDimens.iconSizeSmall,
-                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-              ),
+      child: onTap == null
+          ? content
+          : InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+              child: content,
             ),
-            const SizedBox(height: AppDimens.marginMedium),
-            Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 6),
-            TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 0, end: value),
-              duration: const Duration(milliseconds: 450),
-              curve: Curves.easeOutCubic,
-              builder: (context, animatedValue, _) {
-                return Text(
-                  NumberFormatUtils.compactCurrency(
-                    animatedValue,
-                    currencyCode: currencyCode,
-                    compactThreshold: _compactThreshold,
-                    thousandSuffix: 'k',
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

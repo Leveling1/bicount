@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
@@ -5,6 +6,7 @@ import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/analysis/data/models/analysis_source_data.dart';
 import 'package:bicount/features/analysis/domain/entities/analysis_dashboard_entity.dart';
 import 'package:bicount/features/analysis/domain/services/analysis_time_series_builder.dart';
+import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
 import 'package:bicount/features/recurring_fundings/domain/services/recurring_plan_collection_builder.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
@@ -86,6 +88,22 @@ class AnalysisDashboardBuilder {
 
     final inflow = incomeAmount + salaryAmount + otherIncomeAmount;
     final outflow = expenseAmount + subscriptionAmount + otherExpenseAmount;
+    final receivableDebt = _sumDebtBalances(
+      source.debts,
+      currencyConfig,
+      (debt) => _matchesReceivableDebt(
+        debt,
+        currentUserParticipantIds: currentUserParticipantIds,
+      ),
+    );
+    final payableDebt = _sumDebtBalances(
+      source.debts,
+      currencyConfig,
+      (debt) => _matchesPayableDebt(
+        debt,
+        currentUserParticipantIds: currentUserParticipantIds,
+      ),
+    );
     final recurringCharges = recurringPlanCollectionBuilder.build(
       recurringTransferts: source.recurringTransferts,
       transactions: source.transactions,
@@ -105,6 +123,8 @@ class AnalysisDashboardBuilder {
       inflow: inflow,
       outflow: outflow,
       netFlow: inflow - outflow,
+      receivableDebt: receivableDebt,
+      payableDebt: payableDebt,
       cashflowPoints: timeSeriesBuilder.buildCashflowPoints(
         filteredTransactions,
         period,
@@ -165,6 +185,23 @@ class AnalysisDashboardBuilder {
               sum +
               currencyAmountService.transaction(transaction, currencyConfig),
         );
+  }
+
+  double _sumDebtBalances(
+    List<DebtModel> debts,
+    CurrencyConfigEntity currencyConfig,
+    bool Function(DebtModel debt) predicate,
+  ) {
+    return debts.where(predicate).fold<double>(0, (sum, debt) {
+      final anchorDate = debt.createdAt ?? debt.dueDate;
+      return sum +
+          currencyAmountService.record(
+            originalAmount: debt.remainingAmount,
+            originalCurrencyCode: debt.currency,
+            fxRateDate: anchorDate,
+            config: currencyConfig,
+          );
+    });
   }
 
   bool _matchesGenericIncome(
@@ -240,5 +277,39 @@ class AnalysisDashboardBuilder {
 
     return transaction.type == TransactionTypes.otherRecurringExpenseCode ||
         transaction.type == TransactionTypes.othersCode;
+  }
+
+  bool _matchesReceivableDebt(
+    DebtModel debt, {
+    Set<String>? currentUserParticipantIds,
+  }) {
+    if (!_isOpenDebt(debt)) {
+      return false;
+    }
+
+    if (currentUserParticipantIds != null) {
+      return currentUserParticipantIds.contains(debt.lenderId);
+    }
+
+    return false;
+  }
+
+  bool _matchesPayableDebt(
+    DebtModel debt, {
+    Set<String>? currentUserParticipantIds,
+  }) {
+    if (!_isOpenDebt(debt)) {
+      return false;
+    }
+
+    if (currentUserParticipantIds != null) {
+      return currentUserParticipantIds.contains(debt.borrowerId);
+    }
+
+    return false;
+  }
+
+  bool _isOpenDebt(DebtModel debt) {
+    return debt.remainingAmount > 0 && AppDebtState.isOpen(debt.status);
   }
 }

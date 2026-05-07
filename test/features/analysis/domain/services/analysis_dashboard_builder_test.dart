@@ -63,6 +63,7 @@ void main() {
           currentUserId: currentUserId,
           friends: [linkedSelfProfile()],
           recurringTransferts: const [],
+          debts: const [],
           transactions: [
             transaction(
               tid: 'salary',

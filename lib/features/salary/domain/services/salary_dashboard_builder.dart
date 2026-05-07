@@ -28,17 +28,17 @@ class SalaryDashboardBuilder {
     final today = scheduleService.startOfDay(now ?? DateTime.now());
     final transactionsByOccurrenceKey = <String, TransactionModel>{};
     for (final transaction in transactions) {
-      final recurringTransfertId = transaction.recurringTransfertId;
-      if (recurringTransfertId == null || recurringTransfertId.isEmpty) {
+      final originId = transaction.originId;
+      if (originId == null || originId.isEmpty) {
         continue;
       }
       final occurrenceDate =
-          scheduleService.parseDate(transaction.recurringOccurrenceDate) ??
+          scheduleService.parseDate(transaction.originOccurrenceDate) ??
           scheduleService.parseDate(transaction.date);
       if (occurrenceDate == null) {
         continue;
       }
-      final key = _occurrenceKey(recurringTransfertId, occurrenceDate);
+      final key = _occurrenceKey(originId, occurrenceDate);
       transactionsByOccurrenceKey.putIfAbsent(key, () => transaction);
     }
 

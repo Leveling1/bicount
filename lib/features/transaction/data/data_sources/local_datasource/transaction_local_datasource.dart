@@ -15,6 +15,7 @@ abstract class TransactionLocalDataSource {
   });
   Future<Either<Failure, void>> saveTransaction(
     String gtid, {
+    String? transactionId,
     required String title,
     required int type,
     required String date,
@@ -25,8 +26,8 @@ abstract class TransactionLocalDataSource {
     required String senderId,
     required String beneficiaryId,
     required String image,
-    String? recurringTransfertId,
-    String? recurringOccurrenceDate,
+    String? originId,
+    String? originOccurrenceDate,
     int? generationMode,
   });
   Future<Either<Failure, void>> updateTransaction(

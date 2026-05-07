@@ -179,3 +179,36 @@ final class AppExecutionMode {
     return normalize(mode) == backendAutomatic;
   }
 }
+
+final class AppDebtState {
+  const AppDebtState._();
+
+  static const int active = 0;
+  static const int partial = 1;
+  static const int paid = 2;
+  static const int overdue = 3;
+  static const int cancelled = 4;
+
+  static int normalize(int? status) {
+    switch (status) {
+      case partial:
+        return partial;
+      case paid:
+        return paid;
+      case overdue:
+        return overdue;
+      case cancelled:
+        return cancelled;
+      case active:
+      default:
+        return active;
+    }
+  }
+
+  static bool isOpen(int? status) {
+    final normalized = normalize(status);
+    return normalized == active ||
+        normalized == partial ||
+        normalized == overdue;
+  }
+}

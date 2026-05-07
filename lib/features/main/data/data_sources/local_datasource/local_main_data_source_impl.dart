@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/main/data/data_sources/local_datasource/main_local_datasource.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
@@ -39,6 +40,9 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
 
   BehaviorSubject<List<TransactionModel>>? _transactionsSubject;
   StreamSubscription<List<TransactionModel>>? _transactionsSubscription;
+
+  BehaviorSubject<List<DebtModel>>? _debtsSubject;
+  StreamSubscription<List<DebtModel>>? _debtsSubscription;
 
   BehaviorSubject<List<RecurringTransfertModel>>? _recurringTransfertsSubject;
   StreamSubscription<List<RecurringTransfertModel>>?
@@ -100,6 +104,17 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
   }
 
   @override
+  Stream<List<DebtModel>> getDebts() {
+    return _cachedListStream<DebtModel>(
+      getSubject: () => _debtsSubject,
+      setSubject: (subject) => _debtsSubject = subject,
+      getSubscription: () => _debtsSubscription,
+      setSubscription: (subscription) => _debtsSubscription = subscription,
+      errorLabel: 'debts',
+    );
+  }
+
+  @override
   Stream<List<RecurringTransfertModel>> getRecurringTransferts() {
     return _cachedListStream<RecurringTransfertModel>(
       getSubject: () => _recurringTransfertsSubject,
@@ -157,6 +172,10 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     if (transactionsSubject != null && !transactionsSubject.isClosed) {
       await primeListSubject(transactionsSubject, null);
     }
+    final debtsSubject = _debtsSubject;
+    if (debtsSubject != null && !debtsSubject.isClosed) {
+      await primeListSubject(debtsSubject, null);
+    }
     final recurringSubject = _recurringTransfertsSubject;
     if (recurringSubject != null && !recurringSubject.isClosed) {
       await primeListSubject(recurringSubject, null);
@@ -167,21 +186,25 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     _userSubscription?.cancel();
     _friendsSubscription?.cancel();
     _transactionsSubscription?.cancel();
+    _debtsSubscription?.cancel();
     _recurringTransfertsSubscription?.cancel();
 
     _userSubject?.close();
     _friendsSubject?.close();
     _transactionsSubject?.close();
+    _debtsSubject?.close();
     _recurringTransfertsSubject?.close();
 
     _userSubscription = null;
     _friendsSubscription = null;
     _transactionsSubscription = null;
+    _debtsSubscription = null;
     _recurringTransfertsSubscription = null;
 
     _userSubject = null;
     _friendsSubject = null;
     _transactionsSubject = null;
+    _debtsSubject = null;
     _recurringTransfertsSubject = null;
   }
 

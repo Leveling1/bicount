@@ -61,6 +61,19 @@ extension _IncomeFormSubmission on _IncomeFormState {
       return;
     }
 
+    final expectedRepaymentAmount = parseAmount(
+      _debtExpectedRepaymentAmount.text,
+    );
+    if (_isDebt &&
+        _debtExpectedRepaymentAmount.text.trim().isNotEmpty &&
+        (expectedRepaymentAmount == null || expectedRepaymentAmount <= 0)) {
+      NotificationHelper.showFailureNotification(
+        context,
+        context.l10n.transactionDebtExpectedAmountInvalid,
+      );
+      return;
+    }
+
     try {
       final sender = _resolveSender();
       if (_isCurrentUser(sender)) {
@@ -81,17 +94,26 @@ extension _IncomeFormSubmission on _IncomeFormState {
         transactionType: transactionFormType,
         splitMode: TransactionSplitMode.equal,
         splits: _buildSplitInputs(),
-        isRecurring: _isRecurring,
-        recurringFrequency: _isRecurring ? _recurringFrequency : null,
-        recurringTypeId: _isRecurring ? _recurringTypeId : null,
+        isRecurring: _isRecurring && !_isDebt,
+        recurringFrequency: _isRecurring && !_isDebt
+            ? _recurringFrequency
+            : null,
+        recurringTypeId: _isRecurring && !_isDebt ? _recurringTypeId : null,
         recurringExecutionMode:
-            _isRecurring && _recurringTypeId == TransactionTypes.salaryCode
+            _isRecurring &&
+                !_isDebt &&
+                _recurringTypeId == TransactionTypes.salaryCode
             ? _recurringExecutionMode
             : null,
         recurringReminderEnabled:
-            _isRecurring && _recurringTypeId == TransactionTypes.salaryCode
+            _isRecurring &&
+                !_isDebt &&
+                _recurringTypeId == TransactionTypes.salaryCode
             ? _recurringReminderEnabled
             : null,
+        isDebt: _isDebt,
+        debtDueDate: _isDebt ? resolveFormDateToIso(_debtDueDate.text) : null,
+        debtExpectedRepaymentAmount: _isDebt ? expectedRepaymentAmount : null,
       );
       _splitResolver.resolve(request);
       if (_isEditing) {
