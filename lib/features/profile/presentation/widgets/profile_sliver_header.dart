@@ -44,41 +44,41 @@ class ProfileSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
       color: balance >= 0 ? null : Colors.red,
     );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusUltraLarge),
-      ),
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        switchInCurve: Curves.easeOutCubic,
-        switchOutCurve: Curves.easeInCubic,
-        child: isCollapsed
-            ? _CollapsedProfileHeader(
-                key: const ValueKey('profile-collapsed'),
-                image: image,
-                name: name,
-                totalLabel: totalLabel,
-                balanceText: NumberFormatUtils.compactCurrency(
-                  balance,
-                  compactThreshold: 100000,
-                ),
-                amountStyle: amountStyle,
-                onTap: onTap,
-              )
-            : Padding(
-                key: const ValueKey('profile-expanded'),
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppDimens.paddingExtraSmall,
-                ),
-                child: ProfileCard(
-                  image: image,
-                  name: name,
-                  email: email,
-                  balance: balance,
-                  onTap: onTap,
-                ),
-              ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppDimens.borderRadiusUltraLarge),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusUltraLarge),
+        ),
+        child: SizedBox.expand(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            child: isCollapsed
+                ? _CollapsedProfileHeader(
+                    key: const ValueKey('profile-collapsed'),
+                    image: image,
+                    name: name,
+                    totalLabel: totalLabel,
+                    balanceText: NumberFormatUtils.compactCurrency(
+                      balance,
+                      compactThreshold: 100000,
+                    ),
+                    amountStyle: amountStyle,
+                    onTap: onTap,
+                  )
+                : _ExpandedProfileHeader(
+                    key: const ValueKey('profile-expanded'),
+                    image: image,
+                    name: name,
+                    email: email,
+                    balance: balance,
+                    onTap: onTap,
+                  ),
+          ),
+        ),
       ),
     );
   }
@@ -91,6 +91,52 @@ class ProfileSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
         balance != oldDelegate.balance ||
         totalLabel != oldDelegate.totalLabel ||
         onTap != oldDelegate.onTap;
+  }
+}
+
+class _ExpandedProfileHeader extends StatelessWidget {
+  const _ExpandedProfileHeader({
+    super.key,
+    required this.image,
+    required this.name,
+    required this.email,
+    required this.balance,
+    required this.onTap,
+  });
+
+  final String image;
+  final String name;
+  final String email;
+  final double balance;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return ClipRect(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+              width: constraints.maxWidth,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppDimens.paddingExtraSmall,
+                ),
+                child: ProfileCard(
+                  image: image,
+                  name: name,
+                  email: email,
+                  balance: balance,
+                  onTap: onTap,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
