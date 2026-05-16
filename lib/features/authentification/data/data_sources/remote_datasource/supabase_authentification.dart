@@ -1,14 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../../../../../core/constants/app_config.dart';
 import '../../../../../core/constants/secrets.dart';
 import '../../../../../core/errors/failure.dart';
 import 'authentification_remote_datasource.dart';
+
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:crypto/crypto.dart';
 
 class SupabaseAuthentification implements AuthenticationRemoteDataSource {
   SupabaseAuthentification(this.supabaseClient);
@@ -34,17 +35,42 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
 
   @override
   Future<void> authWithApple() async {
-    if (defaultTargetPlatform != TargetPlatform.iOS &&
-        defaultTargetPlatform != TargetPlatform.macOS) {
-      throw Exception('Apple sign-in is only available on Apple devices.');
-    }
-
-    final launched = await supabaseClient.auth.signInWithOAuth(
-      OAuthProvider.apple,
-      redirectTo: AppConfig.authUrl,
+    final rawNonce = supabaseClient.auth.generateRawNonce();
+    final hashedNonce = sha256.convert(utf8.encode(rawNonce)).toString();
+    final credential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+      nonce: hashedNonce,
     );
-    if (!launched) {
-      throw Exception('Apple sign-in could not be started.');
+    final idToken = credential.identityToken;
+    if (idToken == null) {
+      throw const AuthException(
+        'Could not find ID Token from generated credential.',
+      );
+    }
+    final authResponse = await supabaseClient.auth.signInWithIdToken(
+      provider: OAuthProvider.apple,
+      idToken: idToken,
+      nonce: rawNonce,
+    );
+    // Apple only provides the user's full name on the first sign-in
+    // Save it to user metadata if available
+    if (credential.givenName != null || credential.familyName != null) {
+      final nameParts = <String>[];
+      if (credential.givenName != null) nameParts.add(credential.givenName!);
+      if (credential.familyName != null) nameParts.add(credential.familyName!);
+      final fullName = nameParts.join(' ');
+      await supabaseClient.auth.updateUser(
+        UserAttributes(
+          data: {
+            'full_name': fullName,
+            'given_name': credential.givenName,
+            'family_name': credential.familyName,
+          },
+        ),
+      );
     }
   }
 
