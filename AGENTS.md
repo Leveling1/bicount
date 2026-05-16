@@ -816,6 +816,7 @@ A short backend action memo was added in `docs/new_action_on_back.md`.
 Use it when the need is not a full backend handoff, but a focused list of what still has to be done on Supabase for the current mobile build to work.
 
 Current emphasis in that memo:
+
 - targeted friend linking through `source_friend_sid`
 - preserving `friends.sid` while updating `friends.uid`
 - secure invite preview and reject flows through backend RPCs
@@ -827,11 +828,13 @@ Current emphasis in that memo:
 The friend share flow now updates the visible `FriendBloc` state immediately after a local invite is created.
 
 Why:
+
 - invite creation is cached locally first
 - remote invite creation or realtime propagation can be delayed or unavailable
 - the QR code and share link must still appear instantly in the bottom sheet
 
 Expected behavior now:
+
 - `Generate invite` immediately exposes the QR code and invite URL from local state
 - `Share link` and `Copy` become usable without waiting for Supabase realtime
 - the existing UI choices remain in place, including `CustomAppBar` and opening `FriendScreen` in `showCustomBottomSheet`
@@ -841,6 +844,7 @@ Expected behavior now:
 The public authentication flow no longer uses onboarding, login, or signup as separate public screens.
 
 Rules:
+
 - default unauthenticated entry must land on `/auth`
 - the email auth experience is passwordless and uses `/auth/email-code`
 - do not recreate public onboarding, login, or signup routes without an explicit product request
@@ -853,6 +857,7 @@ Rules:
 Authentication screens should avoid nested flex layouts inside scrollable areas.
 
 Rules:
+
 - do not place a `Row` with `Expanded` children inside another unconstrained `Row` in auth screens
 - avoid combining `SingleChildScrollView` with fragile `Spacer` or unnecessary fixed-height wrappers in auth entry screens
 - use simple vertical sections for auth CTA areas when possible to keep layout predictable on smaller devices
@@ -864,6 +869,7 @@ These instructions apply in addition to all previous rules in this file.
 They do not replace or weaken any earlier product, architecture, or UX constraints.
 
 Mandatory execution rules after any meaningful code change:
+
 - verify that the modified flow actually works after implementation
 - run the most relevant validation possible for the change, such as targeted analysis, build, tests, or a runtime check
 - if errors or regressions are found, fix them before considering the task complete
@@ -871,12 +877,14 @@ Mandatory execution rules after any meaningful code change:
 - after each major update, add or refresh the relevant notes in `AGENTS.md`
 
 Performance protection rules:
+
 - prefer modifications that keep runtime performance stable or improved
 - avoid heavy UI effects, unnecessary rebuilds, large always-on animations, and wasteful realtime listeners
 - choose the simplest implementation that satisfies the UX goal while preserving fluidity
 - when adding motion, keep it lightweight and short, and avoid patterns that can degrade scrolling or navigation smoothness
 
 File size and factorization rules:
+
 - do not create or keep manual source files above 200 lines unless the file is generated or there is an explicit user exception
 - when a file grows too much, split it into smaller focused files instead of stacking more logic into one screen or widget
 - prefer small reusable widgets, helpers, services, and mappers to keep files readable and maintainable
@@ -885,6 +893,7 @@ File size and factorization rules:
 ## Localization Update (2026-03-22)
 
 Current app localization status:
+
 - visible V1 flows are localized in English and French
 - the app follows the system language by default when no explicit choice is saved
 - a manual language override is available from the Profile screen and is persisted with SharedPreferences
@@ -893,6 +902,7 @@ Current app localization status:
 - generated imports should use `package:bicount/l10n/app_localizations.dart`
 
 Implementation rules for future agents:
+
 - never hardcode new user-facing strings in visible V1 flows; add them to ARB files first
 - after changing ARB files, run `flutter gen-l10n`
 - after localization changes, run at least `flutter analyze lib` and a relevant build check
@@ -900,6 +910,7 @@ Implementation rules for future agents:
 - if a runtime message comes from repositories, blocs, or backend glue and can surface in UI, localize it through the existing runtime message localizer or replace it with a localized source
 
 Future language expansion:
+
 - Lingala is technically supported by the current architecture
 - to add Lingala later, create `lib/l10n/app_ln.arb`, regenerate l10n, and extend the locale selector if the product wants it exposed in settings
 
@@ -908,6 +919,7 @@ Future language expansion:
 The i18n pass now covers both visible labels and the main runtime feedback shown to users.
 
 Rules:
+
 - if the device locale is unsupported or cannot be matched cleanly, fall back to English
 - keep French and English as the current shipped locales unless the user explicitly asks to add more
 - the language selector persists the explicit user choice with SharedPreferences, but `system` remains the default behavior
@@ -922,12 +934,14 @@ Rules:
 The settings profile editor no longer relies on a hardcoded local memoji catalog.
 
 Current contract:
+
 - profile avatar selection loads remote memoji from the Supabase Edge Function `get-memoji`
 - the function is called with `GET` query params `page` and `limit`
 - the app should progressively load more pages until `has_next` becomes false
 - already loaded memoji pages are cached locally so the picker can still show known avatars when the network is unavailable
 
 Implementation rules:
+
 - keep avatar-like URL displays on cached network widgets; `lib/core/widgets/app_avatar.dart` is the preferred entry point for profile and friend avatar rendering
 - do not reintroduce hardcoded memoji lists for the visible profile editing flow
 - if the memoji request fails and no cache exists yet, show the themed empty state with a retry action instead of a spinner or blank area
@@ -935,6 +949,7 @@ Implementation rules:
 - keep the settings memoji picker paginated and lightweight; avoid downloading the whole catalog at once
 
 Loading rules:
+
 - visible screen loading states should prefer the shared skeleton components in `lib/core/widgets/bicount_skeleton.dart`
 - avoid introducing new `CircularProgressIndicator` screen states in visible V1 flows when a skeleton is more appropriate
 - page and sheet skeletons should mirror the real card structure of the destination screen instead of using a generic centered placeholder
@@ -946,6 +961,7 @@ Loading rules:
 Recent behavior fixes now define the expected UX for locale fallback and transaction feedback.
 
 Rules:
+
 - if the saved locale is absent and the device locale is unsupported or cannot be resolved cleanly, the app must fall back to English
 - keep the app locale resolution deterministic; do not leave locale behavior ambiguous when system matching fails
 - transaction success and error toasts must have a single owner for each flow; do not listen to the same `TransactionBloc` success state in both the container screen and the form if both can toast
@@ -957,6 +973,7 @@ Rules:
 The sign-out flow now clears local finance tables through the shared Brick repository, but reconnection must still be able to rehydrate all data from Supabase cleanly.
 
 Rules:
+
 - use `Repository.clearLocalSessionData()` for local sign-out cleanup instead of duplicating table wipe logic in auth code
 - do not cache the authenticated `uid` in a long-lived auth local data source field; always resolve it from the current Supabase session when needed
 - after local tables are cleared, an empty first emission for `UserModel` should not be treated as a fatal error while remote hydration is still in progress
@@ -968,6 +985,7 @@ Rules:
 Finance aggregates used by the visible V1 app are now expected to be calculated locally in mobile code.
 
 Rules:
+
 - do not rely on Supabase triggers as the primary source of truth for `users.balance`, `users.incomes`, `users.expenses`, `users.personal_income`, `users.company_income`, `friends.give`, `friends.receive`, `friends.personal_income`, `friends.company_income`, or `companies.profit`
 - keep the write-side formulas in shared services under `lib/core/services` so transactions, account funding, and subscriptions can apply side effects immediately while offline
 - keep the read-side totals in the `main` flow projected from raw rows (`transactions`, `account_funding`, identity rows, and friend rows) so a second device or a fresh local cache still shows correct numbers after sync
@@ -976,6 +994,7 @@ Rules:
 - if backend triggers still exist during transition, they must mirror the exact same formulas and must not be treated as canonical by the mobile UI
 
 Validation rule:
+
 - when touching offline finance logic, verify these paths before considering the task complete:
 - create a transaction
 - create an account funding
@@ -988,6 +1007,7 @@ Validation rule:
 The transaction detail flow now supports editing a simple transaction from its detail sheet.
 
 Rules:
+
 - the edit entry point lives in `lib/features/transaction/presentation/screens/detail_transaction_screen.dart`
 - reuse the matching transaction form for edit mode instead of introducing a visually different editor
 - exception: principal debt transactions must switch to the dedicated debt contract form, and debt repayment rows must not expose the generic transaction edit flow
@@ -1003,6 +1023,7 @@ Rules:
 The active invite domain for Bicount is now `https://bicount.levelingcoder.com`.
 
 Rules:
+
 - keep `lib/core/constants/app_config.dart` aligned with the live invite domain unless the user explicitly switches environments
 - Android app-link host in `android/app/src/main/AndroidManifest.xml` must match the same domain
 - iOS associated domains entitlement in `ios/Runner/Runner.entitlements` must match the same domain
@@ -1015,6 +1036,7 @@ Rules:
 The `Add funds` flow now supports recurring personal income such as salary.
 
 Rules:
+
 - keep one-time account funding rows and recurring income templates as separate concepts
 - actual credited money must stay in `account_funding`
 - recurring income templates must live in `recurring_fundings`
@@ -1028,6 +1050,7 @@ Rules:
 - backend work for this change is documented in `docs/recurring_funding_backend_actions.md`
 
 Migration rule:
+
 - keep the recurring-funding SQLite repair step in `Repository.repairRecurringFundingMigrationStateIfNeeded()` before `Repository().initialize()`; it protects existing local databases from duplicate-column failures on partially migrated devices
 - Brick tracks applied migrations in the `MigrationVersions` table, not only with `PRAGMA user_version`; if you repair a partially migrated local database, also mark the migration version there or Brick may replay the same `ALTER TABLE` commands
 - repair passes that open the main Brick SQLite file or `brick_offline_queue.sqlite` after `clientQueue(...)` is created must use a non-shared database handle (`singleInstance: false`) so closing the repair connection does not close Brick's live queue/database connection
@@ -1037,6 +1060,7 @@ Migration rule:
 ## State And Cross-Device Update (2026-03-30)
 
 Rules:
+
 - persisted business states must be numeric and centralized in `lib/core/constants/state_app.dart`
 - avoid introducing new text-based status payloads such as `active`, `inactive`, or `paused` in mobile persistence contracts
 - if a backend state contract changes, update the shared backend memo in `docs/backend_followup_actions.md`
@@ -1048,6 +1072,7 @@ Rules:
 ## Salary Tracking Update (2026-03-31)
 
 Rules:
+
 - recurring fundings with confirmation enabled must stay out of `AccountFundingModel` until the user confirms the payment
 - only confirmed recurring money may impact global balances, analysis, or income totals
 - do not rely on deterministic `funding_id` values for recurring occurrences; `account_funding.funding_id` should remain a real UUID
@@ -1057,6 +1082,7 @@ Rules:
 ## FX Snapshot Contract Update (2026-04-01)
 
 Rules:
+
 - when persisting `fx_snapshot_id`, prefer the real backend `exchange_rate_snapshots.snapshot_id` for every currency, including `CDF`
 - synthetic local CDF snapshots may still be used as a calculation fallback, but they must not persist a fake id like `cdf-YYYY-MM-DD`
 - if a real CDF snapshot is unavailable, the safe fallback is a null `fx_snapshot_id`, never a non-UUID synthetic value
@@ -1066,6 +1092,7 @@ Rules:
 ## Invite Domain Deployment Update (2026-04-01)
 
 Rules:
+
 - the public invite-link website deployment must preserve hidden files so `dist/.well-known/*` is actually published
 - if GitHub `actions/upload-artifact@v4` is used in the website pipeline, keep `include-hidden-files: true` enabled or app-link files will disappear before the FTP deploy step
 - if invite links open the website instead of the app, verify the live production responses of `/.well-known/assetlinks.json` and `/.well-known/apple-app-site-association` before changing Flutter routing
@@ -1073,6 +1100,7 @@ Rules:
 ## Invite Scheme Fallback Update (2026-04-02)
 
 Rules:
+
 - Bicount invite links now have two layers: HTTPS app/universal links first, and a custom-scheme fallback `bicount://friend/invite?inviteCode=...` when the user is already on the website
 - if custom-scheme deep links are added in mobile, keep Android intent filters, iOS URL schemes, website fallback logic, and URI-to-route parsing aligned together
 - when parsing a custom-scheme URI like `bicount://friend/invite?inviteCode=...`, map it back to the app route `/friend/invite?inviteCode=...` before handing it to the router
@@ -1084,6 +1112,7 @@ Rules:
 ## Invite Secondary Navigation Update (2026-04-10)
 
 Rules:
+
 - external `/friend/invite?inviteCode=...` links should no longer replace the whole in-app navigation stack for authenticated users
 - when the app receives a friend invite deep link and the user is authenticated, the app should land in the normal shell flow first, then open the invite screen as a secondary pushed page
 - the pushed in-app invite route uses the same `/friend/invite` path with an internal `embedded=1` query marker; keep that marker internal and do not generate it in public links
@@ -1096,6 +1125,7 @@ Rules:
 ## Transaction Feed Filter Update (2026-04-10)
 
 Rules:
+
 - the transaction feed chips are no longer all pure `transaction.type` comparisons
 - `Income` must match rows where the current user participant identity set is the beneficiary
 - `Expense` must match rows where the current user participant identity set is the sender
@@ -1108,6 +1138,7 @@ Rules:
 ## Startup Robustness Update (2026-04-10)
 
 Rules:
+
 - local currency preference reads and writes must tolerate transient Brick or SQLite unavailability during startup or sign-out transitions
 - do not let a failed local `Repository().get<UserModel>(...)` inside currency preference helpers crash app bootstrap; fall back to remote or cached config when possible
 - currency bootstrap callbacks triggered from auth changes, realtime currency streams, or unawaited `hydrate()` calls must catch and log their own failures instead of surfacing as unhandled exceptions during app launch
@@ -1116,6 +1147,7 @@ Rules:
 ## Analysis Outflow Update (2026-04-10)
 
 Rules:
+
 - the analysis dashboard inflow, outflow, and cashflow trend must use the same current-user participant identity set as the transaction feed and main finance projection
 - the current user participant identity set means `currentUser.uid` plus any `friends.sid` whose linked `friends.uid` equals the current user
 - `TransactionTypes.salaryCode` stays a dedicated inflow breakdown bucket
@@ -1129,24 +1161,28 @@ Rules:
 ## Friend Detail Currency Update (2026-04-01)
 
 Rules:
+
 - friend overview cards in the detail screen must use the projected friend aggregates already converted in `MainFinanceProjectionService`, not raw `transaction.amount` sums
 - when formatting friend overview amounts, pass the current display/reference currency explicitly instead of relying on an implicit formatter default
 
 ## Currency Settings Error Handling Update (2026-04-02)
 
 Rules:
+
 - when a settings sheet action already converts a repository failure into a user-facing toast, do not rethrow it from the UI callback unless a higher-level handler is explicitly expecting it
 - `SettingsOptionSheet` callbacks run directly from `onTap`; uncaught async rethrows there surface as unhandled exceptions even if the error was already shown to the user
 
 ## Reference Currency Fallback Update (2026-04-02)
 
 Rules:
+
 - changing the reference currency should try to refresh live FX data first, but it must still use cached allowed currencies and cached/latest snapshots when they are already present locally
 - missing historical target snapshots for some old record dates should no longer block the reference-currency switch if the app already has enough current FX data to format and project with graceful fallbacks
 
 ## Recurring Fundings Update (2026-04-02)
 
 Rules:
+
 - the public recurring follow-up surface is now `/recurring-fundings`; keep `/salary` only as a backward-compatible alias
 - `recurring_fundings` is a tracking template, not a counted money row
 - mobile must not auto-generate due `account_funding` rows from startup or local recurring sync anymore
@@ -1160,6 +1196,7 @@ Rules:
 ## Linked Friend Identity Update (2026-04-04)
 
 Rules:
+
 - when projecting "my" transactions, do not rely only on `transaction.uid == currentUser.uid`
 - the current user must also inherit transactions whose participants use a linked self-profile stored in `friends`, meaning any `FriendsModel` where `friend.uid == currentUser.uid`
 - resolve the current user participant identity set as `currentUser.uid` plus every linked self-profile `friend.sid`
@@ -1169,6 +1206,7 @@ Rules:
 ## Main Finance Stream Scope Update (2026-04-05)
 
 Rules:
+
 - `Main` local streams for `transactions`, `subscriptions`, and `account_funding` must stay unfiltered on the Flutter side
 - Supabase RLS is the source of truth for which finance rows are allowed to sync locally
 - do not reintroduce restrictive local `Query(where: ...)` filters there unless the backend contract explicitly changes
@@ -1176,6 +1214,7 @@ Rules:
 ## Friends Stream Scope Update (2026-04-05)
 
 Rules:
+
 - the global `friends` stream used by `Main` must stay unfiltered on the Flutter side
 - Supabase RLS is the source of truth for which friend rows can sync locally
 - user-facing friend list filtering belongs only in dedicated presentation surfaces such as Profile and Friends Directory, not in the shared data source or invite hub
@@ -1183,6 +1222,7 @@ Rules:
 ## Sign Out Hard Reset Update (2026-04-07)
 
 Rules:
+
 - signing out must behave like a full local reset for Bicount on the device
 - the logout flow must clear Brick local tables, the Brick offline queue, in-memory caches, SharedPreferences caches, and scheduled local notifications
 - local cleanup must still run even if the remote Supabase sign out call reports an error
@@ -1190,6 +1230,7 @@ Rules:
 ## Foreground Notification Update (2026-04-07)
 
 Rules:
+
 - when a push arrives while the app is already open, do not surface it through `Toasification` or other in-app toast helpers
 - foreground push events should use a real local notification through `flutter_local_notifications`
 - route navigation for a foreground push must happen from the notification tap flow (`localTap`), not immediately when the foreground event is received
@@ -1199,12 +1240,14 @@ Rules:
 ## Transaction Edit Beneficiary Validation Update (2026-04-05)
 
 Rules:
+
 - in the transfer edit form, the selected beneficiaries list is the source of truth for validation
 - do not mark the beneficiary field as missing just because the autocomplete text input is empty when a beneficiary is already present in the preview list
 
 ## Transaction UI Architecture Update (2026-04-08)
 
 Rules:
+
 - the transaction creation surface is now split between `TransactionHandler`, `ExpenseForm`, and `IncomeForm`; do not recreate a monolithic `transfer_form.dart`
 - `ExpenseForm` and `IncomeForm` should keep widget state local but factor logic into dedicated `part` files for helpers, interactions, prefill, sections, split logic, and submission
 - shared cross-form helper logic now lives in `lib/features/transaction/presentation/widgets/transaction_form_helpers.dart`; keep only role-specific sender and beneficiary rules inside `expense_form_helpers.dart` and `income_form_helpers.dart`
@@ -1217,6 +1260,7 @@ Rules:
 ## Transaction Role Semantics Update (2026-04-08)
 
 Rules:
+
 - in `ExpenseForm`, the current authenticated user is always the sender; do not reintroduce editable sender ownership there unless product explicitly changes the flow
 - in `IncomeForm`, the current authenticated user is always the beneficiary; the entered party is the sender/source of the income
 - `IncomeForm` must reject a sender that resolves to the current user, because that would collapse the flow into a self-to-self transaction and break `type` inference
@@ -1225,6 +1269,7 @@ Rules:
 ## Analysis Session-Aware Source Update (2026-04-07)
 
 Rules:
+
 - the visible V1 analysis dashboard must derive from the same session-aware `MainBloc` finance data used by the app shell, not from an independent raw finance subscription path
 - analysis-specific logic should only add period slicing, breakdown composition, and presentation state on top of `MainBloc` data
 - when `MainBloc` returns to loading, initial, or error states during auth/session changes, the analysis dashboard must clear its previous in-memory dashboard so stale values from an old account are not shown
@@ -1234,6 +1279,7 @@ Rules:
 The app finance model is now unified around two tables: `transactions` (ledger of all money flows) and `recurring_transfert` (recurring templates).
 
 Removed from active use:
+
 - `SubscriptionModel` / `subscriptions` table
 - `AccountFundingModel` / `account_funding` table
 - `RecurringFundingModel` / `recurring_fundings` table
@@ -1243,17 +1289,20 @@ The old blocs (`SubscriptionBloc`, `AddFundBloc`, `SalaryBloc`) are no longer in
 Do not re-wire them unless the user explicitly reverts the architecture.
 
 New model:
+
 - `RecurringTransfertModel` lives in `lib/features/recurring_fundings/data/models/recurring_transfert.model.dart`
 - type IDs are centralized in `lib/core/constants/recurring_transfert_type.dart`
 - `TransactionModel` gains three new columns: `recurring_transfert_id`, `recurring_occurrence_date`, `generation_mode`
 
 Type semantics:
+
 - `TransactionTypes.expenseCode = 0`, `TransactionTypes.incomeCode = 1`
 - `RecurringTransfertType`: subscriptionExpense=0, recurringExpenseOther=1, salaryIncome=2, recurringIncomeOther=3
 - generation mode: oneTime=0, manualConfirmation=1, backendAutomatic=2
 - recurring transfert status: active=0, inactive=1, archived=2
 
 Data flow:
+
 - `MainEntity` now carries `recurringTransferts` (List<RecurringTransfertModel>) instead of `subscriptions`, `accountFundings`, and `recurringFundings`
 - `MainRepositoryImpl` uses `Rx.combineLatest6` (users, friends, transactions, recurringTransferts, connectionState, currencyConfig)
 - `MainFinanceProjectionService` derives all balances from transactions only
@@ -1261,21 +1310,25 @@ Data flow:
 - subscription insight section was removed from the analysis dashboard
 
 Filter list:
+
 - `TransactionTypes.allTypesInt` is now `[-1, incomeCode, expenseCode, personal]`
 - transactionFilterLabel maps indices 0-3 to All, Income, Expense, Personal
 
 Migration:
+
 - Brick migration `20260409080526` handles the schema changes
 - `Repository.repairRecurringTransfertMigrationStateIfNeeded()` protects partially migrated devices
 - that repair must validate both the `TransactionModel` recurring columns and every expected `RecurringTransfertModel` column, because `CREATE TABLE IF NOT EXISTS` alone does not fix an already existing incomplete table
 - the manual migration file `20260409120000` was deleted as a duplicate
 
 Backend delta:
+
 - `docs/recurring_transfert_backend_actions.md` describes the new backend contracts
 - the backend simplified to `transactions` + `recurring_transfert` tables
 - old `subscription`, `account_funding`, `recurring_fundings` tables remain in Supabase during transition but mobile no longer reads from them as primary sources
 
 Dormant features:
+
 - `add_fund`, `subscription`, and `salary` feature directories still exist with stubbed broken calls
 - their local data sources have `_offlineFinanceLocalService` fields marked as unused
 - they can be fully removed when the product confirms no backward compatibility is needed
@@ -1283,6 +1336,7 @@ Dormant features:
 ## Transaction Placeholder Friend Update (2026-04-11)
 
 Rules:
+
 - when a transaction form creates a draft `FriendsModel` with no `sid` and no `uid`, its `relationType` must follow the effective persisted type: use the recurring type when recurring mode is enabled, otherwise use the base expense or income form type
 - local transaction persistence must treat `FriendConst.getTypeOfFriend(transactionType)` as the source of truth for the created or reused friend `relationType`; do not trust an incoming draft `FriendsModel.relationType` blindly
 - transaction persistence must resolve each draft party only once per submission and reuse that resolved friend row across recurring-template creation and saved transaction rows
@@ -1291,6 +1345,7 @@ Rules:
 ## Recurring Management Update (2026-04-11)
 
 Rules:
+
 - transaction detail must resolve the current user's visible name through the full participant identity set (`users.uid` plus linked self-profile `friends.sid`), not just by direct id equality
 - transaction persistence must keep the explicit `type` chosen by the form for recurring expense and recurring income rows; do not recompute it later from sender and beneficiary roles
 - when creating a `RecurringTransfertModel`, the owner `uid` must be the authenticated user when available, even for recurring income flows where the sender is an external party
@@ -1307,12 +1362,14 @@ Rules:
 ## Recurring Detail Sheet Update (2026-04-12)
 
 Rules:
+
 - recurring charge and recurring income detail sheets must rebuild their displayed summary from the current `MainBloc` `MainLoaded.startData`, not from a one-time snapshot captured when the user tapped a card
 - modal recurring detail sheets opened from `/subscriptions`, `/recurring-charges`, or `/recurring-incomes` must forward the page-scoped `RecurringTransfertBloc` with `BlocProvider.value`, because modal routes do not inherit providers created below the navigator
 
 ## Friend Profile Override Update (2026-04-15)
 
 Rules:
+
 - a `friends` row may keep its own editable `username` and `image` even when `friends.uid` is already linked to an existing Bicount user
 - editing a linked friend must update only the `FriendsModel` row, never the linked `UserModel` profile of the remote account
 - the edit action in friend detail should remain available for real friend entries even when they are linked
@@ -1322,6 +1379,7 @@ Rules:
 ## Home Widget Update (2026-04-19)
 
 Rules:
+
 - the Android home widget is now driven by `home_widget` with the XML provider `android/app/src/main/kotlin/com/youngsolver/bicount/BicountHomeWidgetProvider.kt`
 - the iOS home widget now uses the WidgetKit extension under `ios/BicountHomeWidget` with kind `BicountHomeWidget`
 - widget content priority is `salary confirmation needed` then `next recurring plan due within 2 days` then `current balance`
@@ -1342,12 +1400,14 @@ Rules:
 ## Recurring Frequency Constants Update (2026-04-12)
 
 Rules:
+
 - recurring plan monthly-load calculations and recurring-plan edit frequency pickers must use the shared `Frequency.weekly`, `Frequency.monthly`, `Frequency.quarterly`, and `Frequency.yearly` constants from `lib/core/constants/subscription_const.dart`
 - do not reintroduce local hardcoded frequency ids like `2, 3, 4, 5` in recurring plan builders or forms, because recurring templates are created elsewhere with the shared `Frequency` constants and the mismatch corrupts monthly normalization
 
 ## Historical FX Update (2026-04-12)
 
 Rules:
+
 - historical FX for persisted finance rows must stay anchored to the original record registration time; do not recalculate an existing row with the latest rate during edit flows when `created_at` or the stored FX date already exists
 - when editing an existing transaction that already stores `fx_rate_date`, prefer that stored FX day before falling back to `created_at`; bank snapshots are daily and `created_at` can land on a calendar day with no published snapshot even though the original stored FX day is valid
 - transaction edits must preserve the original `reference_currency_code` of the row when it already exists, and recompute FX metadata against the historical record date instead of the current day
@@ -1360,12 +1420,14 @@ Rules:
 ## Currency Dropdown Edit Update (2026-04-26)
 
 Rules:
+
 - the shared `CurrencyField` in `lib/core/widgets/custom_amount_field.dart` must keep prefilled transaction currencies editable during form updates
 - do not drive the transaction currency `DropdownMenuFormField` directly from both `controller` text and a sticky internal initial value; derive the selected code from the external controller and keep controller sync one-way so editing an existing transaction can still switch currency cleanly
 
 ## Profile Monthly Summary Update (2026-04-26)
 
 Rules:
+
 - the second row summary cards on the Profile screen keep the existing Profile card design
 - the data shown in those two cards should mirror the Home monthly flow metrics: `Entrées du mois` uses the Home monthly inflow value and `Sorties du mois` uses the Home monthly outflow value
 - when updating those Profile values, reuse `HomeMonthlyFlowService` instead of duplicating a separate monthly calculation path
@@ -1373,7 +1435,18 @@ Rules:
 ## Notification Auth Timing Update (2026-05-01)
 
 Rules:
+
 - notification permission prompts must be triggered only after an authenticated Supabase session exists, not during global app bootstrap before login
 - keep notification bootstrap itself active at app start for deep links, foreground listeners, and local notification wiring, but separate that passive initialization from permission or token sync side effects
 - `NotificationBloc` must be instantiated eagerly so notification event streams and auth-session listeners are active even when no screen explicitly reads the bloc
 - FCM token sync should run when the authenticated user session becomes available or changes, so first-install logins still persist the token to `fcm_tokens`
+
+## Profile Sliver Scroll Update (2026-05-16)
+
+Rules:
+
+- the Profile tab now uses `CustomScrollView` with a pinned `SliverPersistentHeader` to keep long contact lists readable
+- when the header is collapsed, show profile identity on the left (avatar and name) and the total balance on the right
+- contact cards in Profile must be rendered with `SliverList` and should not be truncated to only the first few rows
+- keep motion lightweight on long contact lists by limiting reveal animations to the first visible items
+- tapping the profile header in both expanded and collapsed states should keep opening `/settings`
