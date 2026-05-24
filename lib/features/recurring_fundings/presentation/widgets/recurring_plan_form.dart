@@ -2,6 +2,7 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
+import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_choice_chip.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_summary_entity.dart';
@@ -29,6 +30,8 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
   final TextEditingController _note = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late int _frequency;
+
+  bool isSubmitting = false;
 
   @override
   void initState() {
@@ -87,6 +90,11 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
             enableValidator: false,
           ),
           AppDimens.spacerExtraLarge,
+          CustomButton(
+                text: context.l10n.commonSave,
+                loading: isSubmitting,
+                onPressed: _submit,
+              ),
           FilledButton(
             onPressed: _submit,
             child: Text(context.l10n.commonSave),
@@ -121,6 +129,11 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
         ),
       ),
     );
+
+    setState(() {
+      isSubmitting = true;
+    });
+
   }
 
   String _formatAmount(double amount) {

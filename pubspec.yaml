@@ -59,6 +59,7 @@ dependencies:
   auto_size_text_field: ^2.2.4
   home_widget: ^0.9.1
   sign_in_with_apple: ^8.0.0
+  crypto: ^3.0.7
 
 dev_dependencies:
   flutter_test:
