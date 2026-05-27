@@ -1456,7 +1456,7 @@ Rules:
 Rules:
 
 - the Home tab now uses a page-level `CustomScrollView` with a pinned `SliverPersistentHeader`
-- the pinned Home header owns the former top summary content: balance, quick action buttons, and the monthly inflow and outflow cards
+- the pinned Home header owns the balance and monthly inflow and outflow cards; Home quick action buttons stay below the header in the main scroll content
 - `HomeRecentActivitySection` must stay non-scrollable; recent items should render inside the page-level scroll instead of an inner `ListView`
 - keep the collapsed Home header lightweight with a short balance summary only
-- the Home quick action buttons are icon-first entry points for expense and income, and currently both route to the transaction surface because transaction type selection still happens inside `TransactionHandler`
+- the Home quick action buttons are icon-first entry points for expense and income and should open the transaction bottom sheet directly on the matching form in `TransactionHandler`, without showing the segmented control

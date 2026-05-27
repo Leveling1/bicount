@@ -11,15 +11,21 @@ import 'package:flutter/material.dart';
 
 import '../widgets/segment_control.dart';
 
+enum TransactionHandlerInitialType { expense, income }
+
 class TransactionHandler extends StatefulWidget {
   const TransactionHandler({
     super.key,
     required this.user,
     required this.friends,
+    this.initialType = TransactionHandlerInitialType.expense,
+    this.showTypeSelector = true,
   });
 
   final UserModel? user;
   final List<FriendsModel> friends;
+  final TransactionHandlerInitialType initialType;
+  final bool showTypeSelector;
 
   @override
   State<TransactionHandler> createState() => _TransactionHandlerState();
@@ -32,6 +38,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
   void initState() {
     super.initState();
     _segmentedType = SegmentedControlController();
+    _segmentedType.setSelectedIndex(widget.initialType.index);
     _segmentedType.addListener(_onSegmentChanged);
   }
 
@@ -68,8 +75,10 @@ class _TransactionHandlerState extends State<TransactionHandler> {
           ),
         ),
         AppDimens.spacerMedium,
-        SegmentedControlWidget(controller: _segmentedType),
-        AppDimens.spacerMedium,
+        if (widget.showTypeSelector) ...[
+          SegmentedControlWidget(controller: _segmentedType),
+          AppDimens.spacerMedium,
+        ],
         SmoothSwitcher(
           child: switch (selectedIndex) {
             0 => ExpenseForm(user: widget.user, friends: transactionFriends),

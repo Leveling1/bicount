@@ -21,10 +21,18 @@ import '../bloc/home_bloc.dart';
 typedef CardTapCallback = void Function(int index);
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key, this.onCardTap, required this.data});
+  const HomeScreen({
+    super.key,
+    this.onCardTap,
+    this.onQuickExpenseTap,
+    this.onQuickIncomeTap,
+    required this.data,
+  });
 
   static const _monthlyFlowService = HomeMonthlyFlowService();
   final CardTapCallback? onCardTap;
+  final VoidCallback? onQuickExpenseTap;
+  final VoidCallback? onQuickIncomeTap;
   final MainEntity data;
 
   @override
@@ -106,7 +114,8 @@ class HomeScreen extends StatelessWidget {
                             icon: Icons.arrow_upward_rounded,
                             label: context.l10n.homeQuickExpense,
                             color: expenseColor,
-                            onTap: () => onCardTap?.call(2),
+                            onTap:
+                                onQuickExpenseTap ?? () => onCardTap?.call(2),
                           ),
                         ),
                         const SizedBox(width: AppDimens.marginMedium),
@@ -115,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                             icon: Icons.arrow_downward_rounded,
                             label: context.l10n.homeQuickIncome,
                             color: incomeColor,
-                            onTap: () => onCardTap?.call(2),
+                            onTap: onQuickIncomeTap ?? () => onCardTap?.call(2),
                           ),
                         ),
                       ],

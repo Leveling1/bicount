@@ -163,7 +163,20 @@ class _MainScreenState extends State<MainScreen> {
 
   List<Widget> _buildScreens(MainEntity data) {
     return [
-      HomeScreen(onCardTap: _goToPage, data: data),
+      HomeScreen(
+        onCardTap: _goToPage,
+        onQuickExpenseTap: () => _openTransactionSheet(
+          data,
+          initialType: TransactionHandlerInitialType.expense,
+          showTypeSelector: false,
+        ),
+        onQuickIncomeTap: () => _openTransactionSheet(
+          data,
+          initialType: TransactionHandlerInitialType.income,
+          showTypeSelector: false,
+        ),
+        data: data,
+      ),
       const AnalysisScreen(),
       TransactionScreen(
         data: data,
@@ -389,12 +402,22 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  void _openTransactionSheet(MainEntity data) {
+  void _openTransactionSheet(
+    MainEntity data, {
+    TransactionHandlerInitialType initialType =
+        TransactionHandlerInitialType.expense,
+    bool showTypeSelector = true,
+  }) {
     showCustomBottomSheet(
       context: context,
       minHeight: 0.95,
       color: null,
-      child: TransactionHandler(user: data.user, friends: data.friends),
+      child: TransactionHandler(
+        user: data.user,
+        friends: data.friends,
+        initialType: initialType,
+        showTypeSelector: showTypeSelector,
+      ),
     );
   }
 }
