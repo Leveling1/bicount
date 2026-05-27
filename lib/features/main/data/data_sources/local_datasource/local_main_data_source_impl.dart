@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/main/data/data_sources/local_datasource/main_local_datasource.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
@@ -58,7 +59,9 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     }
 
     try {
-      final subject = BehaviorSubject<UserModel>();
+      final subject = BehaviorSubject<UserModel>.seeded(
+        _buildSessionFallbackUser(),
+      );
       _userSubject = subject;
       final query = Query(where: [Where.exact('uid', uid)]);
 
@@ -206,6 +209,38 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     _transactionsSubject = null;
     _debtsSubject = null;
     _recurringTransfertsSubject = null;
+  }
+
+  UserModel _buildSessionFallbackUser() {
+    final currentUser = supabaseInstance.auth.currentUser;
+    final email = currentUser?.email?.trim() ?? '';
+    final usernameValue = currentUser?.userMetadata?['username'];
+    final avatarValue =
+        currentUser?.userMetadata?['image'] ??
+        currentUser?.userMetadata?['avatar_url'] ??
+        currentUser?.userMetadata?['picture'];
+    final username = usernameValue is String && usernameValue.trim().isNotEmpty
+        ? usernameValue.trim()
+        : _deriveUsername(email);
+    final image = avatarValue is String ? avatarValue.trim() : '';
+
+    return UserModel(
+      uid: currentUser?.id ?? '',
+      image: image,
+      username: username,
+      email: email,
+      balance: 0,
+      incomes: 0,
+      expenses: 0,
+      companyIncome: 0,
+      personalIncome: 0,
+      referenceCurrencyCode: CurrencyConfigEntity.defaultReferenceCurrencyCode,
+    );
+  }
+
+  String _deriveUsername(String email) {
+    final localPart = email.split('@').first.trim();
+    return localPart.isEmpty ? 'Bicount' : localPart;
   }
 
   void dispose() {

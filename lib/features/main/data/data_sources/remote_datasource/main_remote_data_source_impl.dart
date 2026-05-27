@@ -5,24 +5,20 @@ import 'package:bicount/core/constants/constants.dart';
 
 class MainRemoteDataSourceImpl implements MainRemoteDataSource {
   @override
-  Stream<int> connectionState() {
-    // On écoute le flux de connectivité
-    return Connectivity().onConnectivityChanged.asyncMap((
-      List<ConnectivityResult> results,
-    ) async {
-      // Vérifie d'abord s'il y a une connectivité autre que none
-      final isConnectedType = results.any((r) => r != ConnectivityResult.none);
-      if (!isConnectedType) {
-        return Constants.disconnected;
-      }
-      // Vérification réelle: test d'accès à Internet
-      final hasInternet = await _hasNetwork();
-      if (hasInternet) {
-        return Constants.connected;
-      } else {
-        return Constants.disconnected;
-      }
-    });
+  Stream<int> connectionState() async* {
+    final connectivity = Connectivity();
+
+    yield await _mapConnectivityResults(await connectivity.checkConnectivity());
+    yield* connectivity.onConnectivityChanged.asyncMap(_mapConnectivityResults);
+  }
+
+  Future<int> _mapConnectivityResults(List<ConnectivityResult> results) async {
+    final isConnectedType = results.any((r) => r != ConnectivityResult.none);
+    if (!isConnectedType) {
+      return Constants.disconnected;
+    }
+
+    return await _hasNetwork() ? Constants.connected : Constants.disconnected;
   }
 
   // Test réseau simple via une requête DNS
@@ -31,6 +27,8 @@ class MainRemoteDataSourceImpl implements MainRemoteDataSource {
       final result = await InternetAddress.lookup('example.com');
       return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
     } on SocketException {
+      return false;
+    } catch (_) {
       return false;
     }
   }

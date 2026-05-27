@@ -7,7 +7,6 @@ import '../../../../core/utils/number_format_utils.dart';
 
 class CustomPieChart extends StatelessWidget {
   final double profit, salary, equipment, service;
-  @override
   const CustomPieChart({
     super.key,
     required this.profit,

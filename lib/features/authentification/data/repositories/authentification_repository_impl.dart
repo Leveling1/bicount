@@ -33,16 +33,9 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
   ) async {
     try {
       await remoteDataSource.verifyEmailOtp(email, code);
-      final localProfile = await localDataSource.ensureCurrentUserProfile(
-        emailHint: email,
-      );
-      if (localProfile.isLeft()) {
-        await remoteDataSource.signOut();
-        return Left(
-          AuthenticationFailure(
-            message: 'An error occurred while preparing your account.',
-          ),
-        );
+      final ensured = await _ensureLocalProfileOrRollback(emailHint: email);
+      if (ensured != null) {
+        return Left(ensured);
       }
       return const Right(null);
     } catch (e) {
@@ -65,6 +58,13 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
         );
       }
 
+      final ensured = await _ensureLocalProfileOrRollback(
+        emailHint: remoteUser.getOrElse(() => throw Exception()).user?.email,
+      );
+      if (ensured != null) {
+        return Left(ensured);
+      }
+
       return const Right(null);
     } catch (e) {
       if (e is AuthApiException) {
@@ -82,6 +82,10 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
   Future<Either<Failure, void>> authWithApple() async {
     try {
       await remoteDataSource.authWithApple();
+      final ensured = await _ensureLocalProfileOrRollback();
+      if (ensured != null) {
+        return Left(ensured);
+      }
       return const Right(null);
     } catch (e) {
       if (e is AuthApiException) {
@@ -109,5 +113,21 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
     }
 
     return const Right(null);
+  }
+
+  Future<AuthenticationFailure?> _ensureLocalProfileOrRollback({
+    String? emailHint,
+  }) async {
+    final localProfile = await localDataSource.ensureCurrentUserProfile(
+      emailHint: emailHint,
+    );
+    if (localProfile.isRight()) {
+      return null;
+    }
+
+    await remoteDataSource.signOut();
+    return AuthenticationFailure(
+      message: 'An error occurred while preparing your account.',
+    );
   }
 }
