@@ -23,6 +23,21 @@ class HomeRecentActivitySection extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final itemWidgets = <Widget>[];
+    for (var index = 0; index < recentItems.length; index++) {
+      final item = recentItems[index];
+      itemWidgets.add(
+        BicountReveal(
+          delay: Duration(milliseconds: 210 + (index * 45)),
+          child: TransactionFeedTile(item: item, data: data),
+        ),
+      );
+
+      if (index < recentItems.length - 1) {
+        itemWidgets.add(const SizedBox(height: AppDimens.spacingSmall));
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -47,20 +62,7 @@ class HomeRecentActivitySection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppDimens.spacingSmall),
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.only(bottom: AppDimens.paddingExtraLarge),
-            physics: const BouncingScrollPhysics(),
-            itemCount: recentItems.length,
-            itemBuilder: (context, index) {
-              final item = recentItems[index];
-              return BicountReveal(
-                delay: Duration(milliseconds: 210 + (index * 45)),
-                child: TransactionFeedTile(item: item, data: data),
-              );
-            },
-          ),
-        ),
+        ...itemWidgets,
       ],
     );
   }

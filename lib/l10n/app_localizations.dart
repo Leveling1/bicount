@@ -881,6 +881,18 @@ abstract class AppLocalizations {
   /// **'Accounts'**
   String get homeAccounts;
 
+  /// No description provided for @homeQuickExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get homeQuickExpense;
+
+  /// No description provided for @homeQuickIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get homeQuickIncome;
+
   /// No description provided for @homeMonthlyInflow.
   ///
   /// In en, this message translates to:

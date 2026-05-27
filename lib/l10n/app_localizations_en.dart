@@ -406,6 +406,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeAccounts => 'Accounts';
 
   @override
+  String get homeQuickExpense => 'Expense';
+
+  @override
+  String get homeQuickIncome => 'Income';
+
+  @override
   String get homeMonthlyInflow => 'Monthly inflow';
 
   @override

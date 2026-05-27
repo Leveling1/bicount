@@ -1143,9 +1143,6 @@ Rules:
 - do not let a failed local `Repository().get<UserModel>(...)` inside currency preference helpers crash app bootstrap; fall back to remote or cached config when possible
 - currency bootstrap callbacks triggered from auth changes, realtime currency streams, or unawaited `hydrate()` calls must catch and log their own failures instead of surfacing as unhandled exceptions during app launch
 - keep the root `GoRouter` instance stable across theme, locale, and currency rebuilds; do not recreate `AppRouter()` from inside `MaterialApp.router` builders or deep-link navigation can reset during startup
-- `MainRemoteDataSource.connectionState()` must emit an initial connectivity value; relying only on `onConnectivityChanged` can leave `MainRepositoryImpl.getStartDataStream()` blocked in `Rx.combineLatest` at app start when the network state has not changed yet
-- `LocalMainDataSourceImpl.getUserDetails()` should stay able to emit a session-backed fallback user until the real `UserModel` row is hydrated, so a restored session can still boot the shell offline instead of waiting forever for a missing local row
-- every sign-in path, including Google and Apple, must call `ensureCurrentUserProfile()` after remote auth succeeds; otherwise offline startup behavior becomes provider-dependent because some sessions have no local `UserModel` row at all
 
 ## Analysis Outflow Update (2026-04-10)
 
@@ -1453,3 +1450,13 @@ Rules:
 - contact cards in Profile must be rendered with `SliverList` and should not be truncated to only the first few rows
 - keep motion lightweight on long contact lists by limiting reveal animations to the first visible items
 - tapping the profile header in both expanded and collapsed states should keep opening `/settings`
+
+## Home Sliver Scroll Update (2026-05-27)
+
+Rules:
+
+- the Home tab now uses a page-level `CustomScrollView` with a pinned `SliverPersistentHeader`
+- the pinned Home header owns the former top summary content: balance, quick action buttons, and the monthly inflow and outflow cards
+- `HomeRecentActivitySection` must stay non-scrollable; recent items should render inside the page-level scroll instead of an inner `ListView`
+- keep the collapsed Home header lightweight with a short balance summary only
+- the Home quick action buttons are icon-first entry points for expense and income, and currently both route to the transaction surface because transaction type selection still happens inside `TransactionHandler`

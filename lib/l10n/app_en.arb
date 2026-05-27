@@ -141,6 +141,8 @@
     }
   },
   "homeAccounts": "Accounts",
+  "homeQuickExpense": "Expense",
+  "homeQuickIncome": "Income",
   "homeMonthlyInflow": "Monthly inflow",
   "homeMonthlyOutflow": "Monthly outflow",
   "homeTransactions": "Transactions",
