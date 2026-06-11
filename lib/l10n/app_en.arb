@@ -375,7 +375,7 @@
   "transactionUpdatedSuccess": "Transaction updated successfully.",
   "transactionDeleteConfirmTitle": "Delete this transaction?",
   "transactionDeleteConfirmDescription": "This action removes the transaction from your history and syncs the deletion when possible.",
-  "transactionDeleteConfirmCta": "Delete transaction",
+  "transactionDeleteConfirmCta": "Delete",
   "transactionDuplicateBeneficiary": "This beneficiary is already in the split.",
   "transactionEditSingleBeneficiaryOnly": "Edit this transaction with one beneficiary only.",
   "transactionAddAtLeastOneBeneficiary": "Add at least one beneficiary.",

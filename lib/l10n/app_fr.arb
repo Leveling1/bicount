@@ -375,7 +375,7 @@
   "transactionUpdatedSuccess": "Transaction mise à jour avec succès.",
   "transactionDeleteConfirmTitle": "Supprimer cette transaction ?",
   "transactionDeleteConfirmDescription": "Cette action retire la transaction de votre historique et synchronise la suppression dès que possible.",
-  "transactionDeleteConfirmCta": "Supprimer la transaction",
+  "transactionDeleteConfirmCta": "Supprimer",
   "transactionDuplicateBeneficiary": "Ce bénéficiaire est déjà dans la répartition.",
   "transactionEditSingleBeneficiaryOnly": "Modifiez cette transaction avec un seul bénéficiaire.",
   "transactionAddAtLeastOneBeneficiary": "Ajoutez au moins un bénéficiaire.",

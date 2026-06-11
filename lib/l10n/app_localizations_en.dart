@@ -1011,7 +1011,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionDeleteConfirmDescription => 'This action removes the transaction from your history and syncs the deletion when possible.';
 
   @override
-  String get transactionDeleteConfirmCta => 'Delete transaction';
+  String get transactionDeleteConfirmCta => 'Delete';
 
   @override
   String get transactionDuplicateBeneficiary => 'This beneficiary is already in the split.';

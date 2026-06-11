@@ -164,13 +164,22 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
         title: Text(context.l10n.transactionDeleteConfirmTitle),
         content: Text(context.l10n.transactionDeleteConfirmDescription),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(context.l10n.commonReject),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(context.l10n.transactionDeleteConfirmCta),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(context.l10n.commonReject),
+                ),
+              ),
+              AppDimens.spacerWidthMedium,
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: Text(context.l10n.transactionDeleteConfirmCta),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -193,13 +202,22 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
         title: Text(context.l10n.debtDeleteConfirmTitle),
         content: Text(context.l10n.debtDeleteConfirmDescription),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(context.l10n.commonCancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(context.l10n.debtDeleteConfirmCta),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(context.l10n.commonCancel),
+                ),
+              ),
+              AppDimens.spacerWidthMedium,
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: Text(context.l10n.debtDeleteConfirmCta),
+                ),
+              ),
+            ],
           ),
         ],
       ),
