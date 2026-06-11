@@ -20,7 +20,7 @@ class HomeQuickActionButton extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Material(
-      color: theme.cardColor,
+      color: Colors.transparent, // theme.cardColor,
       borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
       child: InkWell(
         onTap: onTap,

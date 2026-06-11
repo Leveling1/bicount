@@ -269,3 +269,125 @@ class CustomAuthIconButton extends StatelessWidget {
     );
   }
 }
+
+class CustomButtonWithIcon extends StatelessWidget {
+  const CustomButtonWithIcon({
+    super.key,
+    required this.text,
+    required this.icon,
+    required this.onPressed,
+    this.loading = false,
+  });
+
+  final Widget icon;
+  final VoidCallback onPressed;
+  final bool loading;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: ElevatedButton(
+        onPressed: loading ? null : onPressed,
+        /*style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        ),*/
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 180),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeOutCubic,
+          transitionBuilder: (child, animation) {
+            final scale = Tween(begin: 0.98, end: 1.0).animate(animation);
+            return FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(scale: scale, child: child),
+            );
+          },
+          child: loading
+              ? SizedBox(
+                  key: const ValueKey('button_loading'),
+                  height: 32,
+                  child: LoadingAnimationWidget.horizontalRotatingDots(
+                    color: Theme.of(context).cardColor,
+                    size: 38,
+                  ),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    icon,
+                    AppDimens.spacerWidthMedium,
+                    Text(text, key: ValueKey(text)),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomIconButton extends StatelessWidget {
+  const CustomIconButton({
+    super.key,
+    this.loading = false,
+    required this.onPressed,
+    required this.icon,
+    this.color,
+  });
+
+  final IconData icon;
+  final bool loading;
+  final VoidCallback? onPressed;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+      ),
+      margin: EdgeInsets.only(
+        right: AppDimens.marginExtraSmall,
+        top: AppDimens.marginExtraSmall,
+        bottom: AppDimens.marginExtraSmall,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          hoverColor: Theme.of(context).cardColor.withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+          onTap: onPressed,
+          child: Center(
+            child: loading
+                ? LoadingAnimationWidget.hexagonDots(
+                    color:
+                        color ??
+                        Theme.of(context)
+                            .elevatedButtonTheme
+                            .style!
+                            .backgroundColor!
+                            .resolve({})!,
+                    size: 15,
+                  )
+                : Icon(
+                    icon,
+                    color:
+                        color ??
+                        Theme.of(context)
+                            .elevatedButtonTheme
+                            .style
+                            ?.backgroundColor
+                            ?.resolve({}),
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+}

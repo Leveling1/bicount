@@ -50,7 +50,7 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
         'Could not find ID Token from generated credential.',
       );
     }
-    final authResponse = await supabaseClient.auth.signInWithIdToken(
+    await supabaseClient.auth.signInWithIdToken(
       provider: OAuthProvider.apple,
       idToken: idToken,
       nonce: rawNonce,

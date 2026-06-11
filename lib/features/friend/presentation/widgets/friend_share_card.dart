@@ -97,16 +97,18 @@ class FriendShareCard extends StatelessWidget {
                       : context.l10n.friendShareRefresh,
                 ),
               ),
-              ElevatedButton.icon(
-                onPressed: activeShare == null ? null : onShare,
-                icon: const Icon(Icons.send_outlined),
-                label: Text(context.l10n.friendShareLink),
-              ),
-              OutlinedButton.icon(
-                onPressed: activeShare == null ? null : onCopy,
-                icon: const Icon(Icons.copy_outlined),
-                label: Text(context.l10n.commonCopy),
-              ),
+              if (activeShare != null) ...[
+                ElevatedButton.icon(
+                  onPressed: activeShare == null ? null : onShare,
+                  icon: const Icon(Icons.send_outlined),
+                  label: Text(context.l10n.friendShareLink),
+                ),
+                OutlinedButton.icon(
+                  onPressed: activeShare == null ? null : onCopy,
+                  icon: const Icon(Icons.copy_outlined),
+                  label: Text(context.l10n.commonCopy),
+                ),
+              ],
               OutlinedButton.icon(
                 onPressed: onScan,
                 icon: const Icon(Icons.qr_code_scanner_outlined),

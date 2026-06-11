@@ -1,11 +1,11 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/services/open_friend_detail.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
-import 'package:bicount/features/friend/presentation/screens/detail_friend.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_card.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_directory_header.dart';
@@ -154,7 +154,7 @@ class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
                                       child: FriendCard(
                                         friend: friend,
                                         onTap: () =>
-                                            _openDetail(context, friend),
+                                            openFriendDetail(context, friend),
                                       ),
                                     );
                                   },
@@ -169,11 +169,7 @@ class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
     );
   }
 
-  void _openDetail(BuildContext context, FriendsModel friend) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => DetailFriend(friend: friend)));
-  }
+  
 
   void _openInviteHub(BuildContext context) {
     final state = context.read<MainBloc>().state;

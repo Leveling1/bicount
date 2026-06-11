@@ -1,6 +1,7 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
 class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -46,28 +47,26 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
             return FadeTransition(opacity: animation, child: child);
           },
           child: switch (selectedIndex) {
-            2 => IconButton(
+            2 => Row(
               key: ValueKey('search_$selectedIndex$showSearchBar'),
-              onPressed: onToggleSearch,
-              icon: Icon(
-                showSearchBar ? Icons.close : Icons.search,
-                key: ValueKey(showSearchBar ? 'icon_close' : 'icon_search'),
-                color: Theme.of(context).textTheme.titleSmall!.color!,
-                size: AppDimens.iconSizeMedium,
-              ),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomIconButton(
+                  onPressed: onToggleSearch,
+                  icon: showSearchBar ? Icons.close : Icons.search,
+                ),
+                AppDimens.spacerWidthMedium,
+              ],
             ),
             3 => Row(
               key: ValueKey('profile_actions_$selectedIndex'),
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
+                CustomIconButton(
                   onPressed: onOpenSettings,
-                  icon: Icon(
-                    Icons.settings_outlined,
-                    color: Theme.of(context).textTheme.titleSmall?.color,
-                    size: AppDimens.iconSizeMedium,
-                  ),
+                  icon: Icons.settings,
                 ),
+                AppDimens.spacerWidthMedium,
               ],
             ),
             _ => const SizedBox.shrink(key: ValueKey('no_action')),

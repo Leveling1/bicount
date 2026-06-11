@@ -14,7 +14,7 @@ class DetailsCard extends StatelessWidget {
       margin: isMargin ? EdgeInsets.only(top: AppDimens.marginMedium) : null,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppDimens.paddingMedium),

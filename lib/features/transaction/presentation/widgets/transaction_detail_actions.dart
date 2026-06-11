@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
 class TransactionDetailActions extends StatelessWidget {
@@ -23,22 +24,17 @@ class TransactionDetailActions extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         if (hasEdit)
-          IconButton(
-            onPressed: isLoading ? null : onEditPressed,
-            icon: Icon(
-              Icons.edit,
-              color: Theme.of(context).textTheme.bodyMedium!.color,
-              size: iconSize,
-            ),
+          CustomIconButton(
+            onPressed: onEditPressed,
+            icon: Icons.edit,
+            loading: isLoading,
           ),
         if (hasDelete)
-          IconButton(
-            onPressed: isLoading ? null : onDeletePressed,
-            icon: Icon(
-              Icons.delete_outline,
-              color: Theme.of(context).colorScheme.error,
-              size: iconSize,
-            ),
+          CustomIconButton(
+            onPressed: onDeletePressed,
+            icon: Icons.delete,
+            color: Theme.of(context).colorScheme.error,
+            loading: isLoading,
           ),
       ],
     );

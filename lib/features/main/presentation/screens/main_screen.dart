@@ -4,6 +4,7 @@ import 'package:bicount/core/home_widget/bicount_home_widget_service.dart';
 import 'package:bicount/core/routes/friend_invite_route.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/services/open_transaction_sheet.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/features/add_fund/presentation/screens/add_fund_handler.dart';
@@ -134,7 +135,8 @@ class _MainScreenState extends State<MainScreen> {
           ),
           floatingActionButton: MainShellFab(
             selectedIndex: _selectedIndex,
-            onPressed: () => _openTransactionSheet(preparedData),
+            onPressed: () => openTransactionSheet(context, preparedData),
+            transaction: preparedData.transactions.length,
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
@@ -165,12 +167,14 @@ class _MainScreenState extends State<MainScreen> {
     return [
       HomeScreen(
         onCardTap: _goToPage,
-        onQuickExpenseTap: () => _openTransactionSheet(
+        onQuickExpenseTap: () => openTransactionSheet(
+          context,
           data,
           initialType: TransactionHandlerInitialType.expense,
           showTypeSelector: false,
         ),
-        onQuickIncomeTap: () => _openTransactionSheet(
+        onQuickIncomeTap: () => openTransactionSheet(
+          context,
           data,
           initialType: TransactionHandlerInitialType.income,
           showTypeSelector: false,
@@ -334,7 +338,7 @@ class _MainScreenState extends State<MainScreen> {
           if (!mounted) {
             return;
           }
-          _openTransactionSheet(data);
+          openTransactionSheet(context, data);
         });
         return;
       case BicountHomeWidgetActionType.openRecurringConfirmation:
@@ -402,22 +406,5 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  void _openTransactionSheet(
-    MainEntity data, {
-    TransactionHandlerInitialType initialType =
-        TransactionHandlerInitialType.expense,
-    bool showTypeSelector = true,
-  }) {
-    showCustomBottomSheet(
-      context: context,
-      minHeight: 0.95,
-      color: null,
-      child: TransactionHandler(
-        user: data.user,
-        friends: data.friends,
-        initialType: initialType,
-        showTypeSelector: showTypeSelector,
-      ),
-    );
-  }
+  
 }

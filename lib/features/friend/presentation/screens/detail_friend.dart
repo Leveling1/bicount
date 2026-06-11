@@ -4,6 +4,7 @@ import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
+import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
@@ -38,15 +39,16 @@ class DetailFriend extends StatelessWidget {
             title: context.l10n.friendDetailTitle,
             actions: [
               if (detail != null && detail.canEditProfile)
-                IconButton(
+                CustomIconButton(
                   onPressed: () => _openEditFlow(context, currentFriend),
-                  icon: const Icon(Icons.edit_outlined),
+                  icon: Icons.edit,
                 ),
               if (detail != null && detail.canShareProfile)
-                IconButton(
+                CustomIconButton(
                   onPressed: () => _openShareFlow(context, currentFriend),
-                  icon: const Icon(Icons.ios_share_outlined),
+                  icon: Icons.share,
                 ),
+              AppDimens.spacerWidthMedium,
             ],
           ),
           body: data == null || detail == null

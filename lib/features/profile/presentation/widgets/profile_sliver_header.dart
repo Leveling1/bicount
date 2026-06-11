@@ -45,11 +45,17 @@ class ProfileSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
     );
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(AppDimens.borderRadiusUltraLarge),
+      borderRadius: BorderRadius.only(
+        bottomLeft: Radius.circular(AppDimens.borderRadiusUltraLarge),
+        bottomRight: Radius.circular(AppDimens.borderRadiusUltraLarge),
+      ),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: theme.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusUltraLarge),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(AppDimens.borderRadiusUltraLarge),
+            bottomRight: Radius.circular(AppDimens.borderRadiusUltraLarge),
+          ),
         ),
         child: SizedBox.expand(
           child: AnimatedSwitcher(
