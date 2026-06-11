@@ -19,10 +19,7 @@ class TransactionFeedItem {
   final TransactionEntity transaction;
 
   factory TransactionFeedItem.fromTransaction(TransactionModel transaction) {
-    final timelineDate =
-        DateTime.tryParse(transaction.createdAt ?? '') ??
-        DateTime.tryParse(transaction.date) ??
-        DateTime.now();
+    final timelineDate = DateTime.tryParse(transaction.date) ?? DateTime.now();
 
     return TransactionFeedItem(
       id: transaction.tid ?? transaction.gtid,
