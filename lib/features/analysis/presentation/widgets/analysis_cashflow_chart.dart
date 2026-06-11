@@ -1,3 +1,4 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/details_card.dart';
@@ -33,13 +34,13 @@ class AnalysisCashflowChart extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Cumulative net',
+                context.l10n.analysisCumulativeNet,
                 style: Theme.of(
                   context,
                 ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
               ),
               Text(
-                dashboard.period.description,
+                dashboard.period.description(context),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ],

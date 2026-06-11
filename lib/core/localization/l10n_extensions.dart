@@ -16,13 +16,13 @@ extension L10nBuildContextX on BuildContext {
   String analysisPeriodLabel(AnalysisPeriod period) {
     switch (period) {
       case AnalysisPeriod.week7:
-        return '7D';
+        return l10n.analysisPeriod7DLabel;
       case AnalysisPeriod.month30:
-        return '30D';
+        return l10n.analysisPeriod30DLabel;
       case AnalysisPeriod.quarter90:
-        return '90D';
+        return l10n.analysisPeriod90DLabel;
       case AnalysisPeriod.all:
-        return l10n.analysisPeriodAll;
+        return l10n.analysisPeriodAllLabel;
     }
   }
 
@@ -32,6 +32,10 @@ extension L10nBuildContextX on BuildContext {
         return l10n.transactionTypeAddFund;
       case 'ReceivedTransfers':
         return l10n.transactionTypeIncome;
+      case 'Income':
+        return l10n.analysisIncome;
+      case 'Salary':
+        return l10n.transactionTypeSalary;
       case 'Expenses':
         return l10n.analysisBreakdownExpenses;
       case 'Subscriptions':

@@ -709,7 +709,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analysisNoActiveSubscriptions => 'No active subscriptions scheduled yet.';
 
   @override
+  String get analysisCumulativeNet => 'Cumulative net';
+
+  @override
   String get analysisPeriodAll => 'All';
+
+  @override
+  String get analysisPeriod7DDescription => 'Last 7 days';
+
+  @override
+  String get analysisPeriod30DDescription => 'Last 30 days';
+
+  @override
+  String get analysisPeriod90DDescription => 'Last 90 days';
+
+  @override
+  String get analysisPeriodAllDescription => 'All history';
 
   @override
   String get analysisBreakdownAddFunds => 'Add funds';
@@ -1603,4 +1618,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recurringTypeLabel => 'Category';
+
+  @override
+  String get analysisPeriod7DLabel => '7D';
+
+  @override
+  String get analysisPeriod30DLabel => '30D';
+
+  @override
+  String get analysisPeriod90DLabel => '90D';
+
+  @override
+  String get analysisPeriodAllLabel => 'All';
 }

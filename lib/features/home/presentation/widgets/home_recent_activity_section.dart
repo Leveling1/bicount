@@ -1,6 +1,8 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/services/open_transaction_sheet.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
+import 'package:bicount/core/widgets/empty_state_card.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/presentation/helpers/transaction_feed_builder.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_feed_tile.dart';
@@ -19,9 +21,9 @@ class HomeRecentActivitySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final recentItems = buildTransactionFeed(data).take(5).toList();
-    if (recentItems.isEmpty) {
+    /*if (recentItems.isEmpty) {
       return const SizedBox.shrink();
-    }
+    }*/
 
     final itemWidgets = <Widget>[];
     for (var index = 0; index < recentItems.length; index++) {
@@ -62,7 +64,16 @@ class HomeRecentActivitySection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppDimens.spacingSmall),
-        ...itemWidgets,
+        if (recentItems.isEmpty)
+          BicountReveal(
+            child: Center(
+              child: EmptyStateCard(
+                onPressed: () => openTransactionSheet(context, data),
+              ),
+            ),
+          )
+        else
+          ...itemWidgets,
       ],
     );
   }

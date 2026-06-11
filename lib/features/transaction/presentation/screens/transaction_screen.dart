@@ -1,6 +1,7 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/open_transaction_sheet.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/empty_state_card.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/presentation/helpers/transaction_feed_builder.dart';
@@ -69,9 +70,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final grouped = groupTransactionFeedByDate(context, filteredFeed);
 
     if (feed.isEmpty) {
-      return Center(
-        child: EmptyStateCard(
-          onPressed: () => openTransactionSheet(context, widget.data),
+      return BicountReveal(
+        child: Center(
+          child: EmptyStateCard(
+            onPressed: () => openTransactionSheet(context, widget.data),
+          ),
         ),
       );
     }

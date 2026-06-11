@@ -30,6 +30,7 @@ class DetailFriendHeader extends StatelessWidget {
         const SizedBox(height: 12),
         Chip(
           backgroundColor: Theme.of(context).cardColor,
+          side: BorderSide.none,
           avatar: Icon(
             isLinkedProfile ? Icons.verified_user_outlined : Icons.link_off,
             size: 18,

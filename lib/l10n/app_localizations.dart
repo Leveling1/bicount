@@ -1487,11 +1487,41 @@ abstract class AppLocalizations {
   /// **'No active subscriptions scheduled yet.'**
   String get analysisNoActiveSubscriptions;
 
+  /// No description provided for @analysisCumulativeNet.
+  ///
+  /// In en, this message translates to:
+  /// **'Cumulative net'**
+  String get analysisCumulativeNet;
+
   /// No description provided for @analysisPeriodAll.
   ///
   /// In en, this message translates to:
   /// **'All'**
   String get analysisPeriodAll;
+
+  /// No description provided for @analysisPeriod7DDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 days'**
+  String get analysisPeriod7DDescription;
+
+  /// No description provided for @analysisPeriod30DDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days'**
+  String get analysisPeriod30DDescription;
+
+  /// No description provided for @analysisPeriod90DDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 90 days'**
+  String get analysisPeriod90DDescription;
+
+  /// No description provided for @analysisPeriodAllDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'All history'**
+  String get analysisPeriodAllDescription;
 
   /// No description provided for @analysisBreakdownAddFunds.
   ///
@@ -2066,7 +2096,7 @@ abstract class AppLocalizations {
   /// No description provided for @transactionDeleteConfirmCta.
   ///
   /// In en, this message translates to:
-  /// **'Delete transaction'**
+  /// **'Delete'**
   String get transactionDeleteConfirmCta;
 
   /// No description provided for @transactionDuplicateBeneficiary.
@@ -3214,6 +3244,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Category'**
   String get recurringTypeLabel;
+
+  /// No description provided for @analysisPeriod7DLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'7D'**
+  String get analysisPeriod7DLabel;
+
+  /// No description provided for @analysisPeriod30DLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'30D'**
+  String get analysisPeriod30DLabel;
+
+  /// No description provided for @analysisPeriod90DLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'90D'**
+  String get analysisPeriod90DLabel;
+
+  /// No description provided for @analysisPeriodAllLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get analysisPeriodAllLabel;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

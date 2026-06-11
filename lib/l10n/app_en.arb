@@ -242,7 +242,12 @@
   "analysisRecurringIncomesDescription": "Track your repeating income sources and open the full follow-up when one needs attention.",
   "analysisRecurringIncomesUpcoming": "Upcoming incomes",
   "analysisNoActiveSubscriptions": "No active subscriptions scheduled yet.",
+  "analysisCumulativeNet": "Cumulative net",
   "analysisPeriodAll": "All",
+  "analysisPeriod7DDescription": "Last 7 days",
+  "analysisPeriod30DDescription": "Last 30 days",
+  "analysisPeriod90DDescription": "Last 90 days",
+  "analysisPeriodAllDescription": "All history",
   "analysisBreakdownAddFunds": "Add funds",
   "analysisBreakdownReceivedTransfers": "Inbound transfers",
   "analysisBreakdownExpenses": "Expenses",
@@ -611,5 +616,9 @@
   "debtDeleteConfirmCta": "Delete debt",
   "recurringTypeSalary": "Salary",
   "recurringTypeOtherIncome": "Other recurring income",
-  "recurringTypeLabel": "Category"
+  "recurringTypeLabel": "Category",
+  "analysisPeriod7DLabel": "7D",
+  "analysisPeriod30DLabel": "30D",
+  "analysisPeriod90DLabel": "90D",
+  "analysisPeriodAllLabel": "All"
 }

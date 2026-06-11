@@ -242,7 +242,12 @@
   "analysisRecurringIncomesDescription": "Suivez vos sources de revenus récurrentes et ouvrez le suivi complet dès qu'une échéance demande votre attention.",
   "analysisRecurringIncomesUpcoming": "Revenus à venir",
   "analysisNoActiveSubscriptions": "Aucun abonnement actif planifié pour le moment.",
+  "analysisCumulativeNet": "Net cumulé",
   "analysisPeriodAll": "Tout",
+  "analysisPeriod7DDescription": "7 derniers jours",
+  "analysisPeriod30DDescription": "30 derniers jours",
+  "analysisPeriod90DDescription": "90 derniers jours",
+  "analysisPeriodAllDescription": "Tout l'historique",
   "analysisBreakdownAddFunds": "Fonds ajoutes",
   "analysisBreakdownReceivedTransfers": "Transferts reçus",
   "analysisBreakdownExpenses": "Dépenses",
@@ -611,5 +616,9 @@
   "debtDeleteConfirmCta": "Supprimer la dette",
   "recurringTypeSalary": "Salaire",
   "recurringTypeOtherIncome": "Autre revenu récurrent",
-  "recurringTypeLabel": "Catégorie"
+  "recurringTypeLabel": "Catégorie",
+  "analysisPeriod7DLabel": "7J",
+  "analysisPeriod30DLabel": "30J",
+  "analysisPeriod90DLabel": "90J",
+  "analysisPeriodAllLabel": "Tout"
 }

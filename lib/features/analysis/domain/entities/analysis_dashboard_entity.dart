@@ -1,31 +1,33 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 enum AnalysisPeriod { week7, month30, quarter90, all }
 
 extension AnalysisPeriodX on AnalysisPeriod {
-  String get label {
+  String label(BuildContext context) {
     switch (this) {
       case AnalysisPeriod.week7:
-        return '7D';
+        return context.l10n.analysisPeriod7DLabel;
       case AnalysisPeriod.month30:
-        return '30D';
+        return context.l10n.analysisPeriod30DLabel;
       case AnalysisPeriod.quarter90:
-        return '90D';
+        return context.l10n.analysisPeriod90DLabel;
       case AnalysisPeriod.all:
-        return 'All';
+        return context.l10n.analysisPeriodAllLabel;
     }
   }
 
-  String get description {
+  String description(BuildContext context) {
     switch (this) {
       case AnalysisPeriod.week7:
-        return 'Last 7 days';
+        return context.l10n.analysisPeriod7DDescription;
       case AnalysisPeriod.month30:
-        return 'Last 30 days';
+        return context.l10n.analysisPeriod30DDescription;
       case AnalysisPeriod.quarter90:
-        return 'Last 90 days';
+        return context.l10n.analysisPeriod90DDescription;
       case AnalysisPeriod.all:
-        return 'All history';
+        return context.l10n.analysisPeriodAllDescription;
     }
   }
 }

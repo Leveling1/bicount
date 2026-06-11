@@ -12,13 +12,17 @@ class EmptyStateCard extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       margin: EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Colors.transparent, //Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.inbox, size: 48.0, color: Colors.grey[400]),
+          Icon(
+            Icons.inbox,
+            size: 48.0,
+            color: Theme.of(context).iconTheme.color,
+          ),
           AppDimens.spacerMedium,
           Text(
             'Aucune transaction enregistrée',
