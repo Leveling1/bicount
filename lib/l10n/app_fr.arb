@@ -359,7 +359,7 @@
   "statusUnsubscribed": "Désabonné",
   "statusActive": "Actif",
   "statusInactive": "Inactif",
-  "transactionNoTransactionsFound": "Aucune transaction trouvée",
+  "transactionNoTransactionsFound": "Aucune transaction enregistrée",
   "transactionToday": "Aujourd'hui",
   "transactionYesterday": "Hier",
   "transactionFilterAll": "Tout",

@@ -104,33 +104,36 @@ class HomeScreen extends StatelessWidget {
                     child: SizedBox(height: AppDimens.spacingMedium),
                   ),
                 ],
-                SliverToBoxAdapter(
-                  child: BicountReveal(
-                    delay: const Duration(milliseconds: 180),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: HomeQuickActionButton(
-                            icon: Icons.arrow_upward_rounded,
-                            label: context.l10n.homeQuickExpense,
-                            color: expenseColor,
-                            onTap:
-                                onQuickExpenseTap ?? () => onCardTap?.call(2),
+                if (data.transactions.isNotEmpty) ...[
+                  SliverToBoxAdapter(
+                    child: BicountReveal(
+                      delay: const Duration(milliseconds: 180),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: HomeQuickActionButton(
+                              icon: Icons.arrow_upward_rounded,
+                              label: context.l10n.homeQuickExpense,
+                              color: expenseColor,
+                              onTap:
+                                  onQuickExpenseTap ?? () => onCardTap?.call(2),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: AppDimens.marginMedium),
-                        Expanded(
-                          child: HomeQuickActionButton(
-                            icon: Icons.arrow_downward_rounded,
-                            label: context.l10n.homeQuickIncome,
-                            color: incomeColor,
-                            onTap: onQuickIncomeTap ?? () => onCardTap?.call(2),
+                          const SizedBox(width: AppDimens.marginMedium),
+                          Expanded(
+                            child: HomeQuickActionButton(
+                              icon: Icons.arrow_downward_rounded,
+                              label: context.l10n.homeQuickIncome,
+                              color: incomeColor,
+                              onTap:
+                                  onQuickIncomeTap ?? () => onCardTap?.call(2),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                ],
                 const SliverToBoxAdapter(
                   child: SizedBox(height: AppDimens.spacingMedium),
                 ),

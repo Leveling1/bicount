@@ -963,7 +963,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusInactive => 'Inactive';
 
   @override
-  String get transactionNoTransactionsFound => 'No transactions found';
+  String get transactionNoTransactionsFound => 'No transactions recorded';
 
   @override
   String get transactionToday => 'Today';

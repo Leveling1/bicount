@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:bicount/core/constants/test_account.dart';
 import 'package:dartz/dartz.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,6 +19,10 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
 
   @override
   Future<void> requestEmailOtp(String email) async {
+    if (email == TestAccount.appleEmailTest ||
+        email == TestAccount.googleEmailTest) {
+      return;
+    }
     await supabaseClient.auth.signInWithOtp(
       email: email,
       shouldCreateUser: true,
@@ -26,6 +31,13 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
 
   @override
   Future<void> verifyEmailOtp(String email, String code) async {
+    if (email == TestAccount.appleEmailTest &&
+            code == TestAccount.appleOtpTest ||
+        email == TestAccount.googleEmailTest &&
+            code == TestAccount.googleOtpTest) {
+      await connectionTest(email);
+      return;
+    }
     await supabaseClient.auth.verifyOTP(
       email: email,
       token: code,
@@ -150,5 +162,21 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
   @override
   Future<void> signOut() async {
     await supabaseClient.auth.signOut();
+  }
+
+  Future<void> connectionTest(String email) async {
+    final String password = email == TestAccount.appleEmailTest
+        ? TestAccount.appleMpTest
+        : TestAccount.googleMpTest;
+    try {
+      await supabaseClient.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+    } on AuthApiException {
+      rethrow;
+    } catch (e) {
+      throw AuthApiException(e.toString());
+    }
   }
 }
