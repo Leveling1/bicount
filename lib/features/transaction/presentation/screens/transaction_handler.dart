@@ -1,4 +1,3 @@
-import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/smooth_switcher.dart';
 import 'package:bicount/core/services/title_animated_switcher.dart';
@@ -56,9 +55,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
   @override
   Widget build(BuildContext context) {
     final selectedIndex = _segmentedType.selectedIndex;
-    final transactionFriends = widget.friends
-        .where((friend) => friend.relationType != FriendConst.subscription)
-        .toList(growable: false);
+    final transactionFriends = widget.friends.toList(growable: false);
     final title = switch (selectedIndex) {
       0 => context.l10n.transactionExpenseTitle,
       1 => context.l10n.transactionIncomeTitle,

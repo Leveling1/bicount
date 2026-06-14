@@ -172,9 +172,10 @@ class _CollapsedHomeHeader extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
+            margin: const EdgeInsets.only(left: AppDimens.marginMedium),
             decoration: BoxDecoration(
               color: theme.cardColor,
-              shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
             ),
             child: Icon(
               Icons.account_balance_wallet_rounded,
@@ -193,6 +194,7 @@ class _CollapsedHomeHeader extends StatelessWidget {
           ),
           const SizedBox(width: AppDimens.marginSmall),
           Text(balanceText, style: amountStyle),
+          const SizedBox(width: AppDimens.marginMedium),
         ],
       ),
     );
