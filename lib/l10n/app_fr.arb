@@ -272,7 +272,7 @@
     }
   },
   "friendScreenIntro": "Scannez une invitation, consultez les liaisons en attente et suivez les profils partagés en temps réel.",
-  "friendLinkIntro": "Partagez ce profil de contact local quand la personne a créé un compte Bicount afin que le backend puisse relier les deux profils.",
+  "friendLinkIntro": "Si cette personne utilise Bicount, partagez ce contact pour associer automatiquement son compte à ce profil.",
   "friendShareProfileTitle": "Partager le profil de {name}",
   "@friendShareProfileTitle": {
     "placeholders": {

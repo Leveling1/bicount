@@ -472,6 +472,8 @@ class AppTheme {
         salary: AppColors.salaryColorLight,
         equipment: AppColors.equipmentColorLight,
         service: AppColors.serviceColorLight,
+        error: AppColors.errorColorLight,
+        success: AppColors.successColorLight,
       ),
     ],
   );
@@ -937,6 +939,8 @@ class AppTheme {
         salary: AppColors.salaryColorDark,
         equipment: AppColors.equipmentColorDark,
         service: AppColors.serviceColorDark,
+        error: AppColors.errorColorDark,
+        success: AppColors.successColorDark,
       ),
     ],
   );

@@ -1,19 +1,24 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
+import 'package:bicount/core/widgets/otp_field.dart';
 import 'package:flutter/material.dart';
-
-import 'otp_field.dart';
 
 class AuthEmailCodeForm extends StatefulWidget {
   const AuthEmailCodeForm({
     super.key,
     required this.onVerify,
     required this.loading,
+    required this.isSuccess,
+    required this.isError,
+    required this.onSuccessAnimationFinished,
   });
 
   final void Function(String code) onVerify;
   final bool loading;
+  final bool isSuccess;
+  final bool isError;
+  final VoidCallback onSuccessAnimationFinished;
 
   @override
   State<AuthEmailCodeForm> createState() => _AuthEmailCodeFormState();
@@ -45,7 +50,11 @@ class _AuthEmailCodeFormState extends State<AuthEmailCodeForm> {
           OtpField(
             controller: _codeController,
             validateCode: _validateCode,
+            loading: widget.loading,
             submit: _submit,
+            isSuccess: widget.isSuccess,
+            isError: widget.isError,
+            onSuccessAnimationFinished: widget.onSuccessAnimationFinished,
           ),
           const SizedBox(height: AppDimens.spacingExtraSmall),
           Text(

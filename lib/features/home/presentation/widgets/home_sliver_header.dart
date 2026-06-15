@@ -1,8 +1,10 @@
+import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/home/presentation/widgets/home_summary_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   HomeSliverHeaderDelegate({
@@ -172,15 +174,22 @@ class _CollapsedHomeHeader extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
+            padding: const EdgeInsets.all(8.0),
             margin: const EdgeInsets.only(left: AppDimens.marginMedium),
             decoration: BoxDecoration(
               color: theme.cardColor,
               borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
             ),
-            child: Icon(
-              Icons.account_balance_wallet_rounded,
-              size: AppDimens.iconSizeMedium,
-              color: theme.textTheme.titleMedium!.color,
+            child: Center(
+              child: SvgPicture.asset(
+                IconLinks.wallet,
+                width: AppDimens.iconSizeMedium,
+                height: AppDimens.iconSizeMedium,
+                colorFilter: ColorFilter.mode(
+                  theme.textTheme.titleMedium!.color!,
+                  BlendMode.srcIn,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: AppDimens.marginMedium),

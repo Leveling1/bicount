@@ -8,6 +8,8 @@ class OtherTheme extends ThemeExtension<OtherTheme> {
   final Color? salary;
   final Color? equipment;
   final Color? service;
+  final Color? error;
+  final Color? success;
 
   const OtherTheme({
     this.income,
@@ -17,6 +19,8 @@ class OtherTheme extends ThemeExtension<OtherTheme> {
     this.salary,
     this.equipment,
     this.service,
+    this.error,
+    this.success
   });
 
   @override
@@ -32,6 +36,8 @@ class OtherTheme extends ThemeExtension<OtherTheme> {
       salary: salary ?? salary,
       equipment: equipment ?? equipment,
       service: service ?? service,
+      error: error ?? error,
+      success: success ?? success
     );
   }
 
@@ -49,6 +55,8 @@ class OtherTheme extends ThemeExtension<OtherTheme> {
       salary: Color.lerp(salary, other.salary, t),
       equipment: Color.lerp(equipment, other.equipment, t),
       service: Color.lerp(service, other.service, t),
+      error: Color.lerp(error, other.error, t),
+      success: Color.lerp(success, other.success, t)
     );
   }
 }

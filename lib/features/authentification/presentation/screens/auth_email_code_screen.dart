@@ -23,11 +23,6 @@ class AuthEmailCodeScreen extends StatelessWidget {
       body: SafeArea(
         child: BlocConsumer<AuthentificationBloc, AuthentificationState>(
           listener: (context, state) {
-            if (state is VerifyEmailOtpSuccess) {
-              context.go(_resolvePostAuthRoute());
-              return;
-            }
-
             if (state is VerifyEmailOtpFailure) {
               NotificationHelper.showFailureNotification(
                 context,
@@ -63,40 +58,36 @@ class AuthEmailCodeScreen extends StatelessWidget {
                             AppDimens.spacerMedium,
                             BicountReveal(
                               delay: const Duration(milliseconds: 60),
-                              child: Container(
-                                padding: AppDimens.paddingAllMedium,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).cardColor,
-                                  borderRadius: BorderRadius.circular(
-                                    AppDimens.radiusLarge,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    context.l10n.authCheckYourEmailDescription(
+                                      email,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
                                   ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      context.l10n
-                                          .authCheckYourEmailDescription(email),
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodyMedium,
-                                    ),
-                                    AppDimens.spacerMedium,
-                                    AuthEmailCodeForm(
-                                      loading: state is VerifyEmailOtpLoading,
-                                      onVerify: (code) {
-                                        context
-                                            .read<AuthentificationBloc>()
-                                            .add(
-                                              VerifyEmailOtpEvent(
-                                                email: email,
-                                                code: code,
-                                              ),
-                                            );
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                  AppDimens.spacerMedium,
+                                  AuthEmailCodeForm(
+                                    loading: state is VerifyEmailOtpLoading,
+                                    onVerify: (code) {
+                                      context.read<AuthentificationBloc>().add(
+                                        VerifyEmailOtpEvent(
+                                          email: email,
+                                          code: code,
+                                        ),
+                                      );
+                                    },
+                                    isSuccess: state is VerifyEmailOtpSuccess,
+                                    isError: state is VerifyEmailOtpFailure,
+                                    onSuccessAnimationFinished: () {
+                                      context.go(_resolvePostAuthRoute());
+                                      return;
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
                             AppDimens.spacerMedium,

@@ -336,6 +336,10 @@ class AppRouter {
             return null;
           }
 
+          if (path == '/auth/email-code') {
+            return null;
+          }
+
           if (isInvitePath && !isEmbeddedInvite) {
             if (inviteCode == null) {
               return '/';

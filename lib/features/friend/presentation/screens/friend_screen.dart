@@ -1,5 +1,6 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:bicount/features/friend/presentation/bloc/friend_bloc.dart';
@@ -116,13 +117,13 @@ class _FriendScreenState extends State<FriendScreen> {
                   const SizedBox(height: AppDimens.marginLarge),
                 ],
                 if (widget.user != null && widget.selectedFriend == null) ...[
-                  OutlinedButton.icon(
+                  CustomButtonWithIcon(
                     onPressed: () => openFriendScanner(
                       context,
                       onValue: _onInviteValueReceived,
                     ),
                     icon: const Icon(Icons.qr_code_scanner_outlined),
-                    label: Text(context.l10n.friendScanInvite),
+                    text: context.l10n.friendScanInvite,
                   ),
                   const SizedBox(height: AppDimens.marginLarge),
                 ],

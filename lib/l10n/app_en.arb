@@ -272,7 +272,7 @@
     }
   },
   "friendScreenIntro": "Scan an invite, review pending links, and track shared profiles in real time.",
-  "friendLinkIntro": "Share this local contact profile when the person has created a Bicount account so the backend can link both profiles together.",
+  "friendLinkIntro": "If this person uses Bicount, share this contact to automatically link their account to this profile.",
   "friendShareProfileTitle": "Share {name} profile",
   "@friendShareProfileTitle": {
     "placeholders": {

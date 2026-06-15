@@ -866,7 +866,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get friendLinkIntro =>
-      'Partagez ce profil de contact local quand la personne a créé un compte Bicount afin que le backend puisse relier les deux profils.';
+      'Si cette personne utilise Bicount, partagez ce contact pour associer automatiquement son compte à ce profil.';
 
   @override
   String friendShareProfileTitle(Object name) {

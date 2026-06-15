@@ -786,7 +786,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendScreenIntro => 'Scan an invite, review pending links, and track shared profiles in real time.';
 
   @override
-  String get friendLinkIntro => 'Share this local contact profile when the person has created a Bicount account so the backend can link both profiles together.';
+  String get friendLinkIntro => 'If this person uses Bicount, share this contact to automatically link their account to this profile.';
 
   @override
   String friendShareProfileTitle(Object name) {

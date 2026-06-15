@@ -114,6 +114,7 @@ class TransactionDetailContent extends StatelessWidget {
                 Text(
                   FormatedText().capitalizeFirstLetter(data.name),
                   style: Theme.of(context).textTheme.headlineLarge,
+                  textAlign: TextAlign.center,
                 ),
                 Text(
                   '$sign $amount',
