@@ -1,4 +1,5 @@
 import 'package:bicount/core/utils/number_format_utils.dart';
+import 'package:bicount/core/utils/string_format_utils.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +38,10 @@ class ProfileCard extends StatelessWidget {
               children: [
                 AppAvatar(image: image, radius: 40),
                 const SizedBox(height: 12),
-                Text(name, style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  capitalizeFirstLetter(name),
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 const SizedBox(height: 4),
                 Text(email, style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 4),
