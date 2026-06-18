@@ -42,16 +42,6 @@ class RecurringPlanScreenContent extends StatelessWidget {
       ),
       children: [
         BicountReveal(
-          delay: const Duration(milliseconds: 40),
-          child: Text(
-            scope == RecurringPlanScope.charge
-                ? context.l10n.recurringChargesIntro
-                : context.l10n.recurringIncomesIntro,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ),
-        const SizedBox(height: AppDimens.spacingMedium),
-        BicountReveal(
           delay: const Duration(milliseconds: 90),
           child: Wrap(
             spacing: AppDimens.spacingMedium,

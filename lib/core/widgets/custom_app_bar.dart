@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -27,7 +28,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
       title: Text(title, style: Theme.of(context).textTheme.titleSmall),
-      actions: actions,
+      actions: actions != null
+          ? [...?actions, const SizedBox(width: AppDimens.paddingMedium)]
+          : null,
     );
   }
 }

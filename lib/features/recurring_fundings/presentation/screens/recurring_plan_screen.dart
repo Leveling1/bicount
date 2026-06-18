@@ -6,6 +6,7 @@ import 'package:bicount/features/recurring_fundings/domain/entities/recurring_pl
 import 'package:bicount/features/recurring_fundings/domain/services/recurring_plan_collection_builder.dart';
 import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_detail_sheet.dart';
 import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_screen_content.dart';
+import 'package:easy_tooltip/easy_tooltip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +28,7 @@ class RecurringPlanScreen extends StatelessWidget {
           appBar: CustomAppBar(
             title: _title(context),
             leading: _buildBackButton(context),
+            actions: _actions(context),
             automaticallyImplyLeading: false,
           ),
           body: switch (state) {
@@ -75,6 +77,19 @@ class RecurringPlanScreen extends StatelessWidget {
       RecurringPlanScope.charge => context.l10n.recurringChargesTitle,
       RecurringPlanScope.income => context.l10n.recurringIncomesTitle,
     };
+  }
+
+  List<Widget> _actions(BuildContext context) {
+    return [
+      EasyTooltip(
+        text: scope == RecurringPlanScope.charge
+            ? context.l10n.recurringChargesIntro
+            : context.l10n.recurringIncomesIntro,
+        backgroundColor: Theme.of(context).cardColor,
+        textStyle: Theme.of(context).textTheme.bodyMedium!,
+        child: Icon(Icons.info_outlined),
+      ),
+    ];
   }
 }
 
