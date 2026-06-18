@@ -56,66 +56,72 @@ extension _IncomeFormSections on _IncomeFormState {
           hint: context.l10n.commonPlaceholderNote,
           enableValidator: false,
         ),
-        if (canEditAllFields) ...[
+        if (canEditAllFields && !_isRecurring) ...[
           AppDimens.spacerMedium,
-          TransferFormDebtSection(
-            isDebt: _isDebt,
-            subtitle: context.l10n.transactionDebtToggleSubtitleIncome,
-            enabled: !_isEditing,
-            dueDateController: _debtDueDate,
-            expectedAmountController: _debtExpectedRepaymentAmount,
-            onDebtChanged: (value) => _update(() {
-              _isDebt = value;
-              if (value) {
-                _isRecurring = false;
-              }
-            }),
+          SmoothInsert(
+            visible: !_isRecurring,
+            child: TransferFormDebtSection(
+              isDebt: _isDebt,
+              subtitle: context.l10n.transactionDebtToggleSubtitleIncome,
+              enabled: !_isEditing,
+              dueDateController: _debtDueDate,
+              expectedAmountController: _debtExpectedRepaymentAmount,
+              onDebtChanged: (value) => _update(() {
+                _isDebt = value;
+                if (value) {
+                  _isRecurring = false;
+                }
+              }),
+            ),
           ),
         ],
         if (canEditAllFields && !_isDebt) ...[
           AppDimens.spacerMedium,
-          TransferFormRecurringSection(
-            isRecurring: _isRecurring,
-            frequency: _recurringFrequency,
-            recurringTypeId: _recurringTypeId,
-            salaryRequiresConfirmation:
-                _recurringTypeId == TransactionTypes.salaryCode
-                ? AppExecutionMode.requiresConfirmation(_recurringExecutionMode)
-                : null,
-            salaryReminderEnabled:
-                _recurringTypeId == TransactionTypes.salaryCode
-                ? _recurringReminderEnabled
-                : null,
-            typeOptions: TransactionTypes.incomeTypes,
-            subtitle: context.l10n.recurringToggleSubtitleIncome,
-            enabled: !_isEditing,
-            onRecurringChanged: (value) => _update(() {
-              _isRecurring = value;
-              if (value) {
-                _isDebt = false;
-              }
-              if (_name.text.isEmpty) {
-                _name.text =
-                    "${TransactionTypes.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? _beneficiaryList[0].username : ""}";
-              }
-            }),
-            onFrequencyChanged: (value) => _update(() {
-              _recurringFrequency = value;
-            }),
-            onTypeChanged: (value) => _update(() {
-              _recurringTypeId = value;
-            }),
-            onSalaryRequiresConfirmationChanged: (value) => _update(() {
-              _recurringExecutionMode = value
-                  ? AppExecutionMode.manualConfirmation
-                  : AppExecutionMode.backendAutomatic;
-              if (!value) {
-                _recurringReminderEnabled = false;
-              }
-            }),
-            onSalaryReminderChanged: (value) => _update(() {
-              _recurringReminderEnabled = value;
-            }),
+         SmoothInsert(
+            visible: !_isDebt,
+            child: TransferFormRecurringSection(
+              isRecurring: _isRecurring,
+              frequency: _recurringFrequency,
+              recurringTypeId: _recurringTypeId,
+              salaryRequiresConfirmation:
+                  _recurringTypeId == TransactionTypes.salaryCode
+                  ? AppExecutionMode.requiresConfirmation(_recurringExecutionMode)
+                  : null,
+              salaryReminderEnabled:
+                  _recurringTypeId == TransactionTypes.salaryCode
+                  ? _recurringReminderEnabled
+                  : null,
+              typeOptions: TransactionTypes.incomeTypes,
+              subtitle: context.l10n.recurringToggleSubtitleIncome,
+              enabled: !_isEditing,
+              onRecurringChanged: (value) => _update(() {
+                _isRecurring = value;
+                if (value) {
+                  _isDebt = false;
+                }
+                if (_name.text.isEmpty) {
+                  _name.text =
+                      "${TransactionTypes.typeLabel(context, _recurringTypeId)} ${_beneficiaryList.isNotEmpty && _beneficiaryList.length == 1 ? _beneficiaryList[0].username : ""}";
+                }
+              }),
+              onFrequencyChanged: (value) => _update(() {
+                _recurringFrequency = value;
+              }),
+              onTypeChanged: (value) => _update(() {
+                _recurringTypeId = value;
+              }),
+              onSalaryRequiresConfirmationChanged: (value) => _update(() {
+                _recurringExecutionMode = value
+                    ? AppExecutionMode.manualConfirmation
+                    : AppExecutionMode.backendAutomatic;
+                if (!value) {
+                  _recurringReminderEnabled = false;
+                }
+              }),
+              onSalaryReminderChanged: (value) => _update(() {
+                _recurringReminderEnabled = value;
+              }),
+            ),
           ),
         ],
       ],

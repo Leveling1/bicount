@@ -351,7 +351,7 @@ class AppTheme {
     /// Color scheme light
     colorScheme: ColorScheme.light(
       primary: AppColors.primaryColorLight,
-      surface: AppColors.surfaceColorLight,
+      surface: AppColors.cardColorLight,
       error: AppColors.negativeColorLight,
       secondary: AppColors.positiveColorLight,
       tertiary: AppColors.inactiveColorLight,
@@ -451,6 +451,19 @@ class AppTheme {
           return AppColors.primaryColorLight;
         }
         return AppColors.textColorLight;
+      }),
+    ),
+
+    /// Chip theme light
+    chipTheme: ChipThemeData(
+      backgroundColor: AppColors.cardColorLight,
+      selectedColor: AppColors.primaryColorLight,
+      disabledColor: AppColors.cardColorLight,
+      color: WidgetStateColor.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.primaryColorLight; // Couleur sélectionné
+        }
+        return AppColors.cardColorLight; // Couleur non sélectionné
       }),
     ),
 
@@ -847,7 +860,7 @@ class AppTheme {
     /// Color scheme dark
     colorScheme: ColorScheme.dark(
       primary: AppColors.primaryColorDark,
-      surface: AppColors.surfaceColorDark,
+      surface: AppColors.cardColorDark,
       error: AppColors.negativeColorDark,
       secondary: AppColors.positiveColorDark,
       tertiary: AppColors.secondaryTextColorDark,
@@ -918,6 +931,19 @@ class AppTheme {
           return AppColors.primaryColorDark;
         }
         return AppColors.textColorDark;
+      }),
+    ),
+
+    /// Chip theme dark
+    chipTheme: ChipThemeData(
+      backgroundColor: AppColors.cardColorDark,
+      selectedColor: AppColors.primaryColorDark,
+      disabledColor: AppColors.cardColorDark,
+      color: WidgetStateColor.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.primaryColorDark; // Couleur sélectionné
+        }
+        return AppColors.cardColorDark; // Couleur non sélectionné
       }),
     ),
 

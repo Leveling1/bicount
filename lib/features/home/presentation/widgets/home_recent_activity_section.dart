@@ -21,9 +21,6 @@ class HomeRecentActivitySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final recentItems = buildTransactionFeed(data).take(5).toList();
-    /*if (recentItems.isEmpty) {
-      return const SizedBox.shrink();
-    }*/
 
     final itemWidgets = <Widget>[];
     for (var index = 0; index < recentItems.length; index++) {
@@ -66,6 +63,7 @@ class HomeRecentActivitySection extends StatelessWidget {
         const SizedBox(height: AppDimens.spacingSmall),
         if (recentItems.isEmpty)
           BicountReveal(
+            delay: const Duration(milliseconds: 180),
             child: Center(
               child: EmptyStateCard(
                 onPressed: () => openTransactionSheet(context, data),

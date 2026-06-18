@@ -37,12 +37,18 @@ class _TransactionScreenState extends State<TransactionScreen> {
   @override
   void didUpdateWidget(covariant TransactionScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
+
     if (oldWidget.searchController != widget.searchController) {
       oldWidget.searchController.removeListener(_onSearchChanged);
       widget.searchController.addListener(_onSearchChanged);
     }
+
     if (oldWidget.showSearchBar && !widget.showSearchBar) {
-      widget.searchController.clear();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          widget.searchController.clear();
+        }
+      });
     }
   }
 

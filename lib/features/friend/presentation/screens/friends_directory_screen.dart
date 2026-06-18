@@ -4,6 +4,7 @@ import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
+import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
@@ -77,10 +78,11 @@ class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
             title: context.l10n.friendsTitle,
             actions: [
               if (data != null)
-                IconButton(
+                CustomIconButton(
                   onPressed: () => _openInviteHub(context),
-                  icon: const Icon(Icons.qr_code_2_outlined),
+                  icon: Icons.qr_code_2_outlined,
                 ),
+              const SizedBox(width: AppDimens.paddingMedium),
             ],
           ),
           body: data == null
@@ -168,8 +170,6 @@ class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
       },
     );
   }
-
-  
 
   void _openInviteHub(BuildContext context) {
     final state = context.read<MainBloc>().state;
