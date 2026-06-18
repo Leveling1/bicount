@@ -25,7 +25,7 @@ class SalaryOccurrenceCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
       ),
       child: Material(
@@ -33,54 +33,70 @@ class SalaryOccurrenceCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
-          child: Padding(
-            padding: const EdgeInsets.all(AppDimens.paddingMedium),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        occurrence.source,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium,
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          occurrence.source,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.titleMedium?.color,
+                              ),
+                        ),
+                        const SizedBox(height: AppDimens.spacingExtraSmall),
+                        Text(
+                          context.l10n.salaryExpectedOn(expectedDate),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        if (occurrence.receivedDate != null) ...[
+                          const SizedBox(height: AppDimens.spacingExtraSmall),
+                          Text(
+                            context.l10n.salaryReceivedOn(
+                              formatDate(occurrence.receivedDate!),
+                            ),
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      SalaryStatusBadge(
+                        label: context.salaryOccurrenceStateLabel(
+                          occurrence.state,
+                        ),
+                        color: statusColor,
                       ),
-                    ),
-                    const SizedBox(width: AppDimens.spacingSmall),
-                    SalaryStatusBadge(
-                      label: context.salaryOccurrenceStateLabel(
-                        occurrence.state,
+                      const SizedBox(height: AppDimens.spacingMedium),
+                      Text(
+                        amount,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                      color: statusColor,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppDimens.spacingExtraSmall),
-                Text(
-                  context.l10n.salaryExpectedOn(expectedDate),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                if (occurrence.receivedDate != null) ...[
-                  const SizedBox(height: AppDimens.spacingExtraSmall),
-                  Text(
-                    context.l10n.salaryReceivedOn(
-                      formatDate(occurrence.receivedDate!),
-                    ),
-                    style: Theme.of(context).textTheme.bodySmall,
+                    ],
                   ),
                 ],
-                const SizedBox(height: AppDimens.spacingMedium),
-                Text(
-                  amount,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-                ),
-              ],
-            ),
+              ),
+              Divider(
+                color: Theme.of(context).cardColor,
+                height: AppDimens.spacingMedium,
+              ),
+            ],
           ),
         ),
       ),

@@ -1389,7 +1389,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Bicount vous demandera si le salaire a bien été reçu à la date prévue.';
 
   @override
-  String get salaryTrackingTitle => 'Fonds récurrents';
+  String get salaryTrackingTitle => 'Rentrées régulières';
 
   @override
   String get salaryEmptyState =>
@@ -1399,10 +1399,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get salaryAttentionSectionTitle => 'À confirmer';
 
   @override
-  String get salaryPlansTitle => 'Plans récurrents';
+  String get salaryPlansTitle => 'Opérations planifiées';
 
   @override
-  String get salaryRecentPaymentsTitle => 'Paiements enregistrés récents';
+  String get salaryRecentPaymentsTitle => 'Dépôts récents';
 
   @override
   String get salaryOverdueTitle => 'Arriérés';

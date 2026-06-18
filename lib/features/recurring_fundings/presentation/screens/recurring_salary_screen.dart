@@ -1,19 +1,17 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/services/open_occurrence_sheet.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
-import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_transfert_bloc.dart';
-import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_transfert_event.dart';
 import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_transfert_state.dart';
 import 'package:bicount/features/salary/domain/entities/salary_dashboard_entity.dart';
-import 'package:bicount/features/salary/domain/entities/salary_occurrence_entity.dart';
 import 'package:bicount/features/salary/domain/services/salary_dashboard_builder.dart';
+import 'package:bicount/features/salary/presentation/widgets/salary_confirmation_card.dart';
 import 'package:bicount/features/salary/presentation/widgets/salary_occurrence_card.dart';
-import 'package:bicount/features/salary/presentation/widgets/salary_occurrence_sheet.dart';
 import 'package:bicount/features/salary/presentation/widgets/salary_overview_metrics.dart';
 import 'package:bicount/features/salary/presentation/widgets/salary_plan_card.dart';
 import 'package:bicount/features/salary/presentation/widgets/salary_screen_skeleton.dart';
@@ -129,10 +127,10 @@ class _RecurringSalaryScreenState extends State<RecurringSalaryScreen> {
             ),
             const SizedBox(height: AppDimens.spacingSmall),
             ...dashboard.attentionOccurrences.map(
-              (occurrence) => SalaryOccurrenceCard(
+              (occurrence) => SalaryConfirmationCard(
                 occurrence: occurrence,
                 onTap: () =>
-                    _openOccurrenceSheet(context, occurrence, recurringState),
+                    openOccurrenceSheet(context, occurrence, recurringState),
               ),
             ),
           ],
@@ -158,48 +156,6 @@ class _RecurringSalaryScreenState extends State<RecurringSalaryScreen> {
             ),
           ],
         ],
-      ),
-    );
-  }
-
-  Future<void> _openOccurrenceSheet(
-    BuildContext context,
-    SalaryOccurrenceEntity occurrence,
-    RecurringTransfertState recurringState,
-  ) {
-    final targetId = switch (recurringState) {
-      RecurringTransfertActionInProgress(:final targetId) => targetId,
-      _ => '',
-    };
-
-    return showCustomBottomSheet<void>(
-      context: context,
-      minHeight: 0.75,
-      child: SalaryOccurrenceSheet(
-        occurrence: occurrence,
-        isLoading:
-            targetId == occurrence.occurrenceId ||
-            targetId == occurrence.recurringTransfert.recurringTransfertId,
-        onConfirmPressed: (confirmedAmount, confirmedCurrency) {
-          Navigator.of(context).maybePop();
-          context.read<RecurringTransfertBloc>().add(
-            ConfirmSalaryOccurrenceRequested(
-              occurrence: occurrence,
-              confirmedAmount: confirmedAmount,
-              confirmedCurrency: confirmedCurrency,
-            ),
-          );
-        },
-        onAutomaticModePressed: (confirmedAmount, confirmedCurrency) {
-          Navigator.of(context).maybePop();
-          context.read<RecurringTransfertBloc>().add(
-            ContinueSalaryAutomaticallyRequested(
-              occurrence: occurrence,
-              confirmedAmount: confirmedAmount,
-              confirmedCurrency: confirmedCurrency,
-            ),
-          );
-        },
       ),
     );
   }
@@ -241,7 +197,7 @@ class _RecurringSalaryScreenState extends State<RecurringSalaryScreen> {
       if (!mounted) {
         return;
       }
-      _openOccurrenceSheet(context, target, recurringState);
+      openOccurrenceSheet(context, target, recurringState);
     });
   }
 

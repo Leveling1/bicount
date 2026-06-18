@@ -1,0 +1,133 @@
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/other_theme.dart';
+import 'package:bicount/core/utils/date_format_utils.dart';
+import 'package:bicount/core/utils/number_format_utils.dart';
+import 'package:bicount/features/salary/domain/entities/salary_occurrence_entity.dart';
+import 'package:flutter/material.dart';
+
+class SalaryConfirmationCard extends StatelessWidget {
+  const SalaryConfirmationCard({
+    super.key,
+    required this.occurrence,
+    this.onTap,
+  });
+
+  final SalaryOccurrenceEntity occurrence;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final statusColor = _statusColor(context);
+    final expectedDate = formatDate(occurrence.expectedDate);
+    final amount = NumberFormatUtils.formatCurrency(
+      occurrence.amount,
+      currencyCode: occurrence.currency,
+    );
+
+    return Container(
+      decoration: BoxDecoration(color: Colors.transparent),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          hoverColor: Theme.of(context).colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          splashColor: Colors.transparent,
+          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+          onTap: onTap,
+          child: Padding(
+            padding: AppDimens.paddingSmallCard,
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Theme.of(context).cardColor,
+                      radius: 20,
+                      child: SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: Icon(
+                          Icons.arrow_downward,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                    ),
+                    AppDimens.spacerWidthMediumSmall,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            occurrence.source,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium?.color,
+                                ),
+                          ),
+                          const SizedBox(height: AppDimens.spacingExtraSmall),
+                          Text(
+                            context.l10n.salaryExpectedOn(expectedDate),
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          if (occurrence.receivedDate != null) ...[
+                            const SizedBox(height: AppDimens.spacingExtraSmall),
+                            Text(
+                              context.l10n.salaryReceivedOn(
+                                formatDate(occurrence.receivedDate!),
+                              ),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          amount,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          context.salaryOccurrenceStateLabel(occurrence.state),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(color: statusColor),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color _statusColor(BuildContext context) {
+    final theme = Theme.of(context).extension<OtherTheme>()!;
+    if (occurrence.isReceived) {
+      return theme.income ?? Theme.of(context).primaryColor;
+    }
+    if (occurrence.isOverdue) {
+      return theme.expense ?? Theme.of(context).colorScheme.error;
+    }
+    if (occurrence.isDueToday) {
+      return theme.companyIncome ?? Theme.of(context).primaryColor;
+    }
+    return Theme.of(context).textTheme.bodySmall?.color ?? Colors.grey;
+  }
+}
