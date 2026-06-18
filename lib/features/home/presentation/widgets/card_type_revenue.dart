@@ -50,7 +50,10 @@ class CardTypeRevenue extends StatelessWidget {
                 ),
                 SizedBox(height: 5.h),
                 Text(
-                  NumberFormatUtils.formatCurrency(amount),
+                  NumberFormatUtils.compactCurrency(
+                    amount,
+                    compactThreshold: 100000,
+                  ),
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
