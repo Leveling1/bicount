@@ -7,6 +7,7 @@ Future<T?> showCustomBottomSheet<T>({
   required BuildContext context,
   required Widget child,
   Color? color,
+  bool scrollEnabled = true,
   required double minHeight, // kept for compatibility, not used
 }) {
   final bgColor = color ?? Theme.of(context).scaffoldBackgroundColor;
@@ -45,6 +46,9 @@ Future<T?> showCustomBottomSheet<T>({
                     0.0,
                     double.infinity,
                   );
+              final sheetContent = scrollEnabled
+                  ? SingleChildScrollView(child: child)
+                  : child;
 
               return Column(
                 mainAxisSize: MainAxisSize.min,
@@ -63,7 +67,7 @@ Future<T?> showCustomBottomSheet<T>({
                   const SizedBox(height: spacing),
                   ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: scrollMaxHeight),
-                    child: SingleChildScrollView(child: child),
+                    child: sheetContent,
                   ),
                 ],
               );

@@ -63,6 +63,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
     };
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         TitleAnimatedSwitcher(
           child: Text(
@@ -76,12 +77,20 @@ class _TransactionHandlerState extends State<TransactionHandler> {
           SegmentedControlWidget(controller: _segmentedType),
           AppDimens.spacerMedium,
         ],
-        SmoothSwitcher(
-          child: switch (selectedIndex) {
-            0 => ExpenseForm(user: widget.user, friends: transactionFriends),
-            1 => IncomeForm(user: widget.user, friends: transactionFriends),
-            _ => const SizedBox.shrink(),
-          },
+        Flexible(
+          fit: FlexFit.loose,
+          child: SmoothSwitcher(
+            child: SingleChildScrollView(
+              child: switch (selectedIndex) {
+                0 => ExpenseForm(
+                  user: widget.user,
+                  friends: transactionFriends,
+                ),
+                1 => IncomeForm(user: widget.user, friends: transactionFriends),
+                _ => const SizedBox.shrink(),
+              },
+            ),
+          ),
         ),
       ],
     );

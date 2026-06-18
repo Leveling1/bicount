@@ -465,6 +465,10 @@ class AppTheme {
         }
         return AppColors.cardColorLight; // Couleur non sélectionné
       }),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusMediumLarge),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     ),
 
     /// Extensions light
@@ -945,6 +949,10 @@ class AppTheme {
         }
         return AppColors.cardColorDark; // Couleur non sélectionné
       }),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusMediumLarge),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     ),
 
     /// Extensions dark

@@ -29,7 +29,7 @@ class TransactionFilterChips extends StatelessWidget {
               right: isLast ? AppDimens.paddingMedium : 8.0,
             ),
             child: InkWell(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(AppDimens.borderRadiusMediumLarge),
               onTap: () => onTap(index),
               child: Container(
                 padding: const EdgeInsets.symmetric(
@@ -40,7 +40,7 @@ class TransactionFilterChips extends StatelessWidget {
                   color: isSelected
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(AppDimens.borderRadiusMediumLarge),
                 ),
                 child: Text(
                   context.transactionFilterLabel(index),

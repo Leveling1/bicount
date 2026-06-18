@@ -6,6 +6,7 @@ class AppDimens {
   static const double borderRadiusExtraSmall = 4.0;
   static const double borderRadiusSmall = 8.0;
   static const double borderRadiusMedium = 12.0;
+  static const double borderRadiusMediumLarge = 15.0;
   static const double borderRadiusLarge = 20.0;
   static const double borderRadiusExtraLarge = 28.0;
   static const double borderRadiusUltraLarge = 50.0;

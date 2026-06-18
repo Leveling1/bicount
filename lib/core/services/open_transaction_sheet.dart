@@ -14,6 +14,7 @@ void openTransactionSheet(
     context: context,
     minHeight: 0.95,
     color: null,
+    scrollEnabled: false,
     child: TransactionHandler(
       user: data.user,
       friends: data.friends,
