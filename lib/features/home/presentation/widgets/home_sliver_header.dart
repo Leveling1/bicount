@@ -31,7 +31,7 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => 84;
 
   @override
-  double get maxExtent => 280;
+  double get maxExtent => 312;
 
   @override
   Widget build(
@@ -51,41 +51,32 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
     );
 
     return ClipRRect(
-      // borderRadius: BorderRadius.circular(AppDimens.borderRadiusUltraLarge),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(AppDimens.borderRadiusUltraLarge),
-          ),
-        ),
-        child: SizedBox.expand(
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            switchInCurve: Curves.easeOutCubic,
-            switchOutCurve: Curves.easeInCubic,
-            child: isCollapsed
-                ? _CollapsedHomeHeader(
-                    key: const ValueKey('home-collapsed'),
-                    balanceText: NumberFormatUtils.compactCurrency(
-                      balance,
-                      currencyCode: referenceCurrencyCode,
-                      compactThreshold: 100000,
-                    ),
-                    amountStyle: amountStyle,
-                  )
-                : _ExpandedHomeHeader(
-                    key: const ValueKey('home-expanded'),
-                    balance: balance,
-                    referenceCurrencyCode: referenceCurrencyCode,
-                    monthlyInflow: monthlyInflow,
-                    monthlyOutflow: monthlyOutflow,
-                    incomeColor: incomeColor,
-                    expenseColor: expenseColor,
-                    onMonthlyInflowTap: onMonthlyInflowTap,
-                    onMonthlyOutflowTap: onMonthlyOutflowTap,
+      child: SizedBox.expand(
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeInCubic,
+          child: isCollapsed
+              ? _CollapsedHomeHeader(
+                  key: const ValueKey('home-collapsed'),
+                  balanceText: NumberFormatUtils.compactCurrency(
+                    balance,
+                    currencyCode: referenceCurrencyCode,
+                    compactThreshold: 100000,
                   ),
-          ),
+                  amountStyle: amountStyle,
+                )
+              : _ExpandedHomeHeader(
+                  key: const ValueKey('home-expanded'),
+                  balance: balance,
+                  referenceCurrencyCode: referenceCurrencyCode,
+                  monthlyInflow: monthlyInflow,
+                  monthlyOutflow: monthlyOutflow,
+                  incomeColor: incomeColor,
+                  expenseColor: expenseColor,
+                  onMonthlyInflowTap: onMonthlyInflowTap,
+                  onMonthlyOutflowTap: onMonthlyOutflowTap,
+                ),
         ),
       ),
     );
