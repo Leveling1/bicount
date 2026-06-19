@@ -507,14 +507,14 @@
   "salaryReminderDisabledHelper": "Reminders are already disabled for this salary.",
   "salaryPaymentConfirmedSuccess": "Recurring payment confirmed successfully.",
   "salaryAutomaticModeEnabledSuccess": "Recurring tracking switched back to automatic mode.",
-  "salaryHomeCardTitle": "Recurring follow-up",
+  "salaryHomeCardTitle": "Salary Management",
   "salaryHomeCardAttention": "Pending amount: {amount}",
   "@salaryHomeCardAttention": {
     "placeholders": {
       "amount": {}
     }
   },
-  "salaryHomeCardNext": "Next recurring funding on {date}",
+  "salaryHomeCardNext": "Next deposit scheduled for {date}",
   "@salaryHomeCardNext": {
     "placeholders": {
       "date": {}

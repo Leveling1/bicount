@@ -1461,7 +1461,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Recurring tracking switched back to automatic mode.';
 
   @override
-  String get salaryHomeCardTitle => 'Recurring follow-up';
+  String get salaryHomeCardTitle => 'Salary Management';
 
   @override
   String salaryHomeCardAttention(Object amount) {
@@ -1470,7 +1470,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String salaryHomeCardNext(Object date) {
-    return 'Next recurring funding on $date';
+    return 'Next deposit scheduled for $date';
   }
 
   @override

@@ -11,90 +11,95 @@ class SalaryPlanCard extends StatelessWidget {
     super.key,
     required this.plan,
     required this.currencyCode,
+    this.onTap,
   });
 
   final SalaryPlanSummaryEntity plan;
   final String currencyCode;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final recurringTransfert = plan.recurringTransfert;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
-      padding: const EdgeInsets.all(AppDimens.paddingMedium),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  recurringTransfert.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleMedium,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
+        padding: const EdgeInsets.all(AppDimens.paddingMedium),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    recurringTransfert.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppDimens.spacingSmall),
-              SalaryStatusBadge(
-                label: plan.requiresConfirmation
-                    ? context.l10n.salaryModeConfirm
-                    : context.l10n.salaryModeAutomatic,
-                color: Theme.of(context).primaryColor,
-              ),
-            ],
-          ),
-          const SizedBox(height: AppDimens.spacingSmall),
-          Text(
-            NumberFormatUtils.formatCurrency(
-              recurringTransfert.amount,
-              currencyCode: recurringTransfert.currency,
+                const SizedBox(width: AppDimens.spacingSmall),
+                SalaryStatusBadge(
+                  label: plan.requiresConfirmation
+                      ? context.l10n.salaryModeConfirm
+                      : context.l10n.salaryModeAutomatic,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ],
             ),
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: AppDimens.spacingSmall),
-          Wrap(
-            spacing: AppDimens.spacingSmall,
-            runSpacing: AppDimens.spacingSmall,
-            children: [
-              Text(
-                context.l10n.salaryNextPaydayValue(
-                  plan.nextExpectedDate == null
-                      ? '-'
-                      : formatDateWithoutYear(plan.nextExpectedDate!),
-                ),
-                style: Theme.of(context).textTheme.bodySmall,
+            const SizedBox(height: AppDimens.spacingSmall),
+            Text(
+              NumberFormatUtils.formatCurrency(
+                recurringTransfert.amount,
+                currencyCode: recurringTransfert.currency,
               ),
-              if (plan.requiresConfirmation)
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: AppDimens.spacingSmall),
+            Wrap(
+              spacing: AppDimens.spacingSmall,
+              runSpacing: AppDimens.spacingSmall,
+              children: [
                 Text(
-                  context.l10n.salaryReminderStatusValue(
-                    plan.remindersEnabled
-                        ? context.l10n.statusActive
-                        : context.l10n.statusInactive,
+                  context.l10n.salaryNextPaydayValue(
+                    plan.nextExpectedDate == null
+                        ? '-'
+                        : formatDateWithoutYear(plan.nextExpectedDate!),
                   ),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
-              if (plan.requiresConfirmation && plan.totalAttentionCount > 0)
-                Text(
-                  context.l10n.salaryArrearsValue(
-                    NumberFormatUtils.compactCurrency(
-                      plan.outstandingReferenceAmount,
-                      currencyCode: currencyCode,
+                if (plan.requiresConfirmation)
+                  Text(
+                    context.l10n.salaryReminderStatusValue(
+                      plan.remindersEnabled
+                          ? context.l10n.statusActive
+                          : context.l10n.statusInactive,
                     ),
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-            ],
-          ),
-        ],
+                if (plan.requiresConfirmation && plan.totalAttentionCount > 0)
+                  Text(
+                    context.l10n.salaryArrearsValue(
+                      NumberFormatUtils.compactCurrency(
+                        plan.outstandingReferenceAmount,
+                        currencyCode: currencyCode,
+                      ),
+                    ),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

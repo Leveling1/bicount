@@ -507,14 +507,14 @@
   "salaryReminderDisabledHelper": "Les rappels sont déjà désactivés pour ce salaire.",
   "salaryPaymentConfirmedSuccess": "Paiement récurrent confirmé avec succès.",
   "salaryAutomaticModeEnabledSuccess": "Le suivi récurrent est repassé en mode automatique.",
-  "salaryHomeCardTitle": "Suivi récurrent",
+  "salaryHomeCardTitle": "Gestion des salaires",
   "salaryHomeCardAttention": "Montant en attente : {amount}",
   "@salaryHomeCardAttention": {
     "placeholders": {
       "amount": {}
     }
   },
-  "salaryHomeCardNext": "Prochain fond récurrent prévu le {date}",
+  "salaryHomeCardNext": "Prochain versement le {date}",
   "@salaryHomeCardNext": {
     "placeholders": {
       "date": {}

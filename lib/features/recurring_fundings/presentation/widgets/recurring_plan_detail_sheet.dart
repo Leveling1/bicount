@@ -1,6 +1,7 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/utils/confirm_delete.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
@@ -145,36 +146,18 @@ class _RecurringPlanDetailSheetState extends State<RecurringPlanDetailSheet> {
     BuildContext context,
     RecurringPlanSummaryEntity summary,
   ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: Theme.of(dialogContext).dialogTheme.backgroundColor,
-        surfaceTintColor: Colors.transparent,
-        shape: Theme.of(dialogContext).dialogTheme.shape,
-        title: Text(context.l10n.recurringPlanDeleteConfirmTitle),
-        content: Text(
-          widget.scope == RecurringPlanScope.income
-              ? context.l10n.recurringIncomeDeleteWarning
-              : context.l10n.recurringChargeDeleteWarning,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(context.l10n.commonReject),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(context.l10n.recurringPlanDeleteConfirmCta),
-          ),
-        ],
-      ),
+    confirmDelete(
+      context,
+      title: context.l10n.recurringPlanDeleteConfirmTitle,
+      description: widget.scope == RecurringPlanScope.income
+          ? context.l10n.recurringIncomeDeleteWarning
+          : context.l10n.recurringChargeDeleteWarning,
+      onConfirm: () {
+        context.read<RecurringTransfertBloc>().add(
+          DeleteRecurringPlanRequested(summary.recurringTransfert),
+        );
+      },
     );
-
-    if (confirmed == true && context.mounted) {
-      context.read<RecurringTransfertBloc>().add(
-        DeleteRecurringPlanRequested(summary.recurringTransfert),
-      );
-    }
   }
 
   RecurringPlanSummaryEntity? _resolveSummary({

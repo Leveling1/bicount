@@ -1480,7 +1480,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le suivi récurrent est repassé en mode automatique.';
 
   @override
-  String get salaryHomeCardTitle => 'Suivi récurrent';
+  String get salaryHomeCardTitle => 'Gestion des salaires';
 
   @override
   String salaryHomeCardAttention(Object amount) {
@@ -1489,7 +1489,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String salaryHomeCardNext(Object date) {
-    return 'Prochain fond récurrent prévu le $date';
+    return 'Prochain versement le $date';
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/utils/confirm_delete.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/debt/data/repositories/debt_repository_impl.dart';
 import 'package:bicount/features/debt/presentation/bloc/debt_bloc.dart';
@@ -145,7 +146,20 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
           transaction: widget.transaction,
           canManage: canManage,
           isLoading: state is TransactionLoading,
-          onDeletePressed: canManage ? () => _confirmDelete(context) : null,
+          onDeletePressed: canManage
+              ? () => confirmDelete(
+                  context,
+                  title: context.l10n.transactionDeleteConfirmTitle,
+                  description: context.l10n.transactionDeleteConfirmDescription,
+                  onConfirm: () {
+                    context.read<TransactionBloc>().add(
+                      DeleteTransactionEvent(
+                        widget.transaction.transactionDetail,
+                      ),
+                    );
+                  },
+                )
+              : null,
           onEditPressed: canManage && !_isDebtRepayment
               ? () => setState(() => _isEditing = true)
               : null,
@@ -154,78 +168,15 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
     );
   }
 
-  Future<void> _confirmDelete(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: Theme.of(dialogContext).dialogTheme.backgroundColor,
-        surfaceTintColor: Colors.transparent,
-        shape: Theme.of(dialogContext).dialogTheme.shape,
-        title: Text(context.l10n.transactionDeleteConfirmTitle),
-        content: Text(context.l10n.transactionDeleteConfirmDescription),
-        actions: [
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(false),
-                  child: Text(context.l10n.commonReject),
-                ),
-              ),
-              AppDimens.spacerWidthMedium,
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(true),
-                  child: Text(context.l10n.transactionDeleteConfirmCta),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true && context.mounted) {
-      context.read<TransactionBloc>().add(
-        DeleteTransactionEvent(widget.transaction.transactionDetail),
-      );
-    }
-  }
-
   Future<void> _confirmDebtDelete(BuildContext context, DebtModel debt) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: Theme.of(dialogContext).dialogTheme.backgroundColor,
-        surfaceTintColor: Colors.transparent,
-        shape: Theme.of(dialogContext).dialogTheme.shape,
-        title: Text(context.l10n.debtDeleteConfirmTitle),
-        content: Text(context.l10n.debtDeleteConfirmDescription),
-        actions: [
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(false),
-                  child: Text(context.l10n.commonCancel),
-                ),
-              ),
-              AppDimens.spacerWidthMedium,
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(true),
-                  child: Text(context.l10n.debtDeleteConfirmCta),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+    confirmDelete(
+      context,
+      title: context.l10n.debtDeleteConfirmTitle,
+      description: context.l10n.debtDeleteConfirmDescription,
+      onConfirm: () {
+        context.read<DebtBloc>().add(DeleteDebtRequested(debt.debtId ?? ''));
+      },
     );
-
-    if (confirmed == true && context.mounted) {
-      context.read<DebtBloc>().add(DeleteDebtRequested(debt.debtId ?? ''));
-    }
   }
 
   void _onTransactionStateChanged(

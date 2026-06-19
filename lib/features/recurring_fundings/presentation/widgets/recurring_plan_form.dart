@@ -91,13 +91,9 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
           ),
           AppDimens.spacerExtraLarge,
           CustomButton(
-                text: context.l10n.commonSave,
-                loading: isSubmitting,
-                onPressed: _submit,
-              ),
-          FilledButton(
+            text: context.l10n.commonSave,
+            loading: isSubmitting,
             onPressed: _submit,
-            child: Text(context.l10n.commonSave),
           ),
           AppDimens.spacerMedium,
         ],
@@ -133,7 +129,6 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
     setState(() {
       isSubmitting = true;
     });
-
   }
 
   String _formatAmount(double amount) {
@@ -173,15 +168,18 @@ class _FrequencySelector extends StatelessWidget {
           context.l10n.commonFrequency,
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        Wrap(
-          spacing: AppDimens.spacingSmall,
-          children: _frequencies.map((frequency) {
-            return CustomChoiceChip(
-              label: context.frequencyLabel(frequency),
-              selected: selected == frequency,
-              onSelected: (_) => onChanged(frequency),
-            );
-          }).toList(),
+        SizedBox(
+          width: double.infinity,
+          child: Wrap(
+            spacing: AppDimens.spacingSmall,
+            children: _frequencies.map((frequency) {
+              return CustomChoiceChip(
+                label: context.frequencyLabel(frequency),
+                selected: selected == frequency,
+                onSelected: (_) => onChanged(frequency),
+              );
+            }).toList(),
+          ),
         ),
       ],
     );

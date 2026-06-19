@@ -6,8 +6,10 @@ import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
+import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
 import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_transfert_bloc.dart';
 import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_transfert_state.dart';
+import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_detail_sheet.dart';
 import 'package:bicount/features/salary/domain/entities/salary_dashboard_entity.dart';
 import 'package:bicount/features/salary/domain/services/salary_dashboard_builder.dart';
 import 'package:bicount/features/salary/presentation/widgets/salary_confirmation_card.dart';
@@ -141,8 +143,16 @@ class _RecurringSalaryScreenState extends State<RecurringSalaryScreen> {
           ),
           const SizedBox(height: AppDimens.spacingSmall),
           ...dashboard.plans.map(
-            (plan) =>
-                SalaryPlanCard(plan: plan, currencyCode: referenceCurrencyCode),
+            (plan) => SalaryPlanCard(
+              plan: plan,
+              currencyCode: referenceCurrencyCode,
+              onTap: () => showRecurringPlanDetailSheet(
+                context,
+                scope: RecurringPlanScope.income,
+                recurringTransfertId:
+                    plan.recurringTransfert.recurringTransfertId ?? '',
+              ),
+            ),
           ),
           if (dashboard.recentReceivedOccurrences.isNotEmpty) ...[
             const SizedBox(height: AppDimens.spacingLarge),

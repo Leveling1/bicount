@@ -144,6 +144,7 @@ class _OverviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: (MediaQuery.sizeOf(context).width - 48) / 2,
       constraints: const BoxConstraints(minWidth: 140),
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
       decoration: BoxDecoration(
