@@ -754,18 +754,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analysisUpcomingCharges => 'Upcoming charges';
 
   @override
-  String get analysisRecurringChargesTitle => 'Recurring charges';
+  String get analysisRecurringChargesTitle => 'Scheduled Outflows';
 
   @override
   String get analysisRecurringChargesDescription =>
-      'Review the plans that keep leaving your balance and manage them before they drift.';
+      'Track your subscriptions and automatic charges to anticipate your expenses and stay in control of your budget.';
 
   @override
-  String get analysisRecurringIncomesTitle => 'Recurring incomes';
+  String get analysisRecurringIncomesTitle => 'Scheduled Income';
 
   @override
   String get analysisRecurringIncomesDescription =>
-      'Track your repeating income sources and open the full follow-up when one needs attention.';
+      'Keep track of all your planned earnings and open the full follow-up as soon as a due date approaches.';
 
   @override
   String get analysisRecurringIncomesUpcoming => 'Upcoming incomes';

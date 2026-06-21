@@ -159,43 +159,54 @@ class _CollapsedHomeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Center(
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            padding: const EdgeInsets.all(8.0),
-            margin: const EdgeInsets.only(left: AppDimens.marginMedium),
-            decoration: BoxDecoration(
-              color: theme.cardColor,
-              borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                IconLinks.wallet,
-                width: AppDimens.iconSizeMedium,
-                height: AppDimens.iconSizeMedium,
-                colorFilter: ColorFilter.mode(
-                  theme.textTheme.titleMedium!.color!,
-                  BlendMode.srcIn,
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(AppDimens.borderRadiusUltraLarge),
+          bottomRight: Radius.circular(AppDimens.borderRadiusUltraLarge),
+        ),
+      ),
+      child: Center(
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              padding: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.only(left: AppDimens.marginMedium),
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: BorderRadius.circular(
+                  AppDimens.borderRadiusMedium,
+                ),
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  IconLinks.wallet,
+                  width: AppDimens.iconSizeMedium,
+                  height: AppDimens.iconSizeMedium,
+                  colorFilter: ColorFilter.mode(
+                    theme.textTheme.titleMedium!.color!,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: AppDimens.marginMedium),
-          Expanded(
-            child: Text(
-              context.l10n.homeBalance,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.titleSmall,
+            const SizedBox(width: AppDimens.marginMedium),
+            Expanded(
+              child: Text(
+                context.l10n.homeBalance,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleSmall,
+              ),
             ),
-          ),
-          const SizedBox(width: AppDimens.marginSmall),
-          Text(balanceText, style: amountStyle),
-          const SizedBox(width: AppDimens.marginMedium),
-        ],
+            const SizedBox(width: AppDimens.marginSmall),
+            Text(balanceText, style: amountStyle),
+            const SizedBox(width: AppDimens.marginMedium),
+          ],
+        ),
       ),
     );
   }

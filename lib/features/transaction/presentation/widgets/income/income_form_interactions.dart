@@ -75,7 +75,7 @@ extension _IncomeFormInteractions on _IncomeFormState {
   void clearForm() {
     _update(() {
       _name.clear();
-      _date.clear();
+      _date.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
       _amount.clear();
       _currency.clear();
       _beneficiary.clear();

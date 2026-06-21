@@ -763,18 +763,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get analysisUpcomingCharges => 'Prélèvements à venir';
 
   @override
-  String get analysisRecurringChargesTitle => 'Charges récurrentes';
+  String get analysisRecurringChargesTitle => 'Dépenses planifiées';
 
   @override
   String get analysisRecurringChargesDescription =>
-      'Retrouvez les charges qui sortent régulièrement de votre solde et gérez-les avant qu\'elles ne dérivent.';
+      'Retrouvez vos abonnements et charges automatiques pour anticiper vos sorties d\'argent et garder le contrôle sur votre budget.';
 
   @override
-  String get analysisRecurringIncomesTitle => 'Revenus récurrents';
+  String get analysisRecurringIncomesTitle => 'Revenus planifiés';
 
   @override
   String get analysisRecurringIncomesDescription =>
-      'Suivez vos sources de revenus récurrentes et ouvrez le suivi complet dès qu\'une échéance demande votre attention.';
+      'Gardez un œil sur toutes vos entrées d\'argent programmées et ouvrez le suivi complet dès qu\'une échéance approche.';
 
   @override
   String get analysisRecurringIncomesUpcoming => 'Revenus à venir';
