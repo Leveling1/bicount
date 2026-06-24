@@ -5,7 +5,7 @@ import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/analysis/domain/entities/analysis_dashboard_entity.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:bicount/features/analysis/presentation/widgets/semi_donut_package_chart.dart';
 import 'package:flutter/material.dart';
 
 class AnalysisExpenseBreakdownCard extends StatelessWidget {
@@ -15,6 +15,8 @@ class AnalysisExpenseBreakdownCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final breakdown = dashboard.expenseBreakdown;
+    final total = breakdown.fold<double>(0, (sum, item) => sum + item.value);
     final colors = [
       Theme.of(context).extension<OtherTheme>()!.expense!,
       AppColors.quaternaryColorBasic,
@@ -22,7 +24,7 @@ class AnalysisExpenseBreakdownCard extends StatelessWidget {
     ];
 
     return DetailsCard(
-      child: dashboard.expenseBreakdown.isEmpty
+      child: breakdown.isEmpty
           ? Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: AppDimens.paddingLarge,
@@ -36,40 +38,20 @@ class AnalysisExpenseBreakdownCard extends StatelessWidget {
             )
           : Column(
               children: [
-                SizedBox(
-                  height: 190,
-                  child: PieChart(
-                    PieChartData(
-                      centerSpaceRadius: 52,
-                      sectionsSpace: 2,
-                      sections: dashboard.expenseBreakdown.asMap().entries.map((
-                        entry,
-                      ) {
-                        final color = colors[entry.key % colors.length];
-                        final total = dashboard.expenseBreakdown.fold<double>(
-                          0,
-                          (sum, item) => sum + item.value,
-                        );
-                        final percent = total == 0
-                            ? 0.0
-                            : (entry.value.value / total) * 100;
-                        return PieChartSectionData(
-                          value: entry.value.value,
-                          color: color,
-                          radius: 42,
-                          title: '${percent.toStringAsFixed(0)}%',
-                          titleStyle: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                              ),
-                        );
-                      }).toList(),
-                    ),
+                SemiDonutPackageChart(
+                  sections: breakdown.asMap().entries.map((entry) {
+                    return SemiDonutChartData(
+                      label: entry.value.label,
+                      value: entry.value.value,
+                      color: colors[entry.key % colors.length],
+                    );
+                  }).toList(),
+                  centerText: NumberFormatUtils.formatCurrency(
+                    total,
+                    currencyCode: dashboard.displayCurrencyCode,
                   ),
                 ),
-                const SizedBox(height: AppDimens.marginMedium),
-                ...dashboard.expenseBreakdown.asMap().entries.map((entry) {
+                ...breakdown.asMap().entries.map((entry) {
                   final color = colors[entry.key % colors.length];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
