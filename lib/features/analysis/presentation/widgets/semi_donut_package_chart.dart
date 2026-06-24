@@ -1,5 +1,5 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class SemiDonutChartData {
   const SemiDonutChartData({
@@ -13,13 +13,13 @@ class SemiDonutChartData {
   final Color color;
 }
 
-class SemiDonutPackageChart extends StatelessWidget {
-  const SemiDonutPackageChart({
+class SemiDonutChart extends StatefulWidget {
+  const SemiDonutChart({
     super.key,
     required this.sections,
     required this.centerText,
     this.centerSubtitle,
-    this.height = 190, // On garde vos dimensions d'origine
+    this.height = 220,
   });
 
   final List<SemiDonutChartData> sections;
@@ -28,66 +28,190 @@ class SemiDonutPackageChart extends StatelessWidget {
   final double height;
 
   @override
+  State<SemiDonutChart> createState() => _SemiDonutChartState();
+}
+
+class _SemiDonutChartState extends State<SemiDonutChart>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..forward();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final centerContent = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            centerText,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (_, __) {
+        return CustomPaint(
+          size: Size(
+            double.infinity,
+            widget.height,
           ),
-        ),
-        if (centerSubtitle != null) ...[
-          const SizedBox(height: 4),
-          Text(
-            centerSubtitle!,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+          painter: _SemiDonutPainter(
+            sections: widget.sections,
+            progress: Curves.easeOutCubic.transform(
+              controller.value,
             ),
+            centerText: widget.centerText,
+            centerSubtitle: widget.centerSubtitle,
           ),
-        ],
-      ],
+        );
+      },
+    );
+  }
+}
+
+class _SemiDonutPainter extends CustomPainter {
+  const _SemiDonutPainter({
+    required this.sections,
+    required this.progress,
+    required this.centerText,
+    required this.centerSubtitle,
+  });
+
+  final List<SemiDonutChartData> sections;
+  final double progress;
+  final String centerText;
+  final String? centerSubtitle;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final total = sections.fold<double>(
+      0,
+      (p, e) => p + e.value,
     );
 
-    return SizedBox(
-      height: height,
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          SfCircularChart(
-            margin: EdgeInsets.zero,
-            centerY: '90%',
-            series: <CircularSeries>[
-              DoughnutSeries<SemiDonutChartData, String>(
-                dataSource: sections,
-                xValueMapper: (SemiDonutChartData data, _) => data.label,
-                yValueMapper: (SemiDonutChartData data, _) => data.value,
-                pointColorMapper: (SemiDonutChartData data, _) => data.color,
-                startAngle: 270,
-                endAngle: 90,
-                innerRadius: '80%',
-                radius: '150%',
-                strokeColor: theme.colorScheme.surface,
-                strokeWidth: 4,
-              ),
-            ],
-          ),
-          Positioned(
-            top: 
-            105,
-            child: IgnorePointer(child: centerContent),
-          ),
-        ],
-      ),
+    if (total == 0) return;
+
+    const gapDegree = 6;
+
+    final strokeWidth = size.height * .16;
+
+    final radius = min(
+          size.width / 2,
+          size.height,
+        ) -
+        strokeWidth;
+
+    final center = Offset(
+      size.width / 2,
+      size.height,
     );
+
+    final rect = Rect.fromCircle(
+      center: center,
+      radius: radius,
+    );
+
+    final gap = gapDegree * pi / 180;
+
+    final availableAngle =
+        pi - (sections.length - 1) * gap;
+
+    double startAngle = pi;
+
+    for (final section in sections) {
+      final sweep =
+          (section.value / total) * availableAngle;
+
+      final animatedSweep =
+          sweep * progress;
+
+      final paint = Paint()
+        ..color = section.color
+        ..strokeWidth = strokeWidth
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round;
+
+      canvas.drawArc(
+        rect,
+        startAngle,
+        animatedSweep,
+        false,
+        paint,
+      );
+
+      startAngle += sweep + gap;
+    }
+
+    _drawCenterText(
+      canvas,
+      size,
+    );
+  }
+
+  void _drawCenterText(
+    Canvas canvas,
+    Size size,
+  ) {
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: centerText,
+        style: TextStyle(
+          color: const Color(0xFF83CFFF),
+          fontSize: size.height * .18,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    final textOffset = Offset(
+      (size.width - textPainter.width) / 2,
+      size.height * .55 -
+          textPainter.height / 2,
+    );
+
+    textPainter.paint(
+      canvas,
+      textOffset,
+    );
+
+    if (centerSubtitle != null) {
+      final subtitlePainter = TextPainter(
+        text: TextSpan(
+          text: centerSubtitle,
+          style: TextStyle(
+            color: const Color(0xFF9CA3AF),
+            fontSize: size.height * .06,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+
+      subtitlePainter.paint(
+        canvas,
+        Offset(
+          (size.width -
+                  subtitlePainter.width) /
+              2,
+          textOffset.dy +
+              textPainter.height +
+              6,
+        ),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(
+    covariant _SemiDonutPainter oldDelegate,
+  ) {
+    return oldDelegate.progress != progress ||
+        oldDelegate.sections != sections;
   }
 }
