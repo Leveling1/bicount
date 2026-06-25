@@ -1526,11 +1526,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get recurringChargesEmpty =>
-      'Aucune charge récurrente active pour le moment.';
+      'Vos abonnements et dépenses automatiques s\'afficheront ici dès qu\'ils seront actifs.';
 
   @override
   String get recurringIncomesEmpty =>
-      'Aucun revenu récurrent actif pour le moment.';
+      'Vos salaires et rentrées d\'argent régulières s\'afficheront ici dès qu\'ils seront actifs.';
+
+  @override
+  String get recurringIncomesEmptyTitle => 'Aucun revenu planifié';
+
+  @override
+  String get recurringChargesEmptyTitle => 'Aucune dépense planifiée';
 
   @override
   String get recurringPlanRecordedTotalLabel => 'Total enregistré';
@@ -1610,6 +1616,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get transactionTypeDebt => 'Dette';
+
+  @override
+  String get transactionEmptyState => 'Aucune transaction enregistrée';
+
+  @override
+  String get transactionEmptyStateHint =>
+      'Vous pouvez ajouter une nouvelle transaction en appuyant sur le bouton ci-dessous.';
+
+  @override
+  String get transactionEmptyStateButton => 'Ajouter une transaction';
 
   @override
   String get frequencyWeekly => 'Hebdomadaire';

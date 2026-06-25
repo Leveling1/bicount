@@ -1,6 +1,5 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
-import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
@@ -25,10 +24,6 @@ class RecurringPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = scope == RecurringPlanScope.charge
-        ? Theme.of(context).extension<OtherTheme>()!.expense!
-        : Theme.of(context).extension<OtherTheme>()!.income!;
-
     return Container(
       margin: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
       decoration: BoxDecoration(
@@ -68,34 +63,27 @@ class RecurringPlanCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppDimens.spacingExtraSmall),
-                Text(
-                  context.frequencyLabel(summary.recurringTransfert.frequency),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: AppDimens.spacingSmall),
-                Wrap(
-                  spacing: AppDimens.spacingSmall,
-                  runSpacing: AppDimens.spacingSmall,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    MetaPill(
-                      icon: Icons.event_outlined,
-                      label: context.l10n.salaryNextPaydayTitle,
-                      value: summary.nextExpectedDate == null
-                          ? '-'
-                          : formatDateWithoutYear(summary.nextExpectedDate!),
-                    ),
-                    MetaPill(
-                      icon: Icons.insights_outlined,
-                      label: context.l10n.analysisMonthlyLoad,
-                      value: NumberFormatUtils.compactCurrency(
-                        summary.monthlyReferenceAmount,
-                        currencyCode: referenceCurrencyCode,
+                    if (summary.nextExpectedDate != null) ...[
+                      MetaPill(
+                        icon: Icons.event_outlined,
+                        label: context.l10n.salaryNextPaydayTitle,
+                        value: summary.nextExpectedDate == null
+                            ? '-'
+                            : formatDateWithoutYear(summary.nextExpectedDate!),
                       ),
-                      color: accentColor,
+                    ],
+                    Text(
+                      context.frequencyLabel(
+                        summary.recurringTransfert.frequency,
+                      ),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
-                const SizedBox(height: AppDimens.spacingMedium),
+                const SizedBox(height: AppDimens.spacingSmall),
                 Text(
                   NumberFormatUtils.formatCurrency(
                     summary.recurringTransfert.amount,

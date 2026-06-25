@@ -1506,10 +1506,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Follow your recurring incomes in one place, update them when the amount changes, and keep the schedule aligned with reality.';
 
   @override
-  String get recurringChargesEmpty => 'No recurring charge is active yet.';
+  String get recurringChargesEmpty => 'Your subscriptions and automatic charges will appear here once they are active.';
 
   @override
-  String get recurringIncomesEmpty => 'No recurring income is active yet.';
+  String get recurringIncomesEmpty => 'Your salaries and regular inflows will appear here once they are active.';
+
+  @override
+  String get recurringIncomesEmptyTitle => 'No scheduled income';
+
+  @override
+  String get recurringChargesEmptyTitle => 'No scheduled expenses';
 
   @override
   String get recurringPlanRecordedTotalLabel => 'Recorded total';
@@ -1589,6 +1595,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transactionTypeDebt => 'Debt';
+
+  @override
+  String get transactionEmptyState => 'No transactions recorded';
+
+  @override
+  String get transactionEmptyStateHint =>
+      'You can add a new transaction by pressing the button below.';
+
+  @override
+  String get transactionEmptyStateButton => 'Add Transaction';
 
   @override
   String get frequencyWeekly => 'Weekly';

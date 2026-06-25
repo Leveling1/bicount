@@ -65,7 +65,7 @@ class HomeRecentActivitySection extends StatelessWidget {
           BicountReveal(
             delay: const Duration(milliseconds: 180),
             child: Center(
-              child: EmptyStateCard(
+              child: EmptyTransactionStateCard(
                 onPressed: () => openTransactionSheet(context, data),
               ),
             ),

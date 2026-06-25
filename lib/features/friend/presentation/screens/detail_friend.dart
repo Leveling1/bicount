@@ -48,7 +48,6 @@ class DetailFriend extends StatelessWidget {
                   onPressed: () => _openShareFlow(context, currentFriend),
                   icon: Icons.share,
                 ),
-              AppDimens.spacerWidthMedium,
             ],
           ),
           body: data == null || detail == null
@@ -67,25 +66,26 @@ class DetailFriend extends StatelessWidget {
                           isLinkedProfile: detail.isLinkedProfile,
                         ),
                       ),
-                      const SizedBox(height: AppDimens.marginLarge),
+                      // const SizedBox(height: AppDimens.marginLarge),
                       if (detail.canShareProfile)
                         BicountReveal(
                           delay: const Duration(milliseconds: 90),
                           child: DetailsCard(
                             child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Icon(
                                   Icons.link_outlined,
                                   color: Theme.of(context).primaryColor,
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: AppDimens.paddingMedium),
                                 Expanded(
                                   child: Text(
                                     context.l10n.friendLinkHint,
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodySmall,
+                                    textAlign: TextAlign.justify,
                                   ),
                                 ),
                               ],

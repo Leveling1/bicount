@@ -78,7 +78,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     if (feed.isEmpty) {
       return BicountReveal(
         child: Center(
-          child: EmptyStateCard(
+          child: EmptyTransactionStateCard(
             onPressed: () => openTransactionSheet(context, widget.data),
           ),
         ),

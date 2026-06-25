@@ -2777,6 +2777,18 @@ abstract class AppLocalizations {
   /// **'No recurring charge is active yet.'**
   String get recurringChargesEmpty;
 
+  /// No description provided for @recurringIncomesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring income is active yet.'**
+  String get recurringIncomesEmptyTitle;
+
+  /// No description provided for @recurringChargesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring charge is active yet.'**
+  String get recurringChargesEmptyTitle;
+
   /// No description provided for @recurringIncomesEmpty.
   ///
   /// In en, this message translates to:
@@ -2920,6 +2932,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Debt'**
   String get transactionTypeDebt;
+
+  /// No description provided for @transactionEmptyState.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt'**
+  String get transactionEmptyState;
+
+  /// No description provided for @transactionEmptyStateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt'**
+  String get transactionEmptyStateHint;
+
+  /// No description provided for @transactionEmptyStateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt'**
+  String get transactionEmptyStateButton;
 
   /// No description provided for @frequencyWeekly.
   ///
