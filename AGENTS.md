@@ -1460,3 +1460,11 @@ Rules:
 - `HomeRecentActivitySection` must stay non-scrollable; recent items should render inside the page-level scroll instead of an inner `ListView`
 - keep the collapsed Home header lightweight with a short balance summary only
 - the Home quick action buttons are icon-first entry points for expense and income and should open the transaction bottom sheet directly on the matching form in `TransactionHandler`, without showing the segmented control
+
+## Analysis Debt Breakdown Update (2026-06-26)
+
+Rules:
+
+- analysis charts must split debt principal and debt repayments into dedicated categories on both the income and expense sides
+- do not fold debt principal into the generic income or expense buckets in the graph summaries
+- keep the visible chart labels localized through the shared breakdown label helper so the UI stays consistent in both French and English

@@ -19,7 +19,9 @@ class AnalysisIncomeBreakdownCard extends StatelessWidget {
     final colors = [
       Theme.of(context).extension<OtherTheme>()!.personnalIncome!,
       AppColors.primaryColorBasic,
-      AppColors.quaternaryColorBasic,
+      Theme.of(context).extension<OtherTheme>()!.salary!,
+      Theme.of(context).extension<OtherTheme>()!.companyIncome!,
+      AppColors.secondaryColorBasic,
     ];
 
     return DetailsCard(
@@ -36,12 +38,14 @@ class AnalysisIncomeBreakdownCard extends StatelessWidget {
               ),
             )
           : HalfDonutChart(
-              segments: breakdown.map((item) {
+              segments: breakdown.asMap().entries.map((entry) {
+                final index = entry.key;
+                final item = entry.value;
                 return ChartSegment(
-                  label: item.label,
+                  label: context.analysisBreakdownLabel(item.label),
                   value: item.value,
                   displayCurrencyCode: dashboard.displayCurrencyCode,
-                  color: colors[breakdown.indexOf(item) % colors.length],
+                  color: colors[index % colors.length],
                 );
               }).toList(),
               total: total,

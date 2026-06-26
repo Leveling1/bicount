@@ -36,12 +36,15 @@ extension L10nBuildContextX on BuildContext {
         return l10n.analysisIncome;
       case 'Salary':
         return l10n.transactionTypeSalary;
+      case 'Expense':
       case 'Expenses':
         return l10n.analysisBreakdownExpenses;
+      case 'Subscription':
       case 'Subscriptions':
         return l10n.analysisBreakdownSubscriptions;
       case 'Debt':
-        return l10n.transactionTypeDebt;
+        return l10n.analysisBreakdownDebt;
+      case 'Repayment':
       case 'Repayments':
         return l10n.analysisBreakdownRepayments;
       case 'Other':

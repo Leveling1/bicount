@@ -91,16 +91,18 @@ class AnalysisRecurringSummaryCard extends StatelessWidget {
                         color: color,
                       ),
                     ),
-                    const SizedBox(width: AppDimens.spacingMedium),
-                    Expanded(
-                      child: _MetricChip(
-                        label: upcomingLabel,
-                        value: summary.nextExpectedDate == null
-                            ? '-'
-                            : formatDateWithoutYear(summary.nextExpectedDate!),
-                        color: color,
+                    if (summary.nextExpectedDate != null) ...[
+                      const SizedBox(width: AppDimens.spacingMedium),
+                      Expanded(
+                        child: _MetricChip(
+                          label: upcomingLabel,
+                          value: formatDateWithoutYear(
+                            summary.nextExpectedDate!,
+                          ),
+                          color: color,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ],

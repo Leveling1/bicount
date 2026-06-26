@@ -56,6 +56,11 @@ class AnalysisDashboardBuilder {
       currencyConfig,
       matcher.matchesSalary,
     );
+    final debtIncomeAmount = _sumTransactions(
+      filteredTransactions,
+      currencyConfig,
+      matcher.matchesDebtIncome,
+    );
     final debtRepaymentIncomeAmount = _sumTransactions(
       filteredTransactions,
       currencyConfig,
@@ -81,6 +86,11 @@ class AnalysisDashboardBuilder {
       currencyConfig,
       matcher.matchesDebtExpense,
     );
+    final debtRepaymentExpenseAmount = _sumTransactions(
+      filteredTransactions,
+      currencyConfig,
+      matcher.matchesDebtRepaymentExpense,
+    );
     final otherExpenseAmount = _sumTransactions(
       filteredTransactions,
       currencyConfig,
@@ -90,12 +100,14 @@ class AnalysisDashboardBuilder {
     final inflow =
         incomeAmount +
         salaryAmount +
+        debtIncomeAmount +
         debtRepaymentIncomeAmount +
         otherIncomeAmount;
     final outflow =
         expenseAmount +
         subscriptionAmount +
         debtExpenseAmount +
+        debtRepaymentExpenseAmount +
         otherExpenseAmount;
     final receivableDebt = debtBalanceResolver.receivableBalance(
       source.debts,
@@ -134,6 +146,7 @@ class AnalysisDashboardBuilder {
       incomeBreakdown: [
         AnalysisBreakdownItem(label: 'Income', value: incomeAmount),
         AnalysisBreakdownItem(label: 'Salary', value: salaryAmount),
+        AnalysisBreakdownItem(label: 'Debt', value: debtIncomeAmount),
         AnalysisBreakdownItem(
           label: 'Repayments',
           value: debtRepaymentIncomeAmount,
@@ -147,6 +160,10 @@ class AnalysisDashboardBuilder {
           value: subscriptionAmount,
         ),
         AnalysisBreakdownItem(label: 'Debt', value: debtExpenseAmount),
+        AnalysisBreakdownItem(
+          label: 'Repayments',
+          value: debtRepaymentExpenseAmount,
+        ),
         AnalysisBreakdownItem(label: 'Other', value: otherExpenseAmount),
       ].where((item) => item.value > 0).toList(),
       recurringCharges: AnalysisRecurringSummary(

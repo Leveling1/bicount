@@ -14,9 +14,7 @@ class AnalysisTransactionBreakdownMatcher {
   bool matchesGenericIncome(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
       return currentUserParticipantIds!.contains(transaction.beneficiaryId) &&
-          transaction.type != TransactionTypes.salaryCode &&
-          transaction.type != TransactionTypes.otherRecurringIncomeCode &&
-          !debtClassifier.isRepaymentTransaction(transaction);
+          transaction.type == TransactionTypes.incomeCode;
     }
 
     return transaction.type == TransactionTypes.incomeCode;
@@ -31,6 +29,15 @@ class AnalysisTransactionBreakdownMatcher {
     return transaction.type == TransactionTypes.salaryCode;
   }
 
+  bool matchesDebtIncome(TransactionModel transaction) {
+    if (currentUserParticipantIds != null) {
+      return currentUserParticipantIds!.contains(transaction.beneficiaryId) &&
+          debtClassifier.isPrincipalTransaction(transaction);
+    }
+
+    return false;
+  }
+
   bool matchesDebtRepaymentIncome(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
       return currentUserParticipantIds!.contains(transaction.beneficiaryId) &&
@@ -43,7 +50,8 @@ class AnalysisTransactionBreakdownMatcher {
   bool matchesOtherIncome(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
       return currentUserParticipantIds!.contains(transaction.beneficiaryId) &&
-          transaction.type == TransactionTypes.otherRecurringIncomeCode;
+          (transaction.type == TransactionTypes.otherRecurringIncomeCode ||
+              transaction.type == TransactionTypes.othersCode);
     }
 
     return transaction.type == TransactionTypes.otherRecurringIncomeCode;
@@ -52,9 +60,7 @@ class AnalysisTransactionBreakdownMatcher {
   bool matchesGenericExpense(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
       return currentUserParticipantIds!.contains(transaction.senderId) &&
-          transaction.type != TransactionTypes.subscriptionCode &&
-          transaction.type != TransactionTypes.otherRecurringExpenseCode &&
-          !debtClassifier.isPrincipalTransaction(transaction);
+          transaction.type == TransactionTypes.expenseCode;
     }
 
     return transaction.type == TransactionTypes.expenseCode;
@@ -78,10 +84,20 @@ class AnalysisTransactionBreakdownMatcher {
     return false;
   }
 
+  bool matchesDebtRepaymentExpense(TransactionModel transaction) {
+    if (currentUserParticipantIds != null) {
+      return currentUserParticipantIds!.contains(transaction.senderId) &&
+          debtClassifier.isRepaymentTransaction(transaction);
+    }
+
+    return false;
+  }
+
   bool matchesOtherExpense(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
       return currentUserParticipantIds!.contains(transaction.senderId) &&
-          transaction.type == TransactionTypes.otherRecurringExpenseCode;
+          (transaction.type == TransactionTypes.otherRecurringExpenseCode ||
+              transaction.type == TransactionTypes.othersCode);
     }
 
     return transaction.type == TransactionTypes.otherRecurringExpenseCode ||

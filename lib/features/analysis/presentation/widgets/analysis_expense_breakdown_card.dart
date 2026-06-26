@@ -18,8 +18,10 @@ class AnalysisExpenseBreakdownCard extends StatelessWidget {
     final total = breakdown.fold<double>(0, (sum, item) => sum + item.value);
     final colors = [
       Theme.of(context).extension<OtherTheme>()!.expense!,
-      AppColors.quaternaryColorBasic,
-      Colors.orange,
+      Theme.of(context).extension<OtherTheme>()!.error!,
+      Theme.of(context).extension<OtherTheme>()!.equipment!,
+      Theme.of(context).extension<OtherTheme>()!.service!,
+      AppColors.secondaryColorBasic,
     ];
 
     return DetailsCard(
@@ -36,16 +38,18 @@ class AnalysisExpenseBreakdownCard extends StatelessWidget {
               ),
             )
           : HalfDonutChart(
-              segments: breakdown.map((item) {
+              segments: breakdown.asMap().entries.map((entry) {
+                final index = entry.key;
+                final item = entry.value;
                 return ChartSegment(
-                  label: item.label,
+                  label: context.analysisBreakdownLabel(item.label),
                   value: item.value,
                   displayCurrencyCode: dashboard.displayCurrencyCode,
-                  color: colors[breakdown.indexOf(item) % colors.length],
+                  color: colors[index % colors.length],
                 );
               }).toList(),
-              total :total,
-              currencyCode: dashboard.displayCurrencyCode, 
+              total: total,
+              currencyCode: dashboard.displayCurrencyCode,
             ),
     );
   }

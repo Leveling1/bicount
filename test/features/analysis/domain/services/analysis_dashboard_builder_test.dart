@@ -176,6 +176,15 @@ void main() {
               originId: lentDebtId,
             ),
             transaction(
+              tid: 'debt-repayment-expense',
+              name: 'Debt repayment sent',
+              type: TransactionTypes.debtCode,
+              senderId: currentUserId,
+              beneficiaryId: 'lender',
+              amount: 70,
+              originId: borrowedDebtId,
+            ),
+            transaction(
               tid: 'legacy-linked-expense',
               name: 'Legacy linked expense',
               type: TransactionTypes.othersCode,
@@ -206,25 +215,27 @@ void main() {
       );
 
       expect(dashboard.inflow, 1210);
-      expect(dashboard.outflow, 225);
-      expect(dashboard.netFlow, 985);
+      expect(dashboard.outflow, 295);
+      expect(dashboard.netFlow, 915);
       expect(dashboard.incomeBreakdown, const [
-        AnalysisBreakdownItem(label: 'Income', value: 125),
+        AnalysisBreakdownItem(label: 'Income', value: 35),
         AnalysisBreakdownItem(label: 'Salary', value: 1000),
+        AnalysisBreakdownItem(label: 'Debt', value: 50),
         AnalysisBreakdownItem(label: 'Repayments', value: 60),
-        AnalysisBreakdownItem(label: 'Other', value: 25),
+        AnalysisBreakdownItem(label: 'Other', value: 65),
       ]);
       expect(dashboard.expenseBreakdown, const [
-        AnalysisBreakdownItem(label: 'Expenses', value: 90),
+        AnalysisBreakdownItem(label: 'Expenses', value: 30),
         AnalysisBreakdownItem(label: 'Subscriptions', value: 20),
         AnalysisBreakdownItem(label: 'Debt', value: 100),
-        AnalysisBreakdownItem(label: 'Other', value: 15),
+        AnalysisBreakdownItem(label: 'Repayments', value: 70),
+        AnalysisBreakdownItem(label: 'Other', value: 75),
       ]);
 
       final latestPoint = dashboard.cashflowPoints.last;
       expect(latestPoint.inflow, 1210);
-      expect(latestPoint.outflow, 225);
-      expect(latestPoint.cumulativeNet, 985);
+      expect(latestPoint.outflow, 295);
+      expect(latestPoint.cumulativeNet, 915);
     },
   );
 }

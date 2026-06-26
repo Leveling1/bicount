@@ -1454,25 +1454,25 @@ abstract class AppLocalizations {
   /// No description provided for @analysisRecurringChargesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Recurring charges'**
+  /// **'Scheduled Outflows'**
   String get analysisRecurringChargesTitle;
 
   /// No description provided for @analysisRecurringChargesDescription.
   ///
   /// In en, this message translates to:
-  /// **'Review the plans that keep leaving your balance and manage them before they drift.'**
+  /// **'Track your subscriptions and automatic charges to anticipate your expenses and stay in control of your budget.'**
   String get analysisRecurringChargesDescription;
 
   /// No description provided for @analysisRecurringIncomesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Recurring incomes'**
+  /// **'Scheduled Income'**
   String get analysisRecurringIncomesTitle;
 
   /// No description provided for @analysisRecurringIncomesDescription.
   ///
   /// In en, this message translates to:
-  /// **'Track your repeating income sources and open the full follow-up when one needs attention.'**
+  /// **'Keep track of all your planned earnings and open the full follow-up as soon as a due date approaches.'**
   String get analysisRecurringIncomesDescription;
 
   /// No description provided for @analysisRecurringIncomesUpcoming.
@@ -1538,19 +1538,25 @@ abstract class AppLocalizations {
   /// No description provided for @analysisBreakdownExpenses.
   ///
   /// In en, this message translates to:
-  /// **'Expenses'**
+  /// **'Expense'**
   String get analysisBreakdownExpenses;
 
   /// No description provided for @analysisBreakdownSubscriptions.
   ///
   /// In en, this message translates to:
-  /// **'Subscriptions'**
+  /// **'Subscription'**
   String get analysisBreakdownSubscriptions;
+
+  /// No description provided for @analysisBreakdownDebt.
+  ///
+  /// In en, this message translates to:
+  /// **'Debt'**
+  String get analysisBreakdownDebt;
 
   /// No description provided for @analysisBreakdownRepayments.
   ///
   /// In en, this message translates to:
-  /// **'Repayments'**
+  /// **'Repayment'**
   String get analysisBreakdownRepayments;
 
   /// No description provided for @analysisBreakdownOther.
@@ -1640,7 +1646,7 @@ abstract class AppLocalizations {
   /// No description provided for @friendLinkIntro.
   ///
   /// In en, this message translates to:
-  /// **'Share this local contact profile when the person has created a Bicount account so the backend can link both profiles together.'**
+  /// **'If this person uses Bicount, share this contact to automatically link their account to this profile.'**
   String get friendLinkIntro;
 
   /// No description provided for @friendShareProfileTitle.
@@ -1970,7 +1976,7 @@ abstract class AppLocalizations {
   /// No description provided for @transactionNoTransactionsFound.
   ///
   /// In en, this message translates to:
-  /// **'No transactions found'**
+  /// **'No transactions recorded'**
   String get transactionNoTransactionsFound;
 
   /// No description provided for @transactionToday.
@@ -2558,7 +2564,7 @@ abstract class AppLocalizations {
   /// No description provided for @salaryTrackingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Recurring fundings'**
+  /// **'Regular Inflows'**
   String get salaryTrackingTitle;
 
   /// No description provided for @salaryEmptyState.
@@ -2576,13 +2582,13 @@ abstract class AppLocalizations {
   /// No description provided for @salaryPlansTitle.
   ///
   /// In en, this message translates to:
-  /// **'Recurring plans'**
+  /// **'Scheduled Inflows'**
   String get salaryPlansTitle;
 
   /// No description provided for @salaryRecentPaymentsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Recent recorded payments'**
+  /// **'Recent Deposits'**
   String get salaryRecentPaymentsTitle;
 
   /// No description provided for @salaryOverdueTitle.
@@ -2708,7 +2714,7 @@ abstract class AppLocalizations {
   /// No description provided for @salaryHomeCardTitle.
   ///
   /// In en, this message translates to:
-  /// **'Recurring follow-up'**
+  /// **'Salary Management'**
   String get salaryHomeCardTitle;
 
   /// No description provided for @salaryHomeCardAttention.
@@ -2720,7 +2726,7 @@ abstract class AppLocalizations {
   /// No description provided for @salaryHomeCardNext.
   ///
   /// In en, this message translates to:
-  /// **'Next recurring funding on {date}'**
+  /// **'Next deposit scheduled for {date}'**
   String salaryHomeCardNext(Object date);
 
   /// No description provided for @salaryHomeCardCount.
@@ -2774,26 +2780,26 @@ abstract class AppLocalizations {
   /// No description provided for @recurringChargesEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No recurring charge is active yet.'**
+  /// **'Your subscriptions and automatic charges will appear here once they are active.'**
   String get recurringChargesEmpty;
+
+  /// No description provided for @recurringIncomesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your salaries and regular inflows will appear here once they are active.'**
+  String get recurringIncomesEmpty;
 
   /// No description provided for @recurringIncomesEmptyTitle.
   ///
   /// In en, this message translates to:
-  /// **'No recurring income is active yet.'**
+  /// **'No scheduled income'**
   String get recurringIncomesEmptyTitle;
 
   /// No description provided for @recurringChargesEmptyTitle.
   ///
   /// In en, this message translates to:
-  /// **'No recurring charge is active yet.'**
+  /// **'No scheduled expenses'**
   String get recurringChargesEmptyTitle;
-
-  /// No description provided for @recurringIncomesEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'No recurring income is active yet.'**
-  String get recurringIncomesEmpty;
 
   /// No description provided for @recurringPlanRecordedTotalLabel.
   ///
@@ -2936,19 +2942,19 @@ abstract class AppLocalizations {
   /// No description provided for @transactionEmptyState.
   ///
   /// In en, this message translates to:
-  /// **'Debt'**
+  /// **'No transactions recorded'**
   String get transactionEmptyState;
 
   /// No description provided for @transactionEmptyStateHint.
   ///
   /// In en, this message translates to:
-  /// **'Debt'**
+  /// **'You can add a new transaction by pressing the button below.'**
   String get transactionEmptyStateHint;
 
   /// No description provided for @transactionEmptyStateButton.
   ///
   /// In en, this message translates to:
-  /// **'Debt'**
+  /// **'Add Transaction'**
   String get transactionEmptyStateButton;
 
   /// No description provided for @frequencyWeekly.
