@@ -1468,3 +1468,4 @@ Rules:
 - analysis charts must split debt principal and debt repayments into dedicated categories on both the income and expense sides
 - do not fold debt principal into the generic income or expense buckets in the graph summaries
 - keep the visible chart labels localized through the shared breakdown label helper so the UI stays consistent in both French and English
+- analysis chart segment colors must come from AppColors and OtherTheme, not from hard-coded color lists inside the chart widgets

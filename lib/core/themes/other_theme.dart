@@ -10,6 +10,13 @@ class OtherTheme extends ThemeExtension<OtherTheme> {
   final Color? service;
   final Color? error;
   final Color? success;
+  final Color? analysisRevenue;
+  final Color? analysisSalary;
+  final Color? analysisExpense;
+  final Color? analysisSubscription;
+  final Color? analysisDebt;
+  final Color? analysisRepayment;
+  final Color? analysisOther;
 
   const OtherTheme({
     this.income,
@@ -20,24 +27,53 @@ class OtherTheme extends ThemeExtension<OtherTheme> {
     this.equipment,
     this.service,
     this.error,
-    this.success
+    this.success,
+    this.analysisRevenue,
+    this.analysisSalary,
+    this.analysisExpense,
+    this.analysisSubscription,
+    this.analysisDebt,
+    this.analysisRepayment,
+    this.analysisOther,
   });
 
   @override
   OtherTheme copyWith({
-    LinearGradient? primaryGradient,
-    LinearGradient? secondaryGradient,
+    Color? income,
+    Color? expense,
+    Color? personnalIncome,
+    Color? companyIncome,
+    Color? salary,
+    Color? equipment,
+    Color? service,
+    Color? error,
+    Color? success,
+    Color? analysisRevenue,
+    Color? analysisSalary,
+    Color? analysisExpense,
+    Color? analysisSubscription,
+    Color? analysisDebt,
+    Color? analysisRepayment,
+    Color? analysisOther,
   }) {
     return OtherTheme(
-      income: income ?? income,
-      expense: expense ?? expense,
-      personnalIncome: personnalIncome ?? personnalIncome,
-      companyIncome: companyIncome ?? companyIncome,
-      salary: salary ?? salary,
-      equipment: equipment ?? equipment,
-      service: service ?? service,
-      error: error ?? error,
-      success: success ?? success
+      income: income ?? this.income,
+      expense: expense ?? this.expense,
+      personnalIncome: personnalIncome ?? this.personnalIncome,
+      companyIncome: companyIncome ?? this.companyIncome,
+      salary: salary ?? this.salary,
+      equipment: equipment ?? this.equipment,
+      service: service ?? this.service,
+      error: error ?? this.error,
+      success: success ?? this.success,
+      analysisRevenue: analysisRevenue ?? this.analysisRevenue,
+      analysisSalary: analysisSalary ?? this.analysisSalary,
+      analysisExpense: analysisExpense ?? this.analysisExpense,
+      analysisSubscription:
+          analysisSubscription ?? this.analysisSubscription,
+      analysisDebt: analysisDebt ?? this.analysisDebt,
+      analysisRepayment: analysisRepayment ?? this.analysisRepayment,
+      analysisOther: analysisOther ?? this.analysisOther,
     );
   }
 
@@ -56,7 +92,26 @@ class OtherTheme extends ThemeExtension<OtherTheme> {
       equipment: Color.lerp(equipment, other.equipment, t),
       service: Color.lerp(service, other.service, t),
       error: Color.lerp(error, other.error, t),
-      success: Color.lerp(success, other.success, t)
+      success: Color.lerp(success, other.success, t),
+      analysisRevenue: Color.lerp(
+        analysisRevenue,
+        other.analysisRevenue,
+        t,
+      ),
+      analysisSalary: Color.lerp(analysisSalary, other.analysisSalary, t),
+      analysisExpense: Color.lerp(analysisExpense, other.analysisExpense, t),
+      analysisSubscription: Color.lerp(
+        analysisSubscription,
+        other.analysisSubscription,
+        t,
+      ),
+      analysisDebt: Color.lerp(analysisDebt, other.analysisDebt, t),
+      analysisRepayment: Color.lerp(
+        analysisRepayment,
+        other.analysisRepayment,
+        t,
+      ),
+      analysisOther: Color.lerp(analysisOther, other.analysisOther, t),
     );
   }
 }

@@ -29,6 +29,13 @@ class AppColors {
   static const Color serviceColorDark = Color(0xFFfb8500);
   static const Color expensesColorDark = Color(0xFFEF5350); //Color(0xFFd00000);
   static const Color salesColorDark = Color(0xFFf72585);
+  static const Color analysisRevenueColorDark = Color(0xFF8BC34A);
+  static const Color analysisSalaryColorDark = Color(0xFF6EA8FE);
+  static const Color analysisExpenseColorDark = Color(0xFFEF5350);
+  static const Color analysisSubscriptionColorDark = Color(0xFFFFB74D);
+  static const Color analysisDebtColorDark = Color(0xFFCE93D8);
+  static const Color analysisRepaymentColorDark = Color(0xFF4DB6AC);
+  static const Color analysisOtherColorDark = Color(0xFF90A4AE);
   static const Color errorColorLight = Color(0xFFd00000);
   static const Color successColorLight = Color(0xFF4CAF50);
 
@@ -50,4 +57,11 @@ class AppColors {
   static const Color serviceColorLight = Color(0xFFfb8500);
   static const Color expensesColorLight = Color(0xFFd00000);
   static const Color salesColorLight = Color(0xFFf72585);
+  static const Color analysisRevenueColorLight = Color(0xFF76A646);
+  static const Color analysisSalaryColorLight = Color(0xFF0554F2);
+  static const Color analysisExpenseColorLight = Color(0xFFD00000);
+  static const Color analysisSubscriptionColorLight = Color(0xFFFB8500);
+  static const Color analysisDebtColorLight = Color(0xFF7B2CBF);
+  static const Color analysisRepaymentColorLight = Color(0xFF009688);
+  static const Color analysisOtherColorLight = Color(0xFF607D8B);
 }

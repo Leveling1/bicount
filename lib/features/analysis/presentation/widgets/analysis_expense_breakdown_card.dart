@@ -1,5 +1,4 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
-import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/widgets/details_card.dart';
@@ -16,12 +15,13 @@ class AnalysisExpenseBreakdownCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final breakdown = dashboard.expenseBreakdown;
     final total = breakdown.fold<double>(0, (sum, item) => sum + item.value);
+    final theme = Theme.of(context).extension<OtherTheme>()!;
     final colors = [
-      Theme.of(context).extension<OtherTheme>()!.expense!,
-      Theme.of(context).extension<OtherTheme>()!.error!,
-      Theme.of(context).extension<OtherTheme>()!.equipment!,
-      Theme.of(context).extension<OtherTheme>()!.service!,
-      AppColors.secondaryColorBasic,
+      theme.analysisExpense!,
+      theme.analysisSubscription!,
+      theme.analysisDebt!,
+      theme.analysisRepayment!,
+      theme.analysisOther!,
     ];
 
     return DetailsCard(
