@@ -37,15 +37,6 @@ class SalaryOverviewMetrics extends StatelessWidget {
           color: expenseColor,
         ),
         _MetricCard(
-          title: context.l10n.salaryDueTodayTitle,
-          value: NumberFormatUtils.compactCurrency(
-            dashboard.dueTodayAmount,
-            currencyCode: currencyCode,
-          ),
-          helper: '${dashboard.dueTodayCount} ${context.l10n.commonItems}',
-          color: incomeColor,
-        ),
-        _MetricCard(
           title: context.l10n.salaryNextPaydayTitle,
           value: dashboard.nextExpectedDate == null
               ? '-'
@@ -53,6 +44,19 @@ class SalaryOverviewMetrics extends StatelessWidget {
           helper: '${dashboard.plans.length} ${context.l10n.salaryPlansTitle}',
           color: primaryColor,
         ),
+        dashboard.dueTodayAmount != 0.0
+            ? _MetricCard(
+                title: context.l10n.salaryDueTodayTitle,
+                value: NumberFormatUtils.formatCurrency(
+                  dashboard.dueTodayAmount,
+                  currencyCode: currencyCode,
+                ),
+                helper:
+                    '${dashboard.dueTodayCount} ${context.l10n.commonItems}',
+                color: incomeColor,
+                isFullWidth: true,
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }
@@ -64,17 +68,21 @@ class _MetricCard extends StatelessWidget {
     required this.value,
     required this.helper,
     required this.color,
+    this.isFullWidth = false,
   });
 
   final String title;
   final String value;
   final String helper;
   final Color color;
+  final bool isFullWidth;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: (MediaQuery.sizeOf(context).width - 48) / 2,
+      width: isFullWidth
+          ? MediaQuery.sizeOf(context).width - 32
+          : (MediaQuery.sizeOf(context).width - 48) / 2,
       child: DetailsCard(
         isMargin: false,
         child: Column(
