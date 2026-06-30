@@ -132,7 +132,7 @@ class _RecurringSalaryScreenState extends State<RecurringSalaryScreen> {
               (occurrence) => SalaryConfirmationCard(
                 occurrence: occurrence,
                 onTap: () =>
-                    openOccurrenceSheet(context, occurrence, recurringState),
+                    openOccurrenceSheet(context, occurrence),
               ),
             ),
           ],
@@ -207,7 +207,7 @@ class _RecurringSalaryScreenState extends State<RecurringSalaryScreen> {
       if (!mounted) {
         return;
       }
-      openOccurrenceSheet(context, target, recurringState);
+      openOccurrenceSheet(context, target);
     });
   }
 

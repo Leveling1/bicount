@@ -561,8 +561,15 @@ class Repository extends OfflineFirstWithSupabaseRepository {
             )
             .listen(
               (items) => subject.add(items),
-              onError: (error, stackTrace) =>
-                  subject.addError(error, stackTrace),
+              onError: (error, stackTrace) {
+                // Network errors are expected in offline mode.
+                // We don't propagate them to the subject to avoid breaking the UI streams.
+                if (_isNetworkError(error)) {
+                  debugPrint('Realtime subscription unavailable (offline mode)');
+                  return;
+                }
+                subject.addError(error, stackTrace);
+              },
               onDone: () async {
                 if (!subject.isClosed) {
                   await subject.close();
@@ -1499,6 +1506,15 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     } catch (_) {
       return null;
     }
+  }
+
+  bool _isNetworkError(Object error) {
+    final errorString = error.toString();
+    return errorString.contains('SocketException') ||
+        errorString.contains('Failed host lookup') ||
+        errorString.contains('HandshakeException') ||
+        errorString.contains('Connection refused') ||
+        errorString.contains('RealtimeSubscribeException');
   }
 }
 

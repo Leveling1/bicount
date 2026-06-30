@@ -248,6 +248,33 @@ class CurrencyRepositoryImpl {
         .map(CurrencyConfigEntity.normalizeCode)
         .where((code) => code.isNotEmpty)
         .toSet();
+
+    // Check if we already have these snapshots in memory/cache.
+    final cachedSnapshots = normalizedCodes
+        .map(currentConfig.latestSnapshot)
+        .whereType<ExchangeRateSnapshotEntity>()
+        .toList(growable: false);
+
+    // If we have all required snapshots in cache, return them immediately
+    // and trigger a background refresh to keep data up to date.
+    if (cachedSnapshots.length == normalizedCodes.length) {
+      unawaited(
+        _remoteDataSource
+            .fetchLatestSnapshotsForCodes(
+              normalizedCodes.toList(growable: false),
+            )
+            .then(_mergeSnapshots)
+            .catchError((e) {
+              // Only log non-network errors to keep logs clean in offline mode.
+              if (e is! Exception || !e.toString().contains('SocketException')) {
+                debugPrint('Background FX refresh warning: $e');
+              }
+            }),
+      );
+      return cachedSnapshots;
+    }
+
+    // If cache is incomplete, we must wait for the remote data.
     try {
       final remoteSnapshots = await _remoteDataSource
           .fetchLatestSnapshotsForCodes(
@@ -255,13 +282,9 @@ class CurrencyRepositoryImpl {
           );
       await _mergeSnapshots(remoteSnapshots);
       return remoteSnapshots;
-    } catch (_) {
-      final cachedSnapshots = normalizedCodes
-          .map(currentConfig.latestSnapshot)
-          .whereType<ExchangeRateSnapshotEntity>()
-          .toList(growable: false);
-
-      if (cachedSnapshots.length == normalizedCodes.length) {
+    } catch (e) {
+      // If remote fails, return whatever we have in cache as a fallback.
+      if (cachedSnapshots.isNotEmpty) {
         return cachedSnapshots;
       }
       rethrow;

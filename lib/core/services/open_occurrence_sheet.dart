@@ -8,43 +8,59 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 Future<void> openOccurrenceSheet(
-    BuildContext context,
-    SalaryOccurrenceEntity occurrence,
-    RecurringTransfertState recurringState,
-  ) {
-    final targetId = switch (recurringState) {
-      RecurringTransfertActionInProgress(:final targetId) => targetId,
-      _ => '',
-    };
+  BuildContext context,
+  SalaryOccurrenceEntity occurrence,
+) {
+  final bloc = context.read<RecurringTransfertBloc>();
 
-    return showCustomBottomSheet<void>(
-      context: context,
-      minHeight: 0.75,
-      child: SalaryOccurrenceSheet(
-        occurrence: occurrence,
-        isLoading:
-            targetId == occurrence.occurrenceId ||
-            targetId == occurrence.recurringTransfert.recurringTransfertId,
-        onConfirmPressed: (confirmedAmount, confirmedCurrency) {
-          Navigator.of(context).maybePop();
-          context.read<RecurringTransfertBloc>().add(
-            ConfirmSalaryOccurrenceRequested(
-              occurrence: occurrence,
-              confirmedAmount: confirmedAmount,
-              confirmedCurrency: confirmedCurrency,
-            ),
-          );
+  return showCustomBottomSheet<void>(
+    context: context,
+    minHeight: 0.75,
+    child: BlocProvider.value(
+      value: bloc,
+      child: BlocListener<RecurringTransfertBloc, RecurringTransfertState>(
+        listener: (context, state) {
+          if (state is RecurringTransfertActionSuccess &&
+              (state.targetId == occurrence.occurrenceId ||
+                  state.targetId ==
+                      occurrence.recurringTransfert.recurringTransfertId)) {
+            Navigator.of(context).maybePop();
+          }
         },
-        onAutomaticModePressed: (confirmedAmount, confirmedCurrency) {
-          Navigator.of(context).maybePop();
-          context.read<RecurringTransfertBloc>().add(
-            ContinueSalaryAutomaticallyRequested(
+        child: BlocBuilder<RecurringTransfertBloc, RecurringTransfertState>(
+          builder: (context, state) {
+            final targetId = switch (state) {
+              RecurringTransfertActionInProgress(:final targetId) => targetId,
+              _ => '',
+            };
+
+            return SalaryOccurrenceSheet(
               occurrence: occurrence,
-              confirmedAmount: confirmedAmount,
-              confirmedCurrency: confirmedCurrency,
-            ),
-          );
-        },
+              isLoading: targetId == occurrence.occurrenceId ||
+                  targetId ==
+                      occurrence.recurringTransfert.recurringTransfertId,
+              onConfirmPressed: (confirmedAmount, confirmedCurrency) {
+                context.read<RecurringTransfertBloc>().add(
+                      ConfirmSalaryOccurrenceRequested(
+                        occurrence: occurrence,
+                        confirmedAmount: confirmedAmount,
+                        confirmedCurrency: confirmedCurrency,
+                      ),
+                    );
+              },
+              onAutomaticModePressed: (confirmedAmount, confirmedCurrency) {
+                context.read<RecurringTransfertBloc>().add(
+                      ContinueSalaryAutomaticallyRequested(
+                        occurrence: occurrence,
+                        confirmedAmount: confirmedAmount,
+                        confirmedCurrency: confirmedCurrency,
+                      ),
+                    );
+              },
+            );
+          },
+        ),
       ),
-    );
-  }
+    ),
+  );
+}

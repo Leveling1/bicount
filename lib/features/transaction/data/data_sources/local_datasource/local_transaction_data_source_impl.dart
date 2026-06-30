@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
@@ -9,6 +11,7 @@ import 'package:bicount/features/transaction/data/data_sources/local_datasource/
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -50,7 +53,20 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         transactionType: transactionType,
       );
 
-      await Repository().upsert<FriendsModel>(friendAdd);
+      // Optimistic save: Write to SQLite immediately
+      await Repository().sqliteProvider.upsert<FriendsModel>(
+        friendAdd,
+        repository: Repository(),
+      );
+
+      // Background sync: Let Brick handle remote/offline queue without blocking
+      unawaited(
+        // ignore: body_might_complete_normally_catch_error
+        Repository().upsert<FriendsModel>(friendAdd).catchError((e) {
+          debugPrint('Background friend sync: $e');
+        }),
+      );
+
       return Right(friendAdd);
     } catch (_) {
       return _messageFailure('Unable to save this friend right now.');
@@ -134,11 +150,27 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         generationMode: generationMode ?? 0,
       );
 
-      await Repository().upsert<TransactionModel>(transactionModel);
+      // Optimistic save: Write to SQLite immediately.
+      // This ensures the data is persisted locally even if network/auth is slow.
+      await Repository().sqliteProvider.upsert<TransactionModel>(
+        transactionModel,
+        repository: Repository(),
+      );
+
+      // Apply finance effects locally so balances update immediately.
       await _offlineFinanceLocalService.applyTransactionEffects(
         currentUserId: uid,
         transaction: transactionModel,
       );
+
+      // Background sync: Let Brick handle remote/offline queue in the background.
+      unawaited(
+        // ignore: body_might_complete_normally_catch_error
+        Repository().upsert<TransactionModel>(transactionModel).catchError((e) {
+          debugPrint('Background transaction sync: $e');
+        }),
+      );
+
       return const Right(null);
     } catch (_) {
       return _messageFailure('The transaction could not be saved.');
@@ -206,7 +238,20 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
             DateTime.now().toIso8601String(),
       );
 
-      await Repository().upsert<TransactionModel>(transactionModel);
+      // Optimistic update: Write to SQLite immediately.
+      await Repository().sqliteProvider.upsert<TransactionModel>(
+        transactionModel,
+        repository: Repository(),
+      );
+
+      // Background sync: Let Brick handle remote/offline queue.
+      unawaited(
+        // ignore: body_might_complete_normally_catch_error
+        Repository().upsert<TransactionModel>(transactionModel).catchError((e) {
+          debugPrint('Background transaction update sync: $e');
+        }),
+      );
+
       return const Right(null);
     } on Failure catch (error) {
       return Left(error);

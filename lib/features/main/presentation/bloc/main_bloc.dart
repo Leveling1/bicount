@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bicount/core/constants/network_status.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/main_entity.dart';
@@ -27,7 +28,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     try {
       emit(MainLoading());
       await _startDataSubscription?.cancel();
-      await repository.reconcileDeletedRecords();
+
+      // Start remote reconciliation in the background without blocking the UI.
+      // This allows the local SQLite data to be displayed immediately.
+      repository.reconcileDeletedRecords().catchError((error) {
+        debugPrint('Background reconciliation warning: $error');
+      });
+
       _startDataSubscription = repository.getStartDataStream().listen(
         (data) => add(_StartDataUpdated(data)),
         onError: (error, _) => add(_StartDataFailed(error.toString())),
