@@ -1,7 +1,7 @@
 name: bicount
 description: "Bicount est une application mobile Flutter de gestion d’argent personnel et partagé."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.0+2
+version: 1.0.0+3
 environment:
   sdk: ^3.8.1
 dependencies:
