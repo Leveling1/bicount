@@ -31,7 +31,7 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => 84;
 
   @override
-  double get maxExtent => 312;
+  double get maxExtent => 290;
 
   @override
   Widget build(
