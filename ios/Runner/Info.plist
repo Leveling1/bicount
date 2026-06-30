@@ -90,15 +90,26 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CFBundleURLTypes</key>
 	<array>
-        	<dict>
-        		<key>CFBundleTypeRole</key>
-        		<string>Editor</string>
-        		<key>CFBundleURLSchemes</key>
-        		<array>
-        			<string>com.googleusercontent.apps.631534863385-6iisg6ipj4jfm8jgl5lb1so3clpuump1</string>
-        		</array>
-        	</dict>
-        </array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.youngsolver.bicount</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>bicount</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.631534863385-6iisg6ipj4jfm8jgl5lb1so3clpuump1</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
