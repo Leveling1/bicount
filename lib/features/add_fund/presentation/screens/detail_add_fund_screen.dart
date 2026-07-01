@@ -3,6 +3,7 @@ import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/utils/confirm_delete.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/details_card.dart';
@@ -162,32 +163,14 @@ class _DetailAddFundScreenState extends State<DetailAddFundScreen> {
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: Theme.of(dialogContext).dialogTheme.backgroundColor,
-        surfaceTintColor: Colors.transparent,
-        shape: Theme.of(dialogContext).dialogTheme.shape,
-        title: Text(context.l10n.accountFundingDeleteConfirmTitle),
-        content: Text(context.l10n.accountFundingDeleteConfirmDescription),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(context.l10n.commonReject),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(context.l10n.accountFundingDeleteConfirmCta),
-          ),
-        ],
+    confirmDelete(
+      context,
+      title: context.l10n.accountFundingDeleteConfirmTitle,
+      description: context.l10n.accountFundingDeleteConfirmDescription,
+      onConfirm: () => context.read<AddFundBloc>().add(
+        AddFundDeleteRequested(funding: widget.funding),
       ),
     );
-
-    if (confirmed == true && context.mounted) {
-      context.read<AddFundBloc>().add(
-        AddFundDeleteRequested(funding: widget.funding),
-      );
-    }
   }
 
   void _onStateChanged(BuildContext context, AddFundState state) {

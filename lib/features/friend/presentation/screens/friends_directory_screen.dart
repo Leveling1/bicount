@@ -1,6 +1,7 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/open_friend_detail.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/utils/pinned_header_delegate.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
@@ -87,84 +88,103 @@ class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
           ),
           body: data == null
               ? const FriendsDirectorySkeleton()
-              : SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimens.paddingMedium,
+              : CustomScrollView(
+                  slivers: [
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimens.paddingMedium,
+                      ),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate([
+                          BicountReveal(
+                            delay: const Duration(milliseconds: 30),
+                            child: FriendDirectoryHeader(
+                              total: friends.length,
+                              linked: linkedCount,
+                              unlinked: friends.length - linkedCount,
+                            ),
+                          ),
+                          const SizedBox(height: AppDimens.marginLarge),
+                          BicountReveal(
+                            delay: const Duration(milliseconds: 90),
+                            child: Text(
+                              context.l10n.friendsDirectoryIntro,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ),
+                          const SizedBox(height: AppDimens.marginLarge),
+                        ]),
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        BicountReveal(
-                          delay: const Duration(milliseconds: 30),
-                          child: FriendDirectoryHeader(
-                            total: friends.length,
-                            linked: linkedCount,
-                            unlinked: friends.length - linkedCount,
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: PinnedHeaderDelegate(
+                        child: ColoredBox(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          child: BicountReveal(
+                            delay: const Duration(milliseconds: 90),
+                            child: TextField(
+                              controller: _searchController,
+                              decoration: InputDecoration(
+                                hintText: context.l10n.friendsSearchHint,
+                                prefixIcon: const Icon(Icons.search),
+                                suffixIcon: _searchQuery.isNotEmpty
+                                    ? IconButton(
+                                        icon: const Icon(Icons.close),
+                                        onPressed: () {
+                                          _searchController.clear();
+                                        },
+                                      )
+                                    : null,
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: AppDimens.marginLarge),
-                        BicountReveal(
-                          delay: const Duration(milliseconds: 90),
-                          child: Text(
-                            context.l10n.friendsDirectoryIntro,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ),
-                        const SizedBox(height: AppDimens.marginLarge),
-                        TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            hintText: context.l10n.friendsSearchHint,
-                            prefixIcon: const Icon(Icons.search),
-                            suffixIcon: _searchQuery.isNotEmpty
-                                ? IconButton(
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () {
-                                      _searchController.clear();
-                                    },
-                                  )
-                                : null,
-                          ),
-                        ),
-                        const SizedBox(height: AppDimens.marginLarge),
-                        Expanded(
-                          child: friends.isEmpty
-                              ? BicountReveal(
-                                  delay: const Duration(milliseconds: 140),
-                                  child: DetailsCard(
-                                    child: Text(
-                                      _searchQuery.isEmpty
-                                          ? context.l10n.friendsDirectoryEmpty
-                                          : context.l10n.friendsSearchEmpty,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall,
-                                    ),
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimens.paddingMedium,
+                      ),
+                      sliver: friends.isEmpty
+                          ? SliverToBoxAdapter(
+                              child: BicountReveal(
+                                delay: const Duration(milliseconds: 140),
+                                child: DetailsCard(
+                                  child: Text(
+                                    _searchQuery.isEmpty
+                                        ? context.l10n.friendsDirectoryEmpty
+                                        : context.l10n.friendsSearchEmpty,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
                                   ),
-                                )
-                              : ListView.separated(
-                                  itemCount: friends.length,
-                                  separatorBuilder: (_, __) =>
-                                      const SizedBox(height: 8),
-                                  itemBuilder: (context, index) {
-                                    final friend = friends[index];
-                                    return BicountReveal(
-                                      delay: Duration(
-                                        milliseconds: 140 + (index * 35),
-                                      ),
-                                      child: FriendCard(
-                                        friend: friend,
-                                        onTap: () =>
-                                            openFriendDetail(context, friend),
-                                      ),
-                                    );
-                                  },
                                 ),
-                        ),
-                      ],
+                              ),
+                            )
+                          : SliverList.separated(
+                              itemCount: friends.length,
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(height: 8),
+                              itemBuilder: (context, index) {
+                                final friend = friends[index];
+                                return BicountReveal(
+                                  delay: Duration(
+                                    milliseconds: 140 + (index * 35),
+                                  ),
+                                  child: FriendCard(
+                                    friend: friend,
+                                    onTap: () =>
+                                        openFriendDetail(context, friend),
+                                  ),
+                                );
+                              },
+                            ),
                     ),
-                  ),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: AppDimens.marginLarge),
+                    ),
+                  ],
                 ),
         );
       },

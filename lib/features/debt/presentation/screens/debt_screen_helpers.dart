@@ -1,6 +1,7 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/utils/confirm_delete.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/features/debt/domain/entities/debt_summary_entity.dart';
 import 'package:bicount/features/debt/domain/entities/record_debt_payment_request_entity.dart';
@@ -168,33 +169,17 @@ Future<void> _confirmDebtDelete({
   required DebtBloc debtBloc,
   required String debtId,
 }) async {
-  final confirmed = await showDialog<bool>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      backgroundColor: Theme.of(dialogContext).dialogTheme.backgroundColor,
-      surfaceTintColor: Colors.transparent,
-      shape: Theme.of(dialogContext).dialogTheme.shape,
-      title: Text(context.l10n.debtDeleteConfirmTitle),
-      content: Text(context.l10n.debtDeleteConfirmDescription),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(false),
-          child: Text(context.l10n.commonCancel),
-        ),
-        ElevatedButton(
-          onPressed: () => Navigator.of(dialogContext).pop(true),
-          child: Text(context.l10n.debtDeleteConfirmCta),
-        ),
-      ],
-    ),
+  confirmDelete(
+    context,
+    title: context.l10n.debtDeleteConfirmTitle,
+    description: context.l10n.debtDeleteConfirmDescription,
+    onConfirm: () async {
+      if (sheetContext.mounted) {
+        await Navigator.of(sheetContext).maybePop();
+      }
+      if (!debtBloc.isClosed) {
+        debtBloc.add(DeleteDebtRequested(debtId));
+      }
+    },
   );
-
-  if (confirmed == true) {
-    if (sheetContext.mounted) {
-      await Navigator.of(sheetContext).maybePop();
-    }
-    if (!debtBloc.isClosed) {
-      debtBloc.add(DeleteDebtRequested(debtId));
-    }
-  }
 }

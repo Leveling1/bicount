@@ -192,6 +192,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authUnifiedTitle => 'Manage your money with Bicount';
 
   @override
+  String get authUnifiedTitle1 => 'Manage your money without the hassle';
+
+  @override
+  String get authUnifiedTitle2 => 'Manage your money day by day';
+
+  @override
+  String get authUnifiedTitle3 => 'Manage your money with peace of mind';
+
+  @override
   String get authUnifiedSubtitle => 'Start with one secure sign-in for personal and shared money.';
 
   @override

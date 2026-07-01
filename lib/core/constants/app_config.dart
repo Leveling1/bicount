@@ -28,6 +28,8 @@ class AppConfig {
     return '$appScheme://friend/invite?$inviteCodeQueryParam=$inviteCode';
   }
 
+  static String get authSchemeUrl => '$appScheme://auth';
+
   static String get authUrl => '$inviteBaseUrl$authPath';
 
   static String get consumerTermsUrl => '$inviteBaseUrl$consumerTermsPath';

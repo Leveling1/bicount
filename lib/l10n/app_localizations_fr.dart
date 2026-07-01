@@ -192,6 +192,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authUnifiedTitle => 'Gérez votre argent avec Bicount';
 
   @override
+  String get authUnifiedTitle1 => 'Gérez votre argent sans prise de tête';
+
+  @override
+  String get authUnifiedTitle2 => 'Gérez votre argent jour après jour';
+
+  @override
+  String get authUnifiedTitle3 => 'Gérez votre argent l\'esprit tranquille';
+
+  @override
   String get authUnifiedSubtitle => 'Un seul accès simple et sécurisé pour votre argent perso et partagé.';
 
   @override

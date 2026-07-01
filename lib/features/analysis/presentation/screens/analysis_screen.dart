@@ -1,6 +1,7 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
+import 'package:bicount/core/utils/pinned_header_delegate.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/analysis/presentation/bloc/analysis_bloc.dart';
 import 'package:bicount/features/analysis/presentation/widgets/analysis_expense_breakdown_card.dart';
@@ -100,7 +101,7 @@ class _AnalysisScreenContent extends StatelessWidget {
         // ── Period selector — PINNED ──
         SliverPersistentHeader(
           pinned: true,
-          delegate: _PinnedHeaderDelegate(
+          delegate: PinnedHeaderDelegate(
             child: BicountReveal(
               delay: const Duration(milliseconds: 90),
               child: BlocBuilder<AnalysisBloc, AnalysisState>(
@@ -217,36 +218,4 @@ class _AnalysisScreenContent extends StatelessWidget {
   }
 }
 
-class _PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
 
-  const _PinnedHeaderDelegate({required this.child});
-
-  static const _height = 56.0; // ajuste selon ton widget
-
-  @override
-  double get minExtent => _height;
-
-  @override
-  double get maxExtent => _height;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      height: _height,
-      padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-      ),
-      child: child,
-    );
-  }
-
-  @override
-  bool shouldRebuild(covariant _PinnedHeaderDelegate oldDelegate) =>
-      oldDelegate.child != child;
-}

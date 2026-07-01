@@ -461,6 +461,24 @@ abstract class AppLocalizations {
   /// **'Manage your money with Bicount'**
   String get authUnifiedTitle;
 
+    /// No description provided for @authUnifiedTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your money with Bicount'**
+  String get authUnifiedTitle1;
+
+    /// No description provided for @authUnifiedTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your money with Bicount'**
+  String get authUnifiedTitle2;
+
+    /// No description provided for @authUnifiedTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your money with Bicount'**
+  String get authUnifiedTitle3;
+
   /// No description provided for @authUnifiedSubtitle.
   ///
   /// In en, this message translates to:

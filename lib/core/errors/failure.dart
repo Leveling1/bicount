@@ -112,6 +112,16 @@ class AuthenticationFailure extends Failure {
   List<Object?> get props => [message];
 }
 
+class AuthCancelledFailure extends Failure {
+  @override
+  final String message;
+
+  const AuthCancelledFailure({this.message = 'authentication cancelled'});
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class ValidationFailure implements Exception {
   final String message;
   ValidationFailure(this.message);

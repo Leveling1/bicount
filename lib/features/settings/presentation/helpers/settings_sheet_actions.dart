@@ -3,6 +3,7 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/utils/confirm_delete.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/features/currency/domain/entities/app_currency_entity.dart';
 import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
@@ -82,28 +83,10 @@ void showCurrencySettingsSheet(BuildContext context, CurrencyState state) {
 }
 
 Future<void> confirmDeleteAccountRequest(BuildContext context) async {
-  final confirmed = await showDialog<bool>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      backgroundColor: Theme.of(dialogContext).dialogTheme.backgroundColor,
-      surfaceTintColor: Colors.transparent,
-      shape: Theme.of(dialogContext).dialogTheme.shape,
-      title: Text(context.l10n.settingsDeleteConfirmTitle),
-      content: Text(context.l10n.settingsDeleteConfirmDescription),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(false),
-          child: Text(context.l10n.commonReject),
-        ),
-        ElevatedButton(
-          onPressed: () => Navigator.of(dialogContext).pop(true),
-          child: Text(context.l10n.settingsDeleteConfirmCta),
-        ),
-      ],
-    ),
+  confirmDelete(
+    context,
+    title: context.l10n.settingsDeleteConfirmTitle,
+    description: context.l10n.settingsDeleteConfirmDescription,
+    onConfirm: () => showSettingsSheet(context, const SettingsDeleteAccountSheet()),
   );
-
-  if (confirmed == true && context.mounted) {
-    showSettingsSheet(context, const SettingsDeleteAccountSheet());
-  }
 }

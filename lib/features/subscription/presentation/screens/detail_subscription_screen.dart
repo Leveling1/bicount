@@ -1,6 +1,7 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/utils/confirm_delete.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/subscription/presentation/bloc/subscription_bloc.dart';
@@ -88,31 +89,13 @@ class _DetailSubscriptionState extends State<DetailSubscription> {
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: Theme.of(dialogContext).dialogTheme.backgroundColor,
-        surfaceTintColor: Colors.transparent,
-        shape: Theme.of(dialogContext).dialogTheme.shape,
-        title: Text(context.l10n.subscriptionDeleteConfirmTitle),
-        content: Text(context.l10n.subscriptionDeleteConfirmDescription),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(context.l10n.commonReject),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(context.l10n.subscriptionDeleteConfirmCta),
-          ),
-        ],
+    confirmDelete(
+      context,
+      title: context.l10n.subscriptionDeleteConfirmTitle,
+      description: context.l10n.subscriptionDeleteConfirmDescription,
+      onConfirm: () => context.read<SubscriptionBloc>().add(
+        DeleteSubscriptionRequested(widget.subscription),
       ),
     );
-
-    if (confirmed == true && context.mounted) {
-      context.read<SubscriptionBloc>().add(
-        DeleteSubscriptionRequested(widget.subscription),
-      );
-    }
   }
 }

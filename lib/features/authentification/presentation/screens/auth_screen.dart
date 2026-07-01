@@ -5,6 +5,7 @@ import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/authentification/presentation/bloc/authentification_bloc.dart';
+import 'package:bicount/features/authentification/presentation/widgets/auth_anime_text.dart';
 import 'package:bicount/features/authentification/presentation/widgets/auth_brand_mark.dart';
 import 'package:bicount/features/authentification/presentation/widgets/auth_email_request_form.dart';
 import 'package:bicount/features/authentification/presentation/widgets/auth_legal_links.dart';
@@ -51,6 +52,10 @@ class AuthScreen extends StatelessWidget {
               return;
             }
 
+            if (state is AuthWithGoogleCancelled) {
+              return;
+            }
+
             final error = switch (state) {
               RequestEmailOtpFailure() => state.error,
               AuthWithGoogleFailure() => state.error,
@@ -81,20 +86,18 @@ class AuthScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             const BicountReveal(child: AuthBrandMark()),
-                            AppDimens.spacerExtraLarge,
+                            // AppDimens.spacerExtraLarge,
                             BicountReveal(
                               delay: const Duration(milliseconds: 60),
                               child: Column(
                                 children: [
-                                  Text(
-                                    context.l10n.authUnifiedTitle,
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyLarge,
-                                  ),
-                                  const SizedBox(
-                                    height: AppDimens.spacingSmall,
+                                  AuthAnimeText(
+                                    texts: [
+                                      context.l10n.authUnifiedTitle,
+                                      context.l10n.authUnifiedTitle1,
+                                      context.l10n.authUnifiedTitle2,
+                                      context.l10n.authUnifiedTitle3,
+                                    ],
                                   ),
                                   Text(
                                     context.l10n.authUnifiedSubtitle,
@@ -113,7 +116,9 @@ class AuthScreen extends StatelessWidget {
                                 isLoading: state is AuthWithGoogleLoading,
                                 onPressed: () {
                                   context.read<AuthentificationBloc>().add(
-                                    AuthWithGoogleEvent(),
+                                    AuthWithGoogleEvent(
+                                      inviteCode: initialInviteCode,
+                                    ),
                                   );
                                 },
                               ),

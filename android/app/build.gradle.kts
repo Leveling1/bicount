@@ -53,6 +53,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Keep the debug build on the same signing identity as release so
+            // the Google OAuth fingerprint stays valid in both environments.
+            if (keystorePropertiesFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
         release {
             signingConfig = signingConfigs.getByName("release")
         }

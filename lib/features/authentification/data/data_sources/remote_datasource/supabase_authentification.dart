@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:bicount/core/constants/test_account.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../../core/constants/secrets.dart';
@@ -11,11 +11,13 @@ import 'authentification_remote_datasource.dart';
 
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:crypto/crypto.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SupabaseAuthentification implements AuthenticationRemoteDataSource {
   SupabaseAuthentification(this.supabaseClient);
 
   final SupabaseClient supabaseClient;
+  Future<void>? _googleSignInInitialization;
 
   @override
   Future<void> requestEmailOtp(String email) async {
@@ -87,50 +89,35 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
   }
 
   @override
-  Future<Either<Failure, AuthResponse>> authWithGoogle() async {
+  Future<Either<Failure, void>> authWithGoogle({String? inviteCode}) async {
+    if (!_supportsNativeGoogleSignIn) {
+      return _authWithGoogleWithOAuth(inviteCode: inviteCode);
+    }
+
     try {
-      final scopes = ['email', 'profile'];
-      final googleSignIn = GoogleSignIn.instance;
-
-      await googleSignIn.initialize(
-        serverClientId: Secrets.webIDClient,
-        clientId: Secrets.iosIDClient,
-      );
-
-      final googleUser = await googleSignIn.attemptLightweightAuthentication();
-      if (googleUser == null) {
-        throw 'Google sign-in failed.';
-      }
-
-      final authorization =
-          await googleUser.authorizationClient.authorizationForScopes(scopes) ??
-          await googleUser.authorizationClient.authorizeScopes(scopes);
-      final idToken = googleUser.authentication.idToken;
-      final accessToken = authorization.accessToken;
-      if (idToken == null) {
-        throw 'No Google ID token found.';
-      }
-
-      final authResponse = await supabaseClient.auth.signInWithIdToken(
-        provider: OAuthProvider.google,
-        idToken: idToken,
-        accessToken: accessToken,
-      );
-
-      if (authResponse.user == null) {
-        return Left(AuthenticationFailure(message: 'Google sign-in failed.'));
-      }
-
-      final supabaseUser = authResponse.user!;
-      if (supabaseUser.email == null || supabaseUser.email!.isEmpty) {
+      await _ensureGoogleSignInInitialized();
+      final googleAccount = await GoogleSignIn.instance.authenticate();
+      final googleAuthentication = googleAccount.authentication;
+      final idToken = googleAuthentication.idToken;
+      if (idToken == null || idToken.isEmpty) {
         return Left(
           AuthenticationFailure(
-            message: 'Google did not return the email needed for Bicount.',
+            message: 'Google sign-in did not return an ID token.',
           ),
         );
       }
 
-      return Right(authResponse);
+      await supabaseClient.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+      );
+      return const Right(null);
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        return Left(const AuthCancelledFailure());
+      }
+
+      return Left(AuthenticationFailure(message: _googleSignInErrorMessage(e)));
     } on AuthException catch (e) {
       return Left(AuthenticationFailure(message: e.message));
     } on TimeoutException {
@@ -141,12 +128,6 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
       );
     } catch (e) {
       final errorMessage = e.toString().toLowerCase();
-      if (errorMessage.contains('cancel') ||
-          errorMessage.contains('user_cancel')) {
-        return Left(
-          AuthenticationFailure(message: 'Google sign-in cancelled.'),
-        );
-      }
       if (errorMessage.contains('network')) {
         return Left(
           AuthenticationFailure(
@@ -157,6 +138,88 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
 
       return Left(AuthenticationFailure(message: e.toString()));
     }
+  }
+
+  Future<Either<Failure, void>> _authWithGoogleWithOAuth({
+    String? inviteCode,
+  }) async {
+    try {
+      await supabaseClient.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: Secrets.buildGoogleAuthRedirectUrl(inviteCode: inviteCode),
+        authScreenLaunchMode: kIsWeb
+            ? LaunchMode.platformDefault
+            : LaunchMode.externalApplication,
+      );
+      return const Right(null);
+    } on AuthException catch (e) {
+      return Left(AuthenticationFailure(message: e.message));
+    } on TimeoutException {
+      return Left(
+        AuthenticationFailure(
+          message: 'Google sign-in timed out. Please try again.',
+        ),
+      );
+    } catch (e) {
+      final errorMessage = e.toString().toLowerCase();
+      if (errorMessage.contains('network')) {
+        return Left(
+          AuthenticationFailure(
+            message: 'Network issue. Please check your connection.',
+          ),
+        );
+      }
+
+      return Left(AuthenticationFailure(message: e.toString()));
+    }
+  }
+
+  Future<void> _ensureGoogleSignInInitialized() {
+    return _googleSignInInitialization ??= _initializeGoogleSignIn();
+  }
+
+  Future<void> _initializeGoogleSignIn() async {
+    final clientId = switch (defaultTargetPlatform) {
+      TargetPlatform.iOS || TargetPlatform.macOS => Secrets.iosIDClient,
+      _ => null,
+    };
+
+    await GoogleSignIn.instance.initialize(
+      clientId: clientId,
+      serverClientId: Secrets.webIDClient,
+    );
+  }
+
+  bool get _supportsNativeGoogleSignIn {
+    if (kIsWeb) {
+      return false;
+    }
+
+    return switch (defaultTargetPlatform) {
+      TargetPlatform.android ||
+      TargetPlatform.iOS ||
+      TargetPlatform.macOS => true,
+      _ => false,
+    };
+  }
+
+  String _googleSignInErrorMessage(GoogleSignInException exception) {
+    return switch (exception.code) {
+      GoogleSignInExceptionCode.clientConfigurationError =>
+        'Google sign-in is not configured for this build. Check the Android SHA-1, the iOS client ID, and the Supabase Google provider settings.',
+      GoogleSignInExceptionCode.providerConfigurationError =>
+        'Google sign-in provider is not configured correctly. Check the Google provider settings in Supabase.',
+      GoogleSignInExceptionCode.uiUnavailable =>
+        'Google sign-in UI is unavailable on this device.',
+      GoogleSignInExceptionCode.interrupted =>
+        'Google sign-in was interrupted. Please try again.',
+      GoogleSignInExceptionCode.unknownError =>
+        exception.description ?? 'Google sign-in failed. Please try again.',
+      GoogleSignInExceptionCode.canceled => 'Google sign-in was cancelled.',
+      GoogleSignInExceptionCode.userMismatch =>
+        'Google sign-in detected a mismatched user session.',
+      _ => exception.description ?? 'Google sign-in failed. Please try again.',
+    };
   }
 
   @override
