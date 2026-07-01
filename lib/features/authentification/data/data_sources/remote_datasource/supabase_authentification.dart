@@ -11,7 +11,6 @@ import 'authentification_remote_datasource.dart';
 
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:crypto/crypto.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SupabaseAuthentification implements AuthenticationRemoteDataSource {
   SupabaseAuthentification(this.supabaseClient);
@@ -218,6 +217,7 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
       GoogleSignInExceptionCode.canceled => 'Google sign-in was cancelled.',
       GoogleSignInExceptionCode.userMismatch =>
         'Google sign-in detected a mismatched user session.',
+      // ignore: unreachable_switch_case
       _ => exception.description ?? 'Google sign-in failed. Please try again.',
     };
   }
