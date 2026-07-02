@@ -47,25 +47,27 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
   }
 
   @override
-  Future<Either<Failure, void>> authWithGoogle({String? inviteCode}) async {
+  Future<Either<Failure, AuthResponse>> authWithGoogle() async {
     try {
-      final remoteResult = await remoteDataSource.authWithGoogle(
-        inviteCode: inviteCode,
-      );
-      final remoteFailure = remoteResult.fold<Failure?>(
-        (failure) => failure,
-        (_) => null,
-      );
-      if (remoteFailure != null) {
-        return Left(remoteFailure);
+      final remoteResult = await remoteDataSource.authWithGoogle();
+
+      if (remoteResult.isLeft()) {
+        final failure = remoteResult.swap().getOrElse(() => throw Exception());
+        return Left(
+          AuthenticationFailure(message: 'Erreur : ${failure.message}'),
+        );
       }
 
-      final ensured = await _ensureLocalProfileOrRollback();
+      final authResponse = remoteResult.getOrElse(() => throw Exception());
+
+      final ensured = await _ensureLocalProfileOrRollback(
+        emailHint: authResponse.user?.email,
+      );
       if (ensured != null) {
         return Left(ensured);
       }
 
-      return const Right(null);
+      return Right(authResponse);
     } catch (e) {
       if (e is AuthApiException) {
         return Left(AuthenticationFailure(message: e.message));
@@ -118,15 +120,7 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
   Future<AuthenticationFailure?> _ensureLocalProfileOrRollback({
     String? emailHint,
   }) async {
-    final sessionReady = await _waitForAuthenticatedSession();
-    if (!sessionReady) {
-      await remoteDataSource.signOut();
-      return AuthenticationFailure(
-        message: 'An error occurred while preparing your account.',
-      );
-    }
-
-    final localProfile = await _ensureCurrentUserProfileWithRetry(
+    final localProfile = await localDataSource.ensureCurrentUserProfile(
       emailHint: emailHint,
     );
     if (localProfile.isRight()) {
@@ -137,68 +131,5 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
     return AuthenticationFailure(
       message: 'An error occurred while preparing your account.',
     );
-  }
-
-  Future<Either<Failure, void>> _ensureCurrentUserProfileWithRetry({
-    String? emailHint,
-  }) async {
-    final initialAttempt = await localDataSource.ensureCurrentUserProfile(
-      emailHint: emailHint,
-    );
-    if (initialAttempt.isRight()) {
-      return initialAttempt;
-    }
-
-    final failure = initialAttempt.fold<Failure?>(
-      (failure) => failure,
-      (_) => null,
-    );
-    if (failure is! AuthenticationFailure ||
-        failure.message != 'Authentication failure') {
-      return initialAttempt;
-    }
-
-    for (var attempt = 0; attempt < 12; attempt++) {
-      await Future<void>.delayed(const Duration(milliseconds: 250));
-      final retryAttempt = await localDataSource.ensureCurrentUserProfile(
-        emailHint: emailHint,
-      );
-      if (retryAttempt.isRight()) {
-        return retryAttempt;
-      }
-
-      final retryFailure = retryAttempt.fold<Failure?>(
-        (failure) => failure,
-        (_) => null,
-      );
-      if (retryFailure is! AuthenticationFailure ||
-          retryFailure.message != 'Authentication failure') {
-        return retryAttempt;
-      }
-    }
-
-    return initialAttempt;
-  }
-
-  Future<bool> _waitForAuthenticatedSession({
-    Duration timeout = const Duration(seconds: 60),
-  }) async {
-    final client = Supabase.instance.client;
-    if (client.auth.currentSession != null && client.auth.currentUser != null) {
-      return true;
-    }
-
-    try {
-      final session = await client.auth.onAuthStateChange
-          .map((authState) => authState.session)
-          .firstWhere((session) => session != null)
-          .timeout(timeout, onTimeout: () => null);
-      return session != null ||
-          (client.auth.currentSession != null &&
-              client.auth.currentUser != null);
-    } catch (_) {
-      return client.auth.currentSession != null &&
-          client.auth.currentUser != null;
-    }
   }
 }

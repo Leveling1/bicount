@@ -15,11 +15,7 @@ class VerifyEmailOtpEvent extends AuthentificationEvent {
   final String code;
 }
 
-class AuthWithGoogleEvent extends AuthentificationEvent {
-  AuthWithGoogleEvent({this.inviteCode});
-
-  final String? inviteCode;
-}
+class AuthWithGoogleEvent extends AuthentificationEvent {}
 
 class AuthWithAppleEvent extends AuthentificationEvent {}
 

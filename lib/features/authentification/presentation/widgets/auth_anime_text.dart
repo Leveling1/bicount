@@ -12,18 +12,13 @@ class AuthAnimeText extends StatefulWidget {
 class _AuthAnimeTextState extends State<AuthAnimeText> {
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final double screenWidth = MediaQuery.of(context).size.width;
     final double dynamicFontSize = (screenWidth * 0.05).clamp(18.0, 28.0);
 
     final TextStyle defaultStyle = TextStyle(
       fontSize: dynamicFontSize,
       fontWeight: FontWeight.w600,
-      color: Theme
-          .of(context)
-          .primaryColor,
+      color: Theme.of(context).primaryColor,
     );
 
     return Row(

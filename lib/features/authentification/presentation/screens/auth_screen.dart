@@ -52,10 +52,6 @@ class AuthScreen extends StatelessWidget {
               return;
             }
 
-            if (state is AuthWithGoogleCancelled) {
-              return;
-            }
-
             final error = switch (state) {
               RequestEmailOtpFailure() => state.error,
               AuthWithGoogleFailure() => state.error,
@@ -111,9 +107,7 @@ class AuthScreen extends StatelessWidget {
                                 isLoading: state is AuthWithGoogleLoading,
                                 onPressed: () {
                                   context.read<AuthentificationBloc>().add(
-                                    AuthWithGoogleEvent(
-                                      inviteCode: initialInviteCode,
-                                    ),
+                                    AuthWithGoogleEvent(),
                                   );
                                 },
                               ),

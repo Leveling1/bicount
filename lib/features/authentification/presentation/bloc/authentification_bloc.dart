@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '/core/errors/failure.dart';
 
 part 'authentification_event.dart';
+
 part 'authentification_state.dart';
 
 class AuthentificationBloc
@@ -53,16 +54,11 @@ class AuthentificationBloc
     Emitter<AuthentificationState> emit,
   ) async {
     emit(AuthWithGoogleLoading());
-    final result = await authentificationRepository.authWithGoogle(
-      inviteCode: event.inviteCode,
+    final result = await authentificationRepository.authWithGoogle();
+    result.fold(
+      (failure) => emit(AuthWithGoogleFailure(error: failure.message)),
+      (_) => emit(AuthWithGoogleSuccess()),
     );
-    result.fold((failure) {
-      if (failure is AuthCancelledFailure) {
-        emit(AuthWithGoogleCancelled());
-        return;
-      }
-      emit(AuthWithGoogleFailure(error: failure.message));
-    }, (_) => emit(AuthWithGoogleSuccess()));
   }
 
   Future<void> _authWithApple(

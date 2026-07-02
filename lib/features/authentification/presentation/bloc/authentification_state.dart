@@ -38,8 +38,6 @@ class AuthWithGoogleFailure extends AuthentificationState {
   final String error;
 }
 
-class AuthWithGoogleCancelled extends AuthentificationState {}
-
 class AuthWithAppleLoading extends AuthentificationState {}
 
 class AuthWithAppleSuccess extends AuthentificationState {}
