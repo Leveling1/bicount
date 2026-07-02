@@ -61,8 +61,6 @@ dependencies:
   sign_in_with_apple: ^8.0.0
   crypto: ^3.0.7
   easy_tooltip: ^0.1.0
-  syncfusion_flutter_charts: ^33.2.13+1
-  animated_text_kit: ^4.3.0
 
 dev_dependencies:
   flutter_test:

@@ -90,15 +90,10 @@ class AuthScreen extends StatelessWidget {
                             BicountReveal(
                               delay: const Duration(milliseconds: 60),
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  AuthAnimeText(
-                                    texts: [
-                                      context.l10n.authUnifiedTitle,
-                                      context.l10n.authUnifiedTitle1,
-                                      context.l10n.authUnifiedTitle2,
-                                      context.l10n.authUnifiedTitle3,
-                                    ],
-                                  ),
+                                  AuthAnimeText(),
                                   Text(
                                     context.l10n.authUnifiedSubtitle,
                                     textAlign: TextAlign.center,
