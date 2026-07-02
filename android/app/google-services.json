@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "631534863385-rhn56d8scb8152ma9mquc77l1i5p1iht.apps.googleusercontent.com",
+          "client_id": "631534863385-lcdgu9e0inf7pdmvavdp5tpq1l7tqdes.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.youngsolver.bicount",
-            "certificate_hash": "61b13b80a17318b0739bd9cea996593ff46d4479"
+            "certificate_hash": "0a8bb8a2b4aa49e9c0bcc588a9da0111755c5f62"
           }
         },
         {
