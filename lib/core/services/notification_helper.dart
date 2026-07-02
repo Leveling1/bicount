@@ -9,7 +9,9 @@ class NotificationHelper {
     toastification.show(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       foregroundColor: Theme.of(context).textTheme.bodyLarge!.color,
-      borderSide: BorderSide(color: Theme.of(context).cardColor),
+      borderSide: BorderSide(
+        color: Theme.of(context).cardColor.withValues(alpha: 0.7),
+      ),
       borderRadius: BorderRadius.all(
         Radius.circular(AppDimens.borderRadiusLarge),
       ),
@@ -33,7 +35,9 @@ class NotificationHelper {
     toastification.show(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       foregroundColor: Theme.of(context).textTheme.bodyLarge!.color,
-      borderSide: BorderSide(color: Theme.of(context).cardColor),
+      borderSide: BorderSide(
+        color: Theme.of(context).cardColor.withValues(alpha: 0.7),
+      ),
       borderRadius: BorderRadius.all(
         Radius.circular(AppDimens.borderRadiusLarge),
       ),
