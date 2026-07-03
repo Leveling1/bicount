@@ -7,7 +7,7 @@ import '../themes/app_dimens.dart';
 class NotificationHelper {
   static void showSuccessNotification(BuildContext context, String message) {
     toastification.show(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).cardColor,
       foregroundColor: Theme.of(context).textTheme.bodyLarge!.color,
       borderSide: BorderSide(
         color: Theme.of(context).cardColor.withValues(alpha: 0.7),
@@ -33,7 +33,7 @@ class NotificationHelper {
 
   static void showFailureNotification(BuildContext context, String message) {
     toastification.show(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).cardColor,
       foregroundColor: Theme.of(context).textTheme.bodyLarge!.color,
       borderSide: BorderSide(
         color: Theme.of(context).cardColor.withValues(alpha: 0.7),

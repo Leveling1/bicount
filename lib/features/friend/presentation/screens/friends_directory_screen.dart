@@ -83,7 +83,6 @@ class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
                   onPressed: () => _openInviteHub(context),
                   icon: Icons.qr_code_2_outlined,
                 ),
-              const SizedBox(width: AppDimens.paddingMedium),
             ],
           ),
           body: data == null
