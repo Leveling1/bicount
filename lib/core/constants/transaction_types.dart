@@ -41,6 +41,7 @@ class TransactionTypes {
   static const int generationOneTime = 0;
   static const int generationManualConfirmation = 1;
   static const int generationBackendAutomatic = 2;
+  static const int generationConverted = 3;
 
   static String frequencyToString(int frequency) {
     switch (frequency) {

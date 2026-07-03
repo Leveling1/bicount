@@ -1,6 +1,9 @@
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/state_app.dart';
+import 'package:bicount/core/constants/subscription_const.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
+import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/repositories/transaction_repository_impl.dart';
@@ -151,6 +154,86 @@ void main() {
       expect(
         localDataSource.savedTransactions.single.beneficiaryId,
         existingFriend.sid,
+      );
+    },
+  );
+
+  test(
+    'editing a revenue into a debt creates the debt contract and links the transaction',
+    () async {
+      final localDataSource = FakeTransactionLocalDataSource();
+      DebtModel? savedDebt;
+      final repository = TransactionRepositoryImpl(
+        localDataSource,
+        saveDebt: (debt) async {
+          savedDebt = debt;
+        },
+      );
+      final previousTransaction = convertibleIncomeTransaction();
+
+      await repository.updateTransaction(
+        previousTransaction,
+        incomeDebtUpdateRequest(),
+      );
+
+      expect(savedDebt, isNotNull);
+      expect(savedDebt?.principalTransactionId, previousTransaction.tid);
+      expect(savedDebt?.lenderId, 'created-1');
+      expect(savedDebt?.borrowerId, currentUser().sid);
+      expect(localDataSource.updatedTransaction, isNotNull);
+      expect(localDataSource.updatedTransaction?.type, TransactionTypes.debtCode);
+      expect(localDataSource.updatedTransaction?.originId, savedDebt?.debtId);
+      expect(localDataSource.updatedTransaction?.frequency, Frequency.oneTime);
+      expect(
+        localDataSource.updatedTransaction?.generationMode,
+        TransactionTypes.generationConverted,
+      );
+    },
+  );
+
+  test(
+    'editing an expense into a subscription creates the recurring plan and links the transaction',
+    () async {
+      final localDataSource = FakeTransactionLocalDataSource();
+      RecurringTransfertModel? savedRecurringTransfert;
+      final repository = TransactionRepositoryImpl(
+        localDataSource,
+        saveRecurringTransfert: (recurringTransfert) async {
+          savedRecurringTransfert = recurringTransfert;
+        },
+      );
+      final previousTransaction = convertibleExpenseTransaction();
+      final request = recurringExpenseRequest(
+        draftParty(username: 'Netflix', relationType: FriendConst.friend),
+      );
+
+      await repository.updateTransaction(previousTransaction, request);
+
+      expect(savedRecurringTransfert, isNotNull);
+      expect(
+        savedRecurringTransfert?.recurringTransfertTypeId,
+        TransactionTypes.subscriptionCode,
+      );
+      expect(localDataSource.updatedTransaction, isNotNull);
+      expect(
+        localDataSource.updatedTransaction?.type,
+        TransactionTypes.subscriptionCode,
+      );
+      expect(
+        localDataSource.updatedTransaction?.originId,
+        savedRecurringTransfert?.recurringTransfertId,
+      );
+      expect(
+        localDataSource.updatedTransaction?.originOccurrenceDate,
+        previousTransaction.date.toIso8601String(),
+      );
+      expect(
+        localDataSource.updatedTransaction?.frequency,
+        request.recurringFrequency,
+      );
+      expect(
+        localDataSource.updatedTransaction?.generationMode,
+        TransactionTypes.generationConverted,
       );
     },
   );

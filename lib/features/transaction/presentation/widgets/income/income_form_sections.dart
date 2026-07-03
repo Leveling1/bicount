@@ -63,7 +63,7 @@ extension _IncomeFormSections on _IncomeFormState {
             child: TransferFormDebtSection(
               isDebt: _isDebt,
               subtitle: context.l10n.transactionDebtToggleSubtitleIncome,
-              enabled: !_isEditing,
+              enabled: canEditAllFields,
               dueDateController: _debtDueDate,
               expectedAmountController: _debtExpectedRepaymentAmount,
               onDebtChanged: (value) => _update(() {
@@ -93,7 +93,7 @@ extension _IncomeFormSections on _IncomeFormState {
                   : null,
               typeOptions: TransactionTypes.incomeTypes,
               subtitle: context.l10n.recurringToggleSubtitleIncome,
-              enabled: !_isEditing,
+              enabled: canEditAllFields,
               onRecurringChanged: (value) => _update(() {
                 _isRecurring = value;
                 if (value) {

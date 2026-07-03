@@ -42,5 +42,9 @@ abstract class TransactionLocalDataSource {
     required String senderId,
     required String beneficiaryId,
     required String image,
+    int? frequency,
+    String? originId,
+    String? originOccurrenceDate,
+    int? generationMode,
   });
 }

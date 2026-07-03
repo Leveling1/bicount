@@ -89,24 +89,24 @@ extension _ExpenseFormSections on _ExpenseFormState {
             child: TransferFormDebtSection(
               isDebt: _isDebt,
               subtitle: context.l10n.transactionDebtToggleSubtitleExpense,
-              enabled: !_isEditing,
+              enabled: canEditAllFields,
               dueDateController: _debtDueDate,
               expectedAmountController: _debtExpectedRepaymentAmount,
               onDebtChanged: (value) {
-                if (value && _beneficiaryList.length > 1) {
-                  NotificationHelper.showFailureNotification(
-                    context,
-                    context.l10n.transactionDebtSingleBeneficiaryOnly,
-                  );
-                  return;
+              if (value && _beneficiaryList.length > 1) {
+                NotificationHelper.showFailureNotification(
+                  context,
+                  context.l10n.transactionDebtSingleBeneficiaryOnly,
+                );
+                return;
+              }
+
+              _update(() {
+                _isDebt = value;
+                if (value) {
+                  _isRecurring = false;
                 }
-            
-                _update(() {
-                  _isDebt = value;
-                  if (value) {
-                    _isRecurring = false;
-                  }
-                });
+              });
               },
             ),
           ),
@@ -121,7 +121,7 @@ extension _ExpenseFormSections on _ExpenseFormState {
               recurringTypeId: _recurringTypeId,
               typeOptions: TransactionTypes.expenseTypes,
               subtitle: context.l10n.recurringToggleSubtitleExpense,
-              enabled: !_isEditing,
+              enabled: canEditAllFields,
               onRecurringChanged: (value) => _update(() {
                 _isRecurring = value;
                 if (value) {

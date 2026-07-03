@@ -190,6 +190,10 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     required String senderId,
     required String beneficiaryId,
     required String image,
+    int? frequency,
+    String? originId,
+    String? originOccurrenceDate,
+    int? generationMode,
   }) async {
     final currentUid = _currentUid;
     final ownerUid = previousTransaction.uid ?? currentUid;
@@ -228,12 +232,17 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         fxRateDate: quote.fxRateDate,
         fxSnapshotId: quote.fxSnapshotId,
         image: image,
-        frequency: previousTransaction.frequency,
+        frequency: frequency ?? currentRecord?.frequency ?? previousTransaction.frequency,
         category: category,
-        originId: previousTransaction.originId,
-        originOccurrenceDate: previousTransaction.originOccurrenceDate,
+        originId: originId ?? currentRecord?.originId ?? previousTransaction.originId,
+        originOccurrenceDate:
+            originOccurrenceDate ??
+            currentRecord?.originOccurrenceDate ??
+            previousTransaction.originOccurrenceDate,
+        generationMode:
+            generationMode ?? currentRecord?.generationMode ?? 0,
         createdAt:
-            currentRecord?.createdAt ??
+            currentRecord?.createdAt ?? 
             previousTransaction.createdAt?.toIso8601String() ??
             DateTime.now().toIso8601String(),
       );

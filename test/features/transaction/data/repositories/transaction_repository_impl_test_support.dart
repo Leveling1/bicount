@@ -20,6 +20,7 @@ class FakeTransactionLocalDataSource implements TransactionLocalDataSource {
   int findMatchingFriendCallCount = 0;
   final List<FriendsModel> createdFriends = [];
   final List<SavedTransactionRecord> savedTransactions = [];
+  UpdatedTransactionRecord? updatedTransaction;
 
   @override
   Future<Either<Failure, FriendsModel>> createANewFriend(
@@ -96,7 +97,28 @@ class FakeTransactionLocalDataSource implements TransactionLocalDataSource {
     required String beneficiaryId,
     required String image,
     required int type,
+    int? frequency,
+    String? originId,
+    String? originOccurrenceDate,
+    int? generationMode,
   }) async {
+    updatedTransaction = UpdatedTransactionRecord(
+      previousTransaction: previousTransaction,
+      title: title,
+      date: date,
+      amount: amount,
+      category: category,
+      currency: currency,
+      note: note,
+      senderId: senderId,
+      beneficiaryId: beneficiaryId,
+      image: image,
+      type: type,
+      frequency: frequency,
+      originId: originId,
+      originOccurrenceDate: originOccurrenceDate,
+      generationMode: generationMode,
+    );
     return const Right(null);
   }
 }
@@ -116,6 +138,42 @@ class SavedTransactionRecord {
   final String senderId;
   final String beneficiaryId;
   final int type;
+  final String? originId;
+  final String? originOccurrenceDate;
+  final int? generationMode;
+}
+
+class UpdatedTransactionRecord {
+  const UpdatedTransactionRecord({
+    required this.previousTransaction,
+    required this.title,
+    required this.date,
+    required this.amount,
+    required this.category,
+    required this.currency,
+    required this.note,
+    required this.senderId,
+    required this.beneficiaryId,
+    required this.image,
+    required this.type,
+    required this.frequency,
+    required this.originId,
+    required this.originOccurrenceDate,
+    required this.generationMode,
+  });
+
+  final TransactionEntity previousTransaction;
+  final String title;
+  final String date;
+  final double amount;
+  final int category;
+  final String currency;
+  final String note;
+  final String senderId;
+  final String beneficiaryId;
+  final String image;
+  final int type;
+  final int? frequency;
   final String? originId;
   final String? originOccurrenceDate;
   final int? generationMode;
@@ -264,6 +322,27 @@ CreateTransactionRequestEntity debtUpdateRequest() {
   );
 }
 
+CreateTransactionRequestEntity incomeDebtUpdateRequest() {
+  return CreateTransactionRequestEntity(
+    name: 'Updated income debt',
+    date: DateTime(2026, 4, 11).toIso8601String(),
+    totalAmount: 80,
+    currency: 'USD',
+    sender: draftParty(username: 'Employer', relationType: FriendConst.friend),
+    note: 'Updated income note',
+    transactionType: TransactionTypes.incomeCode,
+    splitMode: TransactionSplitMode.equal,
+    splits: [
+      TransactionSplitInputEntity(
+        beneficiary: currentUser(),
+      ),
+    ],
+    isDebt: true,
+    debtDueDate: DateTime(2026, 5, 1).toIso8601String(),
+    debtExpectedRepaymentAmount: 95,
+  );
+}
+
 TransactionEntity debtPrincipalTransaction() {
   return TransactionEntity(
     uid: 'user-1',
@@ -295,6 +374,38 @@ TransactionEntity debtRepaymentTransaction() {
     sender: 'friend-1',
     beneficiary: 'user-1',
     note: '',
+  );
+}
+
+TransactionEntity convertibleExpenseTransaction() {
+  return TransactionEntity(
+    uid: 'user-1',
+    tid: 'expense-1',
+    gtid: 'group-expense-1',
+    name: 'Lunch',
+    type: TransactionTypes.expenseCode,
+    date: DateTime(2026, 4, 9),
+    amount: 45,
+    currency: 'USD',
+    sender: 'user-1',
+    beneficiary: 'friend-1',
+    note: 'Team lunch',
+  );
+}
+
+TransactionEntity convertibleIncomeTransaction() {
+  return TransactionEntity(
+    uid: 'user-1',
+    tid: 'income-1',
+    gtid: 'group-income-1',
+    name: 'Consulting',
+    type: TransactionTypes.incomeCode,
+    date: DateTime(2026, 4, 9),
+    amount: 1500,
+    currency: 'USD',
+    sender: 'friend-1',
+    beneficiary: 'user-1',
+    note: 'Monthly consulting',
   );
 }
 

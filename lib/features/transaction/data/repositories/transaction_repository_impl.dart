@@ -1,6 +1,7 @@
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/state_app.dart';
+import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/features/debt/data/data_sources/local_datasource/local_debt_data_source_impl.dart';
@@ -254,6 +255,14 @@ class TransactionRepositoryImpl extends TransactionRepository {
     TransactionEntity previousTransaction,
     CreateTransactionRequestEntity transaction,
   ) async {
+    String? createdDebtId;
+    RecurringTransfertModel? createdRecurringTransfert;
+    final currentUid = _authenticatedUserIdOrNull();
+    final ownerUid = previousTransaction.uid ?? currentUid;
+    if (ownerUid == null) {
+      throw AuthenticationFailure(message: 'Authentication failure');
+    }
+
     try {
       final principalDebt = await _findPrincipalDebt(previousTransaction);
       if (principalDebt != null && _debtRepository != null) {
@@ -289,6 +298,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
         );
       }
 
+      final currentRecord = await _findStoredTransaction(previousTransaction.tid);
       final resolvedSplits = splitResolver.resolve(transaction);
       final partyTransactionType = _resolvePartyTransactionType(transaction);
       if (resolvedSplits.length != 1) {
@@ -309,6 +319,54 @@ class TransactionRepositoryImpl extends TransactionRepository {
         transactionType: partyTransactionType,
         resolvedParties: resolvedParties,
       );
+
+      final storedOriginId = currentRecord?.originId ?? previousTransaction.originId;
+      final canConvertBaseTransaction =
+          storedOriginId == null || storedOriginId.isEmpty;
+      if (!canConvertBaseTransaction &&
+          (transaction.isDebt || transaction.isRecurring)) {
+        throw MessageFailure(
+          message: 'Derived transactions cannot be converted from here.',
+        );
+      }
+
+      String? originId = currentRecord?.originId ?? previousTransaction.originId;
+      String? originOccurrenceDate =
+          currentRecord?.originOccurrenceDate ??
+          previousTransaction.originOccurrenceDate;
+      int? frequency = currentRecord?.frequency ?? previousTransaction.frequency;
+      int? generationMode = currentRecord?.generationMode;
+
+      if (canConvertBaseTransaction && transaction.isDebt) {
+        createdDebtId = await _createDebtContractFromTransaction(
+          ownerUid: ownerUid,
+          principalTransactionId: previousTransaction.tid,
+          transaction: transaction,
+          amount: split.amount,
+          sender: sender,
+          beneficiary: beneficiary,
+        );
+        originId = createdDebtId;
+        originOccurrenceDate = null;
+        frequency = Frequency.oneTime;
+        generationMode = TransactionTypes.generationConverted;
+      } else if (canConvertBaseTransaction &&
+          transaction.isRecurring &&
+          transaction.recurringFrequency != null &&
+          transaction.recurringTypeId != null) {
+        createdRecurringTransfert = await _createRecurringTransfertFromTransaction(
+          ownerUid: ownerUid,
+          transaction: transaction,
+          amount: split.amount,
+          sender: sender,
+          beneficiary: beneficiary,
+        );
+        originId = createdRecurringTransfert.recurringTransfertId;
+        originOccurrenceDate = transaction.date;
+        frequency = transaction.recurringFrequency;
+        generationMode = TransactionTypes.generationConverted;
+      }
+
       final result = await localDataSource.updateTransaction(
         previousTransaction,
         title: transaction.name,
@@ -323,18 +381,143 @@ class TransactionRepositoryImpl extends TransactionRepository {
         image: beneficiary.image.isEmpty
             ? Constants.memojiDefault
             : beneficiary.image,
+        frequency: frequency,
+        originId: originId,
+        originOccurrenceDate: originOccurrenceDate,
+        generationMode: generationMode,
       );
 
       await result.fold(_throwFailure, (_) async => null);
     } on Failure {
+      await _cleanupConvertedArtifacts(
+        debtId: createdDebtId,
+        recurringTransfert: createdRecurringTransfert,
+      );
       rethrow;
     } catch (_) {
+      await _cleanupConvertedArtifacts(
+        debtId: createdDebtId,
+        recurringTransfert: createdRecurringTransfert,
+      );
       throw UnknownFailure();
     }
   }
 
   Future<T> _throwFailure<T>(Failure failure) async {
     throw failure;
+  }
+
+  Future<TransactionModel?> _findStoredTransaction(String tid) async {
+    if (tid.isEmpty) {
+      return null;
+    }
+
+    try {
+      final currentTransactions = await Repository().get<TransactionModel>(
+        policy: OfflineFirstGetPolicy.localOnly,
+        query: Query(where: [Where.exact('tid', tid)]),
+      );
+
+      return currentTransactions.isEmpty ? null : currentTransactions.first;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<String> _createDebtContractFromTransaction({
+    required String ownerUid,
+    required String principalTransactionId,
+    required CreateTransactionRequestEntity transaction,
+    required double amount,
+    required _ResolvedParty sender,
+    required _ResolvedParty beneficiary,
+  }) async {
+    final dueDate = transaction.debtDueDate;
+    if (dueDate == null || dueDate.isEmpty) {
+      throw MessageFailure(message: 'Debt due date is required.');
+    }
+
+    final now = DateTime.now().toIso8601String();
+    final debtId = const Uuid().v4();
+    final expectedRepaymentAmount =
+        transaction.debtExpectedRepaymentAmount ?? amount;
+
+    await _saveDebt(
+      DebtModel(
+        debtId: debtId,
+        createdBy: ownerUid,
+        lenderId: sender.sid,
+        borrowerId: beneficiary.sid,
+        principalTransactionId: principalTransactionId,
+        title: transaction.name,
+        note: transaction.note,
+        currency: transaction.currency,
+        principalAmount: amount,
+        expectedRepaymentAmount: expectedRepaymentAmount,
+        remainingAmount: expectedRepaymentAmount,
+        dueDate: dueDate,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+
+    return debtId;
+  }
+
+  Future<RecurringTransfertModel> _createRecurringTransfertFromTransaction({
+    required String ownerUid,
+    required CreateTransactionRequestEntity transaction,
+    required double amount,
+    required _ResolvedParty sender,
+    required _ResolvedParty beneficiary,
+  }) async {
+    final executionMode = _resolveRecurringExecutionMode(transaction);
+    final recurringTransfert = RecurringTransfertModel(
+      recurringTransfertId: const Uuid().v4(),
+      uid: ownerUid,
+      recurringTransfertTypeId: transaction.recurringTypeId!,
+      title: transaction.name,
+      note: transaction.note,
+      amount: amount,
+      currency: transaction.currency,
+      senderId: sender.sid,
+      beneficiaryId: beneficiary.sid,
+      frequency: transaction.recurringFrequency!,
+      startDate: transaction.date,
+      nextDueDate: transaction.date,
+      executionMode: executionMode,
+      reminderEnabled: _resolveRecurringReminderEnabled(
+        transaction,
+        executionMode,
+      ),
+      createdAt: DateTime.now().toIso8601String(),
+    );
+
+    await _saveRecurringTransfert(recurringTransfert);
+    return recurringTransfert;
+  }
+
+  Future<void> _cleanupConvertedArtifacts({
+    String? debtId,
+    RecurringTransfertModel? recurringTransfert,
+  }) async {
+    if (debtId != null) {
+      try {
+        await _deleteDebt(debtId);
+      } catch (_) {}
+    }
+
+    if (recurringTransfert != null) {
+      try {
+        await _deleteRecurringTransfert(recurringTransfert);
+      } catch (_) {}
+    }
+  }
+
+  Future<void> _deleteRecurringTransfert(
+    RecurringTransfertModel recurringTransfert,
+  ) async {
+    await Repository().delete<RecurringTransfertModel>(recurringTransfert);
   }
 
   String? _authenticatedUserIdOrNull() {
