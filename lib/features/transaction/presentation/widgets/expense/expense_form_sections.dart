@@ -93,6 +93,7 @@ extension _ExpenseFormSections on _ExpenseFormState {
               dueDateController: _debtDueDate,
               expectedAmountController: _debtExpectedRepaymentAmount,
               expectedCurrencyController: _debtExpectedRepaymentCurrency,
+              amount: _amount.text,
               onDebtChanged: (value) {
                 _debtExpectedRepaymentCurrency.text = _currency.text;
               if (value && _beneficiaryList.length > 1) {

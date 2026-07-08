@@ -14,6 +14,7 @@ class TransferFormDebtSection extends StatelessWidget {
     required this.expectedAmountController,
     required this.expectedCurrencyController,
     required this.onDebtChanged,
+    required this.amount
   });
 
   final bool isDebt;
@@ -23,6 +24,7 @@ class TransferFormDebtSection extends StatelessWidget {
   final TextEditingController expectedAmountController;
   final TextEditingController expectedCurrencyController;
   final ValueChanged<bool> onDebtChanged;
+  final String amount;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,7 @@ class TransferFormDebtSection extends StatelessWidget {
                         label: context.l10n.transactionDebtDueDateLabel,
                         hint: context.l10n.commonDateHint,
                         isDate: true,
+                        enableValidator: false,
                       ),
                       const SizedBox(height: AppDimens.spacingMedium),
                       SimpleAmountField(
@@ -64,8 +67,7 @@ class TransferFormDebtSection extends StatelessWidget {
                         label: context.l10n.transactionDebtExpectedAmountLabel,
                         amount: expectedAmountController,
                         currency: expectedCurrencyController,
-                        hintText:
-                            context.l10n.transactionDebtExpectedAmountHint,
+                        hintText: amount,
                       ),
                     ],
                   ),
