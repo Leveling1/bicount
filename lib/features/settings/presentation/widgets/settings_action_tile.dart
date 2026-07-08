@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SettingsActionTile extends StatelessWidget {
   const SettingsActionTile({
@@ -9,6 +10,7 @@ class SettingsActionTile extends StatelessWidget {
     this.value,
     this.onTap,
     this.danger = false,
+    this.isLoading = false,
   });
 
   final IconData icon;
@@ -17,6 +19,7 @@ class SettingsActionTile extends StatelessWidget {
   final String? value;
   final VoidCallback? onTap;
   final bool danger;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +62,13 @@ class SettingsActionTile extends StatelessWidget {
                     ),
                   ),
                 ),
-              Icon(Icons.chevron_right, color: trailingColor),
+              if (isLoading)
+                LoadingAnimationWidget.hexagonDots(
+                  color: Theme.of(context).primaryColor,
+                  size: 16,
+                )
+              else
+                Icon(Icons.chevron_right, color: trailingColor),
             ],
           ),
         ),

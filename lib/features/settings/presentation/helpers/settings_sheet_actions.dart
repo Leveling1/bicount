@@ -32,7 +32,9 @@ void showThemeSettingsSheet(BuildContext context, ThemeState state) {
       selectedValue: state.preference,
       options: AppThemePreference.values,
       labelBuilder: context.themePreferenceLabel,
-      onSelected: (value) => context.read<ThemeCubit>().selectPreference(value),
+      onSelected: (value) async {
+        await context.read<ThemeCubit>().selectPreference(value);
+      },
     ),
   );
 }
@@ -46,8 +48,9 @@ void showLanguageSettingsSheet(BuildContext context, LocaleState state) {
       selectedValue: state.preference,
       options: AppLocalePreference.values,
       labelBuilder: context.localePreferenceLabel,
-      onSelected: (value) =>
-          context.read<LocaleCubit>().selectPreference(value),
+      onSelected: (value) async {
+        await context.read<LocaleCubit>().selectPreference(value);
+      },
     ),
   );
 }
@@ -68,6 +71,12 @@ void showCurrencySettingsSheet(BuildContext context, CurrencyState state) {
           await context.read<CurrencyCubit>().selectReferenceCurrency(
             value.code,
           );
+          if (context.mounted) {
+            NotificationHelper.showSuccessNotification(
+              context,
+              context.l10n.settingsCurrencyUpdatedSuccess,
+            );
+          }
         } catch (error) {
           final message = error is Failure ? error.message : '$error';
           if (context.mounted) {

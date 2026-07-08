@@ -28,6 +28,13 @@ class NotificationHelper {
       alignment: Alignment.topCenter,
       direction: TextDirection.ltr,
       autoCloseDuration: const Duration(seconds: 5),
+      boxShadow: [
+        BoxShadow(
+          color: Theme.of(context).shadowColor.withValues(alpha: 0.2),
+          blurRadius: 8,
+          offset: const Offset(0, 4),
+        ),
+      ],
     );
   }
 
@@ -54,6 +61,13 @@ class NotificationHelper {
       alignment: Alignment.topCenter,
       direction: TextDirection.ltr,
       autoCloseDuration: const Duration(seconds: 5),
+      boxShadow: [
+        BoxShadow(
+          color: Theme.of(context).shadowColor.withValues(alpha: 0.2),
+          blurRadius: 8,
+          offset: const Offset(0, 4),
+        ),
+      ],
     );
   }
 }
