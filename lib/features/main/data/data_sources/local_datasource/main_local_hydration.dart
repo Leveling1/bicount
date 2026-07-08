@@ -40,12 +40,16 @@ Future<void> primeListSubject<T extends OfflineFirstWithSupabaseModel>(
 Future<List<T>> loadInitialItems<T extends OfflineFirstWithSupabaseModel>(
   Query? query,
 ) async {
+  final localItems = await Repository().get<T>(
+    policy: OfflineFirstGetPolicy.localOnly,
+    query: query,
+  );
+  if (localItems.isNotEmpty) {
+    return localItems;
+  }
   try {
     return await Repository().get<T>(query: query);
   } catch (_) {
-    return Repository().get<T>(
-      policy: OfflineFirstGetPolicy.localOnly,
-      query: query,
-    );
+    return localItems;
   }
 }

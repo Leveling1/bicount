@@ -1,17 +1,38 @@
+import 'dart:async';
+
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/features/debt/data/data_sources/local_datasource/debt_local_datasource.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:flutter/foundation.dart';
 
 class LocalDebtDataSourceImpl implements DebtLocalDataSource {
   @override
-  Future<void> createDebt(DebtModel debt) {
-    return Repository().upsert<DebtModel>(debt);
+  Future<void> createDebt(DebtModel debt) async {
+    await Repository().sqliteProvider.upsert<DebtModel>(
+      debt,
+      repository: Repository(),
+    );
+    unawaited(
+      // ignore: body_might_complete_normally_catch_error
+      Repository().upsert<DebtModel>(debt).catchError((e) {
+        debugPrint('Background debt sync: $e');
+      }),
+    );
   }
 
   @override
-  Future<void> updateDebt(DebtModel debt) {
-    return Repository().upsert<DebtModel>(debt);
+  Future<void> updateDebt(DebtModel debt) async {
+    await Repository().sqliteProvider.upsert<DebtModel>(
+      debt,
+      repository: Repository(),
+    );
+    unawaited(
+      // ignore: body_might_complete_normally_catch_error
+      Repository().upsert<DebtModel>(debt).catchError((e) {
+        debugPrint('Background debt update sync: $e');
+      }),
+    );
   }
 
   @override

@@ -4,6 +4,7 @@ import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/brick/repository.dart';
+import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/currency/domain/entities/currency_quote_entity.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
@@ -57,6 +58,13 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       await Repository().sqliteProvider.upsert<FriendsModel>(
         friendAdd,
         repository: Repository(),
+      );
+
+      // Notify subscriptions so the friend list updates immediately.
+      unawaited(
+        Repository()
+            .notifySubscriptionsWithLocalData<FriendsModel>()
+            .catchError((_) {}),
       );
 
       // Background sync: Let Brick handle remote/offline queue without blocking
@@ -163,6 +171,19 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         transaction: transactionModel,
       );
 
+      // Notify subscriptions so the UI reflects local changes immediately
+      // without waiting for Supabase realtime events.
+      unawaited(
+        Repository()
+            .notifySubscriptionsWithLocalData<TransactionModel>()
+            .catchError((_) {}),
+      );
+      unawaited(
+        Repository()
+            .notifySubscriptionsWithLocalData<UserModel>()
+            .catchError((_) {}),
+      );
+
       // Background sync: Let Brick handle remote/offline queue in the background.
       unawaited(
         // ignore: body_might_complete_normally_catch_error
@@ -251,6 +272,13 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       await Repository().sqliteProvider.upsert<TransactionModel>(
         transactionModel,
         repository: Repository(),
+      );
+
+      // Notify subscriptions so the UI reflects local changes immediately.
+      unawaited(
+        Repository()
+            .notifySubscriptionsWithLocalData<TransactionModel>()
+            .catchError((_) {}),
       );
 
       // Background sync: Let Brick handle remote/offline queue.

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
@@ -5,6 +7,7 @@ import 'package:bicount/features/company/data/models/company.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:brick_offline_first/brick_offline_first.dart';
+import 'package:flutter/foundation.dart';
 
 import 'offline_finance_delta_calculator.dart';
 
@@ -40,7 +43,18 @@ class OfflineFinanceLocalService {
   Future<void> createRecurringTransfert(
     RecurringTransfertModel recurringTransfert,
   ) async {
-    await Repository().upsert<RecurringTransfertModel>(recurringTransfert);
+    await Repository().sqliteProvider.upsert<RecurringTransfertModel>(
+      recurringTransfert,
+      repository: Repository(),
+    );
+    unawaited(
+      Repository()
+          .upsert<RecurringTransfertModel>(recurringTransfert)
+          // ignore: body_might_complete_normally_catch_error
+          .catchError((e) {
+            debugPrint('Background recurring transfert sync: $e');
+          }),
+    );
   }
 
   Future<void> _applyTransactionSide({
@@ -53,13 +67,21 @@ class OfflineFinanceLocalService {
     if (partyId == currentUserId) {
       final user = await _findUser(currentUserId);
       if (user == null) return;
-      await Repository().upsert<UserModel>(
-        _calculator.applyTransactionToUser(
-          user: user,
-          isSender: isSender,
-          amount: amount,
-          category: category,
-        ),
+      final updatedUser = _calculator.applyTransactionToUser(
+        user: user,
+        isSender: isSender,
+        amount: amount,
+        category: category,
+      );
+      await Repository().sqliteProvider.upsert<UserModel>(
+        updatedUser,
+        repository: Repository(),
+      );
+      unawaited(
+        // ignore: body_might_complete_normally_catch_error
+        Repository().upsert<UserModel>(updatedUser).catchError((e) {
+          debugPrint('Background user sync: $e');
+        }),
       );
       return;
     }

@@ -87,6 +87,7 @@ class MainRepositoryImpl implements MainRepository {
               );
             },
           )
+          .debounceTime(const Duration(milliseconds: 50))
           .handleError((error, stackTrace) {
             throw MessageFailure(
               message: 'Error combining startup data: ${error.toString()}',

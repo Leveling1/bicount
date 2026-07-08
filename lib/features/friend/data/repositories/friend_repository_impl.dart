@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bicount/brick/repository.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/errors/failure.dart';
@@ -8,6 +10,7 @@ import 'package:bicount/features/friend/data/data_sources/remote_datasource/frie
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:bicount/features/friend/domain/repositories/friend_repository.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -165,7 +168,21 @@ class FriendRepositoryImpl implements FriendRepository {
         companyIncome: currentFriend.companyIncome,
       )..primaryKey = currentFriend.primaryKey;
 
-      await Repository().upsert<FriendsModel>(updatedFriend);
+      await Repository().sqliteProvider.upsert<FriendsModel>(
+        updatedFriend,
+        repository: Repository(),
+      );
+      unawaited(
+        Repository()
+            .notifySubscriptionsWithLocalData<FriendsModel>()
+            .catchError((_) {}),
+      );
+      unawaited(
+        // ignore: body_might_complete_normally_catch_error
+        Repository().upsert<FriendsModel>(updatedFriend).catchError((e) {
+          debugPrint('Background friend update sync: $e');
+        }),
+      );
     } catch (_) {
       throw MessageFailure(message: 'Unable to update this friend right now.');
     }
