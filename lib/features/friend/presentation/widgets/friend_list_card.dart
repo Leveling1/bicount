@@ -25,24 +25,23 @@ class FriendListCard extends StatelessWidget {
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: AppDimens.marginSmall),
-        DetailsCard(
-          child: realFriends.isEmpty
-              ? Text(
-                  context.l10n.friendCurrentEmpty,
-                  style: Theme.of(context).textTheme.bodySmall,
-                )
-              : Column(
+        realFriends.isEmpty
+            ? Text(
+                context.l10n.friendCurrentEmpty,
+                style: Theme.of(context).textTheme.bodySmall,
+              )
+            : DetailsCard(
+                isMargin: false,
+                isPadding: false,
+                child: Column(
                   children: realFriends.take(4).map((friend) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: FriendCard(
-                        friend: friend,
-                        onTap: () => openFriendDetail(context, friend),
-                      ),
+                    return FriendCard(
+                      friend: friend,
+                      onTap: () => openFriendDetail(context, friend),
                     );
                   }).toList(),
                 ),
-        ),
+              ),
       ],
     );
   }

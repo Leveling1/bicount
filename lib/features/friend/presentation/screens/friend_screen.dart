@@ -97,7 +97,6 @@ class _FriendScreenState extends State<FriendScreen> {
                       ? context.l10n.friendScreenIntro
                       : context.l10n.friendLinkIntro,
                 ),
-                const SizedBox(height: AppDimens.marginLarge),
                 if (widget.user != null && widget.selectedFriend != null) ...[
                   FriendShareCard(
                     title: context.l10n.friendShareProfileTitle(

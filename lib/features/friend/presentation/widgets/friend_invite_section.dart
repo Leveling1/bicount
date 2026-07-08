@@ -24,10 +24,11 @@ class FriendInviteSection extends StatelessWidget {
       children: [
         Text(title, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: AppDimens.marginSmall),
-        DetailsCard(
-          child: invites.isEmpty
-              ? Text(emptyLabel, style: Theme.of(context).textTheme.bodySmall)
-              : Column(
+        invites.isEmpty
+            ? Text(emptyLabel, style: Theme.of(context).textTheme.bodySmall)
+            : DetailsCard(
+                isMargin: false,
+                child: Column(
                   children: invites.map((invite) {
                     final title = invite.isFriendProfileInvite
                         ? invite.linkedProfileName
@@ -80,7 +81,7 @@ class FriendInviteSection extends StatelessWidget {
                     );
                   }).toList(),
                 ),
-        ),
+              ),
       ],
     );
   }

@@ -28,17 +28,14 @@ class DetailFriendTransactionSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              context.l10n.friendSharedTransactions,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ],
+        Text(
+          context.l10n.friendSharedTransactions,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: AppDimens.marginSmall),
         DetailsCard(
+          isMargin: false,
+          isPadding: false,
           child: detail.transactions.isEmpty
               ? Text(
                   context.l10n.friendTransactionsEmpty,

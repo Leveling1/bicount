@@ -5,7 +5,13 @@ import '../themes/app_dimens.dart';
 class DetailsCard extends StatelessWidget {
   final Widget child;
   final bool isMargin;
-  const DetailsCard({super.key, required this.child, this.isMargin = true});
+  final bool isPadding;
+  const DetailsCard({
+    super.key,
+    required this.child,
+    this.isMargin = true,
+    this.isPadding = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +22,12 @@ class DetailsCard extends StatelessWidget {
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppDimens.paddingMedium),
-        child: child,
-      ),
+      child: isPadding
+          ? Padding(
+              padding: const EdgeInsets.all(AppDimens.paddingMedium),
+              child: child,
+            )
+          : child,
     );
   }
 }

@@ -43,9 +43,7 @@ class QuickActionButton extends StatelessWidget {
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: isLeft
-                ? MainAxisAlignment.end
-                : MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (isLeft) ...[
                 _buildText(context),
