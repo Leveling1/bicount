@@ -163,8 +163,8 @@ class _CollapsedHomeHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
         borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(AppDimens.borderRadiusUltraLarge),
-          bottomRight: Radius.circular(AppDimens.borderRadiusUltraLarge),
+          bottomLeft: Radius.circular(AppDimens.borderRadiusLarge),
+          bottomRight: Radius.circular(AppDimens.borderRadiusLarge),
         ),
       ),
       child: Center(

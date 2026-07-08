@@ -40,6 +40,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
   static const _salaryTrackingSchemaVersion = 20260331113000;
   static const _recurringTransfertSchemaVersion = 20260409080526;
   static const _debtOriginSchemaVersion = 20260507143446;
+  static const _debtRepaymentCurrencySchemaVersion = 20260705164703;
   static final _uuidRegExp = RegExp(
     r'^[0-9a-fA-F]{8}-'
     r'[0-9a-fA-F]{4}-'
@@ -464,6 +465,68 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       await _ensureDebtTable(database);
       await _recordMigrationVersion(database, _debtOriginSchemaVersion);
       await database.execute('PRAGMA user_version = $_debtOriginSchemaVersion');
+    } finally {
+      await database.close();
+    }
+  }
+
+  Future<void> repairDebtRepaymentCurrencyMigrationStateIfNeeded() async {
+    final databasePath = path.join(
+      await _databaseFactory.getDatabasesPath(),
+      _sqliteDatabaseName,
+    );
+    final database = await _openRepairDatabase(databasePath);
+
+    try {
+      final latestBrickMigrationVersion = await _lastBrickMigrationVersion(
+        database,
+      );
+      final isMigrationRecorded =
+          latestBrickMigrationVersion >= _debtRepaymentCurrencySchemaVersion;
+
+      final hasDebtTable = await _tableExists(database, 'DebtModel');
+      final hasExpectedCurrencyColumn = hasDebtTable
+          ? await _columnExists(
+            database,
+            'DebtModel',
+            'expected_repayment_currency',
+          )
+          : true;
+
+      final hasUserModel = await _tableExists(database, 'UserModel');
+      final hasUidColumn = hasUserModel
+          ? await _columnExists(database, 'UserModel', 'uid')
+          : true;
+
+      if (isMigrationRecorded && hasExpectedCurrencyColumn && hasUidColumn) {
+        return;
+      }
+
+      if (hasDebtTable) {
+        await _ensureColumn(
+          database,
+          tableName: 'DebtModel',
+          columnName: 'expected_repayment_currency',
+          definition: 'TEXT',
+        );
+      }
+
+      if (hasUserModel) {
+        await _ensureColumn(
+          database,
+          tableName: 'UserModel',
+          columnName: 'uid',
+          definition: 'TEXT',
+        );
+      }
+
+      await _recordMigrationVersion(
+        database,
+        _debtRepaymentCurrencySchemaVersion,
+      );
+      await database.execute(
+        'PRAGMA user_version = $_debtRepaymentCurrencySchemaVersion',
+      );
     } finally {
       await database.close();
     }
@@ -1048,6 +1111,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
         `currency` TEXT,
         `principal_amount` REAL,
         `expected_repayment_amount` REAL,
+        `expected_repayment_currency` TEXT,
         `repaid_amount` REAL,
         `remaining_amount` REAL,
         `due_date` TEXT,
@@ -1119,6 +1183,12 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       tableName: 'DebtModel',
       columnName: 'expected_repayment_amount',
       definition: 'REAL',
+    );
+    await _ensureColumn(
+      database,
+      tableName: 'DebtModel',
+      columnName: 'expected_repayment_currency',
+      definition: 'TEXT',
     );
     await _ensureColumn(
       database,
@@ -1284,6 +1354,7 @@ class Repository extends OfflineFirstWithSupabaseRepository {
       'currency',
       'principal_amount',
       'expected_repayment_amount',
+      'expected_repayment_currency',
       'repaid_amount',
       'remaining_amount',
       'due_date',

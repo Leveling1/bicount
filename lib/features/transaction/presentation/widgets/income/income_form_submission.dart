@@ -12,6 +12,7 @@ extension _IncomeFormSubmission on _IncomeFormState {
       _runAfterFrame(() {
         NotificationHelper.showSuccessNotification(context, successMessage);
         clearForm();
+        Navigator.of(context).pop();
         widget.onCompleted?.call();
       });
       return;
@@ -114,6 +115,9 @@ extension _IncomeFormSubmission on _IncomeFormState {
         isDebt: _isDebt,
         debtDueDate: _isDebt ? resolveFormDateToIso(_debtDueDate.text) : null,
         debtExpectedRepaymentAmount: _isDebt ? expectedRepaymentAmount : null,
+        debtExpectedRepaymentCurrency: _isDebt
+            ? _debtExpectedRepaymentCurrency.text
+            : null,
       );
       _splitResolver.resolve(request);
       if (_isEditing) {

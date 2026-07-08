@@ -43,12 +43,14 @@ class IncomeForm extends StatefulWidget {
     required this.user,
     required this.friends,
     this.initialTransaction,
+    this.prefilledFriend,
     this.onCompleted,
   });
 
   final UserModel? user;
   final List<FriendsModel> friends;
   final TransactionEntity? initialTransaction;
+  final FriendsModel? prefilledFriend;
   final VoidCallback? onCompleted;
 
   @override
@@ -64,6 +66,8 @@ class _IncomeFormState extends State<IncomeForm>
   final TextEditingController _beneficiary = TextEditingController();
   final TextEditingController _debtDueDate = TextEditingController();
   final TextEditingController _debtExpectedRepaymentAmount =
+      TextEditingController();
+  final TextEditingController _debtExpectedRepaymentCurrency =
       TextEditingController();
   final TextEditingController _sender = TextEditingController();
   final TextEditingController _note = TextEditingController();
@@ -116,6 +120,10 @@ class _IncomeFormState extends State<IncomeForm>
     _date.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
     _amount.addListener(_onRealtimePreviewDependencyChanged);
     _currency.addListener(_onRealtimePreviewDependencyChanged);
+
+    if (widget.prefilledFriend != null && widget.initialTransaction == null) {
+      _sender.text = widget.prefilledFriend!.username;
+    }
   }
 
   @override

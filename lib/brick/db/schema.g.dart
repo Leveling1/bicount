@@ -1,7 +1,7 @@
 // GENERATED CODE DO NOT EDIT
 // This file should be version controlled
 import 'package:brick_sqlite/db.dart';
-part '20260507153810.migration.dart';
+part '20260705164703.migration.dart';
 part '20251130001532.migration.dart';
 part '20251201154524.migration.dart';
 part '20251201172247.migration.dart';
@@ -16,10 +16,11 @@ part '20260331113000.migration.dart';
 part '20260409080526.migration.dart';
 part '20260507143446.migration.dart';
 part '20260507144610.migration.dart';
+part '20260507153810.migration.dart';
 
 /// All intelligently-generated migrations from all `@Migratable` classes on disk
 final migrations = <Migration>{
-  const Migration20260507153810(),
+  const Migration20260705164703(),
   const Migration20251130001532(),
   const Migration20251201154524(),
   const Migration20251201172247(),
@@ -34,11 +35,12 @@ final migrations = <Migration>{
   const Migration20260409080526(),
   const Migration20260507143446(),
   const Migration20260507144610(),
+  const Migration20260507153810(),
 };
 
 /// A consumable database structure including the latest generated migration.
 final schema = Schema(
-  20260507144610,
+  20260507153810,
   generatorVersion: 1,
   tables: <SchemaTable>{
     SchemaTable(
@@ -212,6 +214,7 @@ final schema = Schema(
         SchemaColumn('currency', Column.varchar),
         SchemaColumn('principal_amount', Column.Double),
         SchemaColumn('expected_repayment_amount', Column.Double),
+        SchemaColumn('expected_repayment_currency', Column.varchar),
         SchemaColumn('repaid_amount', Column.Double),
         SchemaColumn('remaining_amount', Column.Double),
         SchemaColumn('due_date', Column.varchar),

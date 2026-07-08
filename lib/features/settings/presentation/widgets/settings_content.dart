@@ -39,6 +39,10 @@ class SettingsContent extends StatelessWidget {
                 child: SettingsHeaderCard(
                   user: user,
                   subtitle: context.l10n.settingsHeaderSubtitle,
+                  onTap: () => showSettingsSheet(
+                    context,
+                    SettingsProfileSheet(user: user),
+                  ),
                 ),
               ),
               BicountReveal(

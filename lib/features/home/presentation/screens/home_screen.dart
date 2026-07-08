@@ -4,7 +4,7 @@ import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/home/domain/services/home_monthly_flow_service.dart';
-import 'package:bicount/features/home/presentation/widgets/home_quick_action_button.dart';
+import 'package:bicount/core/widgets/quick_action_button.dart';
 import 'package:bicount/features/home/presentation/widgets/home_recent_activity_section.dart';
 import 'package:bicount/features/home/presentation/widgets/home_sliver_header.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/localization/l10n_extensions.dart';
 import '../../../../core/services/notification_helper.dart';
 import '../bloc/home_bloc.dart';
 
@@ -24,15 +23,11 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({
     super.key,
     this.onCardTap,
-    this.onQuickExpenseTap,
-    this.onQuickIncomeTap,
     required this.data,
   });
 
   static const _monthlyFlowService = HomeMonthlyFlowService();
   final CardTapCallback? onCardTap;
-  final VoidCallback? onQuickExpenseTap;
-  final VoidCallback? onQuickIncomeTap;
   final MainEntity data;
 
   @override
@@ -108,29 +103,7 @@ class HomeScreen extends StatelessWidget {
                   SliverToBoxAdapter(
                     child: BicountReveal(
                       delay: const Duration(milliseconds: 180),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: HomeQuickActionButton(
-                              icon: Icons.arrow_upward_rounded,
-                              label: context.l10n.homeQuickExpense,
-                              color: expenseColor,
-                              onTap:
-                                  onQuickExpenseTap ?? () => onCardTap?.call(2),
-                            ),
-                          ),
-                          const SizedBox(width: AppDimens.marginMedium),
-                          Expanded(
-                            child: HomeQuickActionButton(
-                              icon: Icons.arrow_downward_rounded,
-                              label: context.l10n.homeQuickIncome,
-                              color: incomeColor,
-                              onTap:
-                                  onQuickIncomeTap ?? () => onCardTap?.call(2),
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: TransactionButton(data: data),
                     ),
                   ),
                 ],

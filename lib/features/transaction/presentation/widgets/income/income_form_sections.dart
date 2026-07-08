@@ -66,8 +66,10 @@ extension _IncomeFormSections on _IncomeFormState {
               enabled: canEditAllFields,
               dueDateController: _debtDueDate,
               expectedAmountController: _debtExpectedRepaymentAmount,
+              expectedCurrencyController: _debtExpectedRepaymentCurrency,
               onDebtChanged: (value) => _update(() {
                 _isDebt = value;
+                _debtExpectedRepaymentCurrency.text = _currency.text;
                 if (value) {
                   _isRecurring = false;
                 }

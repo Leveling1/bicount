@@ -136,33 +136,12 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: AppDimens.spacingSmall),
-            TextFormField(
-              controller: _amountController,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9,\. ]')),
-              ],
-              validator: (value) {
-                final amount = double.tryParse(
-                  (value ?? '').trim().replaceAll(' ', '').replaceAll(',', '.'),
-                );
-                if (amount == null || amount <= 0) {
-                  return context.l10n.validationFieldRequired;
-                }
-                return null;
-              },
-
-              decoration: InputDecoration(
-                hintText: occurrence.amount
-                    .toStringAsFixed(2)
-                    .replaceAll('.', ','),
-                suffixIcon: CurrencyField(
-                  controller: _currencyController,
-                  color: Theme.of(context).cardColor,
-                ),
-              ),
+            SimpleAmountField(
+              amount: _amountController,
+              currency: _currencyController,
+              hintText: occurrence.amount
+                  .toStringAsFixed(2)
+                  .replaceAll('.', ','),
             ),
             const SizedBox(height: AppDimens.spacingSmall),
             Text(

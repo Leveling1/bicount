@@ -110,6 +110,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
             principalAmount: transaction.totalAmount,
             expectedRepaymentAmount: expectedRepaymentAmount,
             remainingAmount: expectedRepaymentAmount,
+            expectedRepaymentCurrency: transaction.debtExpectedRepaymentCurrency,
             dueDate: dueDate,
             createdAt: now,
             updatedAt: now,

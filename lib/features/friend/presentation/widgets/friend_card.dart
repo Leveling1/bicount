@@ -1,6 +1,7 @@
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/other_theme.dart';
+import 'package:bicount/core/utils/formated_text.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
@@ -15,8 +16,14 @@ class FriendCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final give = NumberFormatUtils.formatCurrency(friend.give ?? 0);
-    final receive = NumberFormatUtils.formatCurrency(friend.receive ?? 0);
+    final give = NumberFormatUtils.compactCurrency(
+      friend.give ?? 0,
+      compactThreshold: 1000000,
+    );
+    final receive = NumberFormatUtils.compactCurrency(
+      friend.receive ?? 0,
+      compactThreshold: 1000000,
+    );
     return Container(
       decoration: const BoxDecoration(color: Colors.transparent),
       child: Material(
@@ -50,7 +57,7 @@ class FriendCard extends StatelessWidget {
                         : MainAxisAlignment.center,
                     children: [
                       Text(
-                        friend.username,
+                        FormatedText().capitalizeFirstLetter(friend.username),
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const SizedBox(height: 4),

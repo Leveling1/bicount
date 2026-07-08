@@ -12,6 +12,7 @@ extension _ExpenseFormSubmission on _ExpenseFormState {
           context.l10n.transactionSavedSuccess,
         );
         clearForm();
+        Navigator.of(context).pop();
         widget.onCompleted?.call();
       });
       return;
@@ -120,6 +121,9 @@ extension _ExpenseFormSubmission on _ExpenseFormState {
         isDebt: _isDebt,
         debtDueDate: _isDebt ? resolveFormDateToIso(_debtDueDate.text) : null,
         debtExpectedRepaymentAmount: _isDebt ? expectedRepaymentAmount : null,
+        debtExpectedRepaymentCurrency: _isDebt
+            ? _debtExpectedRepaymentCurrency.text
+            : null,
       );
       _splitResolver.resolve(request);
       if (_isEditing) {

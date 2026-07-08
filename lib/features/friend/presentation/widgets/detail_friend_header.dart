@@ -1,4 +1,5 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/utils/formated_text.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,10 @@ class DetailFriendHeader extends StatelessWidget {
           fallbackIcon: Icons.person_outline,
         ),
         const SizedBox(height: 12),
-        Text(friend.username, style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          FormatedText().capitalizeFirstLetter(friend.username),
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         if (friend.email.isNotEmpty) const SizedBox(height: 4),
         if (friend.email.isNotEmpty)
           Text(friend.email, style: Theme.of(context).textTheme.titleSmall),

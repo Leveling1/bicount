@@ -360,3 +360,55 @@ class _CurrencyChipShell extends StatelessWidget {
     );
   }
 }
+
+class SimpleAmountField extends StatelessWidget {
+  const SimpleAmountField({
+    super.key,
+    this.label,
+    required this.amount,
+    required this.currency,
+    required this.hintText,
+    this.enableValidator = true,
+  });
+  final String? label;
+  final TextEditingController amount;
+  final TextEditingController currency;
+  final String hintText;
+  final bool? enableValidator;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (label != null)
+          Text(label!, style: Theme.of(context).textTheme.titleMedium),
+        TextFormField(
+          controller: amount,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[0-9,\. ]')),
+          ],
+          validator: enableValidator != true
+              ? null
+              : (value) {
+                  final amount = double.tryParse(
+                    (value ?? '').trim().replaceAll(' ', '').replaceAll(',', '.'),
+                  );
+                  if (amount == null || amount <= 0) {
+                    return context.l10n.validationFieldRequired;
+                  }
+                  return null;
+                },
+        
+          decoration: InputDecoration(
+            hintText: hintText,
+            suffixIcon: CurrencyField(
+              controller: currency,
+              color: Theme.of(context).cardColor,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

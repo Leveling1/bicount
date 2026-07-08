@@ -49,6 +49,10 @@ class DebtModel extends OfflineFirstWithSupabaseModel {
   @Sqlite(name: 'expected_repayment_amount')
   final double expectedRepaymentAmount;
 
+  @Supabase(name: 'expected_repayment_currency')
+  @Sqlite(name: 'expected_repayment_currency')
+  final String? expectedRepaymentCurrency;
+
   @Supabase(name: 'repaid_amount')
   @Sqlite(name: 'repaid_amount')
   final double repaidAmount;
@@ -96,6 +100,7 @@ class DebtModel extends OfflineFirstWithSupabaseModel {
     required this.currency,
     required this.principalAmount,
     required this.expectedRepaymentAmount,
+    this.expectedRepaymentCurrency,
     this.repaidAmount = 0,
     required this.remainingAmount,
     required this.dueDate,

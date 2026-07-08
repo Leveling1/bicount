@@ -1,5 +1,6 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,7 @@ class TransferFormDebtSection extends StatelessWidget {
     required this.enabled,
     required this.dueDateController,
     required this.expectedAmountController,
+    required this.expectedCurrencyController,
     required this.onDebtChanged,
   });
 
@@ -19,6 +21,7 @@ class TransferFormDebtSection extends StatelessWidget {
   final bool enabled;
   final TextEditingController dueDateController;
   final TextEditingController expectedAmountController;
+  final TextEditingController expectedCurrencyController;
   final ValueChanged<bool> onDebtChanged;
 
   @override
@@ -56,14 +59,13 @@ class TransferFormDebtSection extends StatelessWidget {
                         isDate: true,
                       ),
                       const SizedBox(height: AppDimens.spacingMedium),
-                      CustomFormField(
-                        controller: expectedAmountController,
-                        label: context.l10n.transactionDebtExpectedAmountLabel,
-                        hint: context.l10n.transactionDebtExpectedAmountHint,
-                        inputType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
+                      SimpleAmountField(
                         enableValidator: false,
+                        label: context.l10n.transactionDebtExpectedAmountLabel,
+                        amount: expectedAmountController,
+                        currency: expectedCurrencyController,
+                        hintText:
+                            context.l10n.transactionDebtExpectedAmountHint,
                       ),
                     ],
                   ),

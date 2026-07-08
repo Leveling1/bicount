@@ -6,6 +6,7 @@ import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/details_card.dart';
+import 'package:bicount/core/widgets/quick_action_button.dart';
 import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
 import 'package:bicount/features/friend/presentation/widgets/detail_friend_skeleton.dart';
@@ -95,6 +96,14 @@ class DetailFriend extends StatelessWidget {
                       BicountReveal(
                         delay: const Duration(milliseconds: 140),
                         child: DetailFriendMetrics(detail: detail),
+                      ),
+                      const SizedBox(height: AppDimens.marginLarge),
+                      BicountReveal(
+                        delay: const Duration(milliseconds: 180),
+                        child: TransactionButton(
+                          data: data,
+                          prefilledFriend: currentFriend,
+                        ),
                       ),
                       const SizedBox(height: AppDimens.marginLarge),
                       BicountReveal(

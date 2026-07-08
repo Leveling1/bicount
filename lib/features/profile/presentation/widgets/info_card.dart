@@ -2,6 +2,39 @@ import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/profile/presentation/widgets/info_card_base.dart';
 import 'package:flutter/material.dart';
 
+class SpecialInfoCardAmount extends StatelessWidget {
+  const SpecialInfoCardAmount({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.value,
+    required this.color,
+    this.currencyCode,
+  });
+
+  final String icon;
+  final String title;
+  final double value;
+  final Color color;
+  final String? currencyCode;
+
+  @override
+  Widget build(BuildContext context) {
+    return InfoCardBase(
+      icon: icon,
+      title: title,
+      color: color,
+      child: Text(
+        NumberFormatUtils.formatCurrency(value, currencyCode: currencyCode),
+        style: TextStyle(
+          fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
 class InfoCardAmount extends StatelessWidget {
   const InfoCardAmount({
     super.key,

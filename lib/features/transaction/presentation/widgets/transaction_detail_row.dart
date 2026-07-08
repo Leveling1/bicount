@@ -1,3 +1,4 @@
+import 'package:bicount/core/utils/formated_text.dart';
 import 'package:flutter/material.dart';
 
 class TransactionDetailRow extends StatelessWidget {
@@ -18,11 +19,17 @@ class TransactionDetailRow extends StatelessWidget {
       children: [
         Flexible(
           flex: 1,
-          child: Text(title, style: Theme.of(context).textTheme.bodyMedium),
+          child: Text(
+            FormatedText().capitalizeFirstLetter(title),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
         ),
         Flexible(
           flex: 2,
-          child: Text(content, style: Theme.of(context).textTheme.bodyMedium),
+          child: Text(
+            FormatedText().capitalizeFirstLetter(content),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
         ),
       ],
     );

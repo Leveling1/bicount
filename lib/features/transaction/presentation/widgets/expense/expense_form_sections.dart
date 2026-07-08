@@ -92,7 +92,9 @@ extension _ExpenseFormSections on _ExpenseFormState {
               enabled: canEditAllFields,
               dueDateController: _debtDueDate,
               expectedAmountController: _debtExpectedRepaymentAmount,
+              expectedCurrencyController: _debtExpectedRepaymentCurrency,
               onDebtChanged: (value) {
+                _debtExpectedRepaymentCurrency.text = _currency.text;
               if (value && _beneficiaryList.length > 1) {
                 NotificationHelper.showFailureNotification(
                   context,

@@ -71,6 +71,7 @@ class CreateTransactionRequestEntity {
     this.isDebt = false,
     this.debtDueDate,
     this.debtExpectedRepaymentAmount,
+    this.debtExpectedRepaymentCurrency,
   });
 
   final String name;
@@ -109,4 +110,7 @@ class CreateTransactionRequestEntity {
 
   /// Optional repayment target. When omitted, the total amount is expected.
   final double? debtExpectedRepaymentAmount;
+
+  /// Optional repayment currency. When omitted, the transaction currency is expected.
+  final String? debtExpectedRepaymentCurrency;
 }

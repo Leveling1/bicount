@@ -19,7 +19,6 @@ import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_body.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_fab.dart';
 import 'package:bicount/features/profile/presentation/screens/profile_screen.dart';
-import 'package:bicount/features/transaction/presentation/screens/transaction_handler.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -167,18 +166,6 @@ class _MainScreenState extends State<MainScreen> {
     return [
       HomeScreen(
         onCardTap: _goToPage,
-        onQuickExpenseTap: () => openTransactionSheet(
-          context,
-          data,
-          initialType: TransactionHandlerInitialType.expense,
-          showTypeSelector: false,
-        ),
-        onQuickIncomeTap: () => openTransactionSheet(
-          context,
-          data,
-          initialType: TransactionHandlerInitialType.income,
-          showTypeSelector: false,
-        ),
         data: data,
       ),
       const AnalysisScreen(),

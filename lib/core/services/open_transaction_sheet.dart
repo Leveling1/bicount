@@ -1,4 +1,5 @@
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
+import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_handler.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ void openTransactionSheet(
   TransactionHandlerInitialType initialType =
       TransactionHandlerInitialType.expense,
   bool showTypeSelector = true,
+  FriendsModel? prefilledFriend,
 }) {
   showCustomBottomSheet(
     context: context,
@@ -19,6 +21,7 @@ void openTransactionSheet(
       user: data.user,
       friends: data.friends,
       initialType: initialType,
+      prefilledFriend: prefilledFriend,
       showTypeSelector: showTypeSelector,
     ),
   );

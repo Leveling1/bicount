@@ -17,6 +17,9 @@ Future<DebtModel> _$DebtModelFromSupabase(
     currency: data['currency'] as String,
     principalAmount: data['principal_amount'] as double,
     expectedRepaymentAmount: data['expected_repayment_amount'] as double,
+    expectedRepaymentCurrency: data['expected_repayment_currency'] == null
+        ? null
+        : data['expected_repayment_currency'] as String?,
     repaidAmount: data['repaid_amount'] as double,
     remainingAmount: data['remaining_amount'] as double,
     dueDate: data['due_date'] as String,
@@ -51,6 +54,7 @@ Future<Map<String, dynamic>> _$DebtModelToSupabase(
     'currency': instance.currency,
     'principal_amount': instance.principalAmount,
     'expected_repayment_amount': instance.expectedRepaymentAmount,
+    'expected_repayment_currency': instance.expectedRepaymentCurrency,
     'repaid_amount': instance.repaidAmount,
     'remaining_amount': instance.remainingAmount,
     'due_date': instance.dueDate,
@@ -79,6 +83,9 @@ Future<DebtModel> _$DebtModelFromSqlite(
     currency: data['currency'] as String,
     principalAmount: data['principal_amount'] as double,
     expectedRepaymentAmount: data['expected_repayment_amount'] as double,
+    expectedRepaymentCurrency: data['expected_repayment_currency'] == null
+        ? null
+        : data['expected_repayment_currency'] as String?,
     repaidAmount: data['repaid_amount'] as double,
     remainingAmount: data['remaining_amount'] as double,
     dueDate: data['due_date'] as String,
@@ -113,6 +120,7 @@ Future<Map<String, dynamic>> _$DebtModelToSqlite(
     'currency': instance.currency,
     'principal_amount': instance.principalAmount,
     'expected_repayment_amount': instance.expectedRepaymentAmount,
+    'expected_repayment_currency': instance.expectedRepaymentCurrency,
     'repaid_amount': instance.repaidAmount,
     'remaining_amount': instance.remainingAmount,
     'due_date': instance.dueDate,
@@ -174,6 +182,10 @@ class DebtModelAdapter extends OfflineFirstWithSupabaseAdapter<DebtModel> {
     'expectedRepaymentAmount': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'expected_repayment_amount',
+    ),
+    'expectedRepaymentCurrency': const RuntimeSupabaseColumnDefinition(
+      association: false,
+      columnName: 'expected_repayment_currency',
     ),
     'repaidAmount': const RuntimeSupabaseColumnDefinition(
       association: false,
@@ -283,6 +295,12 @@ class DebtModelAdapter extends OfflineFirstWithSupabaseAdapter<DebtModel> {
       columnName: 'expected_repayment_amount',
       iterable: false,
       type: double,
+    ),
+    'expectedRepaymentCurrency': const RuntimeSqliteColumnDefinition(
+      association: false,
+      columnName: 'expected_repayment_currency',
+      iterable: false,
+      type: String,
     ),
     'repaidAmount': const RuntimeSqliteColumnDefinition(
       association: false,
