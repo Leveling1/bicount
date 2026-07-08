@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
@@ -55,7 +56,7 @@ void showLanguageSettingsSheet(BuildContext context, LocaleState state) {
   );
 }
 
-void showCurrencySettingsSheet(BuildContext context, CurrencyState state) {
+void showCurrencySettingsSheet(BuildContext context, CurrencyState state, int connectionState) {
   showSettingsSheet(
     context,
     SettingsOptionSheet<AppCurrencyEntity>(
@@ -68,6 +69,13 @@ void showCurrencySettingsSheet(BuildContext context, CurrencyState state) {
       labelBuilder: (value) => '${value.name} (${value.code})',
       onSelected: (value) async {
         try {
+          if (connectionState == Constants.disconnected) {
+            NotificationHelper.showFailureNotification(
+              context,
+              context.l10n.settingsCurrencyUpdatedOfflineError,
+            );
+            return;
+          }
           await context.read<CurrencyCubit>().selectReferenceCurrency(
             value.code,
           );

@@ -1403,6 +1403,12 @@ abstract class AppLocalizations {
   /// **'Reference currency updated.'**
   String get settingsCurrencyUpdatedSuccess;
 
+  /// No description provided for @settingsCurrencyUpdatedOfflineError.
+  ///
+  /// In en, this message translates to:
+  /// **'You must be logged in to change the default currency.'**
+  String get settingsCurrencyUpdatedOfflineError;
+
   /// No description provided for @settingsDeleteRequestedSuccess.
   ///
   /// In en, this message translates to:

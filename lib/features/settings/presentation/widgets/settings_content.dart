@@ -127,7 +127,7 @@ class SettingsContent extends StatelessWidget {
                               '${currencyState.config.currencyFor(currencyState.config.referenceCurrencyCode).symbol}',
                           isLoading: currencyState.isSyncing,
                           onTap: () =>
-                              showCurrencySettingsSheet(context, currencyState),
+                              showCurrencySettingsSheet(context, currencyState, data.connectionState),
                         );
                       },
                     ),

@@ -228,6 +228,7 @@
   "settingsThemeUpdatedSuccess": "Theme updated.",
   "settingsLanguageUpdatedSuccess": "Language updated.",
   "settingsCurrencyUpdatedSuccess": "Reference currency updated.",
+  "settingsCurrencyUpdatedOfflineError": "You must be logged in to change the default currency.",
   "settingsDeleteRequestedSuccess": "Your account deletion request has been submitted.",
   "analysisOverview": "Overview",
   "analysisOverviewDescription": "Track your flow, spot your recurring costs, and keep the useful signals close.",

@@ -667,6 +667,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsCurrencyUpdatedSuccess => 'Devise de référence mise à jour.';
 
   @override
+  String get settingsCurrencyUpdatedOfflineError => 'Vous devez être connecté pour modifier la devise de référence.';
+
+  @override
   String get settingsDeleteRequestedSuccess => 'Votre demande de suppression de compte a bien été envoyée.';
 
   @override

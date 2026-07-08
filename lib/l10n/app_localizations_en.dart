@@ -24,7 +24,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageSectionTitle => 'Language';
 
   @override
-  String get languageSectionDescription => 'Choose how Bicount is displayed. By default, the app follows your device language.';
+  String get languageSectionDescription =>
+      'Choose how Bicount is displayed. By default, the app follows your device language.';
 
   @override
   String get languageSheetTitle => 'Choose a language';
@@ -129,13 +130,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authAlreadyHaveAccount => 'Already have an account?';
 
   @override
-  String get authLoginWelcome => 'Welcome back to your shared and personal money space.';
+  String get authLoginWelcome =>
+      'Welcome back to your shared and personal money space.';
 
   @override
-  String get authSignupLead => 'Create your account and start with a clear money flow.';
+  String get authSignupLead =>
+      'Create your account and start with a clear money flow.';
 
   @override
-  String get authSignupDescription => 'Create your Bicount account to continue.';
+  String get authSignupDescription =>
+      'Create your Bicount account to continue.';
 
   @override
   String get authEmailAddress => 'Email address';
@@ -165,10 +169,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authCreateGoogleAccount => 'Create a Google account';
 
   @override
-  String get authGenericSignInError => 'Unable to sign in right now. Please try again.';
+  String get authGenericSignInError =>
+      'Unable to sign in right now. Please try again.';
 
   @override
-  String get authGenericSignUpError => 'Unable to create your account right now. Please try again.';
+  String get authGenericSignUpError =>
+      'Unable to create your account right now. Please try again.';
 
   @override
   String get authGenericSignOutError => 'Unable to sign out right now.';
@@ -177,13 +183,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authGoogleCancelled => 'Google sign-in was cancelled.';
 
   @override
-  String get authGoogleMissingEmail => 'Google did not return the information needed to create your account.';
+  String get authGoogleMissingEmail =>
+      'Google did not return the information needed to create your account.';
 
   @override
   String get authGoogleTimeout => 'Sign-in took too long. Please try again.';
 
   @override
-  String get authNetworkError => 'Network issue. Please check your internet connection.';
+  String get authNetworkError =>
+      'Network issue. Please check your internet connection.';
 
   @override
   String get authGoogleFailed => 'Google sign-in failed. Please try again.';
@@ -204,7 +212,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authUnifiedTitle4 => 'worry-free';
 
   @override
-  String get authUnifiedSubtitle => 'Start with one secure sign-in for personal and shared money.';
+  String get authUnifiedSubtitle =>
+      'Start with one secure sign-in for personal and shared money.';
 
   @override
   String get authContinueWithApple => 'Continue with Apple';
@@ -275,58 +284,76 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationTooShort => 'Too short';
 
   @override
-  String get validationAmountGreaterThanZero => 'Enter an amount greater than zero.';
+  String get validationAmountGreaterThanZero =>
+      'Enter an amount greater than zero.';
 
   @override
-  String get runtimeUnexpectedError => 'Something went wrong. Please try again.';
+  String get runtimeUnexpectedError =>
+      'Something went wrong. Please try again.';
 
   @override
-  String get runtimeFriendSaveFailed => 'Unable to save this contact right now.';
+  String get runtimeFriendSaveFailed =>
+      'Unable to save this contact right now.';
 
   @override
-  String get runtimeFriendUpdateFailed => 'Unable to update this contact right now.';
+  String get runtimeFriendUpdateFailed =>
+      'Unable to update this contact right now.';
 
   @override
-  String get runtimeTransactionSaveFailed => 'The transaction could not be saved.';
+  String get runtimeTransactionSaveFailed =>
+      'The transaction could not be saved.';
 
   @override
-  String get runtimeTransactionDeleteFailed => 'Unable to delete this transaction right now.';
+  String get runtimeTransactionDeleteFailed =>
+      'Unable to delete this transaction right now.';
 
   @override
-  String get runtimeTransactionUpdateFailed => 'Unable to update this transaction right now.';
+  String get runtimeTransactionUpdateFailed =>
+      'Unable to update this transaction right now.';
 
   @override
-  String get runtimeSubscriptionDeleteFailed => 'Unable to delete this subscription right now.';
+  String get runtimeSubscriptionDeleteFailed =>
+      'Unable to delete this subscription right now.';
 
   @override
-  String get runtimeSubscriptionSaveFailed => 'Unable to save this subscription right now.';
+  String get runtimeSubscriptionSaveFailed =>
+      'Unable to save this subscription right now.';
 
   @override
-  String get runtimeSubscriptionUnsubscribeFailed => 'Unable to update this subscription right now.';
+  String get runtimeSubscriptionUnsubscribeFailed =>
+      'Unable to update this subscription right now.';
 
   @override
-  String get runtimeAccountFundingDeleteFailed => 'Unable to delete this account funding right now.';
+  String get runtimeAccountFundingDeleteFailed =>
+      'Unable to delete this account funding right now.';
 
   @override
-  String get runtimeAccountFundingSaveFailed => 'Unable to save this account funding right now.';
+  String get runtimeAccountFundingSaveFailed =>
+      'Unable to save this account funding right now.';
 
   @override
-  String get runtimeAccountFundingUpdateFailed => 'Unable to update this account funding right now.';
+  String get runtimeAccountFundingUpdateFailed =>
+      'Unable to update this account funding right now.';
 
   @override
-  String get runtimeProfileSaveFailed => 'Unable to save your profile right now.';
+  String get runtimeProfileSaveFailed =>
+      'Unable to save your profile right now.';
 
   @override
-  String get runtimeCurrencyRateLoadFailed => 'Unable to load the latest exchange rates right now.';
+  String get runtimeCurrencyRateLoadFailed =>
+      'Unable to load the latest exchange rates right now.';
 
   @override
-  String get runtimeCurrencyOnlineSelectionRequired => 'Reconnect before changing your reference currency.';
+  String get runtimeCurrencyOnlineSelectionRequired =>
+      'Reconnect before changing your reference currency.';
 
   @override
-  String get runtimeProRequestFailed => 'Unable to request Bicount Pro right now.';
+  String get runtimeProRequestFailed =>
+      'Unable to request Bicount Pro right now.';
 
   @override
-  String get runtimeDeleteAccountFailed => 'Unable to delete your account right now.';
+  String get runtimeDeleteAccountFailed =>
+      'Unable to delete your account right now.';
 
   @override
   String get runtimeDataLoadFailed => 'Unable to load your data right now.';
@@ -341,19 +368,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingSharedMoneyBadge => 'Shared money';
 
   @override
-  String get onboardingSharedMoneyTitle => 'Keep every shared payment easy to follow';
+  String get onboardingSharedMoneyTitle =>
+      'Keep every shared payment easy to follow';
 
   @override
-  String get onboardingSharedMoneyDescription => 'Track what you give, what others receive, and what still needs attention without messy notes or endless messages.';
+  String get onboardingSharedMoneyDescription =>
+      'Track what you give, what others receive, and what still needs attention without messy notes or endless messages.';
 
   @override
   String get onboardingDailyOverviewBadge => 'Daily overview';
 
   @override
-  String get onboardingDailyOverviewTitle => 'See your money in one calm, useful view';
+  String get onboardingDailyOverviewTitle =>
+      'See your money in one calm, useful view';
 
   @override
-  String get onboardingDailyOverviewDescription => 'Follow your balance, subscriptions, and everyday habits with visuals that help you decide faster.';
+  String get onboardingDailyOverviewDescription =>
+      'Follow your balance, subscriptions, and everyday habits with visuals that help you decide faster.';
 
   @override
   String get onboardingProBadge => 'Bicount Pro';
@@ -362,19 +393,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingProTitle => 'Grow into team and business finance later';
 
   @override
-  String get onboardingProDescription => 'Bicount Pro is our upcoming space for teams and business activity. It is not active yet, but it is already part of the Bicount direction.';
+  String get onboardingProDescription =>
+      'Bicount Pro is our upcoming space for teams and business activity. It is not active yet, but it is already part of the Bicount direction.';
 
   @override
   String get onboardingProHighlight => 'Coming soon';
 
   @override
-  String get onboardingFooterPrimary => 'Bicount helps you manage personal and shared money with clarity from day one.';
+  String get onboardingFooterPrimary =>
+      'Bicount helps you manage personal and shared money with clarity from day one.';
 
   @override
-  String get onboardingFooterOverview => 'A clear picture of your balance, habits, and subscriptions helps you move faster without extra effort.';
+  String get onboardingFooterOverview =>
+      'A clear picture of your balance, habits, and subscriptions helps you move faster without extra effort.';
 
   @override
-  String get onboardingFooterPro => 'Bicount Pro is the next step for teams and business finance, while today you can already start with your personal flow.';
+  String get onboardingFooterPro =>
+      'Bicount Pro is the next step for teams and business finance, while today you can already start with your personal flow.';
 
   @override
   String get navHome => 'Home';
@@ -395,7 +430,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shellAddFunds => 'Add funds';
 
   @override
-  String get networkOfflineMessage => 'Internet connection lost: you are in offline mode';
+  String get networkOfflineMessage =>
+      'Internet connection lost: you are in offline mode';
 
   @override
   String get networkUnstableMessage => 'Unstable internet connection';
@@ -407,7 +443,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeWidgetAddTransactionCta => 'Add transaction';
 
   @override
-  String get homeWidgetBalanceFallbackSubtitle => 'No recurring activity is due in the next 2 days.';
+  String get homeWidgetBalanceFallbackSubtitle =>
+      'No recurring activity is due in the next 2 days.';
 
   @override
   String homeWidgetDueOn(Object date) {
@@ -454,19 +491,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSeeAll => 'See all';
 
   @override
-  String get profileFirstFriendHint => 'Create a transaction with someone to add your first contact. Their profile can be linked later when they join Bicount.';
+  String get profileFirstFriendHint =>
+      'Create a transaction with someone to add your first contact. Their profile can be linked later when they join Bicount.';
 
   @override
   String get profileLanguageTitle => 'App language';
 
   @override
-  String get profileLanguageDescription => 'Switch language anytime. If no language is chosen, Bicount follows your device.';
+  String get profileLanguageDescription =>
+      'Switch language anytime. If no language is chosen, Bicount follows your device.';
 
   @override
   String get settingsTitle => 'Settings';
 
   @override
-  String get settingsHeaderSubtitle => 'Tune Bicount around your routine, your preferences, and your account safety.';
+  String get settingsHeaderSubtitle =>
+      'Tune Bicount around your routine, your preferences, and your account safety.';
 
   @override
   String get settingsSectionAccount => 'Account';
@@ -481,7 +521,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsEditProfileTitle => 'Edit profile';
 
   @override
-  String get settingsEditProfileDescription => 'Update your visible name and avatar.';
+  String get settingsEditProfileDescription =>
+      'Update your visible name and avatar.';
 
   @override
   String get settingsEditProfileCta => 'Update profile';
@@ -490,19 +531,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsFriendsTitle => 'Contacts and links';
 
   @override
-  String get settingsFriendsDescription => 'Review your local contacts and linked profiles.';
+  String get settingsFriendsDescription =>
+      'Review your local contacts and linked profiles.';
 
   @override
   String get settingsThemeTitle => 'Theme';
 
   @override
-  String get settingsThemeDescription => 'Choose how Bicount looks across the app.';
+  String get settingsThemeDescription =>
+      'Choose how Bicount looks across the app.';
 
   @override
   String get settingsThemeSheetTitle => 'Choose a theme';
 
   @override
-  String get settingsThemeSheetDescription => 'Keep following your device or pick a fixed appearance.';
+  String get settingsThemeSheetDescription =>
+      'Keep following your device or pick a fixed appearance.';
 
   @override
   String get settingsThemeSystem => 'Follow system';
@@ -517,49 +561,58 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguageTitle => 'Language';
 
   @override
-  String get settingsLanguageDescription => 'Change the app language at any time.';
+  String get settingsLanguageDescription =>
+      'Change the app language at any time.';
 
   @override
-  String get settingsLanguageSheetDescription => 'If no language is selected, Bicount follows your device and falls back to English if needed.';
+  String get settingsLanguageSheetDescription =>
+      'If no language is selected, Bicount follows your device and falls back to English if needed.';
 
   @override
   String get settingsCurrencyTitle => 'Reference currency';
 
   @override
-  String get settingsCurrencyDescription => 'Choose the currency used for balances, analysis views, and totals.';
+  String get settingsCurrencyDescription =>
+      'Choose the currency used for balances, analysis views, and totals.';
 
   @override
   String get settingsCurrencySheetTitle => 'Choose a reference currency';
 
   @override
-  String get settingsCurrencySheetDescription => 'This currency is used for global totals and analytics. Changing it requires a live exchange-rate sync.';
+  String get settingsCurrencySheetDescription =>
+      'This currency is used for global totals and analytics. Changing it requires a live exchange-rate sync.';
 
   @override
   String get settingsProTitle => 'Switch to Bicount Pro';
 
   @override
-  String get settignsProMessage => 'Pro account coming soon! We\'re finalizing this feature for you. Thanks for waiting a bit.';
+  String get settignsProMessage =>
+      'Pro account coming soon! We\'re finalizing this feature for you. Thanks for waiting a bit.';
 
   @override
-  String get settingsProDescription => 'Tell us how you want to use Bicount Pro for your team or activity.';
+  String get settingsProDescription =>
+      'Tell us how you want to use Bicount Pro for your team or activity.';
 
   @override
   String get settingsProSheetTitle => 'Request Bicount Pro';
 
   @override
-  String get settingsProSheetDescription => 'Share a few details so we can contact you when the Pro space is ready.';
+  String get settingsProSheetDescription =>
+      'Share a few details so we can contact you when the Pro space is ready.';
 
   @override
   String get settingsProOrganizationLabel => 'Team or company';
 
   @override
-  String get settingsProOrganizationHint => 'Your team, studio, company, or activity name';
+  String get settingsProOrganizationHint =>
+      'Your team, studio, company, or activity name';
 
   @override
   String get settingsProUseCaseLabel => 'What would you like to manage?';
 
   @override
-  String get settingsProUseCaseHint => 'Tell us about your workflow, team size, or finance needs';
+  String get settingsProUseCaseHint =>
+      'Tell us about your workflow, team size, or finance needs';
 
   @override
   String get settingsProContactEmailLabel => 'Contact email';
@@ -571,7 +624,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsProfileSheetTitle => 'Edit your profile';
 
   @override
-  String get settingsProfileSheetDescription => 'Choose the identity other people see when they transact with you.';
+  String get settingsProfileSheetDescription =>
+      'Choose the identity other people see when they transact with you.';
 
   @override
   String get settingsProfileNameLabel => 'Display name';
@@ -586,7 +640,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsMemojiConnectionTitle => 'Unable to load avatars';
 
   @override
-  String get settingsMemojiConnectionDescription => 'Check your internet connection and try again. If some avatars were already loaded, Bicount keeps them available locally.';
+  String get settingsMemojiConnectionDescription =>
+      'Check your internet connection and try again. If some avatars were already loaded, Bicount keeps them available locally.';
 
   @override
   String get settingsProfileSave => 'Save changes';
@@ -595,13 +650,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDeleteTitle => 'Delete account';
 
   @override
-  String get settingsDeleteDescription => 'Request account deletion and tell us why you are leaving.';
+  String get settingsDeleteDescription =>
+      'Request account deletion and tell us why you are leaving.';
 
   @override
   String get settingsDeleteConfirmTitle => 'Delete this account?';
 
   @override
-  String get settingsDeleteConfirmDescription => 'We will ask for a short reason before sending the deletion request.';
+  String get settingsDeleteConfirmDescription =>
+      'We will ask for a short reason before sending the deletion request.';
 
   @override
   String get settingsDeleteConfirmCta => 'Continue';
@@ -610,7 +667,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDeleteSheetTitle => 'Delete account request';
 
   @override
-  String get settingsDeleteSheetDescription => 'Help us understand why you want to leave Bicount.';
+  String get settingsDeleteSheetDescription =>
+      'Help us understand why you want to leave Bicount.';
 
   @override
   String get settingsDeleteReasonLabel => 'Main reason';
@@ -619,7 +677,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDeleteDetailsLabel => 'Extra details';
 
   @override
-  String get settingsDeleteDetailsHint => 'Add any detail that can help us improve or process your request';
+  String get settingsDeleteDetailsHint =>
+      'Add any detail that can help us improve or process your request';
 
   @override
   String get settingsDeleteReasonMissingFeatures => 'Missing features';
@@ -646,13 +705,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSignOutTitle => 'Sign out';
 
   @override
-  String get settingsSignOutDescription => 'Disconnect this device from your Bicount account.';
+  String get settingsSignOutDescription =>
+      'Disconnect this device from your Bicount account.';
 
   @override
   String get settingsProfileUpdatedSuccess => 'Profile updated successfully.';
 
   @override
-  String get settingsProRequestedSuccess => 'Your Bicount Pro request has been sent.';
+  String get settingsProRequestedSuccess =>
+      'Your Bicount Pro request has been sent.';
 
   @override
   String get settingsSignedOutSuccess => 'You have been signed out.';
@@ -667,13 +728,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsCurrencyUpdatedSuccess => 'Reference currency updated.';
 
   @override
-  String get settingsDeleteRequestedSuccess => 'Your account deletion request has been submitted.';
+  String get settingsCurrencyUpdatedOfflineError =>
+      'You must be logged in to change the reference currency.';
+
+  @override
+  String get settingsDeleteRequestedSuccess =>
+      'Your account deletion request has been submitted.';
 
   @override
   String get analysisOverview => 'Overview';
 
   @override
-  String get analysisOverviewDescription => 'Track your flow, spot your recurring costs, and keep the useful signals close.';
+  String get analysisOverviewDescription =>
+      'Track your flow, spot your recurring costs, and keep the useful signals close.';
 
   @override
   String get analysisUnableToLoad => 'Unable to load analysis';
@@ -715,19 +782,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analysisRecurringChargesTitle => 'Scheduled Outflows';
 
   @override
-  String get analysisRecurringChargesDescription => 'Track your subscriptions and automatic charges to anticipate your expenses and stay in control of your budget.';
+  String get analysisRecurringChargesDescription =>
+      'Track your subscriptions and automatic charges to anticipate your expenses and stay in control of your budget.';
 
   @override
   String get analysisRecurringIncomesTitle => 'Scheduled Income';
 
   @override
-  String get analysisRecurringIncomesDescription => 'Keep track of all your planned earnings and open the full follow-up as soon as a due date approaches.';
+  String get analysisRecurringIncomesDescription =>
+      'Keep track of all your planned earnings and open the full follow-up as soon as a due date approaches.';
 
   @override
   String get analysisRecurringIncomesUpcoming => 'Upcoming incomes';
 
   @override
-  String get analysisNoActiveSubscriptions => 'No active subscriptions scheduled yet.';
+  String get analysisNoActiveSubscriptions =>
+      'No active subscriptions scheduled yet.';
 
   @override
   String get analysisCumulativeNet => 'Cumulative net';
@@ -775,10 +845,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendDetailTitle => 'Contact details';
 
   @override
-  String get friendsDirectoryIntro => 'Tap a contact to review the live transaction history or link a local profile to a real account.';
+  String get friendsDirectoryIntro =>
+      'Tap a contact to review the live transaction history or link a local profile to a real account.';
 
   @override
-  String get friendsDirectoryEmpty => 'Create a transaction with someone and they will appear here. When they join Bicount, open their detail screen to share and link the profile.';
+  String get friendsDirectoryEmpty =>
+      'Create a transaction with someone and they will appear here. When they join Bicount, open their detail screen to share and link the profile.';
 
   @override
   String get friendsSearchHint => 'Search a contact…';
@@ -807,10 +879,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get friendScreenIntro => 'Scan an invite, review pending links, and track shared profiles in real time.';
+  String get friendScreenIntro =>
+      'Scan an invite, review pending links, and track shared profiles in real time.';
 
   @override
-  String get friendLinkIntro => 'If this person uses Bicount, share this contact to automatically link their account to this profile.';
+  String get friendLinkIntro =>
+      'If this person uses Bicount, share this contact to automatically link their account to this profile.';
 
   @override
   String friendShareProfileTitle(Object name) {
@@ -818,7 +892,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get friendShareProfileDescription => 'Generate a QR code or a link for this specific contact profile.';
+  String get friendShareProfileDescription =>
+      'Generate a QR code or a link for this specific contact profile.';
 
   @override
   String friendShareMessage(Object name, Object url) {
@@ -850,7 +925,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendCurrentFriends => 'Active contacts';
 
   @override
-  String get friendCurrentEmpty => 'Your accepted contacts will show up here in real time.';
+  String get friendCurrentEmpty =>
+      'Your accepted contacts will show up here in real time.';
 
   @override
   String get friendInvitePreview => 'Invitation preview';
@@ -893,28 +969,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendInvitationRejected => 'Invitation rejected.';
 
   @override
-  String get friendInvitationPreviewOnlineRequired => 'Connect to the internet to load this invitation.';
+  String get friendInvitationPreviewOnlineRequired =>
+      'Connect to the internet to load this invitation.';
 
   @override
-  String get friendInvitationAcceptOnlineRequired => 'Connect to the internet to accept this invitation.';
+  String get friendInvitationAcceptOnlineRequired =>
+      'Connect to the internet to accept this invitation.';
 
   @override
-  String get friendInvitationRejectOnlineRequired => 'Connect to the internet to reject this invitation.';
+  String get friendInvitationRejectOnlineRequired =>
+      'Connect to the internet to reject this invitation.';
 
   @override
-  String get friendInvitationAcceptSignInRequired => 'Sign in to accept this invitation.';
+  String get friendInvitationAcceptSignInRequired =>
+      'Sign in to accept this invitation.';
 
   @override
-  String get friendInvitationRejectSignInRequired => 'Sign in to reject this invitation.';
+  String get friendInvitationRejectSignInRequired =>
+      'Sign in to reject this invitation.';
 
   @override
-  String get friendInvitationLoadFailed => 'Unable to load this invitation right now.';
+  String get friendInvitationLoadFailed =>
+      'Unable to load this invitation right now.';
 
   @override
-  String get friendInvitationAcceptFailed => 'Unable to accept this invitation right now.';
+  String get friendInvitationAcceptFailed =>
+      'Unable to accept this invitation right now.';
 
   @override
-  String get friendInvitationRejectFailed => 'Unable to reject this invitation right now.';
+  String get friendInvitationRejectFailed =>
+      'Unable to reject this invitation right now.';
 
   @override
   String friendProfileShared(Object name) {
@@ -933,7 +1017,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendLocalFriend => 'Local contact';
 
   @override
-  String get friendLinkHint => 'This contact is still local to your account. Use the share button to link it when the person has created a Bicount profile.';
+  String get friendLinkHint =>
+      'This contact is still local to your account. Use the share button to link it when the person has created a Bicount profile.';
 
   @override
   String get friendGiven => 'Paid out';
@@ -948,7 +1033,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendSharedTransactions => 'Shared operations';
 
   @override
-  String get friendTransactionsEmpty => 'Transactions with this contact will appear here in real time.';
+  String get friendTransactionsEmpty =>
+      'Transactions with this contact will appear here in real time.';
 
   @override
   String get friendUnableToReadInvite => 'Unable to read this invitation.';
@@ -957,7 +1043,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendEditTitle => 'Edit contact';
 
   @override
-  String get friendEditDescription => 'Update the local name and avatar used for this contact.';
+  String get friendEditDescription =>
+      'Update the local name and avatar used for this contact.';
 
   @override
   String get friendProfileUpdated => 'Contact updated.';
@@ -1047,28 +1134,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionDeleteConfirmTitle => 'Delete this transaction?';
 
   @override
-  String get transactionDeleteConfirmDescription => 'This action removes the transaction from your history and syncs the deletion when possible.';
+  String get transactionDeleteConfirmDescription =>
+      'This action removes the transaction from your history and syncs the deletion when possible.';
 
   @override
   String get transactionDeleteConfirmCta => 'Delete';
 
   @override
-  String get transactionDuplicateBeneficiary => 'This beneficiary is already in the split.';
+  String get transactionDuplicateBeneficiary =>
+      'This beneficiary is already in the split.';
 
   @override
-  String get transactionEditSingleBeneficiaryOnly => 'Edit this transaction with one beneficiary only.';
+  String get transactionEditSingleBeneficiaryOnly =>
+      'Edit this transaction with one beneficiary only.';
 
   @override
-  String get transactionAddAtLeastOneBeneficiary => 'Add at least one beneficiary.';
+  String get transactionAddAtLeastOneBeneficiary =>
+      'Add at least one beneficiary.';
 
   @override
   String get transactionDebtToggleTitle => 'Track as a debt';
 
   @override
-  String get transactionDebtToggleSubtitleExpense => 'Use this when you paid money that should be repaid later.';
+  String get transactionDebtToggleSubtitleExpense =>
+      'Use this when you paid money that should be repaid later.';
 
   @override
-  String get transactionDebtToggleSubtitleIncome => 'Use this when you received money that you plan to repay later.';
+  String get transactionDebtToggleSubtitleIncome =>
+      'Use this when you received money that you plan to repay later.';
 
   @override
   String get transactionDebtDueDateLabel => 'Repayment due date';
@@ -1077,25 +1170,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionDebtDueDateRequired => 'Choose a repayment due date.';
 
   @override
-  String get transactionDebtExpectedAmountLabel => 'Expected repayment amount (optional)';
+  String get transactionDebtExpectedAmountLabel =>
+      'Expected repayment amount (optional)';
 
   @override
-  String get transactionDebtExpectedAmountHint => 'Leave empty to use the full transaction amount';
+  String get transactionDebtExpectedAmountHint =>
+      'Leave empty to use the full transaction amount';
 
   @override
-  String get transactionDebtExpectedAmountInvalid => 'Enter a valid expected repayment amount.';
+  String get transactionDebtExpectedAmountInvalid =>
+      'Enter a valid expected repayment amount.';
 
   @override
-  String get transactionDebtSingleBeneficiaryOnly => 'Debt tracking supports one counterparty only.';
+  String get transactionDebtSingleBeneficiaryOnly =>
+      'Debt tracking supports one counterparty only.';
 
   @override
-  String get transactionIncomeSenderCannotBeCurrentUser => 'Income sender cannot be you. Income always uses the current user as beneficiary.';
+  String get transactionIncomeSenderCannotBeCurrentUser =>
+      'Income sender cannot be you. Income always uses the current user as beneficiary.';
 
   @override
   String get transactionEnterValidAmount => 'Enter a valid amount.';
 
   @override
-  String get transactionPreviewEnterValidTotal => 'Enter a valid total amount to preview the split.';
+  String get transactionPreviewEnterValidTotal =>
+      'Enter a valid total amount to preview the split.';
 
   @override
   String get transactionSplitMethod => 'Split method';
@@ -1116,19 +1215,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionSplitModeCustom => 'Custom';
 
   @override
-  String get transactionSplitHelperEqual => 'Bicount splits the total amount equally for every beneficiary.';
+  String get transactionSplitHelperEqual =>
+      'Bicount splits the total amount equally for every beneficiary.';
 
   @override
-  String get transactionSplitHelperPercentage => 'Set a percentage for each beneficiary. The total must reach 100%.';
+  String get transactionSplitHelperPercentage =>
+      'Set a percentage for each beneficiary. The total must reach 100%.';
 
   @override
-  String get transactionSplitHelperCustom => 'Set the exact amount received by each beneficiary.';
+  String get transactionSplitHelperCustom =>
+      'Set the exact amount received by each beneficiary.';
 
   @override
   String get transactionSetPercentageReceived => 'Set the percentage received.';
 
   @override
-  String get transactionSetExactAmountReceived => 'Set the exact amount received.';
+  String get transactionSetExactAmountReceived =>
+      'Set the exact amount received.';
 
   @override
   String get transferEnterTransactionName => 'Enter transaction name';
@@ -1149,10 +1252,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transferEnterBeneficiaryName => 'Enter beneficiary name';
 
   @override
-  String get transferBeneficiariesHint => 'Add as many receivers as you want. Use Me if you are also receiving a share.';
+  String get transferBeneficiariesHint =>
+      'Add as many receivers as you want. Use Me if you are also receiving a share.';
 
   @override
-  String get subscriptionIntro => 'Register a recurring payment such as streaming services, internet, gym, software, or any repetitive expense.';
+  String get subscriptionIntro =>
+      'Register a recurring payment such as streaming services, internet, gym, software, or any repetitive expense.';
 
   @override
   String get subscriptionName => 'Subscription name';
@@ -1167,7 +1272,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionStartDate => 'Start date';
 
   @override
-  String get subscriptionNextPaymentDifferent => 'The next payment will be on a different date.';
+  String get subscriptionNextPaymentDifferent =>
+      'The next payment will be on a different date.';
 
   @override
   String get subscriptionNextBillingDate => 'Next billing date';
@@ -1206,40 +1312,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionUnsubscribe => 'Unsubscribe';
 
   @override
-  String get subscriptionUnsubscribeSuccess => 'Subscription cancelled successfully.';
+  String get subscriptionUnsubscribeSuccess =>
+      'Subscription cancelled successfully.';
 
   @override
   String get subscriptionDeleteConfirmTitle => 'Delete this subscription?';
 
   @override
-  String get subscriptionDeleteConfirmDescription => 'This action removes the subscription and its linked generated entries from your history.';
+  String get subscriptionDeleteConfirmDescription =>
+      'This action removes the subscription and its linked generated entries from your history.';
 
   @override
   String get subscriptionDeleteConfirmCta => 'Delete subscription';
 
   @override
-  String get accountFundingIntro => 'Record a one-time deposit or set up a recurring income like salary so your balance stays up to date.';
+  String get accountFundingIntro =>
+      'Record a one-time deposit or set up a recurring income like salary so your balance stays up to date.';
 
   @override
   String get accountFundingEnterSource => 'Enter source of funds';
 
   @override
-  String get accountFundingSavedSuccess => 'Account funding transaction added successfully';
+  String get accountFundingSavedSuccess =>
+      'Account funding transaction added successfully';
 
   @override
-  String get accountFundingUpdatedSuccess => 'Account funding updated successfully';
+  String get accountFundingUpdatedSuccess =>
+      'Account funding updated successfully';
 
   @override
-  String get accountFundingDeletedSuccess => 'Account funding deleted successfully.';
+  String get accountFundingDeletedSuccess =>
+      'Account funding deleted successfully.';
 
   @override
-  String get accountFundingRecurringSavedSuccess => 'Recurring income saved successfully';
+  String get accountFundingRecurringSavedSuccess =>
+      'Recurring income saved successfully';
 
   @override
   String get accountFundingDeleteConfirmTitle => 'Delete this added fund?';
 
   @override
-  String get accountFundingDeleteConfirmDescription => 'This action removes the added fund from your history and updates your projections.';
+  String get accountFundingDeleteConfirmDescription =>
+      'This action removes the added fund from your history and updates your projections.';
 
   @override
   String get accountFundingDeleteConfirmCta => 'Delete added fund';
@@ -1269,22 +1383,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountFundingFirstCreditDate => 'First credit date';
 
   @override
-  String get salaryConfirmBeforeCountingTitle => 'Confirm each salary before counting it';
+  String get salaryConfirmBeforeCountingTitle =>
+      'Confirm each salary before counting it';
 
   @override
-  String get salaryConfirmBeforeCountingHelper => 'Use this when your employer can pay late and you only want confirmed money to affect your balance.';
+  String get salaryConfirmBeforeCountingHelper =>
+      'Use this when your employer can pay late and you only want confirmed money to affect your balance.';
 
   @override
   String get salaryReminderToggleTitle => 'Remind me on payday';
 
   @override
-  String get salaryReminderToggleHelper => 'Bicount will ask if the salary has been received when the due date arrives.';
+  String get salaryReminderToggleHelper =>
+      'Bicount will ask if the salary has been received when the due date arrives.';
 
   @override
   String get salaryTrackingTitle => 'Regular Inflows';
 
   @override
-  String get salaryEmptyState => 'Create a recurring funding from Add funds to follow expected payments and confirmed credits.';
+  String get salaryEmptyState =>
+      'Create a recurring funding from Add funds to follow expected payments and confirmed credits.';
 
   @override
   String get salaryAttentionSectionTitle => 'Needs confirmation';
@@ -1351,19 +1469,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get salaryConfirmPaymentCta => 'Confirm payment received';
 
   @override
-  String get salaryKeepAutomaticCta => 'Stop reminders and keep automatic credits';
+  String get salaryKeepAutomaticCta =>
+      'Stop reminders and keep automatic credits';
 
   @override
-  String get salaryAutomaticModeHelper => 'This payment will be counted now and future recurring credits will rely on the automatic backend flow.';
+  String get salaryAutomaticModeHelper =>
+      'This payment will be counted now and future recurring credits will rely on the automatic backend flow.';
 
   @override
-  String get salaryReminderDisabledHelper => 'Reminders are already disabled for this salary.';
+  String get salaryReminderDisabledHelper =>
+      'Reminders are already disabled for this salary.';
 
   @override
-  String get salaryPaymentConfirmedSuccess => 'Recurring payment confirmed successfully.';
+  String get salaryPaymentConfirmedSuccess =>
+      'Recurring payment confirmed successfully.';
 
   @override
-  String get salaryAutomaticModeEnabledSuccess => 'Recurring tracking switched back to automatic mode.';
+  String get salaryAutomaticModeEnabledSuccess =>
+      'Recurring tracking switched back to automatic mode.';
 
   @override
   String get salaryHomeCardTitle => 'Salary Management';
@@ -1389,10 +1512,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get runtimeSalaryConfirmFailed => 'Unable to confirm this salary payment right now.';
+  String get runtimeSalaryConfirmFailed =>
+      'Unable to confirm this salary payment right now.';
 
   @override
-  String get runtimeSalaryTrackingSaveFailed => 'Unable to update this recurring tracking right now.';
+  String get runtimeSalaryTrackingSaveFailed =>
+      'Unable to update this recurring tracking right now.';
 
   @override
   String get recurringChargesTitle => 'Charges';
@@ -1401,16 +1526,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recurringIncomesTitle => 'Recurring incomes';
 
   @override
-  String get recurringChargesIntro => 'Keep an eye on the recurring charges that hit your balance, review their pace, and stop or update them when the context changes.';
+  String get recurringChargesIntro =>
+      'Keep an eye on the recurring charges that hit your balance, review their pace, and stop or update them when the context changes.';
 
   @override
-  String get recurringIncomesIntro => 'Follow your recurring incomes in one place, update them when the amount changes, and keep the schedule aligned with reality.';
+  String get recurringIncomesIntro =>
+      'Follow your recurring incomes in one place, update them when the amount changes, and keep the schedule aligned with reality.';
 
   @override
-  String get recurringChargesEmpty => 'Your subscriptions and automatic charges will appear here once they are active.';
+  String get recurringChargesEmpty =>
+      'Your subscriptions and automatic charges will appear here once they are active.';
 
   @override
-  String get recurringIncomesEmpty => 'Your salaries and regular inflows will appear here once they are active.';
+  String get recurringIncomesEmpty =>
+      'Your salaries and regular inflows will appear here once they are active.';
 
   @override
   String get recurringIncomesEmptyTitle => 'No scheduled income';
@@ -1431,37 +1560,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recurringPlanDeleteConfirmTitle => 'Delete this recurring plan?';
 
   @override
-  String get recurringIncomeDeleteWarning => 'This will remove the recurring income plan and its linked generated payments on this device. Continue only if you really want to discard the follow-up.';
+  String get recurringIncomeDeleteWarning =>
+      'This will remove the recurring income plan and its linked generated payments on this device. Continue only if you really want to discard the follow-up.';
 
   @override
-  String get recurringChargeDeleteWarning => 'This will remove the recurring charge plan and its linked generated payments on this device. Continue only if you really want to discard the follow-up.';
+  String get recurringChargeDeleteWarning =>
+      'This will remove the recurring charge plan and its linked generated payments on this device. Continue only if you really want to discard the follow-up.';
 
   @override
   String get recurringPlanDeleteConfirmCta => 'Delete plan';
 
   @override
-  String get recurringPlanUpdatedSuccess => 'Recurring plan updated successfully.';
+  String get recurringPlanUpdatedSuccess =>
+      'Recurring plan updated successfully.';
 
   @override
-  String get recurringPlanStoppedSuccess => 'Recurring plan stopped successfully.';
+  String get recurringPlanStoppedSuccess =>
+      'Recurring plan stopped successfully.';
 
   @override
-  String get recurringPlanDeletedSuccess => 'Recurring plan deleted successfully.';
+  String get recurringPlanDeletedSuccess =>
+      'Recurring plan deleted successfully.';
 
   @override
-  String get runtimeRecurringPlanUpdateFailed => 'Unable to update this recurring plan right now.';
+  String get runtimeRecurringPlanUpdateFailed =>
+      'Unable to update this recurring plan right now.';
 
   @override
-  String get runtimeRecurringPlanTerminateFailed => 'Unable to stop this recurring plan right now.';
+  String get runtimeRecurringPlanTerminateFailed =>
+      'Unable to stop this recurring plan right now.';
 
   @override
-  String get runtimeRecurringPlanDeleteFailed => 'Unable to delete this recurring plan right now.';
+  String get runtimeRecurringPlanDeleteFailed =>
+      'Unable to delete this recurring plan right now.';
 
   @override
-  String get runtimeRecurringSalaryConfirmFailed => 'Unable to confirm this recurring salary right now.';
+  String get runtimeRecurringSalaryConfirmFailed =>
+      'Unable to confirm this recurring salary right now.';
 
   @override
-  String get runtimeRecurringSalaryUpdateFailed => 'Unable to update this recurring salary right now.';
+  String get runtimeRecurringSalaryUpdateFailed =>
+      'Unable to update this recurring salary right now.';
 
   @override
   String get transactionTypeTransfer => 'Transfer';
@@ -1491,7 +1630,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionEmptyState => 'No transactions recorded';
 
   @override
-  String get transactionEmptyStateHint => 'You can add a new transaction by pressing the button below.';
+  String get transactionEmptyStateHint =>
+      'You can add a new transaction by pressing the button below.';
 
   @override
   String get transactionEmptyStateButton => 'Add Transaction';
@@ -1512,25 +1652,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get frequencyOneTime => 'One time';
 
   @override
-  String get runtimeSplitPercentagePositive => 'Every beneficiary needs a percentage greater than zero.';
+  String get runtimeSplitPercentagePositive =>
+      'Every beneficiary needs a percentage greater than zero.';
 
   @override
   String get runtimeSplitPercentagesTotal => 'Percentages must add up to 100%.';
 
   @override
-  String get runtimeSplitAmountPositive => 'Every beneficiary needs an amount greater than zero.';
+  String get runtimeSplitAmountPositive =>
+      'Every beneficiary needs an amount greater than zero.';
 
   @override
-  String get runtimeSplitMismatch => 'The split does not match the total amount. Check the individual amounts.';
+  String get runtimeSplitMismatch =>
+      'The split does not match the total amount. Check the individual amounts.';
 
   @override
   String get recurringToggleTitle => 'Set as recurring';
 
   @override
-  String get recurringToggleSubtitleExpense => 'This amount will be debited from your balance on a recurring basis.';
+  String get recurringToggleSubtitleExpense =>
+      'This amount will be debited from your balance on a recurring basis.';
 
   @override
-  String get recurringToggleSubtitleIncome => 'This amount will be credited to your balance on a recurring basis.';
+  String get recurringToggleSubtitleIncome =>
+      'This amount will be credited to your balance on a recurring basis.';
 
   @override
   String get recurringFrequencyLabel => 'Repeat every';
@@ -1590,13 +1735,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get debtRecordPaymentCta => 'Record payment';
 
   @override
-  String get debtPermissionHint => 'Only the authorized side can register received repayments for this debt.';
+  String get debtPermissionHint =>
+      'Only the authorized side can register received repayments for this debt.';
 
   @override
-  String get debtInvalidPaymentAmount => 'Enter a valid amount that does not exceed the remaining balance.';
+  String get debtInvalidPaymentAmount =>
+      'Enter a valid amount that does not exceed the remaining balance.';
 
   @override
-  String get debtPaymentRecordedSuccess => 'Debt payment recorded successfully.';
+  String get debtPaymentRecordedSuccess =>
+      'Debt payment recorded successfully.';
 
   @override
   String get debtUpdatedSuccess => 'Debt updated successfully.';
@@ -1611,22 +1759,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get debtRepaymentAmountInvalid => 'Enter a valid repayment amount.';
 
   @override
-  String get debtRepaymentAmountTooHigh => 'The repayment amount cannot exceed the remaining balance.';
+  String get debtRepaymentAmountTooHigh =>
+      'The repayment amount cannot exceed the remaining balance.';
 
   @override
-  String get debtRepaymentManageFromDebtScreen => 'Debt repayments can only be managed from the debts screen.';
+  String get debtRepaymentManageFromDebtScreen =>
+      'Debt repayments can only be managed from the debts screen.';
 
   @override
-  String get debtOnlyLenderCanRecord => 'Only the lender can confirm a received repayment.';
+  String get debtOnlyLenderCanRecord =>
+      'Only the lender can confirm a received repayment.';
 
   @override
-  String get debtOnlyCreatorCanUpdate => 'Only the creator can update this debt for now.';
+  String get debtOnlyCreatorCanUpdate =>
+      'Only the creator can update this debt for now.';
 
   @override
-  String get debtOnlyCreatorCanDelete => 'Only the creator can delete this debt for now.';
+  String get debtOnlyCreatorCanDelete =>
+      'Only the creator can delete this debt for now.';
 
   @override
-  String get debtExpectedAmountTooLow => 'Expected repayment amount cannot be lower than the amount already repaid.';
+  String get debtExpectedAmountTooLow =>
+      'Expected repayment amount cannot be lower than the amount already repaid.';
 
   @override
   String get debtEditTitle => 'Edit debt';
@@ -1644,7 +1798,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get debtDeleteConfirmTitle => 'Delete this debt?';
 
   @override
-  String get debtDeleteConfirmDescription => 'This action removes the debt contract, the linked initial transaction, and every recorded repayment tied to it.';
+  String get debtDeleteConfirmDescription =>
+      'This action removes the debt contract, the linked initial transaction, and every recorded repayment tied to it.';
 
   @override
   String get debtDeleteConfirmCta => 'Delete debt';
