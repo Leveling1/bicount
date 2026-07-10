@@ -1889,6 +1889,54 @@ abstract class AppLocalizations {
   /// **'Unable to reject this invitation right now.'**
   String get friendInvitationRejectFailed;
 
+  /// No description provided for @notifPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay in the loop'**
+  String get notifPermissionTitle;
+
+  /// No description provided for @notifPermissionEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable notifications'**
+  String get notifPermissionEnable;
+
+  /// No description provided for @notifPermissionSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get notifPermissionSkip;
+
+  /// No description provided for @notifPermissionReasonDebtRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a reminder when this debt is due so you never miss a payment.'**
+  String get notifPermissionReasonDebtRecorded;
+
+  /// No description provided for @notifPermissionReasonAccountLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay updated when your linked contact records a shared expense or activity.'**
+  String get notifPermissionReasonAccountLinked;
+
+  /// No description provided for @notifPermissionReasonSalaryRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a reminder on the day your salary is due to keep your budget on track.'**
+  String get notifPermissionReasonSalaryRecorded;
+
+  /// No description provided for @notifPermissionDeviceChangedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New device detected'**
+  String get notifPermissionDeviceChangedTitle;
+
+  /// No description provided for @notifPermissionDeviceChangedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable notifications on this device to keep receiving your reminders and shared account alerts.'**
+  String get notifPermissionDeviceChangedBody;
+
   /// No description provided for @friendProfileShared.
   ///
   /// In en, this message translates to:

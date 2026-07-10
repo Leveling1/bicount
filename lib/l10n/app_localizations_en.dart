@@ -1001,6 +1001,34 @@ class AppLocalizationsEn extends AppLocalizations {
       'Unable to reject this invitation right now.';
 
   @override
+  String get notifPermissionTitle => 'Stay in the loop';
+
+  @override
+  String get notifPermissionEnable => 'Enable notifications';
+
+  @override
+  String get notifPermissionSkip => 'Not now';
+
+  @override
+  String get notifPermissionReasonDebtRecorded =>
+      'Get a reminder when this debt is due so you never miss a payment.';
+
+  @override
+  String get notifPermissionReasonAccountLinked =>
+      'Stay updated when your linked contact records a shared expense or activity.';
+
+  @override
+  String get notifPermissionReasonSalaryRecorded =>
+      'Get a reminder on the day your salary is due to keep your budget on track.';
+
+  @override
+  String get notifPermissionDeviceChangedTitle => 'New device detected';
+
+  @override
+  String get notifPermissionDeviceChangedBody =>
+      'Enable notifications on this device to keep receiving your reminders and shared account alerts.';
+
+  @override
   String friendProfileShared(Object name) {
     return 'Profile shared: $name';
   }

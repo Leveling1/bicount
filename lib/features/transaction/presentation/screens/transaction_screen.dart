@@ -5,6 +5,8 @@ import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/empty_state_card.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/presentation/helpers/transaction_feed_builder.dart';
+import 'package:bicount/features/transaction/presentation/helpers/transaction_feed_details.dart';
+import 'package:bicount/features/transaction/presentation/models/transaction_feed_item.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_feed_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,18 +18,22 @@ class TransactionScreen extends StatefulWidget {
     this.showSearchBar = false,
     required this.searchController,
     required this.selectedIndexTransaction,
+    this.focusTransactionId,
   });
 
   final MainEntity data;
   final bool showSearchBar;
   final TextEditingController searchController;
   final int selectedIndexTransaction;
+  final String? focusTransactionId;
 
   @override
   State<TransactionScreen> createState() => _TransactionScreenState();
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
+  String? _openedFocusTransactionId;
+
   @override
   void initState() {
     super.initState();
@@ -64,9 +70,44 @@ class _TransactionScreenState extends State<TransactionScreen> {
     }
   }
 
+  void _maybeOpenFocusedTransaction(List<TransactionFeedItem> feed) {
+    final focusId = widget.focusTransactionId;
+    if (focusId == null ||
+        focusId.isEmpty ||
+        _openedFocusTransactionId == focusId ||
+        feed.isEmpty) {
+      return;
+    }
+
+    TransactionFeedItem? match;
+    for (final item in feed) {
+      if (item.transaction.tid == focusId) {
+        match = item;
+        break;
+      }
+    }
+    if (match == null) {
+      return;
+    }
+
+    _openedFocusTransactionId = focusId;
+    final resolved = match;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      showTransactionFeedDetails(
+        context,
+        data: widget.data,
+        item: resolved,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final feed = buildTransactionFeed(widget.data);
+    _maybeOpenFocusedTransaction(feed);
     final filteredFeed = filterTransactionFeed(
       data: widget.data,
       source: feed,

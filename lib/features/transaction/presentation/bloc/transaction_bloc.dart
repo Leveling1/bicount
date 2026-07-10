@@ -1,3 +1,8 @@
+import 'dart:async';
+
+import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/features/notification/domain/entities/notifiable_action.dart';
+import 'package:bicount/features/notification/presentation/services/notification_permission_service.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,13 +14,15 @@ part 'transaction_event.dart';
 part 'transaction_state.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
-  TransactionBloc(this.repository) : super(TransactionInitial()) {
+  TransactionBloc(this.repository, {this.permissionService})
+    : super(TransactionInitial()) {
     on<CreateTransactionEvent>(_onCreateTransaction);
     on<DeleteTransactionEvent>(_onDeleteTransaction);
     on<UpdateTransactionEvent>(_onUpdateTransaction);
   }
 
   final TransactionRepository repository;
+  final NotificationPermissionService? permissionService;
 
   Future<void> _onCreateTransaction(
     CreateTransactionEvent event,
@@ -35,12 +42,30 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
       await repository.createTransaction(event.transaction);
       emit(TransactionCreated());
+      _requestPermissionForCreatedTransaction(event.transaction);
     } on MessageFailure catch (error) {
       emit(TransactionError(error));
     } on Failure catch (error) {
       emit(TransactionError(error));
     } catch (_) {
       emit(TransactionError(UnknownFailure()));
+    }
+  }
+
+  void _requestPermissionForCreatedTransaction(
+    CreateTransactionRequestEntity transaction,
+  ) {
+    final service = permissionService;
+    if (service == null) {
+      return;
+    }
+    if (transaction.isDebt) {
+      unawaited(service.requestForAction(NotifiableAction.debtRecorded));
+      return;
+    }
+    if (transaction.isRecurring &&
+        transaction.transactionType == TransactionTypes.salaryCode) {
+      unawaited(service.requestForAction(NotifiableAction.salaryRecorded));
     }
   }
 

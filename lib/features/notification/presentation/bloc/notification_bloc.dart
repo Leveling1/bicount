@@ -5,6 +5,7 @@ import 'package:bicount/core/routes/app_router.dart';
 import 'package:bicount/core/routes/friend_invite_route.dart';
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
 import 'package:bicount/features/notification/domain/repositories/notification_repository.dart';
+import 'package:bicount/features/notification/presentation/services/notification_permission_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +15,8 @@ part 'notification_event.dart';
 part 'notification_state.dart';
 
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
-  NotificationBloc(this.repository) : super(NotificationState.initial()) {
+  NotificationBloc(this.repository, {this.permissionService})
+    : super(NotificationState.initial()) {
     on<NotificationBootstrapRequested>(_onNotificationBootstrapRequested);
     on<_NotificationAuthSessionChanged>(_onNotificationAuthSessionChanged);
     on<_NotificationEventReceived>(_onNotificationEventReceived);
@@ -22,6 +24,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   final NotificationRepository repository;
+  final NotificationPermissionService? permissionService;
   StreamSubscription<AppNotificationEntity>? _eventsSubscription;
   StreamSubscription<AuthState>? _authSubscription;
   AppNotificationEntity? _pendingNavigation;
@@ -70,10 +73,14 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       return;
     }
 
-    try {
-      await repository.enableAuthenticatedNotifications();
-    } catch (error) {
-      add(_NotificationFailed(error.toString()));
+    // Permissions are no longer requested on login. They are only requested
+    // when the user performs an action that benefits from notifications
+    // (debt recorded, account linked, salary recorded).
+    // On login, we only re-prompt if a previously-granted action exists but
+    // OS permission is no longer authorized (device change / user revoked).
+    final service = permissionService;
+    if (service != null) {
+      unawaited(service.checkDeviceState());
     }
   }
 
@@ -99,7 +106,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         if (routeUri != null && FriendInviteRoute.isInvitePath(routeUri)) {
           _navigateToInviteRoute(context, routeUri);
         } else {
-          context.go(notification.route!);
+          _navigateThroughHome(context, notification.route!);
         }
       } else {
         _pendingNavigation = notification;
@@ -108,6 +115,37 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     }
 
     emit(state.copyWith(lastNotification: notification));
+  }
+
+  // Always land on the MainScreen first, then reach the notification's
+  // destination so the user sees the app open normally before the target
+  // appears. Routes that are hosted inside MainScreen (`/`, `/analysis`,
+  // `/transaction`, `/graphs`) are swapped via `go` so the shell state is
+  // preserved; other routes are pushed on top so they can be dismissed with a
+  // back gesture.
+  void _navigateThroughHome(BuildContext context, String route) {
+    final targetUri = Uri.tryParse(route);
+    final targetPath = targetUri?.path ?? route;
+
+    context.go('/');
+
+    if (targetPath.isEmpty || targetPath == '/') {
+      return;
+    }
+
+    const mainShellPaths = {'/', '/analysis', '/transaction', '/graphs'};
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final nav = rootNavigatorKey.currentContext;
+      if (nav == null) {
+        return;
+      }
+      if (mainShellPaths.contains(targetPath)) {
+        nav.go(route);
+      } else {
+        nav.push(route);
+      }
+    });
   }
 
   void _scheduleNavigationRetry() {

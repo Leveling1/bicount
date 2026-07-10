@@ -920,6 +920,34 @@ class AppLocalizationsFr extends AppLocalizations {
   String get friendInvitationRejectFailed => 'Impossible de refuser cette invitation pour le moment.';
 
   @override
+  String get notifPermissionTitle => 'Restez informé';
+
+  @override
+  String get notifPermissionEnable => 'Activer les notifications';
+
+  @override
+  String get notifPermissionSkip => 'Plus tard';
+
+  @override
+  String get notifPermissionReasonDebtRecorded =>
+      'Recevez un rappel à l\'échéance de cette dette pour ne jamais manquer une échéance.';
+
+  @override
+  String get notifPermissionReasonAccountLinked =>
+      'Soyez averti quand votre contact lié enregistre une dépense ou une activité partagée.';
+
+  @override
+  String get notifPermissionReasonSalaryRecorded =>
+      'Recevez un rappel le jour où votre salaire est prévu pour garder votre budget à jour.';
+
+  @override
+  String get notifPermissionDeviceChangedTitle => 'Nouvel appareil détecté';
+
+  @override
+  String get notifPermissionDeviceChangedBody =>
+      'Activez les notifications sur cet appareil pour continuer à recevoir vos rappels et alertes de compte partagé.';
+
+  @override
   String friendProfileShared(Object name) {
     return 'Profil partagé : $name';
   }

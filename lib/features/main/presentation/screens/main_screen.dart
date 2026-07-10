@@ -163,6 +163,10 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   List<Widget> _buildScreens(MainEntity data) {
+    final currentUri = GoRouterState.of(context).uri;
+    final focusTransactionId = currentUri.path == '/transaction'
+        ? currentUri.queryParameters['tid']
+        : null;
     return [
       HomeScreen(
         onCardTap: _goToPage,
@@ -174,6 +178,7 @@ class _MainScreenState extends State<MainScreen> {
         showSearchBar: showSearchBar,
         searchController: searchTransaction,
         selectedIndexTransaction: _selectedIndexTransaction,
+        focusTransactionId: focusTransactionId,
       ),
       ProfileScreen(data: data),
     ];

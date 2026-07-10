@@ -73,7 +73,30 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
       }
       await Repository().clearLocalSessionData();
       final preferences = await SharedPreferences.getInstance();
+      final preservedEntries = <String, Object>{};
+      for (final key in preferences.getKeys()) {
+        if (key.startsWith('notif_perm_') || key == 'notif_last_fcm_token') {
+          final value = preferences.get(key);
+          if (value != null) {
+            preservedEntries[key] = value;
+          }
+        }
+      }
       await preferences.clear();
+      for (final entry in preservedEntries.entries) {
+        final value = entry.value;
+        if (value is String) {
+          await preferences.setString(entry.key, value);
+        } else if (value is bool) {
+          await preferences.setBool(entry.key, value);
+        } else if (value is int) {
+          await preferences.setInt(entry.key, value);
+        } else if (value is double) {
+          await preferences.setDouble(entry.key, value);
+        } else if (value is List<String>) {
+          await preferences.setStringList(entry.key, value);
+        }
+      }
       await BicountHomeWidgetService.instance.resetToSignedOut();
       return const Right(null);
     } catch (e) {

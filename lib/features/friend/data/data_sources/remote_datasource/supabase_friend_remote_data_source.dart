@@ -65,13 +65,7 @@ class SupabaseFriendRemoteDataSource implements FriendRemoteDataSource {
       'source_friend_image': share.sourceFriendImage,
     };
 
-    try {
-      await client.from('friend_invites').upsert(payload);
-    } on PostgrestException {
-      await client
-          .from('friend_invites')
-          .upsert({...payload, 'status': 'pending'}..remove('status_id'));
-    }
+    await client.from('friend_invites').insert(payload);
   }
 
   @override

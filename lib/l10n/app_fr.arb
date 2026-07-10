@@ -335,6 +335,14 @@
   "friendInvitationLoadFailed": "Impossible de charger cette invitation pour le moment.",
   "friendInvitationAcceptFailed": "Impossible d'accepter cette invitation pour le moment.",
   "friendInvitationRejectFailed": "Impossible de refuser cette invitation pour le moment.",
+  "notifPermissionTitle": "Restez informé",
+  "notifPermissionEnable": "Activer les notifications",
+  "notifPermissionSkip": "Plus tard",
+  "notifPermissionReasonDebtRecorded": "Recevez un rappel à l'échéance de cette dette pour ne jamais manquer une échéance.",
+  "notifPermissionReasonAccountLinked": "Soyez averti quand votre contact lié enregistre une dépense ou une activité partagée.",
+  "notifPermissionReasonSalaryRecorded": "Recevez un rappel le jour où votre salaire est prévu pour garder votre budget à jour.",
+  "notifPermissionDeviceChangedTitle": "Nouvel appareil détecté",
+  "notifPermissionDeviceChangedBody": "Activez les notifications sur cet appareil pour continuer à recevoir vos rappels et alertes de compte partagé.",
   "friendProfileShared": "Profil partagé : {name}",
   "@friendProfileShared": {
     "placeholders": {

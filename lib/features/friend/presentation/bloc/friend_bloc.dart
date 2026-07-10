@@ -2,13 +2,16 @@ import 'dart:async';
 
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:bicount/features/friend/domain/repositories/friend_repository.dart';
+import 'package:bicount/features/notification/domain/entities/notifiable_action.dart';
+import 'package:bicount/features/notification/presentation/services/notification_permission_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'friend_event.dart';
 part 'friend_state.dart';
 
 class FriendBloc extends Bloc<FriendEvent, FriendState> {
-  FriendBloc(this.repository) : super(FriendState.initial()) {
+  FriendBloc(this.repository, {this.permissionService})
+    : super(FriendState.initial()) {
     on<FriendStarted>(_onFriendStarted);
     on<FriendCreateInviteRequested>(_onFriendCreateInviteRequested);
     on<FriendInviteCodeReceived>(_onFriendInviteCodeReceived);
@@ -21,6 +24,7 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
   }
 
   final FriendRepository repository;
+  final NotificationPermissionService? permissionService;
   StreamSubscription<FriendHubEntity>? _hubSubscription;
 
   Future<void> _onFriendStarted(
@@ -121,6 +125,10 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
       await repository.acceptInvite(invite.inviteCode);
       add(const _FriendActionSucceeded('Invitation accepted.'));
       emit(state.copyWith(invitePreview: null));
+      final service = permissionService;
+      if (service != null) {
+        unawaited(service.requestForAction(NotifiableAction.accountLinked));
+      }
     } catch (error) {
       add(_FriendActionFailed(error.toString()));
     }

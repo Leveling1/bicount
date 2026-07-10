@@ -31,10 +31,14 @@ import 'package:bicount/features/main/data/data_sources/local_datasource/local_m
 import 'package:bicount/features/main/data/data_sources/remote_datasource/main_remote_data_source_impl.dart';
 import 'package:bicount/features/main/data/repositories/main_repository_impl.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
+import 'package:bicount/core/routes/app_router.dart';
 import 'package:bicount/features/notification/data/data_sources/local_datasource/local_notification_data_source_impl.dart';
+import 'package:bicount/features/notification/data/data_sources/local_datasource/notification_permission_local_data_source_impl.dart';
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/firebase_notification_remote_data_source.dart';
+import 'package:bicount/features/notification/data/repositories/notification_permission_repository_impl.dart';
 import 'package:bicount/features/notification/data/repositories/notification_repository_impl.dart';
 import 'package:bicount/features/notification/presentation/bloc/notification_bloc.dart';
+import 'package:bicount/features/notification/presentation/services/notification_permission_service.dart';
 import 'package:bicount/features/project/data/repositories/project_repository_impl.dart';
 import 'package:bicount/features/project/presentation/bloc/project_bloc.dart';
 import 'package:bicount/features/recurring_fundings/data/data_sources/local_datasource/local_recurring_transfert_data_source_impl.dart';
@@ -115,6 +119,24 @@ List<RepositoryProvider> buildRepositoryProviders(bool enableCompanySurface) {
         ),
       ),
     ),
+    RepositoryProvider<NotificationPermissionRepositoryImpl>(
+      create: (_) => NotificationPermissionRepositoryImpl(
+        localDataSource: NotificationPermissionLocalDataSourceImpl(),
+        remoteDataSource: FirebaseNotificationRemoteDataSource(
+          messaging: FirebaseMessaging.instance,
+          supabase: Supabase.instance.client,
+          appLinks: AppLinks(),
+        ),
+        messaging: FirebaseMessaging.instance,
+        plugin: FlutterLocalNotificationsPlugin(),
+      ),
+    ),
+    RepositoryProvider<NotificationPermissionService>(
+      create: (context) => NotificationPermissionService(
+        repository: context.read<NotificationPermissionRepositoryImpl>(),
+        navigatorKey: rootNavigatorKey,
+      ),
+    ),
     if (enableCompanySurface)
       RepositoryProvider<CompanyRepositoryImpl>(
         create: (_) => CompanyRepositoryImpl(
@@ -154,8 +176,10 @@ List<BlocProvider> buildBlocProviders(bool enableCompanySurface) {
       create: (context) => HomeBloc(context.read<HomeRepositoryImpl>()),
     ),
     BlocProvider<TransactionBloc>(
-      create: (context) =>
-          TransactionBloc(context.read<TransactionRepositoryImpl>()),
+      create: (context) => TransactionBloc(
+        context.read<TransactionRepositoryImpl>(),
+        permissionService: context.read<NotificationPermissionService>(),
+      ),
     ),
     BlocProvider<AnalysisBloc>(
       create: (context) => AnalysisBloc(
@@ -164,15 +188,17 @@ List<BlocProvider> buildBlocProviders(bool enableCompanySurface) {
       )..add(const AnalysisStarted()),
     ),
     BlocProvider<FriendBloc>(
-      create: (context) =>
-          FriendBloc(context.read<FriendRepositoryImpl>())
-            ..add(const FriendStarted()),
+      create: (context) => FriendBloc(
+        context.read<FriendRepositoryImpl>(),
+        permissionService: context.read<NotificationPermissionService>(),
+      )..add(const FriendStarted()),
     ),
     BlocProvider<NotificationBloc>(
       lazy: false,
-      create: (context) =>
-          NotificationBloc(context.read<NotificationRepositoryImpl>())
-            ..add(const NotificationBootstrapRequested()),
+      create: (context) => NotificationBloc(
+        context.read<NotificationRepositoryImpl>(),
+        permissionService: context.read<NotificationPermissionService>(),
+      )..add(const NotificationBootstrapRequested()),
     ),
     if (enableCompanySurface)
       BlocProvider<CompanyBloc>(

@@ -9,6 +9,7 @@ import 'package:bicount/features/debt/data/repositories/debt_repository_impl.dar
 import 'package:bicount/features/debt/domain/entities/debt_list_scope.dart';
 import 'package:bicount/features/debt/presentation/bloc/debt_bloc.dart';
 import 'package:bicount/features/debt/presentation/screens/debt_screen.dart';
+import 'package:bicount/features/friend/presentation/screens/friend_detail_route_screen.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_invite_landing_screen.dart';
 import 'package:bicount/features/recurring_fundings/data/repositories/recurring_transfert_repository_impl.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
@@ -238,6 +239,15 @@ class AppRouter {
                     state.uri.queryParameters[AppConfig.inviteCodeQueryParam] ??
                     state.uri.queryParameters['code'] ??
                     '',
+              ),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/friend/detail',
+            pageBuilder: (context, state) => buildFadeSlideTransitionPage(
+              child: FriendDetailRouteScreen(
+                sid: state.uri.queryParameters['sid'] ?? '',
               ),
               state: state,
             ),
