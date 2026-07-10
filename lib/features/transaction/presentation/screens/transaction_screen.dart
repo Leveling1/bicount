@@ -10,6 +10,7 @@ import 'package:bicount/features/transaction/presentation/models/transaction_fee
 import 'package:bicount/features/transaction/presentation/widgets/transaction_feed_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class TransactionScreen extends StatefulWidget {
   const TransactionScreen({
@@ -56,6 +57,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
         }
       });
     }
+
+    // When focusTransactionId changes (e.g., URL cleared after a sheet opened,
+    // or a fresh notification tap arrives), reset the "already opened" marker
+    // so the next non-null id can trigger the sheet again.
+    if (oldWidget.focusTransactionId != widget.focusTransactionId) {
+      _openedFocusTransactionId = null;
+    }
   }
 
   @override
@@ -96,6 +104,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
       if (!mounted) {
         return;
       }
+      // Strip the focus query so navigating away and back does not re-open
+      // the sheet automatically.
+      GoRouter.of(context).go('/transaction');
       showTransactionFeedDetails(
         context,
         data: widget.data,
