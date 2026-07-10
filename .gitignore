@@ -46,3 +46,6 @@ app.*.map.json
 lib/core/constants/secrets.dart
 lib/core/constants/firebase_options.dart
 android/app/src/main/assets/adi-registration.properties
+.mcp.json
+skills-lock.json
+.agents

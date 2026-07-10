@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 
 class FriendScreenIntro extends StatelessWidget {
@@ -16,8 +17,9 @@ class FriendScreenIntro extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
+        AppDimens.spacerSmall,
         Text(description, style: Theme.of(context).textTheme.bodySmall),
+        AppDimens.spacerMedium,
       ],
     );
   }
