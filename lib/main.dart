@@ -46,11 +46,8 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
 }
 
 Future<void> main() async {
-  // Must be registered before WidgetsFlutterBinding / Firebase initialise so
-  // the native FCM layer can wire up the background entry-point correctly.
-  FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
-
   await bootstrapBicountApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
   await BicountHomeWidgetService.instance.initialize();
   runApp(const MyApp());
 }
