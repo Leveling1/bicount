@@ -189,6 +189,36 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authGoogleFailed => 'La connexion avec Google a échoué. Réessayez.';
 
   @override
+  String get authOtpInvalidOrExpired => 'Ce code est invalide ou a expiré. Veuillez en demander un nouveau.';
+
+  @override
+  String get authEmailRateLimit => 'Trop de tentatives. Veuillez patienter avant de réessayer.';
+
+  @override
+  String get authInvalidEmailFormat => 'Veuillez saisir une adresse email valide.';
+
+  @override
+  String get authAppleMissingToken => 'La connexion Apple n\'a pas fourni le jeton d\'identité nécessaire.';
+
+  @override
+  String get authAppleCancelled => 'La connexion Apple a été annulée.';
+
+  @override
+  String get authAppleFailed => 'La connexion Apple a échoué. Veuillez réessayer.';
+
+  @override
+  String get authAccountPreparationFailed => 'Une erreur est survenue lors de la préparation de votre compte. Veuillez réessayer.';
+
+  @override
+  String get authOtpRateLimit => 'Veuillez patienter avant de demander un nouveau code.';
+
+  @override
+  String get authUserNotFound => 'Aucun compte ne correspond à cette adresse email.';
+
+  @override
+  String get authSessionExpired => 'Votre session a expiré. Veuillez vous reconnecter.';
+
+  @override
   String get authUnifiedTitle => 'Gérez votre argent';
 
   @override

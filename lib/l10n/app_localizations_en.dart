@@ -189,6 +189,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authGoogleFailed => 'Google sign-in failed. Please try again.';
 
   @override
+  String get authOtpInvalidOrExpired => 'This code is invalid or has expired. Please request a new one.';
+
+  @override
+  String get authEmailRateLimit => 'Too many requests. Please wait a moment before trying again.';
+
+  @override
+  String get authInvalidEmailFormat => 'Please enter a valid email address.';
+
+  @override
+  String get authAppleMissingToken => 'Apple sign-in didn\'t return the identity token needed to continue.';
+
+  @override
+  String get authAppleCancelled => 'Apple sign-in was cancelled.';
+
+  @override
+  String get authAppleFailed => 'Apple sign-in failed. Please try again.';
+
+  @override
+  String get authAccountPreparationFailed => 'An error occurred while preparing your account. Please try again.';
+
+  @override
+  String get authOtpRateLimit => 'Please wait a moment before requesting a new code.';
+
+  @override
+  String get authUserNotFound => 'No account matches this email address.';
+
+  @override
+  String get authSessionExpired => 'Your session has expired. Please sign in again.';
+
+  @override
   String get authUnifiedTitle => 'Manage your money';
 
   @override

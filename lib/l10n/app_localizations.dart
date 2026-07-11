@@ -455,6 +455,66 @@ abstract class AppLocalizations {
   /// **'Google sign-in failed. Please try again.'**
   String get authGoogleFailed;
 
+  /// No description provided for @authOtpInvalidOrExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This code is invalid or has expired. Please request a new one.'**
+  String get authOtpInvalidOrExpired;
+
+  /// No description provided for @authEmailRateLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests. Please wait a moment before trying again.'**
+  String get authEmailRateLimit;
+
+  /// No description provided for @authInvalidEmailFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address.'**
+  String get authInvalidEmailFormat;
+
+  /// No description provided for @authAppleMissingToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple sign-in didn\'t return the identity token needed to continue.'**
+  String get authAppleMissingToken;
+
+  /// No description provided for @authAppleCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple sign-in was cancelled.'**
+  String get authAppleCancelled;
+
+  /// No description provided for @authAppleFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple sign-in failed. Please try again.'**
+  String get authAppleFailed;
+
+  /// No description provided for @authAccountPreparationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while preparing your account. Please try again.'**
+  String get authAccountPreparationFailed;
+
+  /// No description provided for @authOtpRateLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait a moment before requesting a new code.'**
+  String get authOtpRateLimit;
+
+  /// No description provided for @authUserNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No account matches this email address.'**
+  String get authUserNotFound;
+
+  /// No description provided for @authSessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session has expired. Please sign in again.'**
+  String get authSessionExpired;
+
   /// No description provided for @authUnifiedTitle.
   ///
   /// In en, this message translates to:

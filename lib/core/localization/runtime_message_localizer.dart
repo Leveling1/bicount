@@ -147,15 +147,70 @@ String localizeRuntimeMessage(BuildContext context, String message) {
     case 'Google sign-in cancelled.':
     case 'Connexion Google annulee':
       return context.l10n.authGoogleCancelled;
+    case 'Token has expired or is invalid':
+    case 'Token has expired':
+    case 'Invalid token':
+    case 'OTP expired':
+    case 'Email link is invalid or has expired':
+    case 'otp_expired':
+    case 'invalid_otp':
+      return context.l10n.authOtpInvalidOrExpired;
+    case 'Email rate limit exceeded':
+    case 'over_email_send_rate_limit':
+      return context.l10n.authEmailRateLimit;
+    case 'Unable to validate email address: invalid format':
+    case 'invalid_email':
+      return context.l10n.authInvalidEmailFormat;
+    case 'Could not find ID Token from generated credential.':
+      return context.l10n.authAppleMissingToken;
+    case 'Sign in with Apple was cancelled':
+    case 'AuthorizationErrorCode.canceled':
+      return context.l10n.authAppleCancelled;
+    case 'An error occurred while preparing your account.':
+      return context.l10n.authAccountPreparationFailed;
+    case 'User not found':
+    case 'user_not_found':
+      return context.l10n.authUserNotFound;
+    case 'Session expired':
+    case 'JWT expired':
+    case 'session_not_found':
+      return context.l10n.authSessionExpired;
   }
 
-  if (normalized.toLowerCase().contains('reseau') ||
-      normalized.toLowerCase().contains('network')) {
+  final lower = normalized.toLowerCase();
+
+  if (lower.contains('reseau') || lower.contains('network')) {
     return context.l10n.authNetworkError;
+  }
+
+  if (RegExp(
+    r'for security purposes.*after\s+\d+\s+seconds?',
+    caseSensitive: false,
+  ).hasMatch(normalized)) {
+    return context.l10n.authOtpRateLimit;
+  }
+
+  if (lower.contains('rate limit') || lower.contains('too many requests')) {
+    return context.l10n.authEmailRateLimit;
+  }
+
+  if (lower.startsWith('local sign out failed')) {
+    return context.l10n.authGenericSignOutError;
+  }
+
+  if (lower.startsWith('authorizationerrorcode.canceled') ||
+      lower.contains('sign in with apple was cancelled')) {
+    return context.l10n.authAppleCancelled;
   }
 
   if (normalized.startsWith('Error fetching ')) {
     return context.l10n.runtimeDataLoadFailed;
+  }
+
+  if (normalized.startsWith('Exception: ') ||
+      normalized.startsWith('AuthException(') ||
+      normalized.startsWith('AuthApiException(')) {
+    return context.l10n.runtimeUnexpectedError;
   }
 
   return message;

@@ -53,9 +53,7 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
 
       if (remoteResult.isLeft()) {
         final failure = remoteResult.swap().getOrElse(() => throw Exception());
-        return Left(
-          AuthenticationFailure(message: 'Erreur : ${failure.message}'),
-        );
+        return Left(AuthenticationFailure(message: failure.message));
       }
 
       final authResponse = remoteResult.getOrElse(() => throw Exception());
@@ -72,11 +70,7 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
       if (e is AuthApiException) {
         return Left(AuthenticationFailure(message: e.message));
       }
-      return Left(
-        AuthenticationFailure(
-          message: 'Erreur lors de l\'authentification : $e',
-        ),
-      );
+      return Left(AuthenticationFailure(message: e.toString()));
     }
   }
 

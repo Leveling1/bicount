@@ -22,7 +22,7 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
   ) async {
     tz.initializeTimeZones();
     const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@drawable/ic_notification',
     );
     const iosSettings = DarwinInitializationSettings();
 
