@@ -36,25 +36,24 @@ class NotificationPermissionRepositoryImpl
 
   @override
   Future<bool> requestOsPermission() async {
-    // Delegate the FCM-side request to the remote data source so the
-    // `all_users` topic membership stays in sync.
-    await remoteDataSource.requestPermission();
+    // Use the result directly from requestPermission() rather than a
+    // separate getNotificationSettings() call — on iOS the latter can
+    // return stale data immediately after the native dialog is dismissed.
+    final settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+      provisional: false,
+    );
 
-    // Ensure the local notifications plugin also has the OS permission
-    // needed to display scheduled reminders (Android 13+ POST_NOTIFICATIONS
-    // and iOS notification authorization).
+    // Android 13+ needs a runtime POST_NOTIFICATIONS grant for local
+    // notifications (scheduled reminders, foreground alerts).
     await plugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >()
         ?.requestNotificationsPermission();
-    await plugin
-        .resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin
-        >()
-        ?.requestPermissions(alert: true, badge: true, sound: true);
 
-    final settings = await messaging.getNotificationSettings();
     return _isAuthorized(settings.authorizationStatus);
   }
 

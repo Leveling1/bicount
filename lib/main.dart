@@ -1,4 +1,3 @@
-import 'dart:ui' show Color;
 import 'package:bicount/app/bicount_app.dart';
 import 'package:bicount/core/home_widget/bicount_home_widget_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
