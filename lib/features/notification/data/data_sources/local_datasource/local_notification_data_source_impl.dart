@@ -24,7 +24,11 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
     const androidSettings = AndroidInitializationSettings(
       '@drawable/ic_notification',
     );
-    const iosSettings = DarwinInitializationSettings();
+    const iosSettings = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestSoundPermission: false,
+      requestBadgePermission: false,
+    );
 
     await plugin.initialize(
       const InitializationSettings(android: androidSettings, iOS: iosSettings),
