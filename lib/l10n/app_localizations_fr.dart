@@ -475,6 +475,27 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsSectionAppearance => 'Apparence';
 
   @override
+  String get settingsSectionLegal => 'Informations légales';
+
+  @override
+  String get settingsConsumerTermsTitle => 'Conditions de consommateur';
+
+  @override
+  String get settingsConsumerTermsDescription => 'Lisez nos conditions générales.';
+
+  @override
+  String get settingsUsagePolicyTitle => 'Politique d\'utilisation';
+
+  @override
+  String get settingsUsagePolicyDescription => 'Découvrez notre politique d\'utilisation.';
+
+  @override
+  String get settingsPrivacyPolicyTitle => 'Politique de confidentialité';
+
+  @override
+  String get settingsPrivacyPolicyDescription => 'Comprenez comment nous protégeons vos données.';
+
+  @override
   String get settingsSectionSecurity => 'Sécurité';
 
   @override

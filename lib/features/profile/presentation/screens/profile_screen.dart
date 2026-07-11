@@ -45,7 +45,7 @@ class ProfileScreen extends StatelessWidget {
         SliverPadding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppDimens.paddingMedium,
-            vertical: AppDimens.paddingSmall,
+            //vertical: AppDimens.paddingSmall,
           ),
           sliver: SliverPersistentHeader(
             pinned: true,

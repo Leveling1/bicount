@@ -31,34 +31,31 @@ class ProfileCard extends StatelessWidget {
         splashColor: Colors.transparent,
         highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          child: Center(
-            child: Column(
-              children: [
-                AppAvatar(image: image, radius: 40),
-                const SizedBox(height: 12),
-                Text(
-                  capitalizeFirstLetter(name),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 4),
-                Text(email, style: Theme.of(context).textTheme.titleSmall),
-                const SizedBox(height: 4),
-                Text(
-                  NumberFormatUtils.formatCurrency(balance ?? 0.0),
-                  style: (balance ?? 0.0) >= 0
-                      ? Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        )
-                      : Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                        ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+        child: Center(
+          child: Column(
+            children: [
+              AppAvatar(image: image, radius: 40),
+              const SizedBox(height: 12),
+              Text(
+                capitalizeFirstLetter(name),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 4),
+              Text(email, style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 4),
+              Text(
+                NumberFormatUtils.formatCurrency(balance ?? 0.0),
+                style: (balance ?? 0.0) >= 0
+                    ? Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      )
+                    : Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),

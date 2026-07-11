@@ -1019,6 +1019,48 @@ abstract class AppLocalizations {
   /// **'Appearance'**
   String get settingsSectionAppearance;
 
+  /// No description provided for @settingsSectionLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal information'**
+  String get settingsSectionLegal;
+
+  /// No description provided for @settingsConsumerTermsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Consumer terms'**
+  String get settingsConsumerTermsTitle;
+
+  /// No description provided for @settingsConsumerTermsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Read our consumer terms and conditions.'**
+  String get settingsConsumerTermsDescription;
+
+  /// No description provided for @settingsUsagePolicyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage policy'**
+  String get settingsUsagePolicyTitle;
+
+  /// No description provided for @settingsUsagePolicyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn about our usage policy.'**
+  String get settingsUsagePolicyDescription;
+
+  /// No description provided for @settingsPrivacyPolicyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get settingsPrivacyPolicyTitle;
+
+  /// No description provided for @settingsPrivacyPolicyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Understand how we protect your data.'**
+  String get settingsPrivacyPolicyDescription;
+
   /// No description provided for @settingsSectionSecurity.
   ///
   /// In en, this message translates to:

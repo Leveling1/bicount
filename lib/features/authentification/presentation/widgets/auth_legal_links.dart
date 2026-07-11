@@ -1,7 +1,7 @@
 import 'package:bicount/core/constants/app_config.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/services/open_url.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AuthLegalLinks extends StatelessWidget {
   const AuthLegalLinks({super.key});
@@ -57,7 +57,7 @@ class _InlineLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => _open(url),
+      onPressed: () => open(url),
       style: TextButton.styleFrom(
         minimumSize: Size.zero,
         padding: const EdgeInsets.symmetric(horizontal: 2),
@@ -66,10 +66,5 @@ class _InlineLink extends StatelessWidget {
       ),
       child: Text(label, style: style),
     );
-  }
-
-  Future<void> _open(String rawUrl) async {
-    final uri = Uri.parse(rawUrl);
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }

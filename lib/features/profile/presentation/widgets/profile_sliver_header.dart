@@ -25,7 +25,7 @@ class ProfileSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => 84;
 
   @override
-  double get maxExtent => 210;
+  double get maxExtent => 240;
 
   @override
   Widget build(

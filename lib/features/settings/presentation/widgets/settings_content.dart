@@ -1,5 +1,7 @@
+import 'package:bicount/core/constants/app_config.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
+import 'package:bicount/core/services/open_url.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
@@ -126,10 +128,39 @@ class SettingsContent extends StatelessWidget {
                               '${currencyState.config.referenceCurrencyCode} · '
                               '${currencyState.config.currencyFor(currencyState.config.referenceCurrencyCode).symbol}',
                           isLoading: currencyState.isSyncing,
-                          onTap: () =>
-                              showCurrencySettingsSheet(context, currencyState, data.connectionState),
+                          onTap: () => showCurrencySettingsSheet(
+                            context,
+                            currencyState,
+                            data.connectionState,
+                          ),
                         );
                       },
+                    ),
+                  ],
+                ),
+              ),
+              BicountReveal(
+                delay: const Duration(milliseconds: 130),
+                child: SettingsSection(
+                  title: context.l10n.settingsSectionLegal,
+                  children: [
+                    SettingsActionTile(
+                      icon: Icons.article_outlined,
+                      title: context.l10n.settingsConsumerTermsTitle,
+                      subtitle: context.l10n.settingsConsumerTermsDescription,
+                      onTap: () => open(AppConfig.consumerTermsUrl),
+                    ),
+                    SettingsActionTile(
+                      icon: Icons.assignment_outlined,
+                      title: context.l10n.settingsUsagePolicyTitle,
+                      subtitle: context.l10n.settingsUsagePolicyDescription,
+                      onTap: () => open(AppConfig.usagePolicyUrl),
+                    ),
+                    SettingsActionTile(
+                      icon: Icons.privacy_tip_outlined,
+                      title: context.l10n.settingsPrivacyPolicyTitle,
+                      subtitle: context.l10n.settingsPrivacyPolicyDescription,
+                      onTap: () => open(AppConfig.privacyPolicyUrl),
                     ),
                   ],
                 ),

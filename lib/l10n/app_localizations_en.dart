@@ -475,6 +475,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSectionAppearance => 'Appearance';
 
   @override
+  String get settingsSectionLegal => 'Legal information';
+
+  @override
+  String get settingsConsumerTermsTitle => 'Consumer terms';
+
+  @override
+  String get settingsConsumerTermsDescription => 'Read our consumer terms and conditions.';
+
+  @override
+  String get settingsUsagePolicyTitle => 'Usage policy';
+
+  @override
+  String get settingsUsagePolicyDescription => 'Learn about our usage policy.';
+
+  @override
+  String get settingsPrivacyPolicyTitle => 'Privacy policy';
+
+  @override
+  String get settingsPrivacyPolicyDescription => 'Understand how we protect your data.';
+
+  @override
   String get settingsSectionSecurity => 'Security';
 
   @override
