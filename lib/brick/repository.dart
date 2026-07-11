@@ -100,6 +100,71 @@ class Repository extends OfflineFirstWithSupabaseRepository {
     );
   }
 
+  Future<void> ensureCoreTablesExist() async {
+    final databasePath = path.join(
+      await _databaseFactory.getDatabasesPath(),
+      _sqliteDatabaseName,
+    );
+    final database = await _openRepairDatabase(databasePath);
+
+    try {
+      final hasAnyTable = await _tableExists(database, 'UserModel') ||
+          await _tableExists(database, 'TransactionModel');
+      if (hasAnyTable) {
+        return;
+      }
+
+      for (final table in schema.tables) {
+        final columnDefs = <String>[];
+        for (final column in table.columns) {
+          final buffer = StringBuffer(
+            '`${column.name}` ${column.columnType.definition}',
+          );
+          if (column.isPrimaryKey) {
+            buffer.write(' PRIMARY KEY');
+            if (column.autoincrement) {
+              buffer.write(' AUTOINCREMENT');
+            }
+          }
+          if (!column.nullable && !column.isPrimaryKey) {
+            buffer.write(' NOT NULL');
+          }
+          if (column.unique && !column.isPrimaryKey) {
+            buffer.write(' UNIQUE');
+          }
+          columnDefs.add(buffer.toString());
+        }
+
+        await database.execute(
+          'CREATE TABLE IF NOT EXISTS `${table.name}` '
+          '(${columnDefs.join(', ')})',
+        );
+
+        for (final index in table.indices) {
+          final indexName =
+              'index_${table.name}_on_${index.columns.join('_')}';
+          final uniqueKeyword = index.unique ? 'UNIQUE ' : '';
+          final cols = index.columns.map((c) => '`$c`').join(', ');
+          await database.execute(
+            'CREATE ${uniqueKeyword}INDEX IF NOT EXISTS '
+            '`$indexName` ON `${table.name}` ($cols)',
+          );
+        }
+      }
+
+      await _ensureMigrationVersionsTable(database);
+      for (final migration in migrations) {
+        await database.rawInsert(
+          'INSERT OR IGNORE INTO '
+          '$_brickMigrationVersionsTableName(version) VALUES(?)',
+          [migration.version],
+        );
+      }
+    } finally {
+      await database.close();
+    }
+  }
+
   Future<void> repairCoreColumnsMigrationStateIfNeeded() async {
     final databasePath = path.join(
       await _databaseFactory.getDatabasesPath(),
