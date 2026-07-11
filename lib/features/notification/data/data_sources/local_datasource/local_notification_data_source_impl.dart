@@ -1,3 +1,5 @@
+import 'dart:ui' show Color;
+
 import 'package:bicount/features/notification/data/data_sources/local_datasource/notification_local_datasource.dart';
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -109,6 +111,7 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
           channelDescription: 'Reminders for upcoming subscription charges',
           importance: Importance.high,
           priority: Priority.high,
+          color: const Color(0xFF132318),
         ),
         iOS: const DarwinNotificationDetails(),
       ),
@@ -132,6 +135,7 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
           channelDescription: 'Foreground alerts for Bicount activity',
           importance: Importance.max,
           priority: Priority.high,
+          color: const Color(0xFF132318),
         ),
         iOS: const DarwinNotificationDetails(),
       ),
