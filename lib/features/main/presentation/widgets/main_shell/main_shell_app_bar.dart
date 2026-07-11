@@ -1,6 +1,7 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/custom_badge.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -79,27 +80,11 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 class _OfflineBadge extends StatelessWidget {
   const _OfflineBadge();
-
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 15, bottom: 15),
-      child: Container(
-        height: 24,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.error.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-        child: Text(
-          context.l10n.shellOfflineBadge,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.error,
-            fontSize: 11,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
+    return CustomBadge(
+      text: context.l10n.shellOfflineBadge,
+      color: Theme.of(context).colorScheme.error,
     );
   }
 }
