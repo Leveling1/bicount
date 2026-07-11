@@ -47,6 +47,22 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
         );
       },
     );
+
+    // Create the channel referenced in AndroidManifest so FCM remote
+    // notification-field messages land in a properly configured channel
+    // (Android 8+ requires the channel to exist before it can be used).
+    await plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.createNotificationChannel(
+          const AndroidNotificationChannel(
+            'bicount_background',
+            'Bicount',
+            description: 'Bicount notifications',
+            importance: Importance.high,
+          ),
+        );
   }
 
   @override
