@@ -20,7 +20,8 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
   @override
   Future<void> requestEmailOtp(String email) async {
     if (email == TestAccount.appleEmailTest ||
-        email == TestAccount.googleEmailTest) {
+        email == TestAccount.googleEmailTest ||
+        email == TestAccount.userEmailTest) {
       return;
     }
     await supabaseClient.auth.signInWithOtp(
@@ -34,7 +35,8 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
     if (email == TestAccount.appleEmailTest &&
             code == TestAccount.appleOtpTest ||
         email == TestAccount.googleEmailTest &&
-            code == TestAccount.googleOtpTest) {
+            code == TestAccount.googleOtpTest ||
+        email == TestAccount.userEmailTest && code == TestAccount.userOtpTest) {
       await connectionTest(email);
       return;
     }
@@ -100,7 +102,9 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
       final googleUser = await googleSignIn.authenticate();
 
       if (googleUser == null) {
-        return Left(AuthenticationFailure(message: 'Google sign-in cancelled.'));
+        return Left(
+          AuthenticationFailure(message: 'Google sign-in cancelled.'),
+        );
       }
 
       final authorization =
@@ -168,7 +172,9 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
   Future<void> connectionTest(String email) async {
     final String password = email == TestAccount.appleEmailTest
         ? TestAccount.appleMpTest
-        : TestAccount.googleMpTest;
+        : email == TestAccount.googleEmailTest
+        ? TestAccount.googleMpTest
+        : TestAccount.userMpTest;
     try {
       await supabaseClient.auth.signInWithPassword(
         email: email,
