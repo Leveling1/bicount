@@ -377,6 +377,7 @@
   "statusActive": "Active",
   "statusInactive": "Inactive",
   "transactionNoTransactionsFound": "No transactions recorded",
+  "transactionDetailExternalBadge": "Linked account",
   "transactionToday": "Today",
   "transactionYesterday": "Yesterday",
   "transactionFilterAll": "All",

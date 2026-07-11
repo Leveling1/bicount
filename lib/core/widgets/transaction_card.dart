@@ -1,8 +1,12 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/services/transaction_direction_service.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
+import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,11 +24,17 @@ class TransactionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final supabaseInstance = Supabase.instance.client;
     late String uid = supabaseInstance.auth.currentUser!.id;
-    String sign = transaction.sender == uid
-        ? '-'
-        : transaction.beneficiary == uid
-        ? '+'
-        : '';
+    final mainState = context.watch<MainBloc>().state;
+    final friends = mainState is MainLoaded
+        ? mainState.startData.friends
+        : const <FriendsModel>[];
+    const directionService = TransactionDirectionService();
+    final direction = directionService.resolveFromEntity(
+      transaction: transaction,
+      currentUserId: uid,
+      friends: friends,
+    );
+    final sign = direction.symbol;
 
     Color? color = sign == "+"
         ? AppColors.primaryColorDark

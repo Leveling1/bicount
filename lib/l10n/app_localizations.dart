@@ -2075,6 +2075,12 @@ abstract class AppLocalizations {
   /// **'No transactions recorded'**
   String get transactionNoTransactionsFound;
 
+  /// No description provided for @transactionDetailExternalBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked account'**
+  String get transactionDetailExternalBadge;
+
   /// No description provided for @transactionToday.
   ///
   /// In en, this message translates to:

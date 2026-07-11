@@ -667,7 +667,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsCurrencyUpdatedSuccess => 'Devise de référence mise à jour.';
 
   @override
-  String get settingsCurrencyUpdatedOfflineError => 'Vous devez être connecté pour modifier la devise de référence.';
+  String get settingsCurrencyUpdatedOfflineError => 'Vous devez être connecté pour modifier la devise par défaut.';
 
   @override
   String get settingsDeleteRequestedSuccess => 'Votre demande de suppression de compte a bien été envoyée.';
@@ -929,23 +929,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notifPermissionSkip => 'Plus tard';
 
   @override
-  String get notifPermissionReasonDebtRecorded =>
-      'Recevez un rappel à l\'échéance de cette dette pour ne jamais manquer une échéance.';
+  String get notifPermissionReasonDebtRecorded => 'Recevez un rappel à l\'échéance de cette dette pour ne jamais manquer une échéance.';
 
   @override
-  String get notifPermissionReasonAccountLinked =>
-      'Soyez averti quand votre contact lié enregistre une dépense ou une activité partagée.';
+  String get notifPermissionReasonAccountLinked => 'Soyez averti quand votre contact lié enregistre une dépense ou une activité partagée.';
 
   @override
-  String get notifPermissionReasonSalaryRecorded =>
-      'Recevez un rappel le jour où votre salaire est prévu pour garder votre budget à jour.';
+  String get notifPermissionReasonSalaryRecorded => 'Recevez un rappel le jour où votre salaire est prévu pour garder votre budget à jour.';
 
   @override
   String get notifPermissionDeviceChangedTitle => 'Nouvel appareil détecté';
 
   @override
-  String get notifPermissionDeviceChangedBody =>
-      'Activez les notifications sur cet appareil pour continuer à recevoir vos rappels et alertes de compte partagé.';
+  String get notifPermissionDeviceChangedBody => 'Activez les notifications sur cet appareil pour continuer à recevoir vos rappels et alertes de compte partagé.';
 
   @override
   String friendProfileShared(Object name) {
@@ -1019,6 +1015,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get transactionNoTransactionsFound => 'Aucune transaction enregistrée';
+
+  @override
+  String get transactionDetailExternalBadge => 'Compte lié';
 
   @override
   String get transactionToday => 'Aujourd\'hui';

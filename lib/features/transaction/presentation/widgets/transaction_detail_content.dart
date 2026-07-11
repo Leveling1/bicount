@@ -1,12 +1,14 @@
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/services/transaction_direction_service.dart';
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
+import 'package:bicount/core/widgets/custom_badge.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_detail_args.dart';
@@ -35,6 +37,8 @@ class TransactionDetailContent extends StatelessWidget {
   final VoidCallback? onEditPressed;
   static const TransactionParticipantIdentityService _identityService =
       TransactionParticipantIdentityService();
+  static const TransactionDirectionService _directionService =
+      TransactionDirectionService(identityService: _identityService);
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +48,12 @@ class TransactionDetailContent extends StatelessWidget {
     final formattedDate = formatedDate(data.date);
     final formattedTime = formatedTime(data.date);
     final formattedCreatedDateTime = formatedDateTime(data.createdAt!);
-    final sign = data.sender == uid
-        ? '-'
-        : data.beneficiary == uid
-        ? '+'
-        : '';
+    final direction = _directionService.resolveFromEntity(
+      transaction: data,
+      currentUserId: uid,
+      friends: transaction.friends,
+    );
+    final sign = direction.symbol;
 
     final currentUser = FriendsModel(
       sid: transaction.user.uid,
@@ -84,12 +89,23 @@ class TransactionDetailContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (canManage)
-                  TransactionDetailActions(
-                    iconSize: iconSize,
-                    isLoading: isLoading,
-                    onDeletePressed: onDeletePressed,
-                    onEditPressed: onEditPressed,
+                if (direction.isExternal || canManage)
+                  Row(
+                    children: [
+                      if (direction.isExternal)
+                        CustomBadge(
+                          text: context.l10n.transactionDetailExternalBadge,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      const Spacer(),
+                      if (canManage)
+                        TransactionDetailActions(
+                          iconSize: iconSize,
+                          isLoading: isLoading,
+                          onDeletePressed: onDeletePressed,
+                          onEditPressed: onEditPressed,
+                        ),
+                    ],
                   ),
                 CircleAvatar(
                   backgroundColor: Theme.of(context).cardColor,

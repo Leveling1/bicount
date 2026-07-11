@@ -377,6 +377,7 @@
   "statusActive": "Actif",
   "statusInactive": "Inactif",
   "transactionNoTransactionsFound": "Aucune transaction enregistrée",
+  "transactionDetailExternalBadge": "Compte lié",
   "transactionToday": "Aujourd'hui",
   "transactionYesterday": "Hier",
   "transactionFilterAll": "Tout",

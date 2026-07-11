@@ -55,6 +55,7 @@ class ProfileCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: Colors.red,
                         ),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
