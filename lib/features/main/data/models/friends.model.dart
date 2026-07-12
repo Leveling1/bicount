@@ -14,19 +14,23 @@ class FriendsModel extends OfflineFirstWithSupabaseModel {
   final String image;
   final String username;
   final String email;
+
+  @Supabase(ignore: true)
   final double? give;
+
+  @Supabase(ignore: true)
   final double? receive;
 
   @Supabase(name: 'relation_type')
   @Sqlite()
   final int relationType;
 
-  @Supabase(name: 'personal_income')
-  @Sqlite()
+  @Supabase(ignore: true)
+  @Sqlite(name: 'personal_income')
   final double? personalIncome;
 
-  @Supabase(name: 'company_income')
-  @Sqlite()
+  @Supabase(ignore: true)
+  @Sqlite(name: 'company_income')
   final double? companyIncome;
 
   @Supabase(unique: true, name: 'sid')

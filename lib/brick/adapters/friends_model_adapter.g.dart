@@ -12,15 +12,7 @@ Future<FriendsModel> _$FriendsModelFromSupabase(
     image: data['image'] as String,
     username: data['username'] as String,
     email: data['email'] as String,
-    give: data['give'] == null ? null : data['give'] as double?,
-    receive: data['receive'] == null ? null : data['receive'] as double?,
     relationType: data['relation_type'] as int,
-    personalIncome: data['personal_income'] == null
-        ? null
-        : data['personal_income'] as double?,
-    companyIncome: data['company_income'] == null
-        ? null
-        : data['company_income'] as double?,
     sid: data['sid'] as String?,
   );
 }
@@ -36,11 +28,7 @@ Future<Map<String, dynamic>> _$FriendsModelToSupabase(
     'image': instance.image,
     'username': instance.username,
     'email': instance.email,
-    'give': instance.give,
-    'receive': instance.receive,
     'relation_type': instance.relationType,
-    'personal_income': instance.personalIncome,
-    'company_income': instance.companyIncome,
     'sid': instance.sid,
   };
 }
@@ -120,25 +108,9 @@ class FriendsModelAdapter
       association: false,
       columnName: 'email',
     ),
-    'give': const RuntimeSupabaseColumnDefinition(
-      association: false,
-      columnName: 'give',
-    ),
-    'receive': const RuntimeSupabaseColumnDefinition(
-      association: false,
-      columnName: 'receive',
-    ),
     'relationType': const RuntimeSupabaseColumnDefinition(
       association: false,
       columnName: 'relation_type',
-    ),
-    'personalIncome': const RuntimeSupabaseColumnDefinition(
-      association: false,
-      columnName: 'personal_income',
-    ),
-    'companyIncome': const RuntimeSupabaseColumnDefinition(
-      association: false,
-      columnName: 'company_income',
     ),
     'sid': const RuntimeSupabaseColumnDefinition(
       association: false,
