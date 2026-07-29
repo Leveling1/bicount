@@ -1,8 +1,6 @@
 import 'package:bicount/features/authentification/domain/repositories/authentification_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '/core/errors/failure.dart';
-
 part 'authentification_event.dart';
 
 part 'authentification_state.dart';

@@ -58,6 +58,14 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       return existing.stream;
     }
 
+    // Sign-out (including the account-deletion flow) can clear the session
+    // and reset the cached subject via the auth-state listener above before
+    // a still-mounted screen asks for user details again. Without this
+    // guard, the `uid` getter force-unwraps a null `currentUser` and throws.
+    if (supabaseInstance.auth.currentUser == null) {
+      return Stream.value(_buildSessionFallbackUser());
+    }
+
     try {
       final subject = BehaviorSubject<UserModel>.seeded(
         _buildSessionFallbackUser(),
@@ -163,7 +171,9 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
   @override
   Future<void> forceHydrate() async {
     final userSubject = _userSubject;
-    if (userSubject != null && !userSubject.isClosed) {
+    if (userSubject != null &&
+        !userSubject.isClosed &&
+        supabaseInstance.auth.currentUser != null) {
       final query = Query(where: [Where.exact('uid', uid)]);
       await primeUserSubject(userSubject, query);
     }
