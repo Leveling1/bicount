@@ -64,36 +64,41 @@ class MainFinanceProjectionService {
     CurrencyConfigEntity currencyConfig,
     Set<String> currentUserParticipantIds,
   ) {
-    double balance = 0;
-    double incomes = 0;
-    double expenses = 0;
-    double personalIncome = 0;
-    double companyIncome = 0;
+    // Net native (unconverted) amounts per currency first, then convert each
+    // currency's net total exactly once. Converting every transaction
+    // individually (each potentially using a different historical/cached FX
+    // rate) before summing can leave a false non-zero residue even when the
+    // underlying foreign-currency flows cancel out exactly.
+    final balanceByCurrency = <String, double>{};
+    final incomesByCurrency = <String, double>{};
+    final expensesByCurrency = <String, double>{};
+    final personalIncomeByCurrency = <String, double>{};
+    final companyIncomeByCurrency = <String, double>{};
 
     for (final transaction in transactions) {
-      final amount = currencyAmountService.transaction(
-        transaction,
-        currencyConfig,
+      final currencyCode = CurrencyConfigEntity.normalizeCode(
+        transaction.currency,
       );
+      final nativeAmount = transaction.amount;
       final category = transaction.category ?? Constants.personal;
 
       if (currentUserParticipantIds.contains(transaction.senderId)) {
-        balance -= amount;
-        expenses += amount;
+        _addNative(balanceByCurrency, currencyCode, -nativeAmount);
+        _addNative(expensesByCurrency, currencyCode, nativeAmount);
         if (category == Constants.personal) {
-          personalIncome -= amount;
+          _addNative(personalIncomeByCurrency, currencyCode, -nativeAmount);
         } else if (category == Constants.company) {
-          companyIncome -= amount;
+          _addNative(companyIncomeByCurrency, currencyCode, -nativeAmount);
         }
       }
 
       if (currentUserParticipantIds.contains(transaction.beneficiaryId)) {
-        balance += amount;
-        incomes += amount;
+        _addNative(balanceByCurrency, currencyCode, nativeAmount);
+        _addNative(incomesByCurrency, currencyCode, nativeAmount);
         if (category == Constants.personal) {
-          personalIncome += amount;
+          _addNative(personalIncomeByCurrency, currencyCode, nativeAmount);
         } else if (category == Constants.company) {
-          companyIncome += amount;
+          _addNative(companyIncomeByCurrency, currencyCode, nativeAmount);
         }
       }
     }
@@ -103,13 +108,43 @@ class MainFinanceProjectionService {
       image: user.image,
       username: user.username,
       email: user.email,
-      balance: balance,
-      incomes: incomes,
-      expenses: expenses,
-      companyIncome: companyIncome,
-      personalIncome: personalIncome,
+      balance: _convertNetByCurrency(balanceByCurrency, currencyConfig),
+      incomes: _convertNetByCurrency(incomesByCurrency, currencyConfig),
+      expenses: _convertNetByCurrency(expensesByCurrency, currencyConfig),
+      companyIncome: _convertNetByCurrency(
+        companyIncomeByCurrency,
+        currencyConfig,
+      ),
+      personalIncome: _convertNetByCurrency(
+        personalIncomeByCurrency,
+        currencyConfig,
+      ),
       referenceCurrencyCode: user.referenceCurrencyCode,
     );
+  }
+
+  void _addNative(
+    Map<String, double> nativeAmountsByCurrency,
+    String currencyCode,
+    double delta,
+  ) {
+    nativeAmountsByCurrency[currencyCode] =
+        (nativeAmountsByCurrency[currencyCode] ?? 0) + delta;
+  }
+
+  double _convertNetByCurrency(
+    Map<String, double> nativeAmountsByCurrency,
+    CurrencyConfigEntity currencyConfig,
+  ) {
+    var total = 0.0;
+    for (final entry in nativeAmountsByCurrency.entries) {
+      total += currencyAmountService.record(
+        originalAmount: entry.value,
+        originalCurrencyCode: entry.key,
+        config: currencyConfig,
+      );
+    }
+    return total;
   }
 
   List<FriendsModel> _deriveFriends({
@@ -131,14 +166,15 @@ class MainFinanceProjectionService {
 
     for (final transaction in transactions) {
       final category = transaction.category ?? Constants.personal;
+      final currencyCode = CurrencyConfigEntity.normalizeCode(
+        transaction.currency,
+      );
 
       if (!currentUserParticipantIds.contains(transaction.senderId)) {
         final sender = aggregatesById[transaction.senderId];
         sender?.apply(
-          amount: currencyAmountService.transaction(
-            transaction,
-            currencyConfig,
-          ),
+          nativeAmount: transaction.amount,
+          currencyCode: currencyCode,
           category: category,
           isSender: true,
         );
@@ -147,10 +183,8 @@ class MainFinanceProjectionService {
       if (!currentUserParticipantIds.contains(transaction.beneficiaryId)) {
         final beneficiary = aggregatesById[transaction.beneficiaryId];
         beneficiary?.apply(
-          amount: currencyAmountService.transaction(
-            transaction,
-            currencyConfig,
-          ),
+          nativeAmount: transaction.amount,
+          currencyCode: currencyCode,
           category: category,
           isSender: false,
         );
@@ -158,7 +192,10 @@ class MainFinanceProjectionService {
     }
 
     return friends
-        .map((friend) => aggregatesById[friend.sid]!.toModel())
+        .map(
+          (friend) =>
+              aggregatesById[friend.sid]!.toModel(this, currencyConfig),
+        )
         .toList();
   }
 }
@@ -167,30 +204,35 @@ class _FriendAggregate {
   _FriendAggregate(this._friend);
 
   final FriendsModel _friend;
-  double give = 0;
-  double receive = 0;
-  double personalIncome = 0;
-  double companyIncome = 0;
+  final Map<String, double> _giveByCurrency = {};
+  final Map<String, double> _receiveByCurrency = {};
+  final Map<String, double> _personalIncomeByCurrency = {};
+  final Map<String, double> _companyIncomeByCurrency = {};
 
   void apply({
-    required double amount,
+    required double nativeAmount,
+    required String currencyCode,
     required int category,
     required bool isSender,
   }) {
-    if (isSender) {
-      give += amount;
-    } else {
-      receive += amount;
-    }
+    final directionalMap = isSender ? _giveByCurrency : _receiveByCurrency;
+    directionalMap[currencyCode] =
+        (directionalMap[currencyCode] ?? 0) + nativeAmount;
 
+    final signedAmount = isSender ? -nativeAmount : nativeAmount;
     if (category == Constants.personal) {
-      personalIncome += isSender ? -amount : amount;
+      _personalIncomeByCurrency[currencyCode] =
+          (_personalIncomeByCurrency[currencyCode] ?? 0) + signedAmount;
     } else if (category == Constants.company) {
-      companyIncome += isSender ? -amount : amount;
+      _companyIncomeByCurrency[currencyCode] =
+          (_companyIncomeByCurrency[currencyCode] ?? 0) + signedAmount;
     }
   }
 
-  FriendsModel toModel() {
+  FriendsModel toModel(
+    MainFinanceProjectionService service,
+    CurrencyConfigEntity currencyConfig,
+  ) {
     return FriendsModel(
       sid: _friend.sid,
       uid: _friend.uid,
@@ -198,11 +240,20 @@ class _FriendAggregate {
       image: _friend.image,
       username: _friend.username,
       email: _friend.email,
-      give: give,
-      receive: receive,
+      give: service._convertNetByCurrency(_giveByCurrency, currencyConfig),
+      receive: service._convertNetByCurrency(
+        _receiveByCurrency,
+        currencyConfig,
+      ),
       relationType: _friend.relationType,
-      personalIncome: personalIncome,
-      companyIncome: companyIncome,
+      personalIncome: service._convertNetByCurrency(
+        _personalIncomeByCurrency,
+        currencyConfig,
+      ),
+      companyIncome: service._convertNetByCurrency(
+        _companyIncomeByCurrency,
+        currencyConfig,
+      ),
     );
   }
 }
