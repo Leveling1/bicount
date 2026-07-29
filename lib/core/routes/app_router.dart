@@ -32,6 +32,21 @@ import '../utils/custom_transition.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
+// Custom-scheme deep links (e.g. `bicount://friend/invite?inviteCode=X`)
+// place the first path segment in `Uri.host` rather than `Uri.path`, since
+// there is no authority component for non-http(s) schemes. go_router only
+// matches routes against `Uri.path`, so `bicount://friend/invite` resolves
+// to a path of `/invite` and fails to match `/friend/invite`. Fold the host
+// back into the path so these links resolve the same way the equivalent
+// `https://` universal link does.
+Uri _normalizeIncomingUri(Uri uri) {
+  if (uri.scheme != AppConfig.appScheme) {
+    return uri;
+  }
+  final normalizedPath = uri.host.isEmpty ? uri.path : '/${uri.host}${uri.path}';
+  return uri.replace(scheme: '', host: '', path: normalizedPath);
+}
+
 String _widgetLaunchToken(GoRouterState state) {
   return state.uri.queryParameters[BicountHomeWidgetAction
           .launchTokenQueryParam] ??
@@ -297,7 +312,7 @@ class AppRouter {
         redirect: (context, state) {
           final session = Supabase.instance.client.auth.currentSession;
           final isLoggedIn = session != null;
-          final uri = state.uri;
+          final uri = _normalizeIncomingUri(state.uri);
           final path = uri.path;
           final inviteCode = FriendInviteRoute.inviteCodeFromUri(uri);
           final isInvitePath = FriendInviteRoute.isInvitePath(uri);
