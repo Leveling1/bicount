@@ -1,6 +1,6 @@
 # Bicount Invite Link Web Instructions
 
-This document is for the web developer working on `https://bicount.levelingcoder.com`.
+This document is for the web developer working on `https://bicount.youngsolver.org`.
 
 Its goal is to make Bicount invite links open the mobile app correctly on Android and iOS when possible, while keeping `/friend/invite` as a safe web fallback page.
 
@@ -10,8 +10,8 @@ Reference date:
 ## Current Diagnosis
 
 The mobile app is already configured to handle:
-- `https://bicount.levelingcoder.com/friend/invite?inviteCode=<invite_code>` on Android
-- `https://bicount.levelingcoder.com/friend/invite?inviteCode=<invite_code>` on iOS
+- `https://bicount.youngsolver.org/friend/invite?inviteCode=<invite_code>` on Android
+- `https://bicount.youngsolver.org/friend/invite?inviteCode=<invite_code>` on iOS
 
 The current web-side blockers are:
 
@@ -29,13 +29,13 @@ Important product note:
 ## Mobile Contract
 
 The app expects:
-- domain: `https://bicount.levelingcoder.com`
+- domain: `https://bicount.youngsolver.org`
 - invite route: `/friend/invite`
 - query parameter: `code`
 - custom fallback scheme: `bicount://friend/invite?inviteCode=<invite_code>`
 
 Examples:
-- `https://bicount.levelingcoder.com/friend/invite?inviteCode=test123`
+- `https://bicount.youngsolver.org/friend/invite?inviteCode=test123`
 
 Android package name:
 - `com.youngsolver.bicount`
@@ -48,7 +48,7 @@ iOS bundle identifier:
 ### 1. Publish `assetlinks.json`
 
 Deploy this file exactly at:
-- `https://bicount.levelingcoder.com/.well-known/assetlinks.json`
+- `https://bicount.youngsolver.org/.well-known/assetlinks.json`
 
 Use this exact content for the current mobile build:
 
@@ -95,7 +95,7 @@ Do not:
 ### 1. Publish `apple-app-site-association`
 
 Deploy this file exactly at:
-- `https://bicount.levelingcoder.com/.well-known/apple-app-site-association`
+- `https://bicount.youngsolver.org/.well-known/apple-app-site-association`
 
 Current problem:
 - the repository still contains a placeholder Apple Team ID
@@ -140,7 +140,7 @@ The file must:
 ## Invite Page Requirements
 
 The public fallback page is:
-- `https://bicount.levelingcoder.com/friend/invite?inviteCode=<invite_code>`
+- `https://bicount.youngsolver.org/friend/invite?inviteCode=<invite_code>`
 
 What the page should do:
 - stay public
@@ -180,8 +180,8 @@ Important deployment fix already applied in the website repository:
 
 The web developer should verify all of these after deployment:
 
-1. `https://bicount.levelingcoder.com/.well-known/assetlinks.json` returns `200` with the exact JSON above.
-2. `https://bicount.levelingcoder.com/.well-known/apple-app-site-association` returns `200` without redirect.
+1. `https://bicount.youngsolver.org/.well-known/assetlinks.json` returns `200` with the exact JSON above.
+2. `https://bicount.youngsolver.org/.well-known/apple-app-site-association` returns `200` without redirect.
 3. `/friend/invite?inviteCode=test123` keeps the query parameter and renders the fallback page.
 4. No CDN, framework, or hosting rule rewrites the `.well-known` files into HTML.
 5. No redirect strips `?code=...`.
@@ -211,7 +211,7 @@ If it still opens only the website:
 
 If it still opens only Safari:
 - verify the Apple Team ID is correct
-- verify the entitlements in the app still target `applinks:bicount.levelingcoder.com`
+- verify the entitlements in the app still target `applinks:bicount.youngsolver.org`
 - verify the `.well-known/apple-app-site-association` response has no redirect
 
 ## Short Action List For The Web Developer

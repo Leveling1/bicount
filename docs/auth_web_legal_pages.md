@@ -1,6 +1,6 @@
 # Auth Web Legal Pages
 
-This document is for the web developer working on `https://bicount.levelingcoder.com`.
+This document is for the web developer working on `https://bicount.youngsolver.org`.
 
 The mobile auth screen now links directly to three legal pages hosted on the Bicount website.
 
@@ -8,9 +8,9 @@ The mobile auth screen now links directly to three legal pages hosted on the Bic
 
 Create these public pages:
 
-- `https://bicount.levelingcoder.com/consumer-terms`
-- `https://bicount.levelingcoder.com/usage-policy`
-- `https://bicount.levelingcoder.com/privacy-policy`
+- `https://bicount.youngsolver.org/consumer-terms`
+- `https://bicount.youngsolver.org/usage-policy`
+- `https://bicount.youngsolver.org/privacy-policy`
 
 ## Purpose
 
@@ -61,7 +61,7 @@ The Flutter app uses these exact URLs for the auth legal links.
 
 The mobile app also uses this path for auth provider return flows:
 
-- `https://bicount.levelingcoder.com/auth`
+- `https://bicount.youngsolver.org/auth`
 
 Please keep this path reserved for the mobile callback flow.
 Do not reuse or redirect it without coordinating with the mobile app and backend configuration.

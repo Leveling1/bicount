@@ -534,7 +534,7 @@ Reference documents:
 - docs/friend_invite_backend_actions.md
 
 Invite link config lives in lib/core/constants/app_config.dart.
-Default invite base URL is https://bicount.levelingcoder.com.
+Default invite base URL is https://bicount.youngsolver.org.
 Expected route format is /friend/invite?inviteCode=INVITE_CODE.
 
 User identity contract:
@@ -850,7 +850,7 @@ Rules:
 - do not recreate public onboarding, login, or signup routes without an explicit product request
 - Google auth is an existing production path and must stay stable
 - Apple auth returns through the Bicount app-link on `/auth`
-- auth legal links target `https://bicount.levelingcoder.com/consumer-terms`, `/usage-policy`, and `/privacy-policy`
+- auth legal links target `https://bicount.youngsolver.org/consumer-terms`, `/usage-policy`, and `/privacy-policy`
 
 ## Auth Layout Stability Update (2026-03-22)
 
@@ -1020,7 +1020,7 @@ Rules:
 
 ## Invite Domain Update (2026-03-24)
 
-The active invite domain for Bicount is now `https://bicount.levelingcoder.com`.
+The active invite domain for Bicount is now `https://bicount.youngsolver.org`.
 
 Rules:
 

@@ -10,7 +10,7 @@ class AppConfig {
 
   static const inviteBaseUrl = String.fromEnvironment(
     'BICOUNT_INVITE_BASE_URL',
-    defaultValue: 'https://bicount.levelingcoder.com',
+    defaultValue: 'https://bicount.youngsolver.org',
   );
 
   static const invitePath = '/friend/invite';

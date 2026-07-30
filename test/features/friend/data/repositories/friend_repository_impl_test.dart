@@ -62,13 +62,13 @@ void main() {
 
     expect(
       repository.extractInviteCode(
-        'https://bicount.levelingcoder.com/friend/invite?inviteCode=abc123',
+        'https://bicount.youngsolver.org/friend/invite?inviteCode=abc123',
       ),
       'abc123',
     );
     expect(
       repository.extractInviteCode(
-        'https://bicount.levelingcoder.com/friend/invite?code=legacy123',
+        'https://bicount.youngsolver.org/friend/invite?code=legacy123',
       ),
       'legacy123',
     );

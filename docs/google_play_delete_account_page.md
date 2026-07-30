@@ -21,7 +21,7 @@ La page doit expliquer tres clairement :
 
 Utiliser une seule page publique et stable :
 
-- URL canonique recommandee : `https://bicount.levelingcoder.com/delete-account`
+- URL canonique recommandee : `https://bicount.youngsolver.org/delete-account`
 - chemin recommande : `/delete-account`
 
 Cette meme URL peut etre renseignee dans les deux champs Google Play :
@@ -97,7 +97,7 @@ Le dev front peut reprendre cette structure quasiment telle quelle :
 
 - `title` : `Suppression du compte Bicount et suppression des donnees`
 - `meta description` : `Consultez la procedure officielle Bicount pour demander la suppression de votre compte ou supprimer certaines donnees sans fermer votre compte.`
-- `canonical` : `https://bicount.levelingcoder.com/delete-account`
+- `canonical` : `https://bicount.youngsolver.org/delete-account`
 
 ## Texte exact a publier sur la page
 
@@ -277,7 +277,7 @@ En particulier :
 
 Si un rappel est necessaire pour la console ou pour l'equipe publication :
 
-- URL conseillee pour les deux champs : `https://bicount.levelingcoder.com/delete-account`
+- URL conseillee pour les deux champs : `https://bicount.youngsolver.org/delete-account`
 - cette page explique la suppression du compte dans l'application et la suppression partielle de donnees sans suppression du compte
 
 ## Checklist de validation avant mise en ligne

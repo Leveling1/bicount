@@ -49,7 +49,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="bicount.levelingcoder.com"
+                    android:host="bicount.youngsolver.org"
                     android:pathPrefix="/friend/invite" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
@@ -58,7 +58,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="bicount.levelingcoder.com"
+                    android:host="bicount.youngsolver.org"
                     android:pathPrefix="/auth" />
             </intent-filter>
             <intent-filter>

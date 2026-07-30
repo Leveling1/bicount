@@ -61,13 +61,13 @@ Backend requirements in Supabase:
 - enable Apple provider
 - configure the Apple client details in Supabase Auth
 - configure the Apple team/app identifiers required by Supabase
-- add `https://bicount.levelingcoder.com/auth` to the allowed redirect URLs
+- add `https://bicount.youngsolver.org/auth` to the allowed redirect URLs
 - keep the app-links and universal-links setup valid for that auth return path
 
 Expected app behavior:
 
 - on iOS or macOS, the app starts the Apple OAuth flow through Supabase
-- Supabase redirects back to `https://bicount.levelingcoder.com/auth`
+- Supabase redirects back to `https://bicount.youngsolver.org/auth`
 - if the app is installed, that link should reopen Bicount and complete the session
 
 ## Users Table
@@ -115,7 +115,7 @@ If Supabase Auth settings still reference older landing assumptions, update them
 
 Important callback expectations:
 
-- keep `https://bicount.levelingcoder.com/auth` reserved for the mobile auth return flow
+- keep `https://bicount.youngsolver.org/auth` reserved for the mobile auth return flow
 - do not break the domain-level app-links configuration for `/auth`
 - if the web team later creates a landing auth page, coordinate first because the mobile callback depends on this exact public path
 
