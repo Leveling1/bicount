@@ -1,6 +1,7 @@
 import 'package:bicount/core/constants/app_config.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
+import 'package:bicount/core/services/get_app_version.dart';
 import 'package:bicount/core/services/open_url.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
@@ -188,6 +189,8 @@ class SettingsContent extends StatelessWidget {
                   ],
                 ),
               ),
+              AppDimens.spacerSmall,
+              const VersionText(),
               const SizedBox(height: AppDimens.marginLarge),
             ],
           ),

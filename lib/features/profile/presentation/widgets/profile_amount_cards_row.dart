@@ -26,26 +26,28 @@ class ProfileAmountCardsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Flexible(
-          child: InfoCardAmount(
-            icon: leftIcon,
-            title: leftTitle,
-            value: leftValue,
-            color: leftColor,
+    return IntrinsicHeight(
+      child: Row(
+        children: [
+          Flexible(
+            child: InfoCardAmount(
+              icon: leftIcon,
+              title: leftTitle,
+              value: leftValue,
+              color: leftColor,
+            ),
           ),
-        ),
-        const SizedBox(width: AppDimens.marginMedium),
-        Flexible(
-          child: InfoCardAmount(
-            icon: rightIcon,
-            title: rightTitle,
-            value: rightValue,
-            color: rightColor,
+          const SizedBox(width: AppDimens.marginMedium),
+          Flexible(
+            child: InfoCardAmount(
+              icon: rightIcon,
+              title: rightTitle,
+              value: rightValue,
+              color: rightColor,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/services/open_invite_hub.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_badge.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
@@ -64,9 +65,14 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CustomIconButton(
+                  onPressed: () => openInviteHub(context),
+                  icon: Icons.qr_code_2_outlined,
+                ),
+                CustomIconButton(
                   onPressed: onOpenSettings,
                   icon: Icons.settings,
                 ),
+
                 AppDimens.spacerWidthMedium,
               ],
             ),

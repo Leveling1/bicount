@@ -1,14 +1,13 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/open_friend_detail.dart';
+import 'package:bicount/core/services/open_invite_hub.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/pinned_header_delegate.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
-import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
-import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_card.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_directory_header.dart';
 import 'package:bicount/features/friend/presentation/widgets/friends_directory_skeleton.dart';
@@ -80,7 +79,7 @@ class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
             actions: [
               if (data != null)
                 CustomIconButton(
-                  onPressed: () => _openInviteHub(context),
+                  onPressed: () => openInviteHub(context),
                   icon: Icons.qr_code_2_outlined,
                 ),
             ],
@@ -190,19 +189,5 @@ class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
     );
   }
 
-  void _openInviteHub(BuildContext context) {
-    final state = context.read<MainBloc>().state;
-    if (state is! MainLoaded) {
-      return;
-    }
-
-    showCustomBottomSheet(
-      context: context,
-      minHeight: 0.6,
-      child: FriendScreen(
-        user: state.startData.user,
-        friends: state.startData.friends,
-      ),
-    );
-  }
+  
 }
