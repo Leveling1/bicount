@@ -4,6 +4,7 @@ import 'package:bicount/core/services/open_invite_hub.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_badge.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
+import 'package:bicount/features/main/presentation/widgets/transaction_option_button.dart';
 import 'package:flutter/material.dart';
 
 class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -53,6 +54,7 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
               key: ValueKey('search_$selectedIndex$showSearchBar'),
               mainAxisSize: MainAxisSize.min,
               children: [
+                TransactionOptionButton(),
                 CustomIconButton(
                   onPressed: onToggleSearch,
                   icon: showSearchBar ? Icons.close : Icons.search,
