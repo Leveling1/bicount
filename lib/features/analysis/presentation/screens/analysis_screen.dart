@@ -160,7 +160,6 @@ class _AnalysisScreenContent extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppDimens.marginLarge),
                     BicountReveal(
                       delay: const Duration(milliseconds: 260),
                       child: AnalysisRecurringSummaryCard(
@@ -191,7 +190,6 @@ class _AnalysisScreenContent extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppDimens.marginLarge),
                     BicountReveal(
                       delay: const Duration(milliseconds: 210),
                       child: AnalysisRecurringSummaryCard(
