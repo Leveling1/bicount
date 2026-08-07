@@ -31,7 +31,7 @@ class AnalysisRecurringSummaryCard extends StatelessWidget {
     return summary.activeCount > 0
         ? Column(
             children: [
-              const SizedBox(height: AppDimens.marginLarge),
+              const SizedBox(height: AppDimens.marginMedium),
               Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -40,10 +40,10 @@ class AnalysisRecurringSummaryCard extends StatelessWidget {
                     AppDimens.borderRadiusLarge,
                   ),
                   child: DetailsCard(
+                    isMargin: false,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: AppDimens.marginLarge),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -92,9 +92,7 @@ class AnalysisRecurringSummaryCard extends StatelessWidget {
                                     color: color,
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: AppDimens.spacingMedium,
-                                ),
+                                const SizedBox(width: AppDimens.spacingMedium),
                               ],
                               Expanded(
                                 child: _MetricChip(
@@ -165,7 +163,9 @@ class _MetricChip extends StatelessWidget {
         vertical: AppDimens.paddingSmall,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
+        color: Theme.of(
+          context,
+        ).scaffoldBackgroundColor, //color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
       ),
       child: Column(

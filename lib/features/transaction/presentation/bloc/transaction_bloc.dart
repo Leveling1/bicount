@@ -60,13 +60,35 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       return;
     }
     if (transaction.isDebt) {
-      unawaited(service.requestForAction(NotifiableAction.debtRecorded));
+      unawaited(
+        _requestPermissionAfterFormCloses(
+          service,
+          NotifiableAction.debtRecorded,
+        ),
+      );
       return;
     }
     if (transaction.isRecurring &&
         transaction.transactionType == TransactionTypes.salaryCode) {
-      unawaited(service.requestForAction(NotifiableAction.salaryRecorded));
+      unawaited(
+        _requestPermissionAfterFormCloses(
+          service,
+          NotifiableAction.salaryRecorded,
+        ),
+      );
     }
+  }
+
+  // The transaction form closes itself right after this state is emitted,
+  // via its own post-frame Navigator.pop(). Waiting here for that closing
+  // transition to finish — instead of racing it with an immediate second
+  // screen — is what keeps the two navigations from visually overlapping.
+  Future<void> _requestPermissionAfterFormCloses(
+    NotificationPermissionService service,
+    NotifiableAction action,
+  ) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    await service.requestForAction(action);
   }
 
   Future<void> _onDeleteTransaction(

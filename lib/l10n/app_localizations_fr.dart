@@ -995,6 +995,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notifPermissionDeviceChangedBody => 'Activez les notifications sur cet appareil pour continuer à recevoir vos rappels et alertes de compte partagé.';
 
   @override
+  String get notifPermissionOtherReasonsTitle => 'Vous pourriez aussi être notifié pour :';
+
+  @override
   String friendProfileShared(Object name) {
     return 'Profil partagé : $name';
   }

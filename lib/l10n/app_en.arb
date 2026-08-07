@@ -360,6 +360,7 @@
   "notifPermissionReasonSalaryRecorded": "Get a reminder on the day your salary is due to keep your budget on track.",
   "notifPermissionDeviceChangedTitle": "New device detected",
   "notifPermissionDeviceChangedBody": "Enable notifications on this device to keep receiving your reminders and shared account alerts.",
+  "notifPermissionOtherReasonsTitle": "You might also get notified for:",
   "friendProfileShared": "Profile shared: {name}",
   "@friendProfileShared": {
     "placeholders": {

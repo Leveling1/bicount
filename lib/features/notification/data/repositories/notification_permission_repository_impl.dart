@@ -64,6 +64,12 @@ class NotificationPermissionRepositoryImpl
   }
 
   @override
+  Future<bool> isOsPermissionPermanentlyDenied() async {
+    final settings = await messaging.getNotificationSettings();
+    return settings.authorizationStatus == AuthorizationStatus.denied;
+  }
+
+  @override
   Future<void> syncDeviceToken() async {
     await remoteDataSource.syncDeviceToken();
     final token = await messaging.getToken();

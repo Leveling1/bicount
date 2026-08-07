@@ -995,6 +995,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifPermissionDeviceChangedBody => 'Enable notifications on this device to keep receiving your reminders and shared account alerts.';
 
   @override
+  String get notifPermissionOtherReasonsTitle => 'You might also get notified for:';
+
+  @override
   String friendProfileShared(Object name) {
     return 'Profile shared: $name';
   }

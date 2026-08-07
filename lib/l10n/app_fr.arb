@@ -360,6 +360,7 @@
   "notifPermissionReasonSalaryRecorded": "Recevez un rappel le jour où votre salaire est prévu pour garder votre budget à jour.",
   "notifPermissionDeviceChangedTitle": "Nouvel appareil détecté",
   "notifPermissionDeviceChangedBody": "Activez les notifications sur cet appareil pour continuer à recevoir vos rappels et alertes de compte partagé.",
+  "notifPermissionOtherReasonsTitle": "Vous pourriez aussi être notifié pour :",
   "friendProfileShared": "Profil partagé : {name}",
   "@friendProfileShared": {
     "placeholders": {

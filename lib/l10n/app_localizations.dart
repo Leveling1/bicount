@@ -2039,6 +2039,12 @@ abstract class AppLocalizations {
   /// **'Enable notifications on this device to keep receiving your reminders and shared account alerts.'**
   String get notifPermissionDeviceChangedBody;
 
+  /// No description provided for @notifPermissionOtherReasonsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You might also get notified for:'**
+  String get notifPermissionOtherReasonsTitle;
+
   /// No description provided for @friendProfileShared.
   ///
   /// In en, this message translates to:
