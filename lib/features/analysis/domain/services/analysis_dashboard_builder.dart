@@ -36,14 +36,18 @@ class AnalysisDashboardBuilder {
       period,
     );
     final currentUserParticipantIds = _resolveCurrentUserParticipantIds(source);
+    final knownFriendParticipantIds = participantIdentityService
+        .knownFriendParticipantIds(source.friends);
     final debtClassifier = AnalysisDebtTransactionClassifier(source.debts);
     final debtBalanceResolver = AnalysisDebtBalanceResolver(
       currentUserParticipantIds: currentUserParticipantIds,
+      knownFriendParticipantIds: knownFriendParticipantIds,
       currencyAmountService: currencyAmountService,
     );
     final matcher = AnalysisTransactionBreakdownMatcher(
       debtClassifier: debtClassifier,
       currentUserParticipantIds: currentUserParticipantIds,
+      knownFriendParticipantIds: knownFriendParticipantIds,
     );
 
     final incomeAmount = _sumTransactions(
@@ -142,6 +146,7 @@ class AnalysisDashboardBuilder {
         filteredTransactions,
         period,
         currentUserParticipantIds: currentUserParticipantIds,
+        knownFriendParticipantIds: knownFriendParticipantIds,
       ),
       incomeBreakdown: [
         AnalysisBreakdownItem(label: 'Income', value: incomeAmount),

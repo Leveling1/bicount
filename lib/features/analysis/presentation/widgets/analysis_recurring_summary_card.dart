@@ -69,42 +69,56 @@ class AnalysisRecurringSummaryCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppDimens.spacingMedium),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: _MetricChip(
-                        label: context.l10n.analysisActive,
-                        value: '${summary.activeCount}',
-                        color: color,
-                      ),
-                    ),
-                    const SizedBox(width: AppDimens.spacingMedium),
-                    Expanded(
-                      child: _MetricChip(
-                        label: context.l10n.analysisMonthlyLoad,
-                        value: NumberFormatUtils.compactCurrency(
-                          summary.monthlyReferenceAmount,
-                          currencyCode: currencyCode,
+                AppDimens.spacerMedium,
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: _MetricChip(
+                          label: context.l10n.analysisActive,
+                          value: '${summary.activeCount}',
+                          color: color,
                         ),
-                        color: color,
                       ),
-                    ),
-                    if (summary.nextExpectedDate != null) ...[
                       const SizedBox(width: AppDimens.spacingMedium),
                       Expanded(
                         child: _MetricChip(
-                          label: upcomingLabel,
-                          value: formatDateWithoutYear(
-                            summary.nextExpectedDate!,
+                          label: context.l10n.analysisMonthlyLoad,
+                          value: NumberFormatUtils.compactCurrency(
+                            summary.monthlyReferenceAmount,
+                            currencyCode: currencyCode,
                           ),
                           color: color,
                         ),
                       ),
                     ],
-                  ],
+                  ),
                 ),
+                if (summary.nextExpectedDate != null) ...[
+                  AppDimens.spacerMedium,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        '$upcomingLabel :',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      AppDimens.spacerWidthSmall,
+                      Text(
+                        formatDateWithoutYear(summary.nextExpectedDate!),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).textTheme.titleLarge?.color,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),

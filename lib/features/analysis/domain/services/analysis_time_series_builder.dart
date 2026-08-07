@@ -1,10 +1,15 @@
 import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/analysis/domain/entities/analysis_dashboard_entity.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:intl/intl.dart';
 
 class AnalysisTimeSeriesBuilder {
-  const AnalysisTimeSeriesBuilder();
+  const AnalysisTimeSeriesBuilder({
+    this.identityService = const TransactionParticipantIdentityService(),
+  });
+
+  final TransactionParticipantIdentityService identityService;
 
   List<TransactionModel> filterTransactions(
     List<TransactionModel> transactions,
@@ -24,6 +29,7 @@ class AnalysisTimeSeriesBuilder {
     List<TransactionModel> transactions,
     AnalysisPeriod period, {
     Set<String>? currentUserParticipantIds,
+    Set<String> knownFriendParticipantIds = const {},
   }) {
     final start = periodStart(
       period,
@@ -42,12 +48,14 @@ class AnalysisTimeSeriesBuilder {
         currentKey,
         period,
         currentUserParticipantIds: currentUserParticipantIds,
+        knownFriendParticipantIds: knownFriendParticipantIds,
       );
       final outflow = _bucketOutflowForDate(
         transactions,
         currentKey,
         period,
         currentUserParticipantIds: currentUserParticipantIds,
+        knownFriendParticipantIds: knownFriendParticipantIds,
       );
       runningNet += inflow - outflow;
 
@@ -119,6 +127,7 @@ class AnalysisTimeSeriesBuilder {
     String bucketKeyValue,
     AnalysisPeriod period, {
     Set<String>? currentUserParticipantIds,
+    Set<String> knownFriendParticipantIds = const {},
   }) {
     return transactions
         .where(
@@ -126,6 +135,7 @@ class AnalysisTimeSeriesBuilder {
               _isInflowTransaction(
                 t,
                 currentUserParticipantIds: currentUserParticipantIds,
+                knownFriendParticipantIds: knownFriendParticipantIds,
               ) &&
               bucketKey(resolveTransactionDate(t), period) == bucketKeyValue,
         )
@@ -137,6 +147,7 @@ class AnalysisTimeSeriesBuilder {
     String bucketKeyValue,
     AnalysisPeriod period, {
     Set<String>? currentUserParticipantIds,
+    Set<String> knownFriendParticipantIds = const {},
   }) {
     return transactions
         .where(
@@ -144,6 +155,7 @@ class AnalysisTimeSeriesBuilder {
               _isOutflowTransaction(
                 t,
                 currentUserParticipantIds: currentUserParticipantIds,
+                knownFriendParticipantIds: knownFriendParticipantIds,
               ) &&
               bucketKey(resolveTransactionDate(t), period) == bucketKeyValue,
         )
@@ -153,9 +165,15 @@ class AnalysisTimeSeriesBuilder {
   bool _isInflowTransaction(
     TransactionModel transaction, {
     Set<String>? currentUserParticipantIds,
+    Set<String> knownFriendParticipantIds = const {},
   }) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds.contains(transaction.beneficiaryId);
+      return identityService.isMineWithFallback(
+        candidateId: transaction.beneficiaryId,
+        counterpartId: transaction.senderId,
+        currentUserParticipantIds: currentUserParticipantIds,
+        knownFriendParticipantIds: knownFriendParticipantIds,
+      );
     }
 
     return transaction.type == TransactionTypes.incomeCode ||
@@ -166,9 +184,15 @@ class AnalysisTimeSeriesBuilder {
   bool _isOutflowTransaction(
     TransactionModel transaction, {
     Set<String>? currentUserParticipantIds,
+    Set<String> knownFriendParticipantIds = const {},
   }) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds.contains(transaction.senderId);
+      return identityService.isMineWithFallback(
+        candidateId: transaction.senderId,
+        counterpartId: transaction.beneficiaryId,
+        currentUserParticipantIds: currentUserParticipantIds,
+        knownFriendParticipantIds: knownFriendParticipantIds,
+      );
     }
 
     return transaction.type == TransactionTypes.expenseCode ||

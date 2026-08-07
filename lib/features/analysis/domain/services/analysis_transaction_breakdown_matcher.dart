@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/analysis/domain/services/analysis_debt_transaction_classifier.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 
@@ -6,14 +7,50 @@ class AnalysisTransactionBreakdownMatcher {
   const AnalysisTransactionBreakdownMatcher({
     required this.debtClassifier,
     required this.currentUserParticipantIds,
+    this.knownFriendParticipantIds = const {},
+    this.identityService = const TransactionParticipantIdentityService(),
   });
 
   final AnalysisDebtTransactionClassifier debtClassifier;
   final Set<String>? currentUserParticipantIds;
+  final Set<String> knownFriendParticipantIds;
+  final TransactionParticipantIdentityService identityService;
+
+  /// Whether the current user is the beneficiary of [transaction], matching
+  /// directly first and falling back to elimination against known friend
+  /// identifiers — see [TransactionParticipantIdentityService.
+  /// isMineWithFallback] for why a transaction recorded from a linked
+  /// friend's device may reference the current user with an id this device
+  /// has never seen.
+  bool _isCurrentUserBeneficiary(TransactionModel transaction) {
+    final participantIds = currentUserParticipantIds;
+    if (participantIds == null) {
+      return false;
+    }
+    return identityService.isMineWithFallback(
+      candidateId: transaction.beneficiaryId,
+      counterpartId: transaction.senderId,
+      currentUserParticipantIds: participantIds,
+      knownFriendParticipantIds: knownFriendParticipantIds,
+    );
+  }
+
+  bool _isCurrentUserSender(TransactionModel transaction) {
+    final participantIds = currentUserParticipantIds;
+    if (participantIds == null) {
+      return false;
+    }
+    return identityService.isMineWithFallback(
+      candidateId: transaction.senderId,
+      counterpartId: transaction.beneficiaryId,
+      currentUserParticipantIds: participantIds,
+      knownFriendParticipantIds: knownFriendParticipantIds,
+    );
+  }
 
   bool matchesGenericIncome(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds!.contains(transaction.beneficiaryId) &&
+      return _isCurrentUserBeneficiary(transaction) &&
           transaction.type == TransactionTypes.incomeCode;
     }
 
@@ -22,7 +59,7 @@ class AnalysisTransactionBreakdownMatcher {
 
   bool matchesSalary(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds!.contains(transaction.beneficiaryId) &&
+      return _isCurrentUserBeneficiary(transaction) &&
           transaction.type == TransactionTypes.salaryCode;
     }
 
@@ -31,7 +68,7 @@ class AnalysisTransactionBreakdownMatcher {
 
   bool matchesDebtIncome(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds!.contains(transaction.beneficiaryId) &&
+      return _isCurrentUserBeneficiary(transaction) &&
           debtClassifier.isPrincipalTransaction(transaction);
     }
 
@@ -40,7 +77,7 @@ class AnalysisTransactionBreakdownMatcher {
 
   bool matchesDebtRepaymentIncome(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds!.contains(transaction.beneficiaryId) &&
+      return _isCurrentUserBeneficiary(transaction) &&
           debtClassifier.isRepaymentTransaction(transaction);
     }
 
@@ -49,7 +86,7 @@ class AnalysisTransactionBreakdownMatcher {
 
   bool matchesOtherIncome(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds!.contains(transaction.beneficiaryId) &&
+      return _isCurrentUserBeneficiary(transaction) &&
           (transaction.type == TransactionTypes.otherRecurringIncomeCode ||
               transaction.type == TransactionTypes.othersCode);
     }
@@ -59,7 +96,7 @@ class AnalysisTransactionBreakdownMatcher {
 
   bool matchesGenericExpense(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds!.contains(transaction.senderId) &&
+      return _isCurrentUserSender(transaction) &&
           transaction.type == TransactionTypes.expenseCode;
     }
 
@@ -68,7 +105,7 @@ class AnalysisTransactionBreakdownMatcher {
 
   bool matchesSubscription(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds!.contains(transaction.senderId) &&
+      return _isCurrentUserSender(transaction) &&
           transaction.type == TransactionTypes.subscriptionCode;
     }
 
@@ -77,7 +114,7 @@ class AnalysisTransactionBreakdownMatcher {
 
   bool matchesDebtExpense(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds!.contains(transaction.senderId) &&
+      return _isCurrentUserSender(transaction) &&
           debtClassifier.isPrincipalTransaction(transaction);
     }
 
@@ -86,7 +123,7 @@ class AnalysisTransactionBreakdownMatcher {
 
   bool matchesDebtRepaymentExpense(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds!.contains(transaction.senderId) &&
+      return _isCurrentUserSender(transaction) &&
           debtClassifier.isRepaymentTransaction(transaction);
     }
 
@@ -95,7 +132,7 @@ class AnalysisTransactionBreakdownMatcher {
 
   bool matchesOtherExpense(TransactionModel transaction) {
     if (currentUserParticipantIds != null) {
-      return currentUserParticipantIds!.contains(transaction.senderId) &&
+      return _isCurrentUserSender(transaction) &&
           (transaction.type == TransactionTypes.otherRecurringExpenseCode ||
               transaction.type == TransactionTypes.othersCode);
     }

@@ -5,7 +5,6 @@ import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
-import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/core/widgets/quick_action_button.dart';
 import 'package:bicount/features/friend/domain/services/friend_view_service.dart';
 import 'package:bicount/features/friend/presentation/screens/friend_screen.dart';
@@ -67,32 +66,6 @@ class DetailFriend extends StatelessWidget {
                           isLinkedProfile: detail.isLinkedProfile,
                         ),
                       ),
-                      // const SizedBox(height: AppDimens.marginLarge),
-                      if (detail.canShareProfile)
-                        BicountReveal(
-                          delay: const Duration(milliseconds: 90),
-                          child: DetailsCard(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.link_outlined,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                                const SizedBox(width: AppDimens.paddingMedium),
-                                Expanded(
-                                  child: Text(
-                                    context.l10n.friendLinkHint,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall,
-                                    textAlign: TextAlign.justify,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                       BicountReveal(
                         delay: const Duration(milliseconds: 140),
                         child: DetailFriendMetrics(detail: detail),
