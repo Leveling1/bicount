@@ -2267,6 +2267,18 @@ abstract class AppLocalizations {
   /// **'Edit transaction'**
   String get transactionEditTitle;
 
+  /// No description provided for @transactionViewDebtDetailsCta.
+  ///
+  /// In en, this message translates to:
+  /// **'View debt'**
+  String get transactionViewDebtDetailsCta;
+
+  /// No description provided for @transactionConfirmSalaryCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm next salary due'**
+  String get transactionConfirmSalaryCta;
+
   /// No description provided for @transactionNewSubscriptionTitle.
   ///
   /// In en, this message translates to:

@@ -9,6 +9,7 @@ import 'package:bicount/core/utils/date_format_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/core/widgets/custom_badge.dart';
+import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_detail_args.dart';
@@ -28,6 +29,8 @@ class TransactionDetailContent extends StatelessWidget {
     required this.isLoading,
     this.onDeletePressed,
     this.onEditPressed,
+    this.onViewDebtPressed,
+    this.onConfirmSalaryPressed,
   });
 
   final TransactionDetailArgs transaction;
@@ -35,6 +38,16 @@ class TransactionDetailContent extends StatelessWidget {
   final bool isLoading;
   final VoidCallback? onDeletePressed;
   final VoidCallback? onEditPressed;
+
+  /// Shown only when this transaction is an open debt's principal
+  /// transaction and the viewer can manage that debt (same condition as
+  /// [onEditPressed]). Opens the full debt detail sheet.
+  final VoidCallback? onViewDebtPressed;
+
+  /// Shown only when this transaction is an already-confirmed salary linked
+  /// to a recurring plan that has another occurrence currently awaiting
+  /// confirmation. Opens that occurrence's confirmation sheet.
+  final VoidCallback? onConfirmSalaryPressed;
   static const TransactionParticipantIdentityService _identityService =
       TransactionParticipantIdentityService();
   static const TransactionDirectionService _directionService =
@@ -198,6 +211,26 @@ class TransactionDetailContent extends StatelessWidget {
             ),
           ),
         ),
+        if (onViewDebtPressed != null || onConfirmSalaryPressed != null)
+          Padding(
+            padding: const EdgeInsets.only(top: AppDimens.paddingMedium),
+            child: Column(
+              children: [
+                if (onViewDebtPressed != null)
+                  CustomButton(
+                    text: context.l10n.transactionViewDebtDetailsCta,
+                    loading: false,
+                    onPressed: onViewDebtPressed!,
+                  ),
+                if (onConfirmSalaryPressed != null)
+                  CustomButton(
+                    text: context.l10n.transactionConfirmSalaryCta,
+                    loading: false,
+                    onPressed: onConfirmSalaryPressed!,
+                  ),
+              ],
+            ),
+          ),
         const SizedBox(height: AppDimens.paddingLarge),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

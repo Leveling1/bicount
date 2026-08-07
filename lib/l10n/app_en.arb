@@ -409,6 +409,8 @@
   "transactionExpenseTitle": "Add expense",
   "transactionIncomeTitle": "Add income",
   "transactionEditTitle": "Edit transaction",
+  "transactionViewDebtDetailsCta": "View debt",
+  "transactionConfirmSalaryCta": "Confirm next salary due",
   "transactionNewSubscriptionTitle": "New subscription",
   "transactionAddFundsTitle": "Add funds to your account",
   "transactionSavedSuccess": "Transaction saved successfully.",

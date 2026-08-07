@@ -409,6 +409,8 @@
   "transactionExpenseTitle": "Ajouter une dépense",
   "transactionIncomeTitle": "Ajouter un revenu",
   "transactionEditTitle": "Modifier la transaction",
+  "transactionViewDebtDetailsCta": "Voir la dette",
+  "transactionConfirmSalaryCta": "Confirmer la prochaine échéance de salaire",
   "transactionNewSubscriptionTitle": "Nouvel abonnement",
   "transactionAddFundsTitle": "Ajouter des fonds à votre compte",
   "transactionSavedSuccess": "Transaction enregistrée avec succès.",

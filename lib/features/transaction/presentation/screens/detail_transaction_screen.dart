@@ -1,13 +1,23 @@
+import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/services/open_occurrence_sheet.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/confirm_delete.dart';
+import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/debt/data/repositories/debt_repository_impl.dart';
+import 'package:bicount/features/debt/domain/services/debt_view_service.dart';
 import 'package:bicount/features/debt/presentation/bloc/debt_bloc.dart';
 import 'package:bicount/features/debt/presentation/widgets/debt_contract_form.dart';
+import 'package:bicount/features/debt/presentation/screens/debt_screen_helpers.dart';
+import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
+import 'package:bicount/features/recurring_fundings/data/repositories/recurring_transfert_repository_impl.dart';
+import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_transfert_bloc.dart';
+import 'package:bicount/features/salary/domain/entities/salary_occurrence_entity.dart';
+import 'package:bicount/features/salary/domain/services/salary_dashboard_builder.dart';
 import 'package:bicount/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_content.dart';
 import 'package:bicount/features/transaction/presentation/widgets/expense_form.dart';
@@ -39,6 +49,73 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
       }
     }
 
+    return null;
+  }
+
+  bool _isOpenDebt(DebtModel debt) {
+    return debt.remainingAmount > 0 && AppDebtState.isOpen(debt.status);
+  }
+
+  void _openDebtDetail(
+    BuildContext context,
+    DebtModel debt,
+    DebtState debtState,
+  ) {
+    final mainState = context.read<MainBloc>().state;
+    if (mainState is! MainLoaded) {
+      return;
+    }
+
+    final dashboard = const DebtViewService().build(
+      currentUserId: mainState.startData.user.uid,
+      currentUserName: mainState.startData.user.username,
+      friends: mainState.startData.friends,
+      debts: mainState.startData.debts,
+    );
+    final summary = dashboard.findById(debt.debtId ?? '');
+    if (summary == null) {
+      return;
+    }
+
+    showDebtDetailSheet(
+      context: context,
+      summary: summary,
+      debtState: debtState,
+      state: mainState,
+    );
+  }
+
+  // A salary transaction is only ever recorded once its occurrence has
+  // already been confirmed, so this looks for the *next* occurrence of the
+  // same recurring plan that is still awaiting confirmation.
+  SalaryOccurrenceEntity? _findPendingSalaryOccurrence(BuildContext context) {
+    final transactionDetail = widget.transaction.transactionDetail;
+    if (transactionDetail.type != TransactionTypes.salaryCode) {
+      return null;
+    }
+
+    final originId = transactionDetail.originId;
+    if (originId == null || originId.isEmpty) {
+      return null;
+    }
+
+    final mainState = context.read<MainBloc>().state;
+    if (mainState is! MainLoaded) {
+      return null;
+    }
+
+    final currencyConfig = context.read<CurrencyCubit>().state.config;
+    final dashboard = const SalaryDashboardBuilder().build(
+      recurringTransferts: mainState.startData.recurringTransferts,
+      transactions: mainState.startData.transactions,
+      currencyConfig: currencyConfig,
+    );
+
+    for (final occurrence in dashboard.attentionOccurrences) {
+      if (occurrence.recurringTransfert.recurringTransfertId == originId) {
+        return occurrence;
+      }
+    }
     return null;
   }
 
@@ -102,69 +179,84 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
               onEditPressed: canManageDebt
                   ? () => setState(() => _isEditing = true)
                   : null,
+              onViewDebtPressed: canManageDebt && _isOpenDebt(principalDebt)
+                  ? () => _openDebtDetail(context, principalDebt, state)
+                  : null,
             );
           },
         ),
       );
     }
 
-    return BlocConsumer<TransactionBloc, TransactionState>(
-      listenWhen: (previous, current) =>
-          current is TransactionDeleted ||
-          (!_isEditing && current is TransactionError),
-      listener: _onTransactionStateChanged,
-      builder: (context, state) {
-        if (_isEditing) {
-          final editForm = TransactionTypes.isIncomeType(transactionDetail.type)
-              ? IncomeForm(
-                  user: widget.transaction.user,
-                  friends: widget.transaction.friends,
-                  initialTransaction: transactionDetail,
-                  onCompleted: () => Navigator.of(context).maybePop(),
-                )
-              : ExpenseForm(
-                  user: widget.transaction.user,
-                  friends: widget.transaction.friends,
-                  initialTransaction: transactionDetail,
-                  onCompleted: () => Navigator.of(context).maybePop(),
-                );
+    return BlocProvider(
+      create: (context) => RecurringTransfertBloc(
+        context.read<RecurringTransfertRepositoryImpl>(),
+      ),
+      child: BlocConsumer<TransactionBloc, TransactionState>(
+        listenWhen: (previous, current) =>
+            current is TransactionDeleted ||
+            (!_isEditing && current is TransactionError),
+        listener: _onTransactionStateChanged,
+        builder: (context, state) {
+          if (_isEditing) {
+            final editForm =
+                TransactionTypes.isIncomeType(transactionDetail.type)
+                ? IncomeForm(
+                    user: widget.transaction.user,
+                    friends: widget.transaction.friends,
+                    initialTransaction: transactionDetail,
+                    onCompleted: () => Navigator.of(context).maybePop(),
+                  )
+                : ExpenseForm(
+                    user: widget.transaction.user,
+                    friends: widget.transaction.friends,
+                    initialTransaction: transactionDetail,
+                    onCompleted: () => Navigator.of(context).maybePop(),
+                  );
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                context.l10n.transactionEditTitle,
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-              AppDimens.spacerMedium,
-              editForm,
-            ],
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  context.l10n.transactionEditTitle,
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                AppDimens.spacerMedium,
+                editForm,
+              ],
+            );
+          }
+
+          final pendingSalaryOccurrence = _findPendingSalaryOccurrence(context);
+
+          return TransactionDetailContent(
+            transaction: widget.transaction,
+            canManage: canManage,
+            isLoading: state is TransactionLoading,
+            onDeletePressed: canManage
+                ? () => confirmDelete(
+                    context,
+                    title: context.l10n.transactionDeleteConfirmTitle,
+                    description:
+                        context.l10n.transactionDeleteConfirmDescription,
+                    onConfirm: () {
+                      context.read<TransactionBloc>().add(
+                        DeleteTransactionEvent(
+                          widget.transaction.transactionDetail,
+                        ),
+                      );
+                    },
+                  )
+                : null,
+            onEditPressed: canManage && !_isDebtRepayment
+                ? () => setState(() => _isEditing = true)
+                : null,
+            onConfirmSalaryPressed: pendingSalaryOccurrence != null
+                ? () => openOccurrenceSheet(context, pendingSalaryOccurrence)
+                : null,
           );
-        }
-
-        return TransactionDetailContent(
-          transaction: widget.transaction,
-          canManage: canManage,
-          isLoading: state is TransactionLoading,
-          onDeletePressed: canManage
-              ? () => confirmDelete(
-                  context,
-                  title: context.l10n.transactionDeleteConfirmTitle,
-                  description: context.l10n.transactionDeleteConfirmDescription,
-                  onConfirm: () {
-                    context.read<TransactionBloc>().add(
-                      DeleteTransactionEvent(
-                        widget.transaction.transactionDetail,
-                      ),
-                    );
-                  },
-                )
-              : null,
-          onEditPressed: canManage && !_isDebtRepayment
-              ? () => setState(() => _isEditing = true)
-              : null,
-        );
-      },
+        },
+      ),
     );
   }
 

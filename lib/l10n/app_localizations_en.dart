@@ -1113,6 +1113,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionEditTitle => 'Edit transaction';
 
   @override
+  String get transactionViewDebtDetailsCta => 'View debt';
+
+  @override
+  String get transactionConfirmSalaryCta => 'Confirm next salary due';
+
+  @override
   String get transactionNewSubscriptionTitle => 'New subscription';
 
   @override

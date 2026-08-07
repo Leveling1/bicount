@@ -1113,6 +1113,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transactionEditTitle => 'Modifier la transaction';
 
   @override
+  String get transactionViewDebtDetailsCta => 'Voir la dette';
+
+  @override
+  String get transactionConfirmSalaryCta => 'Confirmer la prochaine échéance de salaire';
+
+  @override
   String get transactionNewSubscriptionTitle => 'Nouvel abonnement';
 
   @override
