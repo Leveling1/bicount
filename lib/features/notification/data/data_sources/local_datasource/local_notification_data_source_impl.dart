@@ -15,7 +15,7 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
 
   @override
   Future<void> cancelSubscriptionReminder(String subscriptionId) async {
-    await plugin.cancel(_subscriptionNotificationId(subscriptionId));
+    await plugin.cancel(id:_subscriptionNotificationId(subscriptionId));
   }
 
   @override
@@ -33,7 +33,7 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
     );
 
     await plugin.initialize(
-      const InitializationSettings(android: androidSettings, iOS: iosSettings),
+      settings:const InitializationSettings(android: androidSettings, iOS: iosSettings),
       onDidReceiveNotificationResponse: (response) {
         final payload = response.payload;
         if (payload == null || payload.isEmpty) {
@@ -114,13 +114,13 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
     );
 
     await plugin.zonedSchedule(
-      _subscriptionNotificationId(
+     id: _subscriptionNotificationId(
         subscription.subscriptionId ?? subscription.sid,
       ),
-      notification.title,
-      notification.body,
-      tz.TZDateTime.from(scheduledDate, tz.local),
-      NotificationDetails(
+     title: notification.title,
+   body:   notification.body,
+   scheduledDate:   tz.TZDateTime.from(scheduledDate, tz.local),
+    notificationDetails:  NotificationDetails(
         android: AndroidNotificationDetails(
           'subscription_reminders',
           'Subscription reminders',
@@ -141,10 +141,10 @@ class LocalNotificationDataSourceImpl implements NotificationLocalDataSource {
     AppNotificationEntity notification,
   ) async {
     await plugin.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      notification.title,
-      notification.body,
-      NotificationDetails(
+    id:  DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title:notification.title,
+    body:  notification.body,
+     notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           'bicount_foreground',
           'Bicount live events',

@@ -22,16 +22,16 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
 
   final plugin = FlutterLocalNotificationsPlugin();
   await plugin.initialize(
-    const InitializationSettings(
+    settings: const InitializationSettings(
       android: AndroidInitializationSettings('@drawable/ic_notification'),
     ),
   );
 
   await plugin.show(
-    message.hashCode & 0x7fffffff,
-    title ?? 'Bicount',
-    body ?? '',
-    const NotificationDetails(
+    id: message.hashCode & 0x7fffffff,
+    title: title ?? 'Bicount',
+    body: body ?? '',
+    notificationDetails: const NotificationDetails(
       android: AndroidNotificationDetails(
         'bicount_background',
         'Bicount',
