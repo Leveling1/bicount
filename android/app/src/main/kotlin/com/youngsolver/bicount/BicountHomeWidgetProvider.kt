@@ -133,12 +133,8 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
         views.setTextColor(R.id.widget_eyebrow, data.subtitleColor)
         views.setTextViewText(R.id.widget_balance, data.balance)
         views.setTextColor(R.id.widget_balance, data.balanceColor)
-        views.setTextViewText(R.id.widget_month_delta, data.monthDeltaLabel)
-        views.setViewVisibility(
-            R.id.widget_month_delta,
-            if (data.monthDeltaLabel.isBlank()) View.GONE else View.VISIBLE,
-        )
-        views.setTextColor(R.id.widget_month_delta, data.monthDeltaColor)
+        views.setTextViewText(R.id.widget_month_income, data.incomeTotalText)
+        views.setTextViewText(R.id.widget_month_expense, data.expenseTotalText)
         views.setTextViewText(R.id.widget_single_button, data.singleButtonLabel)
         views.setTextColor(R.id.widget_single_button, data.buttonTextColor)
         setClick(context, views, R.id.widget_root, data.mainActionUri)
@@ -153,26 +149,29 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
         views.setTextColor(R.id.widget_eyebrow, data.subtitleColor)
         views.setTextViewText(R.id.widget_balance, data.balance)
         views.setTextColor(R.id.widget_balance, data.balanceColor)
-        views.setTextViewText(R.id.widget_single_button, data.singleButtonLabel)
-        views.setTextColor(R.id.widget_single_button, data.buttonTextColor)
         views.setTextViewText(R.id.widget_month_label, data.monthSectionLabel)
         views.setTextColor(R.id.widget_month_label, data.subtitleColor)
         views.setTextViewText(R.id.widget_income_word, data.entriesLabel)
         views.setTextViewText(R.id.widget_expense_word, data.exitsLabel)
         views.setTextColor(R.id.widget_income_word, data.subtitleColor)
         views.setTextColor(R.id.widget_expense_word, data.subtitleColor)
+        views.setTextViewText(R.id.widget_month_income, data.monthIncomeLabel)
+        views.setTextViewText(R.id.widget_month_expense, data.monthExpenseLabel)
         views.setImageViewBitmap(
             R.id.widget_chart_image,
             BarChartRenderer.twoBars(
                 context,
                 income = data.monthIncomeValue,
                 expense = data.monthExpenseValue,
-                widthDp = 72,
-                heightDp = 44,
+                widthDp = 86,
+                heightDp = 40,
             ),
         )
+        views.setTextViewText(R.id.widget_income_button, data.incomeButtonLabel)
+        views.setTextViewText(R.id.widget_expense_button, data.expenseButtonLabel)
         setClick(context, views, R.id.widget_root, data.mainActionUri)
-        setClick(context, views, R.id.widget_single_button, data.singleButtonActionUri)
+        setClick(context, views, R.id.widget_income_button, data.incomeButtonActionUri)
+        setClick(context, views, R.id.widget_expense_button, data.expenseButtonActionUri)
         return views
     }
 
@@ -183,34 +182,17 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
         views.setTextColor(R.id.widget_eyebrow, data.subtitleColor)
         views.setTextViewText(R.id.widget_balance, data.balance)
         views.setTextColor(R.id.widget_balance, data.balanceColor)
-        views.setTextViewText(
-            R.id.widget_next_item_section_label,
-            data.nextItemSectionLabel,
-        )
-        views.setTextColor(R.id.widget_next_item_section_label, data.subtitleColor)
-        val hasNextItem = data.nextItemLabel.isNotBlank()
-        views.setTextViewText(R.id.widget_next_item_label, data.nextItemLabel)
-        views.setTextViewText(R.id.widget_next_item_amount, data.nextItemAmountLabel)
-        views.setTextColor(R.id.widget_next_item_label, data.titleColor)
-        views.setTextColor(R.id.widget_next_item_amount, data.nextItemAmountColor)
-        views.setViewVisibility(
-            R.id.widget_next_item_section_label,
-            if (hasNextItem) View.VISIBLE else View.GONE,
-        )
-        views.setViewVisibility(
-            R.id.widget_next_item_label,
-            if (hasNextItem) View.VISIBLE else View.GONE,
-        )
-        views.setViewVisibility(
-            R.id.widget_next_item_amount,
-            if (hasNextItem) View.VISIBLE else View.GONE,
-        )
+        views.setTextViewText(R.id.widget_month_label, data.monthSectionLabel)
+        views.setTextColor(R.id.widget_month_label, data.subtitleColor)
+        views.setTextViewText(R.id.widget_income_word, data.entriesLabel)
+        views.setTextViewText(R.id.widget_expense_word, data.exitsLabel)
+        views.setTextColor(R.id.widget_income_word, data.subtitleColor)
+        views.setTextColor(R.id.widget_expense_word, data.subtitleColor)
+        views.setTextViewText(R.id.widget_month_income, data.monthIncomeLabel)
+        views.setTextViewText(R.id.widget_month_expense, data.monthExpenseLabel)
         views.setTextViewText(R.id.widget_income_button, data.incomeButtonLabel)
         views.setTextViewText(R.id.widget_expense_button, data.expenseButtonLabel)
         setClick(context, views, R.id.widget_root, data.mainActionUri)
-        // The row opens the upcoming item itself; the card behind it still
-        // just opens Home.
-        setClick(context, views, R.id.widget_next_item_row, data.nextItemActionUri)
         setClick(context, views, R.id.widget_income_button, data.incomeButtonActionUri)
         setClick(context, views, R.id.widget_expense_button, data.expenseButtonActionUri)
         return views
@@ -232,8 +214,8 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
         views.setTextColor(R.id.widget_balance, data.balanceColor)
         views.setTextViewText(R.id.widget_week_section_label, data.monthCurveLabel)
         views.setTextColor(R.id.widget_week_section_label, data.subtitleColor)
-        views.setTextViewText(R.id.widget_legend_income, data.incomeLegendLabel)
-        views.setTextViewText(R.id.widget_legend_expense, data.expenseLegendLabel)
+        views.setTextViewText(R.id.widget_legend_income, data.incomeTotalText)
+        views.setTextViewText(R.id.widget_legend_expense, data.expenseTotalText)
         views.setImageViewBitmap(
             R.id.widget_chart_image,
             LineChartRenderer.dualSeries(
@@ -347,6 +329,8 @@ private class WidgetData(
     val monthDeltaColor: Int,
     val monthIncomeValue: Double,
     val monthExpenseValue: Double,
+    val monthIncomeLabel: String,
+    val monthExpenseLabel: String,
     val nextItemLabel: String,
     val nextItemAmountLabel: String,
     val nextItemAmountColor: Int,
@@ -379,6 +363,14 @@ private class WidgetData(
     val subtitleColor: Int,
     val buttonTextColor: Int,
 ) {
+    /// "In 480 $" / "Out 100 $" — the legend word and its amount in one
+    /// string, so narrow layouts can show both in a single TextView.
+    val incomeTotalText: String
+        get() = listOf(entriesLabel, monthIncomeLabel).filter { it.isNotBlank() }.joinToString(" ")
+
+    val expenseTotalText: String
+        get() = listOf(exitsLabel, monthExpenseLabel).filter { it.isNotBlank() }.joinToString(" ")
+
     companion object {
         private const val LIST_DELIMITER = "|"
         private const val DOUBLE_FLAG_PREFIX = "home_widget.double."
@@ -413,6 +405,8 @@ private class WidgetData(
             monthDeltaColor = 0xFF76A646.toInt(),
             monthIncomeValue = 0.0,
             monthExpenseValue = 0.0,
+            monthIncomeLabel = "",
+            monthExpenseLabel = "",
             nextItemLabel = "",
             nextItemAmountLabel = "",
             nextItemAmountColor = 0xFFF44336.toInt(),
@@ -482,6 +476,8 @@ private class WidgetData(
                 monthDeltaColor = color("bicount_widget_month_delta_color", 0xFF76A646.toInt()),
                 monthIncomeValue = dbl("bicount_widget_month_income_value"),
                 monthExpenseValue = dbl("bicount_widget_month_expense_value"),
+                monthIncomeLabel = str("bicount_widget_month_income_label"),
+                monthExpenseLabel = str("bicount_widget_month_expense_label"),
                 nextItemLabel = str("bicount_widget_next_item_label"),
                 nextItemAmountLabel = str("bicount_widget_next_item_amount_label"),
                 nextItemAmountColor = color("bicount_widget_next_item_amount_color", 0xFFF44336.toInt()),

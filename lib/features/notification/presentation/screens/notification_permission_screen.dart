@@ -2,7 +2,7 @@ import 'package:bicount/core/constants/animation_file_path.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
-import 'package:dotlottie_flutter/dotlottie_flutter.dart';
+import 'package:bicount/core/widgets/custom_dot_lottie.dart';
 import 'package:flutter/material.dart';
 
 class NotificationPermissionScreen extends StatefulWidget {
@@ -74,16 +74,8 @@ class _NotificationPermissionScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: 200,
-                        height: 200,
-                        child: DotLottieView(
-                          sourceType: 'asset',
-                          source: AnimationFilePath.notification,
-                          autoplay: true,
-                          loop: true,
-                          mode: 'bounce',
-                        ),
+                      CustomDotLottie(
+                        filePath: AnimationFilePath.notification,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

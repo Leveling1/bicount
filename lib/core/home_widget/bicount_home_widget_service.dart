@@ -82,6 +82,7 @@ class BicountHomeWidgetService extends ChangeNotifier {
   bool _initialized = false;
   bool _retryScheduled = false;
   String? _lastSignature;
+  bool _lastPublishedHadContent = false;
   String? _lastHandledWidgetUriSignature;
   DateTime? _lastHandledWidgetUriAt;
 
@@ -162,9 +163,16 @@ class BicountHomeWidgetService extends ChangeNotifier {
       return;
     }
 
+    // Keep the last populated snapshot rather than flashing an empty widget
+    // while the offline-first store is still hydrating.
+    if (!entry.hasContent && _lastPublishedHadContent) {
+      return;
+    }
+
     try {
       await _saveEntry(entry);
       _lastSignature = entry.signature;
+      _lastPublishedHadContent = entry.hasContent;
       await _refreshWidget();
     } catch (error, stackTrace) {
       debugPrint('BicountHomeWidgetService.sync failed: $error');
@@ -193,6 +201,9 @@ class BicountHomeWidgetService extends ChangeNotifier {
         ),
       );
       _lastSignature = '__signed_out__';
+      // Signing out legitimately clears the widget, so the next sign-in is
+      // allowed to publish an empty snapshot again.
+      _lastPublishedHadContent = false;
       await _refreshWidget();
     } catch (error, stackTrace) {
       debugPrint('BicountHomeWidgetService.resetToSignedOut failed: $error');

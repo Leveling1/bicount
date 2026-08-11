@@ -123,6 +123,15 @@ class BicountHomeWidgetEntry {
   final int subtitleColor;
   final int buttonTextColor;
 
+  /// Whether this snapshot carries real account activity. Offline-first
+  /// loading emits a `MainLoaded` with an empty entity before the local
+  /// rows arrive, and publishing that would blank an already-populated
+  /// widget until the app is next opened.
+  bool get hasContent =>
+      recentItems.isNotEmpty ||
+      (monthIncomeValue ?? 0) != 0 ||
+      (monthExpenseValue ?? 0) != 0;
+
   String get signature => [
     isDarkTheme,
     eyebrow,

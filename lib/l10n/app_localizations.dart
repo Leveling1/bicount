@@ -1256,7 +1256,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeWidgetPromoDescription.
   ///
   /// In en, this message translates to:
-  /// **'Keep your balance, your last 7 days of spending, and quick shortcuts always visible, without opening the app.'**
+  /// **'Keep your balance, this month\'s money in and out, and quick shortcuts always visible, without opening the app.'**
   String get homeWidgetPromoDescription;
 
   /// No description provided for @homeWidgetPromoBenefitBalance.
@@ -1268,7 +1268,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeWidgetPromoBenefitChart.
   ///
   /// In en, this message translates to:
-  /// **'Your last 7 days of expenses'**
+  /// **'Money in and out for the current month'**
   String get homeWidgetPromoBenefitChart;
 
   /// No description provided for @homeWidgetPromoBenefitQuickAdd.
@@ -1276,6 +1276,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quickly add an income or expense'**
   String get homeWidgetPromoBenefitQuickAdd;
+
+  /// No description provided for @homeWidgetPromoBenefitRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Your latest transactions, one tap to open'**
+  String get homeWidgetPromoBenefitRecent;
 
   /// No description provided for @homeWidgetPromoAddCta.
   ///

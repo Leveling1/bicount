@@ -594,16 +594,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get homeWidgetPromoTitle => 'Ajoutez Bicount à votre écran d\'accueil';
 
   @override
-  String get homeWidgetPromoDescription => 'Gardez votre solde, vos dépenses des 7 derniers jours et vos raccourcis toujours visibles, sans ouvrir l\'application.';
+  String get homeWidgetPromoDescription => 'Gardez votre solde, vos entrées et sorties du mois et vos raccourcis toujours visibles, sans ouvrir l\'application.';
 
   @override
   String get homeWidgetPromoBenefitBalance => 'Votre solde en un coup d\'œil';
 
   @override
-  String get homeWidgetPromoBenefitChart => 'Vos dépenses des 7 derniers jours';
+  String get homeWidgetPromoBenefitChart => 'Vos entrées et sorties du mois en cours';
 
   @override
   String get homeWidgetPromoBenefitQuickAdd => 'Ajout rapide d\'un revenu ou d\'une dépense';
+
+  @override
+  String get homeWidgetPromoBenefitRecent => 'Vos dernières transactions, ouvrables en un appui';
 
   @override
   String get homeWidgetPromoAddCta => 'Ajouter le widget';

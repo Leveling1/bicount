@@ -6,6 +6,8 @@ import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
+import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
+import 'package:bicount/features/home/domain/services/home_monthly_flow_service.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_summary_entity.dart';
@@ -25,11 +27,19 @@ class BicountHomeWidgetEntryBuilder {
     this.recurringPlanCollectionBuilder =
         const RecurringPlanCollectionBuilder(),
     this.directionService = const TransactionDirectionService(),
+    this.monthlyFlowService = const HomeMonthlyFlowService(),
+    this.currencyAmountService = const CurrencyAmountService(),
   });
 
   final SalaryDashboardBuilder salaryDashboardBuilder;
   final RecurringPlanCollectionBuilder recurringPlanCollectionBuilder;
   final TransactionDirectionService directionService;
+
+  /// Same service the Home screen uses, so the widget never contradicts
+  /// what the app shows: "In" carries over last month's leftover and every
+  /// amount is converted to the reference currency before being summed.
+  final HomeMonthlyFlowService monthlyFlowService;
+  final CurrencyAmountService currencyAmountService;
 
   BicountHomeWidgetEntry build({
     required BuildContext context,
@@ -60,20 +70,13 @@ class BicountHomeWidgetEntryBuilder {
 
     final now = DateTime.now();
     final monthTransactions = _thisMonthTransactions(data, now);
-    var monthIncome = 0.0;
-    var monthExpense = 0.0;
-    for (final transaction in monthTransactions) {
-      final direction = directionService.resolveFromModel(
-        transaction: transaction,
-        currentUserId: data.user.uid,
-        friends: data.friends,
-      );
-      if (direction.sign == TransactionSign.positive) {
-        monthIncome += transaction.amount;
-      } else if (direction.sign == TransactionSign.negative) {
-        monthExpense += transaction.amount;
-      }
-    }
+    final monthlyFlow = monthlyFlowService.build(
+      data: data,
+      currencyConfig: currencyConfig,
+      now: now,
+    );
+    final monthIncome = monthlyFlow.inflowWithCarryover;
+    final monthExpense = monthlyFlow.currentMonthOutflow;
     final monthDelta = monthIncome - monthExpense;
     final monthDeltaLabel = monthTransactions.isEmpty
         ? null
@@ -90,13 +93,18 @@ class BicountHomeWidgetEntryBuilder {
       addTransactionUri: addTransactionUri,
     );
 
-    final week = _weekExpenses(data, now);
+    final week = _weekExpenses(data, now, currencyConfig);
     final recent = _mostRecentTransaction(
       data: data,
       positiveColor: positiveColor,
       negativeColor: negativeColor,
     );
-    final monthFlow = _monthDailyFlow(monthTransactions, data, now);
+    final monthFlow = _monthDailyFlow(
+      monthTransactions,
+      data,
+      now,
+      currencyConfig,
+    );
     final recentItems = _recentTransactions(
       data: data,
       positiveColor: positiveColor,
@@ -220,7 +228,11 @@ class BicountHomeWidgetEntryBuilder {
     return null;
   }
 
-  _WeekExpenses _weekExpenses(MainEntity data, DateTime now) {
+  _WeekExpenses _weekExpenses(
+    MainEntity data,
+    DateTime now,
+    CurrencyConfigEntity currencyConfig,
+  ) {
     final today = _startOfDay(now);
     final start = today.subtract(const Duration(days: 6));
     final buckets = List<double>.filled(7, 0);
@@ -243,7 +255,10 @@ class BicountHomeWidgetEntryBuilder {
       if (index < 0 || index > 6) {
         continue;
       }
-      buckets[index] += transaction.amount;
+      buckets[index] += currencyAmountService.transaction(
+        transaction,
+        currencyConfig,
+      );
     }
 
     final locale = _resolvedLocale();
@@ -297,6 +312,7 @@ class BicountHomeWidgetEntryBuilder {
     List<TransactionModel> monthTransactions,
     MainEntity data,
     DateTime now,
+    CurrencyConfigEntity currencyConfig,
   ) {
     final dayCount = now.day;
     final income = List<double>.filled(dayCount, 0);
@@ -313,10 +329,16 @@ class BicountHomeWidgetEntryBuilder {
         currentUserId: data.user.uid,
         friends: data.friends,
       );
+      // Converted, never raw: a day mixing 666 Fc and 10 $ would otherwise
+      // add up to a meaningless number.
+      final amount = currencyAmountService.transaction(
+        transaction,
+        currencyConfig,
+      );
       if (direction.sign == TransactionSign.positive) {
-        income[index] += transaction.amount;
+        income[index] += amount;
       } else if (direction.sign == TransactionSign.negative) {
-        expense[index] += transaction.amount;
+        expense[index] += amount;
       }
     }
 

@@ -594,16 +594,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeWidgetPromoTitle => 'Add Bicount to your home screen';
 
   @override
-  String get homeWidgetPromoDescription => 'Keep your balance, your last 7 days of spending, and quick shortcuts always visible, without opening the app.';
+  String get homeWidgetPromoDescription => 'Keep your balance, this month\'s money in and out, and quick shortcuts always visible, without opening the app.';
 
   @override
   String get homeWidgetPromoBenefitBalance => 'Your balance at a glance';
 
   @override
-  String get homeWidgetPromoBenefitChart => 'Your last 7 days of expenses';
+  String get homeWidgetPromoBenefitChart => 'Money in and out for the current month';
 
   @override
   String get homeWidgetPromoBenefitQuickAdd => 'Quickly add an income or expense';
+
+  @override
+  String get homeWidgetPromoBenefitRecent => 'Your latest transactions, one tap to open';
 
   @override
   String get homeWidgetPromoAddCta => 'Add the widget';

@@ -1,11 +1,14 @@
+import 'package:bicount/core/constants/animation_file_path.dart';
 import 'package:bicount/core/home_widget/bicount_home_widget_service.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
+import 'package:bicount/core/widgets/custom_dot_lottie.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Encourages the user to add the Bicount home screen widget. On Android
 /// (API 26+, launcher permitting) it can request the pin directly; iOS has
@@ -47,6 +50,15 @@ class _HomeWidgetPromoScreenState extends State<HomeWidgetPromoScreen> {
         context,
         context.l10n.homeWidgetPromoAddedSuccess,
       );
+      // The launcher's pin dialog runs on top of us and drops the widget
+      // straight onto the home screen. Stepping out of the app afterwards
+      // is the only way the user actually sees that happen instead of
+      // staring at this screen. The short delay leaves the system dialog
+      // time to appear before we move to the background.
+      await Future.delayed(const Duration(milliseconds: 900));
+      await SystemChannels.platform.invokeMethod<void>(
+        'SystemNavigator.pop',
+      );
     } catch (_) {
       if (mounted) {
         NotificationHelper.showFailureNotification(
@@ -70,59 +82,80 @@ class _HomeWidgetPromoScreenState extends State<HomeWidgetPromoScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: l10n.settingsWidgetTitle),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: Padding(
           padding: AppDimens.paddingAllMedium,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              AppDimens.spacerLarge,
-              Container(
-                width: 88,
-                height: 88,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.widgets_outlined,
-                  size: 40,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-              AppDimens.spacerLarge,
-              Text(
-                l10n.homeWidgetPromoTitle,
-                style: theme.textTheme.headlineSmall,
-                textAlign: TextAlign.center,
-              ),
-              AppDimens.spacerMedium,
-              Text(
-                l10n.homeWidgetPromoDescription,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              AppDimens.spacerExtraLarge,
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _BenefitRow(
-                      icon: Icons.account_balance_wallet_outlined,
-                      text: l10n.homeWidgetPromoBenefitBalance,
-                    ),
-                    _BenefitRow(
-                      icon: Icons.bar_chart_rounded,
-                      text: l10n.homeWidgetPromoBenefitChart,
-                    ),
-                    _BenefitRow(
-                      icon: Icons.add_circle_outline,
-                      text: l10n.homeWidgetPromoBenefitQuickAdd,
-                    ),
-                  ],
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      CustomDotLottie(filePath: AnimationFilePath.home_widget),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: theme.textTheme.headlineSmall!.fontSize!,
+                            height: theme.textTheme.headlineSmall!.fontSize!,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary.withValues(
+                                alpha: 0.12,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.widgets_outlined,
+                              size: theme.textTheme.headlineSmall!.fontSize!,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                          AppDimens.spacerWidthMedium,
+                          Flexible(
+                            child: Text(
+                              l10n.homeWidgetPromoTitle,
+                              style: theme.textTheme.headlineSmall,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                      AppDimens.spacerMedium,
+                      Text(
+                        l10n.homeWidgetPromoDescription,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      AppDimens.spacerExtraLarge,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _BenefitRow(
+                              icon: Icons.account_balance_wallet_outlined,
+                              text: l10n.homeWidgetPromoBenefitBalance,
+                            ),
+                            _BenefitRow(
+                              icon: Icons.bar_chart_rounded,
+                              text: l10n.homeWidgetPromoBenefitChart,
+                            ),
+                            _BenefitRow(
+                              icon: Icons.add_circle_outline,
+                              text: l10n.homeWidgetPromoBenefitQuickAdd,
+                            ),
+                            _BenefitRow(
+                              icon: Icons.receipt_long_outlined,
+                              text: l10n.homeWidgetPromoBenefitRecent,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               AppDimens.spacerExtraLarge,
@@ -158,9 +191,7 @@ class _BenefitRow extends StatelessWidget {
         children: [
           Icon(icon, size: 20, color: theme.colorScheme.primary),
           AppDimens.spacerWidthMedium,
-          Expanded(
-            child: Text(text, style: theme.textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(text, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );

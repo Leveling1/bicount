@@ -3,7 +3,10 @@ import WidgetKit
 
 private let widgetKind = "BicountHomeWidget"
 private let widgetGroupId = "group.com.youngsolver.bicount"
-private let listDelimiter = "|"
+private let listDelimiter: Character = "|"
+
+private let incomeColor = Color(argb: 0xFF76A646)
+private let expenseColor = Color(argb: 0xFFF44336)
 
 struct BicountHomeWidgetProvider: TimelineProvider {
   func placeholder(in context: Context) -> BicountHomeWidgetEntry {
@@ -19,6 +22,15 @@ struct BicountHomeWidgetProvider: TimelineProvider {
   }
 }
 
+/// One recent-transaction row, deep-linking to its own transaction.
+struct BicountRecentItem: Identifiable {
+  let id = UUID()
+  let label: String
+  let amountLabel: String
+  let amountColor: Color
+  let actionUrl: URL?
+}
+
 struct BicountHomeWidgetEntry: TimelineEntry {
   let date: Date
   let isDarkTheme: Bool
@@ -27,25 +39,15 @@ struct BicountHomeWidgetEntry: TimelineEntry {
   let balanceColor: Color
   let mainActionUrl: URL?
 
-  let monthDeltaLabel: String
-  let monthDeltaColor: Color
   let monthIncomeValue: Double
   let monthIncomeLabel: String
   let monthExpenseValue: Double
   let monthExpenseLabel: String
 
-  let nextItemLabel: String
-  let nextItemAmountLabel: String
-  let nextItemAmountColor: Color
-  let nextItemActionUrl: URL?
+  let monthDailyIncome: [Double]
+  let monthDailyExpense: [Double]
 
-  let weekDayLabels: [String]
-  let weekValues: [Double]
-  let weekHighlightIndex: Int
-
-  let recentItemLabel: String
-  let recentItemAmountLabel: String
-  let recentItemAmountColor: Color
+  let recentItems: [BicountRecentItem]
 
   let singleButtonLabel: String
   let singleButtonActionUrl: URL?
@@ -55,9 +57,7 @@ struct BicountHomeWidgetEntry: TimelineEntry {
   let expenseButtonActionUrl: URL?
 
   let monthSectionLabel: String
-  let nextItemSectionLabel: String
-  let weekSectionLabel: String
-  let weekSectionCompactLabel: String
+  let monthCurveLabel: String
   let entriesLabel: String
   let exitsLabel: String
 
@@ -73,6 +73,17 @@ struct BicountHomeWidgetEntry: TimelineEntry {
     isDarkTheme ? Color(argb: 0xFF3B3B3B) : Color(argb: 0xFFE8E8E8)
   }
 
+  /// "In 480 $" / "Out 100 $" — legend word and amount in one string so the
+  /// narrow layouts can show both on a single line. Mirrors the Android
+  /// `incomeTotalText` / `expenseTotalText` helpers.
+  var incomeTotalText: String {
+    [entriesLabel, monthIncomeLabel].filter { !$0.isEmpty }.joined(separator: " ")
+  }
+
+  var expenseTotalText: String {
+    [exitsLabel, monthExpenseLabel].filter { !$0.isEmpty }.joined(separator: " ")
+  }
+
   static var placeholder: BicountHomeWidgetEntry {
     BicountHomeWidgetEntry(
       date: Date(),
@@ -81,22 +92,13 @@ struct BicountHomeWidgetEntry: TimelineEntry {
       balance: "2 340 €",
       balanceColor: Color(argb: 0xFF212121),
       mainActionUrl: URL(string: "bicount://widget/open-home?homeWidget=1"),
-      monthDeltaLabel: "+120 € ce mois",
-      monthDeltaColor: Color(argb: 0xFF76A646),
       monthIncomeValue: 850,
       monthIncomeLabel: "850 €",
       monthExpenseValue: 420,
       monthExpenseLabel: "420 €",
-      nextItemLabel: "Netflix — demain",
-      nextItemAmountLabel: "-13,99 €",
-      nextItemAmountColor: Color(argb: 0xFFF44336),
-      nextItemActionUrl: URL(string: "bicount://widget/add-transaction?homeWidget=1"),
-      weekDayLabels: ["L", "M", "M", "J", "V", "S", "D"],
-      weekValues: [12, 18, 9, 22, 14, 16, 26],
-      weekHighlightIndex: 6,
-      recentItemLabel: "Boulangerie Marais",
-      recentItemAmountLabel: "-4,50 €",
-      recentItemAmountColor: Color(argb: 0xFFF44336),
+      monthDailyIncome: [0, 120, 0, 0, 300, 0, 430],
+      monthDailyExpense: [40, 0, 90, 120, 0, 70, 100],
+      recentItems: [],
       singleButtonLabel: "+ Ajouter",
       singleButtonActionUrl: URL(string: "bicount://widget/add-transaction?homeWidget=1"),
       incomeButtonLabel: "+ Revenu",
@@ -104,9 +106,7 @@ struct BicountHomeWidgetEntry: TimelineEntry {
       expenseButtonLabel: "- Dépense",
       expenseButtonActionUrl: URL(string: "bicount://widget/add-expense?homeWidget=1"),
       monthSectionLabel: "CE MOIS",
-      nextItemSectionLabel: "PROCHAIN ABONNEMENT",
-      weekSectionLabel: "DÉPENSES · 7 DERNIERS JOURS",
-      weekSectionCompactLabel: "DÉPENSES - 7J",
+      monthCurveLabel: "ENTRÉES ET SORTIES · CE MOIS",
       entriesLabel: "Entrées",
       exitsLabel: "Sorties",
       titleColor: Color(argb: 0xFF212121),
@@ -146,15 +146,36 @@ struct BicountHomeWidgetEntry: TimelineEntry {
       return value.isEmpty ? nil : URL(string: value)
     }
 
+    func doubleSeries(_ key: String) -> [Double] {
+      str(key)
+        .split(separator: listDelimiter, omittingEmptySubsequences: true)
+        .compactMap { Double($0) }
+    }
+
+    // Stored as JSON because transaction names are free text: a
+    // delimiter-joined string could not survive them safely.
+    func parseRecentItems(_ key: String, fallbackColor: Color) -> [BicountRecentItem] {
+      let raw = str(key)
+      guard
+        !raw.isEmpty,
+        let data = raw.data(using: .utf8),
+        let array = (try? JSONSerialization.jsonObject(with: data)) as? [[String: Any]]
+      else {
+        return []
+      }
+      return array.map { item in
+        BicountRecentItem(
+          label: item["label"] as? String ?? "",
+          amountLabel: item["amount"] as? String ?? "",
+          amountColor: (item["color"] as? NSNumber).map { Color(argb: $0.intValue) } ?? fallbackColor,
+          actionUrl: URL(string: item["uri"] as? String ?? "")
+        )
+      }
+    }
+
     let isDarkTheme = preferences?.bool(forKey: "bicount_widget_theme_is_dark") ?? false
     let mainActionUrl = url("bicount_widget_main_action_uri")
-
-    let weekDayLabels = str("bicount_widget_week_day_labels")
-      .split(separator: Character(listDelimiter), omittingEmptySubsequences: true)
-      .map(String.init)
-    let weekValues = str("bicount_widget_week_values")
-      .split(separator: Character(listDelimiter), omittingEmptySubsequences: true)
-      .compactMap { Double($0) }
+    let titleColor = color("bicount_widget_title_color", default: 0xFF212121)
 
     return BicountHomeWidgetEntry(
       date: Date(),
@@ -163,22 +184,13 @@ struct BicountHomeWidgetEntry: TimelineEntry {
       balance: str("bicount_widget_balance", default: "Open Bicount"),
       balanceColor: color("bicount_widget_balance_color", default: 0xFF212121),
       mainActionUrl: mainActionUrl,
-      monthDeltaLabel: str("bicount_widget_month_delta_label"),
-      monthDeltaColor: color("bicount_widget_month_delta_color", default: 0xFF76A646),
       monthIncomeValue: rawDouble("bicount_widget_month_income_value"),
       monthIncomeLabel: str("bicount_widget_month_income_label"),
       monthExpenseValue: rawDouble("bicount_widget_month_expense_value"),
       monthExpenseLabel: str("bicount_widget_month_expense_label"),
-      nextItemLabel: str("bicount_widget_next_item_label"),
-      nextItemAmountLabel: str("bicount_widget_next_item_amount_label"),
-      nextItemAmountColor: color("bicount_widget_next_item_amount_color", default: 0xFFF44336),
-      nextItemActionUrl: url("bicount_widget_next_item_action_uri") ?? mainActionUrl,
-      weekDayLabels: weekDayLabels,
-      weekValues: weekValues,
-      weekHighlightIndex: rawInt("bicount_widget_week_highlight_index", default: -1),
-      recentItemLabel: str("bicount_widget_recent_item_label"),
-      recentItemAmountLabel: str("bicount_widget_recent_item_amount_label"),
-      recentItemAmountColor: color("bicount_widget_recent_item_amount_color", default: 0xFF212121),
+      monthDailyIncome: doubleSeries("bicount_widget_month_daily_income"),
+      monthDailyExpense: doubleSeries("bicount_widget_month_daily_expense"),
+      recentItems: parseRecentItems("bicount_widget_recent_items", fallbackColor: titleColor),
       singleButtonLabel: str("bicount_widget_single_button_label", default: "Open app"),
       singleButtonActionUrl: url("bicount_widget_single_button_action_uri") ?? mainActionUrl,
       incomeButtonLabel: str("bicount_widget_income_button_label"),
@@ -186,19 +198,17 @@ struct BicountHomeWidgetEntry: TimelineEntry {
       expenseButtonLabel: str("bicount_widget_expense_button_label"),
       expenseButtonActionUrl: url("bicount_widget_expense_button_action_uri") ?? mainActionUrl,
       monthSectionLabel: str("bicount_widget_month_section_label"),
-      nextItemSectionLabel: str("bicount_widget_next_item_section_label"),
-      weekSectionLabel: str("bicount_widget_week_section_label"),
-      weekSectionCompactLabel: str("bicount_widget_week_section_compact_label"),
+      monthCurveLabel: str("bicount_widget_month_curve_label"),
       entriesLabel: str("bicount_widget_entries_label"),
       exitsLabel: str("bicount_widget_exits_label"),
-      titleColor: color("bicount_widget_title_color", default: 0xFF212121),
+      titleColor: titleColor,
       subtitleColor: color("bicount_widget_subtitle_color", default: 0xFF9AA0A6),
       buttonTextColor: color("bicount_widget_button_text_color", default: 0xFFF9F9F9)
     )
   }
 }
 
-// MARK: - Root view: picks the layout per widget family
+// MARK: - Root view: one layout per widget family
 
 struct BicountHomeWidgetEntryView: View {
   var entry: BicountHomeWidgetProvider.Entry
@@ -216,7 +226,7 @@ struct BicountHomeWidgetEntryView: View {
       Group {
         switch family {
         case .systemMedium:
-          WideLayout(entry: entry)
+          MediumLayout(entry: entry)
         case .systemLarge:
           LargeLayout(entry: entry)
         default:
@@ -229,7 +239,7 @@ struct BicountHomeWidgetEntryView: View {
   }
 }
 
-// MARK: - Small: badge + balance + delta + single CTA
+// MARK: - Small: eyebrow, centred balance + month totals, single CTA
 
 private struct SmallLayout: View {
   let entry: BicountHomeWidgetEntry
@@ -238,29 +248,35 @@ private struct SmallLayout: View {
     VStack(alignment: .leading, spacing: 0) {
       EyebrowText(text: entry.eyebrow, color: entry.subtitleColor)
 
-      Text(entry.balance)
-        .font(.system(size: 22, weight: .bold))
-        .foregroundColor(entry.balanceColor)
-        .lineLimit(1)
-        .minimumScaleFactor(0.7)
-        .padding(.top, 6)
-        .frame(maxWidth: .infinity, alignment: .leading)
-
-      if !entry.monthDeltaLabel.isEmpty {
-        Text(entry.monthDeltaLabel)
-          .font(.system(size: 11, weight: .semibold))
-          .foregroundColor(entry.monthDeltaColor)
+      // Balance and totals share one expanding block so they stay centred
+      // between the eyebrow and the button (mirrors the Android XS layout).
+      VStack(spacing: 4) {
+        Spacer(minLength: 0)
+        Text(entry.balance)
+          .font(.system(size: 22, weight: .bold))
+          .foregroundColor(entry.balanceColor)
           .lineLimit(1)
-          .padding(.top, 4)
-          .frame(maxWidth: .infinity, alignment: .leading)
-      }
+          .minimumScaleFactor(0.6)
 
-      Spacer(minLength: 12)
+        Text(entry.incomeTotalText)
+          .font(.system(size: 12, weight: .semibold))
+          .foregroundColor(incomeColor)
+          .lineLimit(1)
+          .minimumScaleFactor(0.7)
+
+        Text(entry.expenseTotalText)
+          .font(.system(size: 12, weight: .semibold))
+          .foregroundColor(expenseColor)
+          .lineLimit(1)
+          .minimumScaleFactor(0.7)
+        Spacer(minLength: 0)
+      }
+      .frame(maxWidth: .infinity)
 
       WidgetButton(
         label: entry.singleButtonLabel,
         textColor: entry.buttonTextColor,
-        background: Color(argb: 0xFF76A646),
+        background: incomeColor,
         actionUrl: entry.singleButtonActionUrl
       )
     }
@@ -269,73 +285,70 @@ private struct SmallLayout: View {
   }
 }
 
-// MARK: - Medium (wide): balance+delta on the left, mini chart + stacked CTAs on the right
+// MARK: - Medium: balance, month totals, two CTAs
 
-private struct WideLayout: View {
+private struct MediumLayout: View {
   let entry: BicountHomeWidgetEntry
 
   var body: some View {
-    HStack(alignment: .center, spacing: 14) {
-      VStack(alignment: .leading, spacing: 0) {
+    VStack(alignment: .leading, spacing: 0) {
+      HStack {
         EyebrowText(text: entry.eyebrow, color: entry.subtitleColor)
-
+        Spacer()
         Text(entry.balance)
           .font(.system(size: 20, weight: .bold))
           .foregroundColor(entry.balanceColor)
           .lineLimit(1)
           .minimumScaleFactor(0.7)
-          .padding(.top, 4)
-
-        if !entry.monthDeltaLabel.isEmpty {
-          Text(entry.monthDeltaLabel)
-            .font(.system(size: 10, weight: .semibold))
-            .foregroundColor(entry.monthDeltaColor)
-            .lineLimit(1)
-            .padding(.top, 2)
-        }
       }
-      .frame(maxWidth: .infinity, alignment: .leading)
 
       Rectangle()
         .fill(entry.borderColor)
-        .frame(width: 1)
-        .padding(.vertical, 4)
+        .frame(height: 1)
+        .padding(.vertical, 12)
 
-      VStack(alignment: .leading, spacing: 8) {
-        EyebrowText(text: entry.weekSectionCompactLabel, color: entry.subtitleColor, size: 9)
+      EyebrowText(text: entry.monthSectionLabel, color: entry.subtitleColor, size: 10)
 
-        BarChartView(
-          values: entry.weekValues,
-          highlightIndex: entry.weekHighlightIndex,
-          barColor: Color(argb: 0xFFD5D8DC),
-          highlightColor: Color(argb: 0xFF76A646)
+      VStack(spacing: 6) {
+        Spacer(minLength: 0)
+        MoneyRow(
+          label: entry.entriesLabel,
+          amount: entry.monthIncomeLabel,
+          labelColor: entry.subtitleColor,
+          amountColor: incomeColor
         )
-        .frame(width: 64, height: 26)
-
-        HStack(spacing: 6) {
-          WidgetButton(
-            label: entry.incomeButtonLabel,
-            textColor: .white,
-            background: Color(argb: 0xFF76A646),
-            actionUrl: entry.incomeButtonActionUrl,
-            compact: true
-          )
-          WidgetButton(
-            label: entry.expenseButtonLabel,
-            textColor: .white,
-            background: Color(argb: 0xFFF44336),
-            actionUrl: entry.expenseButtonActionUrl,
-            compact: true
-          )
-        }
+        MoneyRow(
+          label: entry.exitsLabel,
+          amount: entry.monthExpenseLabel,
+          labelColor: entry.subtitleColor,
+          amountColor: expenseColor
+        )
+        Spacer(minLength: 0)
       }
+      .padding(.top, 8)
+
+      HStack(spacing: 8) {
+        WidgetButton(
+          label: entry.incomeButtonLabel,
+          textColor: .white,
+          background: incomeColor,
+          actionUrl: entry.incomeButtonActionUrl
+        )
+        WidgetButton(
+          label: entry.expenseButtonLabel,
+          textColor: .white,
+          background: expenseColor,
+          actionUrl: entry.expenseButtonActionUrl
+        )
+      }
+      .padding(.top, 14)
     }
     .linkable(entry.mainActionUrl)
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
   }
 }
 
-// MARK: - Large: balance + weekly chart + two CTAs + recent transaction
+// MARK: - Large: balance, month curves + totals, two CTAs, recent list
 
 private struct LargeLayout: View {
   let entry: BicountHomeWidgetEntry
@@ -350,66 +363,63 @@ private struct LargeLayout: View {
         .lineLimit(1)
         .minimumScaleFactor(0.7)
         .padding(.top, 4)
-        .frame(maxWidth: .infinity, alignment: .leading)
 
-      EyebrowText(text: entry.weekSectionLabel, color: entry.subtitleColor, size: 10)
+      EyebrowText(text: entry.monthCurveLabel, color: entry.subtitleColor, size: 10)
         .padding(.top, 14)
 
-      BarChartView(
-        values: entry.weekValues,
-        highlightIndex: entry.weekHighlightIndex,
-        barColor: Color(argb: 0xFFD5D8DC),
-        highlightColor: Color(argb: 0xFF76A646)
-      )
-      .frame(height: 56)
-      .padding(.top, 10)
-
-      HStack(spacing: 0) {
-        ForEach(Array(entry.weekDayLabels.enumerated()), id: \.offset) { _, label in
-          Text(label)
-            .font(.system(size: 10))
-            .foregroundColor(entry.subtitleColor)
-            .frame(maxWidth: .infinity)
-        }
+      // The curves show the month's shape; these totals give the figures a
+      // curve alone cannot convey.
+      HStack {
+        Text(entry.incomeTotalText)
+          .font(.system(size: 14, weight: .bold))
+          .foregroundColor(incomeColor)
+          .lineLimit(1)
+        Spacer()
+        Text(entry.expenseTotalText)
+          .font(.system(size: 14, weight: .bold))
+          .foregroundColor(expenseColor)
+          .lineLimit(1)
       }
-      .padding(.top, 4)
+      .padding(.top, 6)
+
+      DualLineChart(
+        incomeSeries: entry.monthDailyIncome,
+        expenseSeries: entry.monthDailyExpense
+      )
+      .frame(minHeight: 48)
+      .padding(.top, 8)
 
       HStack(spacing: 8) {
         WidgetButton(
           label: entry.incomeButtonLabel,
           textColor: .white,
-          background: Color(argb: 0xFF76A646),
+          background: incomeColor,
           actionUrl: entry.incomeButtonActionUrl
         )
         WidgetButton(
           label: entry.expenseButtonLabel,
           textColor: .white,
-          background: Color(argb: 0xFFF44336),
+          background: expenseColor,
           actionUrl: entry.expenseButtonActionUrl
         )
       }
-      .padding(.top, 14)
+      .padding(.top, 12)
 
-      if !entry.recentItemLabel.isEmpty {
+      if !entry.recentItems.isEmpty {
         Rectangle()
           .fill(entry.borderColor)
           .frame(height: 1)
-          .padding(.top, 14)
-          .padding(.bottom, 10)
+          .padding(.top, 12)
+          .padding(.bottom, 6)
 
-        HStack {
-          Text(entry.recentItemLabel)
-            .font(.system(size: 13))
-            .foregroundColor(entry.titleColor)
-            .lineLimit(1)
-          Spacer()
-          Text(entry.recentItemAmountLabel)
-            .font(.system(size: 13, weight: .bold))
-            .foregroundColor(entry.recentItemAmountColor)
+        // systemLarge fits roughly three rows; the rest of the payload
+        // stays unused rather than overflowing the card.
+        ForEach(entry.recentItems.prefix(3)) { item in
+          RecentRow(item: item, titleColor: entry.titleColor)
         }
-      } else {
-        Spacer(minLength: 0)
       }
+
+      Spacer(minLength: 0)
     }
     .linkable(entry.mainActionUrl)
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -417,6 +427,54 @@ private struct LargeLayout: View {
 }
 
 // MARK: - Shared pieces
+
+private struct MoneyRow: View {
+  let label: String
+  let amount: String
+  let labelColor: Color
+  let amountColor: Color
+
+  var body: some View {
+    HStack {
+      Text(label)
+        .font(.system(size: 13))
+        .foregroundColor(labelColor)
+        .lineLimit(1)
+      Spacer()
+      Text(amount)
+        .font(.system(size: 14, weight: .bold))
+        .foregroundColor(amountColor)
+        .lineLimit(1)
+    }
+  }
+}
+
+private struct RecentRow: View {
+  let item: BicountRecentItem
+  let titleColor: Color
+
+  var body: some View {
+    let row = HStack {
+      Text(item.label)
+        .font(.system(size: 13))
+        .foregroundColor(titleColor)
+        .lineLimit(1)
+      Spacer()
+      Text(item.amountLabel)
+        .font(.system(size: 13, weight: .bold))
+        .foregroundColor(item.amountColor)
+        .lineLimit(1)
+    }
+    .padding(.vertical, 5)
+
+    // Each row opens its own transaction rather than the card action.
+    if let actionUrl = item.actionUrl {
+      Link(destination: actionUrl) { row }.buttonStyle(.plain)
+    } else {
+      row
+    }
+  }
+}
 
 private struct EyebrowText: View {
   let text: String
@@ -427,6 +485,7 @@ private struct EyebrowText: View {
     Text(text)
       .font(.system(size: size, weight: .bold))
       .foregroundColor(color)
+      .lineLimit(1)
   }
 }
 
@@ -435,48 +494,69 @@ private struct WidgetButton: View {
   let textColor: Color
   let background: Color
   let actionUrl: URL?
-  var compact: Bool = false
 
   var body: some View {
     let content = Text(label)
-      .font(.system(size: compact ? 11 : 13, weight: .semibold))
+      .font(.system(size: 13, weight: .semibold))
       .foregroundColor(textColor)
-      .padding(.vertical, compact ? 8 : 12)
-      .padding(.horizontal, compact ? 12 : 0)
-      .frame(maxWidth: compact ? nil : .infinity)
+      .lineLimit(1)
+      .padding(.vertical, 12)
+      .frame(maxWidth: .infinity)
       .background(
-        RoundedRectangle(cornerRadius: compact ? 14 : 18, style: .continuous)
+        RoundedRectangle(cornerRadius: 18, style: .continuous)
           .fill(background)
       )
 
     if let actionUrl {
-      Link(destination: actionUrl) { content }
-        .buttonStyle(.plain)
+      Link(destination: actionUrl) { content }.buttonStyle(.plain)
     } else {
       content
     }
   }
 }
 
-/// Hand-rolled bar chart — RemoteViews/WidgetKit can't host Flutter or a
-/// third-party charting library, so bars are plain proportional rectangles.
-private struct BarChartView: View {
-  let values: [Double]
-  let highlightIndex: Int
-  let barColor: Color
-  let highlightColor: Color
+/// Two overlaid curves (daily income vs daily expense over the month).
+/// Hand-rolled for the same reason as on Android: a widget process cannot
+/// host Flutter or a charting library.
+private struct DualLineChart: View {
+  let incomeSeries: [Double]
+  let expenseSeries: [Double]
 
   var body: some View {
     GeometryReader { proxy in
-      let maxValue = max(values.max() ?? 0, 0.01)
-      HStack(alignment: .bottom, spacing: max(proxy.size.width * 0.06, 2)) {
-        ForEach(Array(values.enumerated()), id: \.offset) { index, value in
-          RoundedRectangle(cornerRadius: 2, style: .continuous)
-            .fill(index == highlightIndex ? highlightColor : barColor)
-            .frame(height: max(proxy.size.height * CGFloat(value / maxValue), 4))
+      // Both curves share one scale so they stay visually comparable.
+      let maxValue = max(
+        incomeSeries.max() ?? 0,
+        expenseSeries.max() ?? 0,
+        0.01
+      )
+      ZStack {
+        curve(for: incomeSeries, maxValue: maxValue, size: proxy.size)
+          .stroke(incomeColor, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+        curve(for: expenseSeries, maxValue: maxValue, size: proxy.size)
+          .stroke(expenseColor, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+      }
+    }
+  }
+
+  private func curve(for series: [Double], maxValue: Double, size: CGSize) -> Path {
+    Path { path in
+      guard series.count > 1 else { return }
+      let inset: CGFloat = 2
+      let usableHeight = size.height - inset * 2
+      let stepX = (size.width - inset * 2) / CGFloat(series.count - 1)
+      for (index, value) in series.enumerated() {
+        let ratio = CGFloat(min(max(value / maxValue, 0), 1))
+        let point = CGPoint(
+          x: inset + stepX * CGFloat(index),
+          y: inset + usableHeight * (1 - ratio)
+        )
+        if index == 0 {
+          path.move(to: point)
+        } else {
+          path.addLine(to: point)
         }
       }
-      .frame(width: proxy.size.width, height: proxy.size.height, alignment: .bottom)
     }
   }
 }
@@ -485,8 +565,7 @@ private extension View {
   @ViewBuilder
   func linkable(_ url: URL?) -> some View {
     if let url {
-      Link(destination: url) { self }
-        .buttonStyle(.plain)
+      Link(destination: url) { self }.buttonStyle(.plain)
     } else {
       self
     }

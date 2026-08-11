@@ -29,12 +29,14 @@ class HomeMonthlyFlowService {
 
     final currentStart = DateTime(referenceNow.year, referenceNow.month);
     final nextStart = DateTime(referenceNow.year, referenceNow.month + 1);
-    final previousStart = DateTime(referenceNow.year, referenceNow.month - 1);
 
-    var currentInflow = 0.0;
-    var currentOutflow = 0.0;
-    var previousInflow = 0.0;
-    var previousOutflow = 0.0;
+    // Native amounts are accumulated per currency and converted once at the
+    // end, exactly like the balance does. Converting each transaction
+    // separately and then summing would drift, because two transactions in
+    // the same currency can carry different historical rates.
+    final currentInflowByCurrency = <String, double>{};
+    final currentOutflowByCurrency = <String, double>{};
+    final carryoverByCurrency = <String, double>{};
 
     for (final transaction in data.transactions) {
       final transactionDate = _parseLocalDate(transaction);
@@ -42,10 +44,10 @@ class HomeMonthlyFlowService {
         continue;
       }
 
-      final amount = currencyAmountService.transaction(
-        transaction,
-        currencyConfig,
+      final currencyCode = CurrencyConfigEntity.normalizeCode(
+        transaction.currency,
       );
+      final amount = transaction.amount;
       final isSender = currentUserParticipantIds.contains(transaction.senderId);
       final isBeneficiary = currentUserParticipantIds.contains(
         transaction.beneficiaryId,
@@ -57,38 +59,60 @@ class HomeMonthlyFlowService {
         endExclusive: nextStart,
       )) {
         if (isBeneficiary) {
-          currentInflow += amount;
+          _add(currentInflowByCurrency, currencyCode, amount);
         }
         if (isSender) {
-          currentOutflow += amount;
+          _add(currentOutflowByCurrency, currencyCode, amount);
         }
         continue;
       }
 
-      if (_isInRange(
-        value: transactionDate,
-        startInclusive: previousStart,
-        endExclusive: currentStart,
-      )) {
+      // Everything before this month feeds the carry-over. Because it is
+      // never clamped, this single bucket is mathematically identical to
+      // chaining "previous month leftover" across every past month — and it
+      // is what makes `inflowWithCarryover - outflow` land on the balance.
+      if (transactionDate.isBefore(currentStart)) {
         if (isBeneficiary) {
-          previousInflow += amount;
+          _add(carryoverByCurrency, currencyCode, amount);
         }
         if (isSender) {
-          previousOutflow += amount;
+          _add(carryoverByCurrency, currencyCode, -amount);
         }
       }
     }
 
-    final previousMonthNet = previousInflow - previousOutflow;
-    final previousMonthCarryover = previousMonthNet > 0
-        ? previousMonthNet
-        : 0.0;
-
     return HomeMonthlyFlowSummary(
-      currentMonthInflow: currentInflow,
-      currentMonthOutflow: currentOutflow,
-      previousMonthCarryover: previousMonthCarryover,
+      currentMonthInflow: _convertNetByCurrency(
+        currentInflowByCurrency,
+        currencyConfig,
+      ),
+      currentMonthOutflow: _convertNetByCurrency(
+        currentOutflowByCurrency,
+        currencyConfig,
+      ),
+      // Signed on purpose: a past deficit must stay visible instead of
+      // being reset to zero.
+      carryover: _convertNetByCurrency(carryoverByCurrency, currencyConfig),
     );
+  }
+
+  void _add(Map<String, double> byCurrency, String currencyCode, double delta) {
+    byCurrency[currencyCode] = (byCurrency[currencyCode] ?? 0) + delta;
+  }
+
+  double _convertNetByCurrency(
+    Map<String, double> nativeAmountsByCurrency,
+    CurrencyConfigEntity currencyConfig,
+  ) {
+    var total = 0.0;
+    for (final entry in nativeAmountsByCurrency.entries) {
+      total += currencyAmountService.record(
+        originalAmount: entry.value,
+        originalCurrencyCode: entry.key,
+        config: currencyConfig,
+      );
+    }
+    return total;
   }
 
   DateTime? _parseLocalDate(TransactionModel transaction) {

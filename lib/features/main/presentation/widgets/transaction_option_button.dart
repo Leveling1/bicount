@@ -1,6 +1,7 @@
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
@@ -50,25 +51,31 @@ class TransactionOptionButton extends StatelessWidget {
       if (_hasDebts)
         _TransactionOption(
           label: context.l10n.debtScreenTitle,
-          icon: Icons.receipt_long_outlined,
+          icon: Icons.receipt,
+          color: Theme.of(context).extension<OtherTheme>()!.analysisDebt!,
           route: '/debts',
         ),
       if (_hasSalary)
         _TransactionOption(
           label: context.l10n.salaryTrackingTitle,
-          icon: Icons.payments_outlined,
+          icon: Icons.payments,
+          color: Theme.of(context).extension<OtherTheme>()!.analysisSalary!,
           route: '/salary',
         ),
       if (_hasRecurringIncome)
         _TransactionOption(
           label: context.l10n.recurringIncomesTitle,
           icon: Icons.trending_up,
+          color: Theme.of(context).extension<OtherTheme>()!.analysisRevenue!,
           route: '/recurring-incomes',
         ),
       if (_hasRecurringCharges)
         _TransactionOption(
           label: context.l10n.recurringChargesTitle,
-          icon: Icons.subscriptions_outlined,
+          icon: Icons.subscriptions,
+          color: Theme.of(
+            context,
+          ).extension<OtherTheme>()!.analysisSubscription!,
           route: '/subscriptions',
         ),
     ];
@@ -113,11 +120,14 @@ class TransactionOptionButton extends StatelessWidget {
           ...options.map(
             (option) => ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: Icon(option.icon),
+              leading: CircleAvatar(
+                radius: 18,
+                backgroundColor: option.color.withValues(alpha: 0.14),
+                child: Icon(option.icon, color: option.color),
+              ),
               title: Text(option.label),
               trailing: Icon(
                 Icons.chevron_right,
-                color: Theme.of(context).cardColor,
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -125,6 +135,7 @@ class TransactionOptionButton extends StatelessWidget {
               },
             ),
           ),
+          AppDimens.spacerLarge,
         ],
       ),
     );
@@ -136,9 +147,11 @@ class _TransactionOption {
     required this.label,
     required this.icon,
     required this.route,
+    required this.color,
   });
 
   final String label;
   final IconData icon;
   final String route;
+  final Color color;
 }
