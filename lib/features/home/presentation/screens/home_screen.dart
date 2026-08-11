@@ -75,7 +75,12 @@ class HomeScreen extends StatelessWidget {
                     referenceCurrencyCode: data.referenceCurrencyCode,
                     monthlyInflow: monthlyFlow.inflowWithCarryover,
                     monthlyOutflow: monthlyFlow.currentMonthOutflow,
-                    incomeColor: incomeColor,
+                    // A negative inflow means the month opened on an
+                    // overdraft carried over from before; showing it green
+                    // would read as money coming in.
+                    incomeColor: monthlyFlow.inflowWithCarryover < 0
+                        ? expenseColor
+                        : incomeColor,
                     expenseColor: expenseColor,
                     onMonthlyInflowTap: () => onCardTap?.call(2),
                     onMonthlyOutflowTap: () => onCardTap?.call(1),

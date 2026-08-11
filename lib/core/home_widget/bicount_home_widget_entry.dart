@@ -16,6 +16,7 @@ class BicountHomeWidgetEntry {
     this.monthIncomeLabel,
     this.monthExpenseValue,
     this.monthExpenseLabel,
+    this.monthIncomeColor,
     this.nextItemLabel,
     this.nextItemAmountLabel,
     this.nextItemAmountColor,
@@ -70,6 +71,11 @@ class BicountHomeWidgetEntry {
   final String? monthIncomeLabel;
   final double? monthExpenseValue;
   final String? monthExpenseLabel;
+
+  /// The "In" figure carries the whole past history, so it can be negative
+  /// when the month opens on an overdraft. Rendering that green would read
+  /// as money coming in, hence a colour decided alongside the value.
+  final int? monthIncomeColor;
 
   /// Next upcoming item (a salary awaiting confirmation, or the closest
   /// due recurring charge/income) rendered as "Netflix — demain".
@@ -144,6 +150,7 @@ class BicountHomeWidgetEntry {
     monthIncomeLabel,
     monthExpenseValue,
     monthExpenseLabel,
+    monthIncomeColor,
     nextItemLabel,
     nextItemAmountLabel,
     nextItemAmountColor,

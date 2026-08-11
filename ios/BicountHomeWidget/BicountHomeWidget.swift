@@ -41,6 +41,8 @@ struct BicountHomeWidgetEntry: TimelineEntry {
 
   let monthIncomeValue: Double
   let monthIncomeLabel: String
+  /// Turns red when the month opens on a carried-over overdraft.
+  let monthIncomeColor: Color
   let monthExpenseValue: Double
   let monthExpenseLabel: String
 
@@ -94,6 +96,7 @@ struct BicountHomeWidgetEntry: TimelineEntry {
       mainActionUrl: URL(string: "bicount://widget/open-home?homeWidget=1"),
       monthIncomeValue: 850,
       monthIncomeLabel: "850 €",
+      monthIncomeColor: incomeColor,
       monthExpenseValue: 420,
       monthExpenseLabel: "420 €",
       monthDailyIncome: [0, 120, 0, 0, 300, 0, 430],
@@ -186,6 +189,7 @@ struct BicountHomeWidgetEntry: TimelineEntry {
       mainActionUrl: mainActionUrl,
       monthIncomeValue: rawDouble("bicount_widget_month_income_value"),
       monthIncomeLabel: str("bicount_widget_month_income_label"),
+      monthIncomeColor: color("bicount_widget_month_income_color", default: 0xFF76A646),
       monthExpenseValue: rawDouble("bicount_widget_month_expense_value"),
       monthExpenseLabel: str("bicount_widget_month_expense_label"),
       monthDailyIncome: doubleSeries("bicount_widget_month_daily_income"),
@@ -260,7 +264,7 @@ private struct SmallLayout: View {
 
         Text(entry.incomeTotalText)
           .font(.system(size: 12, weight: .semibold))
-          .foregroundColor(incomeColor)
+          .foregroundColor(entry.monthIncomeColor)
           .lineLimit(1)
           .minimumScaleFactor(0.7)
 
@@ -315,7 +319,7 @@ private struct MediumLayout: View {
           label: entry.entriesLabel,
           amount: entry.monthIncomeLabel,
           labelColor: entry.subtitleColor,
-          amountColor: incomeColor
+          amountColor: entry.monthIncomeColor
         )
         MoneyRow(
           label: entry.exitsLabel,
@@ -372,7 +376,7 @@ private struct LargeLayout: View {
       HStack {
         Text(entry.incomeTotalText)
           .font(.system(size: 14, weight: .bold))
-          .foregroundColor(incomeColor)
+          .foregroundColor(entry.monthIncomeColor)
           .lineLimit(1)
         Spacer()
         Text(entry.expenseTotalText)

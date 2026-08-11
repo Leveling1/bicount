@@ -130,6 +130,7 @@ class BicountHomeWidgetEntryBuilder {
         monthIncome,
         currencyCode: data.referenceCurrencyCode,
       ),
+      monthIncomeColor: monthIncome < 0 ? negativeColor : positiveColor,
       monthExpenseValue: monthExpense,
       monthExpenseLabel: NumberFormatUtils.formatCurrency(
         monthExpense,

@@ -90,7 +90,10 @@ class ProfileScreen extends StatelessWidget {
                 leftTitle: context.l10n.homeMonthlyInflow,
                 leftIcon: IconLinks.income,
                 leftValue: monthlyFlow.inflowWithCarryover,
-                leftColor: incomeColor,
+                // Negative means the month started in deficit, not income.
+                leftColor: monthlyFlow.inflowWithCarryover < 0
+                    ? expenseColor
+                    : incomeColor,
                 rightTitle: context.l10n.homeMonthlyOutflow,
                 rightIcon: IconLinks.expense,
                 rightValue: monthlyFlow.currentMonthOutflow,

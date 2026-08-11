@@ -134,6 +134,7 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
         views.setTextViewText(R.id.widget_balance, data.balance)
         views.setTextColor(R.id.widget_balance, data.balanceColor)
         views.setTextViewText(R.id.widget_month_income, data.incomeTotalText)
+        views.setTextColor(R.id.widget_month_income, data.monthIncomeColor)
         views.setTextViewText(R.id.widget_month_expense, data.expenseTotalText)
         views.setTextViewText(R.id.widget_single_button, data.singleButtonLabel)
         views.setTextColor(R.id.widget_single_button, data.buttonTextColor)
@@ -156,6 +157,7 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
         views.setTextColor(R.id.widget_income_word, data.subtitleColor)
         views.setTextColor(R.id.widget_expense_word, data.subtitleColor)
         views.setTextViewText(R.id.widget_month_income, data.monthIncomeLabel)
+        views.setTextColor(R.id.widget_month_income, data.monthIncomeColor)
         views.setTextViewText(R.id.widget_month_expense, data.monthExpenseLabel)
         views.setImageViewBitmap(
             R.id.widget_chart_image,
@@ -189,6 +191,7 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
         views.setTextColor(R.id.widget_income_word, data.subtitleColor)
         views.setTextColor(R.id.widget_expense_word, data.subtitleColor)
         views.setTextViewText(R.id.widget_month_income, data.monthIncomeLabel)
+        views.setTextColor(R.id.widget_month_income, data.monthIncomeColor)
         views.setTextViewText(R.id.widget_month_expense, data.monthExpenseLabel)
         views.setTextViewText(R.id.widget_income_button, data.incomeButtonLabel)
         views.setTextViewText(R.id.widget_expense_button, data.expenseButtonLabel)
@@ -215,6 +218,7 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
         views.setTextViewText(R.id.widget_week_section_label, data.monthCurveLabel)
         views.setTextColor(R.id.widget_week_section_label, data.subtitleColor)
         views.setTextViewText(R.id.widget_legend_income, data.incomeTotalText)
+        views.setTextColor(R.id.widget_legend_income, data.monthIncomeColor)
         views.setTextViewText(R.id.widget_legend_expense, data.expenseTotalText)
         views.setImageViewBitmap(
             R.id.widget_chart_image,
@@ -330,6 +334,7 @@ private class WidgetData(
     val monthIncomeValue: Double,
     val monthExpenseValue: Double,
     val monthIncomeLabel: String,
+    val monthIncomeColor: Int,
     val monthExpenseLabel: String,
     val nextItemLabel: String,
     val nextItemAmountLabel: String,
@@ -406,6 +411,7 @@ private class WidgetData(
             monthIncomeValue = 0.0,
             monthExpenseValue = 0.0,
             monthIncomeLabel = "",
+            monthIncomeColor = 0xFF76A646.toInt(),
             monthExpenseLabel = "",
             nextItemLabel = "",
             nextItemAmountLabel = "",
@@ -477,6 +483,7 @@ private class WidgetData(
                 monthIncomeValue = dbl("bicount_widget_month_income_value"),
                 monthExpenseValue = dbl("bicount_widget_month_expense_value"),
                 monthIncomeLabel = str("bicount_widget_month_income_label"),
+                monthIncomeColor = color("bicount_widget_month_income_color", 0xFF76A646.toInt()),
                 monthExpenseLabel = str("bicount_widget_month_expense_label"),
                 nextItemLabel = str("bicount_widget_next_item_label"),
                 nextItemAmountLabel = str("bicount_widget_next_item_amount_label"),

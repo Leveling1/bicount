@@ -34,6 +34,7 @@ class BicountHomeWidgetService extends ChangeNotifier {
   static const _monthIncomeLabelKey = 'bicount_widget_month_income_label';
   static const _monthExpenseValueKey = 'bicount_widget_month_expense_value';
   static const _monthExpenseLabelKey = 'bicount_widget_month_expense_label';
+  static const _monthIncomeColorKey = 'bicount_widget_month_income_color';
   static const _nextItemLabelKey = 'bicount_widget_next_item_label';
   static const _nextItemAmountLabelKey =
       'bicount_widget_next_item_amount_label';
@@ -243,6 +244,10 @@ class BicountHomeWidgetService extends ChangeNotifier {
     await HomeWidget.saveWidgetData<String>(
       _monthExpenseLabelKey,
       entry.monthExpenseLabel ?? '',
+    );
+    await HomeWidget.saveWidgetData<int>(
+      _monthIncomeColorKey,
+      entry.monthIncomeColor ?? entry.titleColor,
     );
     await HomeWidget.saveWidgetData<String>(
       _nextItemLabelKey,
