@@ -1,5 +1,8 @@
+import 'package:bicount/core/constants/animation_file_path.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
+import 'package:dotlottie_flutter/dotlottie_flutter.dart';
 import 'package:flutter/material.dart';
 
 class NotificationPermissionScreen extends StatefulWidget {
@@ -59,6 +62,7 @@ class _NotificationPermissionScreenState
     final theme = Theme.of(context);
 
     return Scaffold(
+      appBar: CustomAppBar(title: ''),
       body: SafeArea(
         child: Padding(
           padding: AppDimens.paddingAllMedium,
@@ -70,28 +74,45 @@ class _NotificationPermissionScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      AppDimens.spacerXXLarge,
-                      Container(
-                        width: 88,
-                        height: 88,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.primary.withValues(
-                            alpha: 0.12,
-                          ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          widget.icon,
-                          size: 40,
-                          color: theme.colorScheme.primary,
+                      SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: DotLottieView(
+                          sourceType: 'asset',
+                          source: AnimationFilePath.notification,
+                          autoplay: true,
+                          loop: true,
+                          mode: 'bounce',
                         ),
                       ),
-                      AppDimens.spacerLarge,
-                      Text(
-                        widget.title,
-                        style: theme.textTheme.headlineSmall,
-                        textAlign: TextAlign.center,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: theme.textTheme.headlineSmall!.fontSize!,
+                            height: theme.textTheme.headlineSmall!.fontSize!,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary.withValues(
+                                alpha: 0.12,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              widget.icon,
+                              size: theme.textTheme.headlineSmall!.fontSize!,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                          AppDimens.spacerWidthMedium,
+                          Flexible(
+                            child: Text(
+                              widget.title,
+                              style: theme.textTheme.headlineSmall,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
                       ),
                       AppDimens.spacerMedium,
                       Container(
@@ -137,11 +158,9 @@ class _NotificationPermissionScreenState
                                 Expanded(
                                   child: Text(
                                     reason,
-                                    style: theme.textTheme.bodyMedium
-                                        ?.copyWith(
-                                          color:
-                                              theme.colorScheme.onSurfaceVariant,
-                                        ),
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                    ),
                                   ),
                                 ),
                               ],

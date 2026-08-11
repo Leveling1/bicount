@@ -2,6 +2,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // dotlottie_flutter depends on com.github.LottieFiles:dotlottie-android,
+        // which is only published on JitPack.
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
