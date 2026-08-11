@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/widgets/circle_image_skeleton.dart';
@@ -29,10 +28,10 @@ class CompanyProfil extends StatelessWidget {
         child: image != null && image != ""
             ? CachedNetworkImage(
                 imageUrl: image!,
-                width: width.w,
-                height: height.h,
+                width: width,
+                height: height,
                 placeholder: (context, url) =>
-                    CircleImageSkeleton(width: width.w, height: height.h),
+                    CircleImageSkeleton(width: width, height: height),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
                 fit: BoxFit.cover,
               )
@@ -41,8 +40,8 @@ class CompanyProfil extends StatelessWidget {
                 child: SvgPicture.asset(
                   "assets/icons/company.svg",
                   semanticsLabel: "Company",
-                  width: width.w,
-                  height: height.h,
+                  width: width,
+                  height: height,
                   colorFilter: ColorFilter.mode(
                     AppColors.inactiveColorDark,
                     BlendMode.srcIn,

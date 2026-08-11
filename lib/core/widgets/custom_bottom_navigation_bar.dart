@@ -33,7 +33,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(splashColor: Colors.transparent),
       child: Container(
-        //height: AppDimens.bottomBarHeight.h,
+        //height: AppDimens.bottomBarHeight,
         decoration: BoxDecoration(
           color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
         ),

@@ -4,6 +4,9 @@ import 'package:bicount/core/services/open_invite_hub.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_badge.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
+import 'package:bicount/features/debt/data/models/debt.model.dart';
+import 'package:bicount/features/main/presentation/widgets/transaction_option_button.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:flutter/material.dart';
 
 class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -16,6 +19,8 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onToggleSearch,
     required this.onAddFunds,
     required this.onOpenSettings,
+    required this.debts,
+    required this.recurringTransferts,
   });
 
   final int connectionState;
@@ -25,6 +30,8 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onToggleSearch;
   final VoidCallback onAddFunds;
   final VoidCallback onOpenSettings;
+  final List<DebtModel> debts;
+  final List<RecurringTransfertModel> recurringTransferts;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -53,7 +60,10 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
               key: ValueKey('search_$selectedIndex$showSearchBar'),
               mainAxisSize: MainAxisSize.min,
               children: [
-                // TransactionOptionButton(),
+                TransactionOptionButton(
+                  debts: debts,
+                  recurringTransferts: recurringTransferts,
+                ),
                 CustomIconButton(
                   onPressed: onToggleSearch,
                   icon: showSearchBar ? Icons.close : Icons.search,

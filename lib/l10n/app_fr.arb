@@ -574,6 +574,7 @@
   "runtimeSalaryTrackingSaveFailed": "Impossible de mettre à jour ce suivi récurrent pour le moment.",
   "recurringChargesTitle": "Charges",
   "recurringIncomesTitle": "Revenus récurrents",
+  "transactionControlCenterTitle": "Accéder à",
   "recurringChargesIntro": "Gardez un oeil sur les charges récurrentes qui pèsent sur votre solde, ajustez-les quand le contexte change et arrêtez-les proprement quand elles ne servent plus.",
   "recurringIncomesIntro": "Regroupez ici vos revenus récurrents, mettez-les à jour quand le montant change et gardez le calendrier cohérent avec la réalité.",
   "recurringChargesEmpty": "Vos abonnements et dépenses automatiques s'afficheront ici dès qu'ils seront actifs.",

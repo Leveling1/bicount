@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'bicount_skeleton.dart';
 
@@ -29,8 +28,8 @@ class AppAvatar extends StatelessWidget {
       radius: radius,
       child: ClipOval(
         child: SizedBox(
-          width: size.w,
-          height: size.h,
+          width: size,
+          height: size,
           child: imagePath.isEmpty
               ? Icon(fallbackIcon, color: Theme.of(context).iconTheme.color)
               : _isAssetImage

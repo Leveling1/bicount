@@ -1,7 +1,6 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/services/notification_helper.dart';
 import '../bloc/list_bloc/list_bloc.dart';
 import '../widgets/company_card.dart';
@@ -89,7 +88,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                       return CompanyLargeCard(company: company, role: role);
                     }
                   }),
-                  SizedBox(height: 50.h),
+                  SizedBox(height: 50),
                 ],
               ),
             ),

@@ -9,7 +9,6 @@ import 'package:bicount/features/transaction/presentation/helpers/transaction_fe
 import 'package:bicount/features/transaction/presentation/models/transaction_feed_item.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_feed_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class TransactionScreen extends StatefulWidget {
@@ -150,7 +149,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       context,
                     ).copyWith(scrollbars: false),
                     child: ListView(
-                      padding: EdgeInsets.only(top: 15, bottom: 50.h),
+                      padding: EdgeInsets.only(top: 15, bottom: 50),
                       children: grouped.entries.map((entry) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

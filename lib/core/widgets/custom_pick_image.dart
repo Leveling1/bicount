@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CustomPickImage extends StatefulWidget {
@@ -36,7 +35,7 @@ class _CustomPickImageState extends State<CustomPickImage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 55.h,
+      height: 55,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,

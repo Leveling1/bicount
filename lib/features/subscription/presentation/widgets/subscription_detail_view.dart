@@ -12,7 +12,6 @@ import 'package:bicount/features/profile/presentation/widgets/info_card.dart';
 import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_actions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/utils/formated_text.dart';
 
@@ -61,8 +60,8 @@ class SubscriptionDetailView extends StatelessWidget {
           backgroundColor: Theme.of(context).cardColor,
           radius: 40,
           child: SizedBox(
-            width: 50.w,
-            height: 50.h,
+            width: 50,
+            height: 50,
             child: Icon(
               Icons.subscriptions,
               color: Theme.of(context).primaryColor,

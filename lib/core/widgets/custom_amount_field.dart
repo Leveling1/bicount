@@ -6,7 +6,6 @@ import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomAmountField extends StatelessWidget {
   const CustomAmountField({
@@ -154,7 +153,7 @@ class _AmountNumberState extends State<AmountNumber> {
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       textAlign: TextAlign.center,
       inputFormatters: const [CurrencyAmountFormatter()],
-      style: TextStyle(fontSize: 42.sp, fontWeight: FontWeight.w500),
+      style: TextStyle(fontSize: 42, fontWeight: FontWeight.w500),
       minFontSize: 24.0,
       stepGranularity: 0.5,
       maxLines: 1,
@@ -162,7 +161,7 @@ class _AmountNumberState extends State<AmountNumber> {
       decoration: InputDecoration(
         hintText: '0,00',
         hintStyle: TextStyle(
-          fontSize: 42.sp,
+          fontSize: 42,
           fontWeight: FontWeight.w500,
           color: Theme.of(context).hintColor,
         ),
@@ -291,7 +290,7 @@ class CurrencyField extends StatelessWidget {
                 : fallbackCode,
             hintText: context.l10n.fieldSelectCurrency,
             textStyle: TextStyle(
-              fontSize: AppDimens.textSizeSmall.sp,
+              fontSize: AppDimens.textSizeSmall,
               fontWeight: FontWeight.w600,
             ),
             inputDecorationTheme: InputDecorationTheme(
@@ -355,7 +354,7 @@ class _CurrencyChipShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 95.sp,
+      width: 95,
       child: Center(child: child),
     );
   }

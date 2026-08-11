@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/utils/number_format_utils.dart';
 import '../../../../core/widgets/details_card.dart';
@@ -66,10 +65,10 @@ class CompanyCardInfo extends StatelessWidget {
           const SizedBox(height: 20),
           CircleAvatar(
             backgroundColor: color,
-            radius: 20.r, // Using .r for radius to scale consistently
+            radius: 20, // Using  for radius to scale consistently
             child: Icon(
               iconPath,
-              size: 24.sp, // Adjust size to fit within the avatar
+              size: 24, // Adjust size to fit within the avatar
               color: Colors.white,
             ),
           ),

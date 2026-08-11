@@ -117,6 +117,8 @@ class _MainScreenState extends State<MainScreen> {
                 setState(() => showSearchBar = !showSearchBar),
             onAddFunds: _openAddFundsSheet,
             onOpenSettings: () => context.push('/settings'),
+            debts: preparedData.debts,
+            recurringTransferts: preparedData.recurringTransferts,
           ),
           body: MainShellBody(
             selectedIndex: _selectedIndex,

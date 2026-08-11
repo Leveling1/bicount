@@ -1491,6 +1491,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recurringIncomesTitle => 'Recurring incomes';
 
   @override
+  String get transactionControlCenterTitle => 'Go to';
+
+  @override
   String get recurringChargesIntro => 'Keep an eye on the recurring charges that hit your balance, review their pace, and stop or update them when the context changes.';
 
   @override

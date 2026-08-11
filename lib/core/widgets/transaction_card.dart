@@ -7,7 +7,6 @@ import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -73,8 +72,8 @@ class TransactionCard extends StatelessWidget {
                   backgroundColor: Theme.of(context).cardColor,
                   radius: 20,
                   child: SizedBox(
-                    width: 30.w,
-                    height: 30.h,
+                    width: 30,
+                    height: 30,
                     child: Icon(
                       transactionIcon,
                       color: Theme.of(context).textTheme.bodyLarge?.color,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../themes/app_dimens.dart';
 
@@ -39,7 +38,7 @@ Future<T?> showCustomBottomSheet<T>({
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final handleHeight = 5.h;
+              final handleHeight = 5.0;
               const spacing = 25.0;
               final scrollMaxHeight =
                   (constraints.maxHeight - handleHeight - spacing).clamp(
@@ -55,7 +54,7 @@ Future<T?> showCustomBottomSheet<T>({
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    width: 50.w,
+                    width: 50,
                     height: handleHeight,
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,

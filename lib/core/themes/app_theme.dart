@@ -1,7 +1,6 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'app_colors.dart';
 import 'app_gradient.dart';
@@ -39,17 +38,17 @@ class AppTheme {
       ),
       floatingLabelStyle: TextStyle(
         color: AppColors.primaryColorLight,
-        fontSize: AppDimens.textSizeSmall.sp,
+        fontSize: AppDimens.textSizeSmall,
         fontFamily: 'Lexend',
       ),
       hintStyle: TextStyle(
         color: AppColors.secondaryTextColorLight,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
         fontFamily: 'Lexend',
       ),
       labelStyle: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
         fontFamily: 'Lexend',
       ),
     ),
@@ -88,7 +87,7 @@ class AppTheme {
         textStyle: WidgetStateProperty.all<TextStyle>(
           TextStyle(
             color: AppColors.textColorDark,
-            fontSize: AppDimens.textSizeMedium.sp,
+            fontSize: AppDimens.textSizeMedium,
           ),
         ),
       ),
@@ -120,7 +119,7 @@ class AppTheme {
         textStyle: WidgetStateProperty.all<TextStyle>(
           TextStyle(
             color: AppColors.surfaceColorLight,
-            fontSize: AppDimens.textSizeMedium.sp,
+            fontSize: AppDimens.textSizeMedium,
           ),
         ),
       ),
@@ -130,40 +129,40 @@ class AppTheme {
     textTheme: TextTheme(
       titleSmall: TextStyle(
         color: AppColors.secondaryTextColorLight,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
       ),
       titleMedium: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeLarge.sp,
+        fontSize: AppDimens.textSizeLarge,
       ),
       titleLarge: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeXXLarge.sp,
+        fontSize: AppDimens.textSizeXXLarge,
         fontWeight: FontWeight.bold,
       ),
       bodySmall: TextStyle(
         color: AppColors.secondaryTextColorLight,
-        fontSize: AppDimens.textSizeSmall.sp,
+        fontSize: AppDimens.textSizeSmall,
       ),
       bodyMedium: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
       ),
       bodyLarge: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeLarge.sp,
+        fontSize: AppDimens.textSizeLarge,
       ),
       headlineSmall: TextStyle(
         color: AppColors.secondaryTextColorLight,
-        fontSize: AppDimens.textSizeSmall.sp,
+        fontSize: AppDimens.textSizeSmall,
       ),
       headlineMedium: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeLarge.sp,
+        fontSize: AppDimens.textSizeLarge,
       ),
       headlineLarge: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeExtraLarge.sp,
+        fontSize: AppDimens.textSizeExtraLarge,
       ),
     ),
 
@@ -376,18 +375,18 @@ class AppTheme {
         ),
         floatingLabelStyle: TextStyle(
           color: AppColors.textColorLight,
-          fontSize: AppDimens.textSizeMedium.sp,
+          fontSize: AppDimens.textSizeMedium,
           fontFamily: 'Poppins',
         ),
         contentPadding: AppDimens.paddingAllSmall,
         hintStyle: TextStyle(
           color: AppColors.inactiveColorLight,
-          fontSize: AppDimens.textSizeMedium.sp,
+          fontSize: AppDimens.textSizeMedium,
           fontFamily: 'Poppins',
         ),
         labelStyle: TextStyle(
           color: AppColors.textColorLight,
-          fontSize: AppDimens.textSizeMedium.sp,
+          fontSize: AppDimens.textSizeMedium,
           fontFamily: 'Poppins',
         ),
       ),
@@ -405,7 +404,7 @@ class AppTheme {
       ),
       textStyle: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
         fontFamily: 'Poppins',
       ),
     ),
@@ -424,12 +423,12 @@ class AppTheme {
       ),
       titleTextStyle: TextStyle(
         color: AppColors.textColorLight,
-        fontSize: AppDimens.textSizeLarge.sp,
+        fontSize: AppDimens.textSizeLarge,
         fontWeight: FontWeight.w700,
       ),
       contentTextStyle: TextStyle(
         color: AppColors.secondaryTextColorLight,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
         height: 1.45,
       ),
     ),
@@ -533,18 +532,18 @@ class AppTheme {
       ),
       floatingLabelStyle: TextStyle(
         color: AppColors.primaryColorDark,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
         fontFamily: 'Lexend',
       ),
       contentPadding: AppDimens.paddingAllSmall,
       hintStyle: TextStyle(
         color: AppColors.inactiveColorDark,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
         fontFamily: 'Lexend',
       ),
       labelStyle: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
         fontFamily: 'Lexend',
       ),
     ),
@@ -563,12 +562,12 @@ class AppTheme {
       ),
       titleTextStyle: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeLarge.sp,
+        fontSize: AppDimens.textSizeLarge,
         fontWeight: FontWeight.w700,
       ),
       contentTextStyle: TextStyle(
         color: AppColors.secondaryTextColorDark,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
         height: 1.45,
       ),
     ),
@@ -607,7 +606,7 @@ class AppTheme {
         textStyle: WidgetStateProperty.all<TextStyle>(
           TextStyle(
             color: AppColors.textColorLight,
-            fontSize: AppDimens.textSizeMedium.sp,
+            fontSize: AppDimens.textSizeMedium,
           ),
         ),
       ),
@@ -639,7 +638,7 @@ class AppTheme {
         textStyle: WidgetStateProperty.all<TextStyle>(
           TextStyle(
             color: AppColors.surfaceColorDark,
-            fontSize: AppDimens.textSizeMedium.sp,
+            fontSize: AppDimens.textSizeMedium,
           ),
         ),
       ),
@@ -649,41 +648,41 @@ class AppTheme {
     textTheme: TextTheme(
       titleSmall: TextStyle(
         color: AppColors.secondaryTextColorDark,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
       ),
       titleMedium: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeLarge.sp,
+        fontSize: AppDimens.textSizeLarge,
       ),
       titleLarge: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeXXLarge.sp,
+        fontSize: AppDimens.textSizeXXLarge,
       ),
 
       bodySmall: TextStyle(
         color: AppColors.secondaryTextColorDark,
-        fontSize: AppDimens.textSizeSmall.sp,
+        fontSize: AppDimens.textSizeSmall,
       ),
       bodyLarge: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeLarge.sp,
+        fontSize: AppDimens.textSizeLarge,
       ),
       bodyMedium: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
       ),
 
       headlineSmall: TextStyle(
         color: AppColors.secondaryTextColorDark,
-        fontSize: AppDimens.textSizeSmall.sp,
+        fontSize: AppDimens.textSizeSmall,
       ),
       headlineMedium: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeExtraLarge.sp,
+        fontSize: AppDimens.textSizeExtraLarge,
       ),
       headlineLarge: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeLarge.sp,
+        fontSize: AppDimens.textSizeLarge,
       ),
     ),
 
@@ -896,13 +895,13 @@ class AppTheme {
         ),
         floatingLabelStyle: TextStyle(
           color: AppColors.textColorDark,
-          fontSize: AppDimens.textSizeMedium.sp,
+          fontSize: AppDimens.textSizeMedium,
           fontFamily: 'Poppins',
         ),
         contentPadding: AppDimens.paddingAllSmall,
         hintStyle: TextStyle(
           color: AppColors.inactiveColorDark,
-          fontSize: AppDimens.textSizeMedium.sp,
+          fontSize: AppDimens.textSizeMedium,
           fontFamily: 'Poppins',
         ),
       ),
@@ -920,7 +919,7 @@ class AppTheme {
       ),
       textStyle: TextStyle(
         color: AppColors.textColorDark,
-        fontSize: AppDimens.textSizeMedium.sp,
+        fontSize: AppDimens.textSizeMedium,
         fontFamily: 'Poppins',
       ),
     ),

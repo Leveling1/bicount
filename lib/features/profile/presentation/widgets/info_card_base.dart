@@ -1,7 +1,6 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class InfoCardBase extends StatelessWidget {
@@ -67,7 +66,7 @@ class _InfoCardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = compact ? 10.r : 14.r;
+    final radius = compact ? 10.0 : 14.0;
     final iconSize = compact
         ? AppDimens.iconSizeExtraSmall
         : AppDimens.iconSizeSmall;

@@ -4,7 +4,6 @@ import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AccountFundingTransactionCard extends StatelessWidget {
   const AccountFundingTransactionCard({
@@ -43,8 +42,8 @@ class AccountFundingTransactionCard extends StatelessWidget {
                 backgroundColor: Theme.of(context).cardColor,
                 radius: 20,
                 child: SizedBox(
-                  width: 30.w,
-                  height: 30.h,
+                  width: 30,
+                  height: 30,
                   child: Icon(
                     Icons.savings_outlined,
                     color: Theme.of(context).textTheme.bodyLarge?.color,

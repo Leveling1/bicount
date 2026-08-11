@@ -14,7 +14,6 @@ import 'package:bicount/features/transaction/presentation/widgets/transaction_de
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DetailAddFundScreen extends StatefulWidget {
@@ -77,8 +76,8 @@ class _DetailAddFundScreenState extends State<DetailAddFundScreen> {
               backgroundColor: Theme.of(context).cardColor,
               radius: 40,
               child: SizedBox(
-                width: 50.w,
-                height: 50.h,
+                width: 50,
+                height: 50,
                 child: Icon(
                   Icons.savings_outlined,
                   color: Theme.of(context).primaryColor,

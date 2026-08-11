@@ -1,6 +1,5 @@
 import 'package:bicount/features/project/data/models/project.model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/utils/date_format_utils.dart';
@@ -37,11 +36,11 @@ class ProjectCard extends StatelessWidget {
                   child: project.image != null && project.image != ""
                       ? CachedNetworkImage(
                           imageUrl: project.image!,
-                          width: 60.w,
-                          height: 60.h,
+                          width: 60,
+                          height: 60,
                           fit: BoxFit.cover,
                           placeholder: (context, url) =>
-                              CircleImageSkeleton(width: 60.w, height: 60.h),
+                              CircleImageSkeleton(width: 60, height: 60),
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
                         )

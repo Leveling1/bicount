@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 
 class CompanyCardSkeleton extends StatelessWidget {
@@ -21,8 +20,8 @@ class CompanyCardSkeleton extends StatelessWidget {
             // Avatar
             SkeletonAvatar(
               style: SkeletonAvatarStyle(
-                width: 60.w,
-                height: 60.h,
+                width: 60,
+                height: 60,
                 borderRadius: BorderRadius.circular(50),
               ),
             ),

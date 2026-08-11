@@ -16,7 +16,6 @@ import 'package:bicount/features/transaction/domain/entities/transaction_detail_
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_actions.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_row.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/utils/formated_text.dart';
@@ -124,8 +123,8 @@ class TransactionDetailContent extends StatelessWidget {
                   backgroundColor: Theme.of(context).cardColor,
                   radius: 40,
                   child: SizedBox(
-                    width: 50.w,
-                    height: 50.h,
+                    width: 50,
+                    height: 50,
                     child: data.type == TransactionTypes.subscriptionCode
                         ? Icon(
                             Icons.subscriptions,

@@ -2987,6 +2987,12 @@ abstract class AppLocalizations {
   /// **'Recurring incomes'**
   String get recurringIncomesTitle;
 
+  /// No description provided for @transactionControlCenterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to'**
+  String get transactionControlCenterTitle;
+
   /// No description provided for @recurringChargesIntro.
   ///
   /// In en, this message translates to:

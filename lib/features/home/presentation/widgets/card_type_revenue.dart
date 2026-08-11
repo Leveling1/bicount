@@ -1,7 +1,6 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CardTypeRevenue extends StatelessWidget {
   const CardTypeRevenue({
@@ -48,7 +47,7 @@ class CardTypeRevenue extends StatelessWidget {
                   ),
                   child: icon,
                 ),
-                SizedBox(height: 5.h),
+                SizedBox(height: 5),
                 Text(
                   NumberFormatUtils.compactCurrency(
                     amount,

@@ -1491,6 +1491,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get recurringIncomesTitle => 'Revenus récurrents';
 
   @override
+  String get transactionControlCenterTitle => 'Accéder à';
+
+  @override
   String get recurringChargesIntro => 'Gardez un oeil sur les charges récurrentes qui pèsent sur votre solde, ajustez-les quand le contexte change et arrêtez-les proprement quand elles ne servent plus.';
 
   @override

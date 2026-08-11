@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/themes/app_colors.dart';
@@ -187,10 +186,10 @@ class _GroupScreenState extends State<GroupScreen> {
                   widget.groupData.image != null && widget.groupData.image != ""
                   ? CachedNetworkImage(
                       imageUrl: widget.groupData.image!,
-                      width: width.w,
-                      height: height.h,
+                      width: width,
+                      height: height,
                       placeholder: (context, url) =>
-                          CircleImageSkeleton(width: width.w, height: height.h),
+                          CircleImageSkeleton(width: width, height: height),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                       fit: BoxFit.cover,
@@ -239,7 +238,7 @@ class _GroupScreenState extends State<GroupScreen> {
                             if (mounted) {
                               if (isExpanded) {
                                 setState(() {
-                                  _headerHeight = 80.h + newHeight;
+                                  _headerHeight = 80 + newHeight;
                                 });
                               } else {
                                 setState(() {

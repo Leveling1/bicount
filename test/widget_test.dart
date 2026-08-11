@@ -5,7 +5,6 @@ import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -34,16 +33,13 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      ScreenUtilInit(
-        designSize: const Size(430, 932),
-        builder: (_, __) => MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(
-            bottomNavigationBar: CustomBottomNavigationBar(
-              selectedIndex: 1,
-              onTap: (_) {},
-            ),
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          bottomNavigationBar: CustomBottomNavigationBar(
+            selectedIndex: 1,
+            onTap: (_) {},
           ),
         ),
       ),

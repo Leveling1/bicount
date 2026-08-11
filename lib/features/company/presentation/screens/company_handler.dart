@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/widgets/custom_bottom_sheet.dart';
 import '../widgets/company_choice_handler.dart';
@@ -29,10 +28,10 @@ class _CompanyHandlerState extends State<CompanyHandler> {
               },
             ),
             Text('Add', style: Theme.of(context).textTheme.headlineMedium),
-            SizedBox(width: 48.w), // Pour équilibrer l'IconButton
+            SizedBox(width: 48), // Pour équilibrer l'IconButton
           ],
         ),
-        SizedBox(height: 20.h),
+        SizedBox(height: 20),
         CompanyChoiceHandler(
           title: 'Start a new company',
           content: 'Create a new company from scratch',
@@ -48,7 +47,7 @@ class _CompanyHandlerState extends State<CompanyHandler> {
             );
           },
         ),
-        SizedBox(height: 15.h),
+        SizedBox(height: 15),
         CompanyChoiceHandler(
           title: 'Join a company',
           content: 'Use the invitation link to join a company',

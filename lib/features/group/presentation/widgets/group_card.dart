@@ -1,6 +1,5 @@
 import 'package:bicount/features/group/data/models/group.model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_dimens.dart';
@@ -40,11 +39,11 @@ class GroupCard extends StatelessWidget {
                     child: group.image != null && group.image != ""
                         ? CachedNetworkImage(
                             imageUrl: group.image!,
-                            width: width.w,
-                            height: height.h,
+                            width: width,
+                            height: height,
                             placeholder: (context, url) => CircleImageSkeleton(
-                              width: width.w,
-                              height: height.h,
+                              width: width,
+                              height: height,
                             ),
                             errorWidget: (context, url, error) =>
                                 const Icon(Icons.error),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/themes/app_dimens.dart';
 
@@ -61,7 +60,7 @@ class CompanyChoiceHandler extends StatelessWidget {
                   ),
                 ),
                 // Right arrow icon
-                Icon(Icons.arrow_forward_ios, size: 16.sp),
+                Icon(Icons.arrow_forward_ios, size: 16),
               ],
             ),
           ),
