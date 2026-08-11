@@ -1,5 +1,6 @@
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
@@ -102,19 +103,22 @@ class TransactionOptionButton extends StatelessWidget {
       minHeight: 0.4,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             context.l10n.transactionControlCenterTitle,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.headlineLarge,
           ),
-          const SizedBox(height: 8),
+          AppDimens.spacerMedium,
           ...options.map(
             (option) => ListTile(
               contentPadding: EdgeInsets.zero,
               leading: Icon(option.icon),
               title: Text(option.label),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: Icon(
+                Icons.chevron_right,
+                color: Theme.of(context).cardColor,
+              ),
               onTap: () {
                 Navigator.of(context).pop();
                 context.push(option.route);

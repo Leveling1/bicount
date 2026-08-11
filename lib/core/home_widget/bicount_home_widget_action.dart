@@ -3,6 +3,9 @@ import 'package:bicount/core/constants/app_config.dart';
 enum BicountHomeWidgetActionType {
   openHome,
   addTransaction,
+  addIncome,
+  addExpense,
+  openTransaction,
   openRecurringConfirmation,
   openRecurringCharges,
   openRecurringIncomes,
@@ -13,6 +16,7 @@ class BicountHomeWidgetAction {
     required this.type,
     this.recurringFundingId,
     this.expectedDate,
+    this.transactionId,
   });
 
   static const _widgetHost = 'widget';
@@ -23,11 +27,15 @@ class BicountHomeWidgetAction {
   final BicountHomeWidgetActionType type;
   final String? recurringFundingId;
   final String? expectedDate;
+  final String? transactionId;
 
   String get actionKey {
     return switch (type) {
       BicountHomeWidgetActionType.openHome => 'open-home',
       BicountHomeWidgetActionType.addTransaction => 'add-transaction',
+      BicountHomeWidgetActionType.addIncome => 'add-income',
+      BicountHomeWidgetActionType.addExpense => 'add-expense',
+      BicountHomeWidgetActionType.openTransaction => 'open-transaction',
       BicountHomeWidgetActionType.openRecurringConfirmation =>
         'recurring-confirmation',
       BicountHomeWidgetActionType.openRecurringCharges => 'recurring-charges',
@@ -47,6 +55,13 @@ class BicountHomeWidgetAction {
   static Uri openHomeUri() => _uri('/open-home');
 
   static Uri addTransactionUri() => _uri('/add-transaction');
+
+  static Uri addIncomeUri() => _uri('/add-income');
+
+  static Uri addExpenseUri() => _uri('/add-expense');
+
+  static Uri openTransactionUri(String transactionId) =>
+      _uri('/open-transaction', queryParameters: {'tid': transactionId});
 
   static Uri recurringChargesUri() => _uri('/recurring-charges');
 
@@ -74,6 +89,7 @@ class BicountHomeWidgetAction {
       uri.path,
       recurringFundingId: uri.queryParameters['recurringFundingId'],
       expectedDate: uri.queryParameters['expectedDate'],
+      transactionId: uri.queryParameters['tid'],
     );
   }
 
@@ -91,13 +107,15 @@ class BicountHomeWidgetAction {
       actionKey,
       recurringFundingId: uri.queryParameters['recurringFundingId'],
       expectedDate: uri.queryParameters['expectedDate'],
+      transactionId: uri.queryParameters['tid'],
     );
   }
 
   bool matches(BicountHomeWidgetAction other) {
     return type == other.type &&
         recurringFundingId == other.recurringFundingId &&
-        expectedDate == other.expectedDate;
+        expectedDate == other.expectedDate &&
+        transactionId == other.transactionId;
   }
 
   String? buildSecondaryRoute() {
@@ -126,6 +144,7 @@ class BicountHomeWidgetAction {
         if ((recurringFundingId ?? '').isNotEmpty)
           'recurringFundingId': recurringFundingId!,
         if ((expectedDate ?? '').isNotEmpty) 'expectedDate': expectedDate!,
+        if ((transactionId ?? '').isNotEmpty) 'tid': transactionId!,
       },
     ).toString();
   }
@@ -134,10 +153,21 @@ class BicountHomeWidgetAction {
     String path, {
     String? recurringFundingId,
     String? expectedDate,
+    String? transactionId,
   }) {
     return switch (path) {
       '/add-transaction' => const BicountHomeWidgetAction._(
         type: BicountHomeWidgetActionType.addTransaction,
+      ),
+      '/add-income' => const BicountHomeWidgetAction._(
+        type: BicountHomeWidgetActionType.addIncome,
+      ),
+      '/add-expense' => const BicountHomeWidgetAction._(
+        type: BicountHomeWidgetActionType.addExpense,
+      ),
+      '/open-transaction' => BicountHomeWidgetAction._(
+        type: BicountHomeWidgetActionType.openTransaction,
+        transactionId: transactionId,
       ),
       '/recurring-confirmation' => BicountHomeWidgetAction._(
         type: BicountHomeWidgetActionType.openRecurringConfirmation,
@@ -160,10 +190,21 @@ class BicountHomeWidgetAction {
     String actionKey, {
     String? recurringFundingId,
     String? expectedDate,
+    String? transactionId,
   }) {
     return switch (actionKey) {
       'add-transaction' => const BicountHomeWidgetAction._(
         type: BicountHomeWidgetActionType.addTransaction,
+      ),
+      'add-income' => const BicountHomeWidgetAction._(
+        type: BicountHomeWidgetActionType.addIncome,
+      ),
+      'add-expense' => const BicountHomeWidgetAction._(
+        type: BicountHomeWidgetActionType.addExpense,
+      ),
+      'open-transaction' => BicountHomeWidgetAction._(
+        type: BicountHomeWidgetActionType.openTransaction,
+        transactionId: transactionId,
       ),
       'recurring-confirmation' => BicountHomeWidgetAction._(
         type: BicountHomeWidgetActionType.openRecurringConfirmation,

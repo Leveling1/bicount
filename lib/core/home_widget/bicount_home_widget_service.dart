@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bicount/core/home_widget/bicount_home_widget_action.dart';
 import 'package:bicount/core/home_widget/bicount_home_widget_entry.dart';
 import 'package:bicount/core/home_widget/bicount_home_widget_entry_builder.dart';
@@ -22,17 +24,57 @@ class BicountHomeWidgetService extends ChangeNotifier {
   static const _entryBuilder = BicountHomeWidgetEntryBuilder();
 
   static const _themeKey = 'bicount_widget_theme_is_dark';
-  static const _badgeKey = 'bicount_widget_badge';
-  static const _titleKey = 'bicount_widget_title';
-  static const _amountKey = 'bicount_widget_amount';
-  static const _subtitleKey = 'bicount_widget_subtitle';
-  static const _buttonLabelKey = 'bicount_widget_button_label';
+  static const _eyebrowKey = 'bicount_widget_eyebrow';
+  static const _balanceKey = 'bicount_widget_balance';
+  static const _balanceColorKey = 'bicount_widget_balance_color';
   static const _mainActionUriKey = 'bicount_widget_main_action_uri';
-  static const _buttonActionUriKey = 'bicount_widget_button_action_uri';
+  static const _monthDeltaLabelKey = 'bicount_widget_month_delta_label';
+  static const _monthDeltaColorKey = 'bicount_widget_month_delta_color';
+  static const _monthIncomeValueKey = 'bicount_widget_month_income_value';
+  static const _monthIncomeLabelKey = 'bicount_widget_month_income_label';
+  static const _monthExpenseValueKey = 'bicount_widget_month_expense_value';
+  static const _monthExpenseLabelKey = 'bicount_widget_month_expense_label';
+  static const _nextItemLabelKey = 'bicount_widget_next_item_label';
+  static const _nextItemAmountLabelKey =
+      'bicount_widget_next_item_amount_label';
+  static const _nextItemAmountColorKey =
+      'bicount_widget_next_item_amount_color';
+  static const _nextItemActionUriKey = 'bicount_widget_next_item_action_uri';
+  static const _weekDayLabelsKey = 'bicount_widget_week_day_labels';
+  static const _weekValuesKey = 'bicount_widget_week_values';
+  static const _weekHighlightIndexKey = 'bicount_widget_week_highlight_index';
+  static const _recentItemLabelKey = 'bicount_widget_recent_item_label';
+  static const _recentItemAmountLabelKey =
+      'bicount_widget_recent_item_amount_label';
+  static const _recentItemAmountColorKey =
+      'bicount_widget_recent_item_amount_color';
+  static const _singleButtonLabelKey = 'bicount_widget_single_button_label';
+  static const _singleButtonActionUriKey =
+      'bicount_widget_single_button_action_uri';
+  static const _incomeButtonLabelKey = 'bicount_widget_income_button_label';
+  static const _incomeButtonActionUriKey =
+      'bicount_widget_income_button_action_uri';
+  static const _expenseButtonLabelKey = 'bicount_widget_expense_button_label';
+  static const _expenseButtonActionUriKey =
+      'bicount_widget_expense_button_action_uri';
+  static const _monthDailyIncomeKey = 'bicount_widget_month_daily_income';
+  static const _monthDailyExpenseKey = 'bicount_widget_month_daily_expense';
+  static const _monthCurveLabelKey = 'bicount_widget_month_curve_label';
+  static const _incomeLegendLabelKey = 'bicount_widget_income_legend_label';
+  static const _expenseLegendLabelKey = 'bicount_widget_expense_legend_label';
+  static const _recentItemsKey = 'bicount_widget_recent_items';
+  static const _monthSectionLabelKey = 'bicount_widget_month_section_label';
+  static const _nextItemSectionLabelKey =
+      'bicount_widget_next_item_section_label';
+  static const _weekSectionLabelKey = 'bicount_widget_week_section_label';
+  static const _weekSectionCompactLabelKey =
+      'bicount_widget_week_section_compact_label';
+  static const _entriesLabelKey = 'bicount_widget_entries_label';
+  static const _exitsLabelKey = 'bicount_widget_exits_label';
   static const _titleColorKey = 'bicount_widget_title_color';
-  static const _amountColorKey = 'bicount_widget_amount_color';
   static const _subtitleColorKey = 'bicount_widget_subtitle_color';
   static const _buttonTextColorKey = 'bicount_widget_button_text_color';
+  static const _listDelimiter = '|';
   static const _duplicateLaunchWindow = Duration(milliseconds: 1200);
 
   BicountHomeWidgetAction? _pendingAction;
@@ -45,6 +87,35 @@ class BicountHomeWidgetService extends ChangeNotifier {
 
   BicountHomeWidgetAction? get pendingAction => _pendingAction;
   int get pendingActionSequence => _pendingActionSequence;
+
+  /// Android 8+ lets an app prompt the launcher to pin the widget directly,
+  /// skipping the manual "long-press home screen" flow. There is no iOS
+  /// equivalent — Apple only allows the user to add widgets by hand.
+  Future<bool> isPinWidgetSupported() async {
+    if (defaultTargetPlatform != TargetPlatform.android) {
+      return false;
+    }
+    try {
+      return await HomeWidget.isRequestPinWidgetSupported() ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<void> requestPinWidget() async {
+    if (defaultTargetPlatform != TargetPlatform.android) {
+      return;
+    }
+    try {
+      await HomeWidget.requestPinWidget(
+        androidName: _androidWidgetName,
+        qualifiedAndroidName: _qualifiedAndroidWidgetName,
+      );
+    } catch (error, stackTrace) {
+      debugPrint('BicountHomeWidgetService.requestPinWidget failed: $error');
+      debugPrintStack(stackTrace: stackTrace);
+    }
+  }
 
   bool get _isSupportedPlatform =>
       !kIsWeb &&
@@ -110,15 +181,13 @@ class BicountHomeWidgetService extends ChangeNotifier {
       await _saveEntry(
         const BicountHomeWidgetEntry(
           isDarkTheme: false,
-          badge: '',
-          title: 'Open Bicount',
-          amount: '',
-          subtitle: 'Sign in to refresh your finance snapshot.',
-          buttonLabel: 'Open app',
+          eyebrow: 'BICOUNT',
+          balance: '',
+          balanceColor: 0xFF212121,
           mainActionUri: 'bicount://widget/open-home?homeWidget=1',
-          buttonActionUri: 'bicount://widget/open-home?homeWidget=1',
+          singleButtonLabel: '+ Add',
+          singleButtonActionUri: 'bicount://widget/open-home?homeWidget=1',
           titleColor: 0xFF212121,
-          amountColor: 0xFF76A646,
           subtitleColor: 0xFF757575,
           buttonTextColor: 0xFFF9F9F9,
         ),
@@ -133,21 +202,154 @@ class BicountHomeWidgetService extends ChangeNotifier {
 
   Future<void> _saveEntry(BicountHomeWidgetEntry entry) async {
     await HomeWidget.saveWidgetData<bool>(_themeKey, entry.isDarkTheme);
-    await HomeWidget.saveWidgetData<String>(_badgeKey, entry.badge);
-    await HomeWidget.saveWidgetData<String>(_titleKey, entry.title);
-    await HomeWidget.saveWidgetData<String>(_amountKey, entry.amount);
-    await HomeWidget.saveWidgetData<String>(_subtitleKey, entry.subtitle);
-    await HomeWidget.saveWidgetData<String>(_buttonLabelKey, entry.buttonLabel);
+    await HomeWidget.saveWidgetData<String>(_eyebrowKey, entry.eyebrow);
+    await HomeWidget.saveWidgetData<String>(_balanceKey, entry.balance);
+    await HomeWidget.saveWidgetData<int>(_balanceColorKey, entry.balanceColor);
     await HomeWidget.saveWidgetData<String>(
       _mainActionUriKey,
       entry.mainActionUri,
     );
     await HomeWidget.saveWidgetData<String>(
-      _buttonActionUriKey,
-      entry.buttonActionUri,
+      _monthDeltaLabelKey,
+      entry.monthDeltaLabel ?? '',
     );
+    await HomeWidget.saveWidgetData<int>(
+      _monthDeltaColorKey,
+      entry.monthDeltaColor ?? entry.titleColor,
+    );
+    await HomeWidget.saveWidgetData<double>(
+      _monthIncomeValueKey,
+      entry.monthIncomeValue ?? 0,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _monthIncomeLabelKey,
+      entry.monthIncomeLabel ?? '',
+    );
+    await HomeWidget.saveWidgetData<double>(
+      _monthExpenseValueKey,
+      entry.monthExpenseValue ?? 0,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _monthExpenseLabelKey,
+      entry.monthExpenseLabel ?? '',
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _nextItemLabelKey,
+      entry.nextItemLabel ?? '',
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _nextItemAmountLabelKey,
+      entry.nextItemAmountLabel ?? '',
+    );
+    await HomeWidget.saveWidgetData<int>(
+      _nextItemAmountColorKey,
+      entry.nextItemAmountColor ?? entry.titleColor,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _nextItemActionUriKey,
+      entry.nextItemActionUri ?? entry.mainActionUri,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _weekDayLabelsKey,
+      entry.weekDayLabels.join(_listDelimiter),
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _weekValuesKey,
+      entry.weekValues.map((value) => value.toString()).join(_listDelimiter),
+    );
+    await HomeWidget.saveWidgetData<int>(
+      _weekHighlightIndexKey,
+      entry.weekHighlightIndex ?? -1,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _recentItemLabelKey,
+      entry.recentItemLabel ?? '',
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _recentItemAmountLabelKey,
+      entry.recentItemAmountLabel ?? '',
+    );
+    await HomeWidget.saveWidgetData<int>(
+      _recentItemAmountColorKey,
+      entry.recentItemAmountColor ?? entry.titleColor,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _singleButtonLabelKey,
+      entry.singleButtonLabel ?? '',
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _singleButtonActionUriKey,
+      entry.singleButtonActionUri ?? entry.mainActionUri,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _incomeButtonLabelKey,
+      entry.incomeButtonLabel ?? '',
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _incomeButtonActionUriKey,
+      entry.incomeButtonActionUri ?? entry.mainActionUri,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _expenseButtonLabelKey,
+      entry.expenseButtonLabel ?? '',
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _expenseButtonActionUriKey,
+      entry.expenseButtonActionUri ?? entry.mainActionUri,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _monthDailyIncomeKey,
+      entry.monthDailyIncome.map((value) => value.toString()).join(
+        _listDelimiter,
+      ),
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _monthDailyExpenseKey,
+      entry.monthDailyExpense.map((value) => value.toString()).join(
+        _listDelimiter,
+      ),
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _monthCurveLabelKey,
+      entry.monthCurveLabel,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _incomeLegendLabelKey,
+      entry.incomeLegendLabel,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _expenseLegendLabelKey,
+      entry.expenseLegendLabel,
+    );
+    // JSON rather than a delimiter-joined string: transaction names are
+    // free text, and SharedPreferences is XML so control-character
+    // separators are not even valid there.
+    await HomeWidget.saveWidgetData<String>(
+      _recentItemsKey,
+      jsonEncode(entry.recentItems.map((item) => item.toJson()).toList()),
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _monthSectionLabelKey,
+      entry.monthSectionLabel,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _nextItemSectionLabelKey,
+      entry.nextItemSectionLabel,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _weekSectionLabelKey,
+      entry.weekSectionLabel,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _weekSectionCompactLabelKey,
+      entry.weekSectionCompactLabel,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      _entriesLabelKey,
+      entry.entriesLabel,
+    );
+    await HomeWidget.saveWidgetData<String>(_exitsLabelKey, entry.exitsLabel);
     await HomeWidget.saveWidgetData<int>(_titleColorKey, entry.titleColor);
-    await HomeWidget.saveWidgetData<int>(_amountColorKey, entry.amountColor);
     await HomeWidget.saveWidgetData<int>(
       _subtitleColorKey,
       entry.subtitleColor,

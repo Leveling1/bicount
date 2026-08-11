@@ -445,6 +445,59 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get homeWidgetMonthFlowLabel => 'IN AND OUT · THIS MONTH';
+
+  @override
+  String get homeWidgetEyebrow => 'BICOUNT';
+
+  @override
+  String get homeWidgetSoldeLabel => 'BALANCE';
+
+  @override
+  String get homeWidgetSoldeTotalLabel => 'TOTAL BALANCE';
+
+  @override
+  String get homeWidgetAddCta => '+ Add';
+
+  @override
+  String get homeWidgetIncomeCta => '+ Income';
+
+  @override
+  String get homeWidgetExpenseCta => '- Expense';
+
+  @override
+  String get homeWidgetThisMonthSuffix => 'this month';
+
+  @override
+  String get homeWidgetThisMonthLabel => 'THIS MONTH';
+
+  @override
+  String get homeWidgetNextSubscriptionLabel => 'NEXT SUBSCRIPTION';
+
+  @override
+  String get homeWidgetWeekExpensesLabel => 'EXPENSES · LAST 7 DAYS';
+
+  @override
+  String get homeWidgetWeekExpensesCompactLabel => 'EXPENSES - 7D';
+
+  @override
+  String get homeWidgetEntriesLabel => 'In';
+
+  @override
+  String get homeWidgetExitsLabel => 'Out';
+
+  @override
+  String get homeWidgetToday => 'today';
+
+  @override
+  String get homeWidgetTomorrow => 'tomorrow';
+
+  @override
+  String homeWidgetInDays(Object count) {
+    return 'in $count days';
+  }
+
+  @override
   String get homeAccounts => 'Accounts';
 
   @override
@@ -527,6 +580,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsSectionSecurity => 'Security';
+
+  @override
+  String get settingsSectionWidget => 'Home widget';
+
+  @override
+  String get settingsWidgetTitle => 'Add the widget';
+
+  @override
+  String get settingsWidgetDescription => 'Check your balance and add a transaction without opening the app.';
+
+  @override
+  String get homeWidgetPromoTitle => 'Add Bicount to your home screen';
+
+  @override
+  String get homeWidgetPromoDescription => 'Keep your balance, your last 7 days of spending, and quick shortcuts always visible, without opening the app.';
+
+  @override
+  String get homeWidgetPromoBenefitBalance => 'Your balance at a glance';
+
+  @override
+  String get homeWidgetPromoBenefitChart => 'Your last 7 days of expenses';
+
+  @override
+  String get homeWidgetPromoBenefitQuickAdd => 'Quickly add an income or expense';
+
+  @override
+  String get homeWidgetPromoAddCta => 'Add the widget';
+
+  @override
+  String get homeWidgetPromoAddedSuccess => 'Widget added to your home screen.';
+
+  @override
+  String get homeWidgetPromoAddedFailure => 'Couldn\'t add the widget automatically. Follow the steps below.';
+
+  @override
+  String get homeWidgetPromoManualTitle => 'How to add it manually';
+
+  @override
+  String get homeWidgetPromoStepAndroid1 => 'Long-press your home screen';
+
+  @override
+  String get homeWidgetPromoStepAndroid2 => 'Tap \"Widgets\"';
+
+  @override
+  String get homeWidgetPromoStepAndroid3 => 'Search for \"Bicount\" and pick a size';
+
+  @override
+  String get homeWidgetPromoStepIos1 => 'Long-press your home screen';
+
+  @override
+  String get homeWidgetPromoStepIos2 => 'Tap the \"+\" button in the top-left corner';
+
+  @override
+  String get homeWidgetPromoStepIos3 => 'Search for \"Bicount\", pick a size, and tap \"Add Widget\"';
+
+  @override
+  String get homeWidgetPromoGotIt => 'Got it';
 
   @override
   String get settingsEditProfileTitle => 'Edit profile';

@@ -106,6 +106,16 @@ String _redirectWidgetAlias(GoRouterState state) {
       state,
       actionKey: 'add-transaction',
     ),
+    'add-income' => _buildWidgetShellRoute(state, actionKey: 'add-income'),
+    'add-expense' => _buildWidgetShellRoute(state, actionKey: 'add-expense'),
+    'open-transaction' => _buildWidgetShellRoute(
+      state,
+      actionKey: 'open-transaction',
+      extraQueryParameters: {
+        if ((state.uri.queryParameters['tid'] ?? '').isNotEmpty)
+          'tid': state.uri.queryParameters['tid']!,
+      },
+    ),
     'recurring-confirmation' => _buildWidgetRecurringConfirmationRoute(state),
     'recurring-charges' => _buildWidgetRecurringChargesRoute(state),
     'recurring-incomes' => _buildWidgetRecurringIncomesRoute(state),
@@ -129,6 +139,30 @@ class AppRouter {
             path: '/add-transaction',
             redirect: (context, state) =>
                 _buildWidgetShellRoute(state, actionKey: 'add-transaction'),
+          ),
+          // `bicount://widget/<action>` parses with "widget" as the URI host,
+          // so go_router only ever sees "/<action>" — hence these top-level
+          // entries mirroring every widget action.
+          GoRoute(
+            path: '/add-income',
+            redirect: (context, state) =>
+                _buildWidgetShellRoute(state, actionKey: 'add-income'),
+          ),
+          GoRoute(
+            path: '/add-expense',
+            redirect: (context, state) =>
+                _buildWidgetShellRoute(state, actionKey: 'add-expense'),
+          ),
+          GoRoute(
+            path: '/open-transaction',
+            redirect: (context, state) => _buildWidgetShellRoute(
+              state,
+              actionKey: 'open-transaction',
+              extraQueryParameters: {
+                if ((state.uri.queryParameters['tid'] ?? '').isNotEmpty)
+                  'tid': state.uri.queryParameters['tid']!,
+              },
+            ),
           ),
           GoRoute(
             path: '/recurring-confirmation',

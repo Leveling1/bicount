@@ -19,6 +19,7 @@ import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_body.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_fab.dart';
 import 'package:bicount/features/profile/presentation/screens/profile_screen.dart';
+import 'package:bicount/features/transaction/presentation/screens/transaction_handler.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -83,6 +84,11 @@ class _MainScreenState extends State<MainScreen> {
     final titles = localizedMainShellTitles(context);
     final currentUri = GoRouterState.of(context).uri;
     final currencyConfig = context.watch<CurrencyCubit>().state.config;
+    // Registers this screen as a Theme dependent. Without it a brightness
+    // change rebuilds the themed descendants but not this build method, so
+    // the home widget keeps syncing the previous light/dark palette until
+    // the app is restarted.
+    final brightness = Theme.of(context).brightness;
 
     return BlocConsumer<MainBloc, MainState>(
       listener: _onStateChanged,
@@ -97,6 +103,7 @@ class _MainScreenState extends State<MainScreen> {
           state: state,
           data: preparedData,
           currencyConfig: currencyConfig,
+          brightness: brightness,
         );
         _maybeHandlePendingWidgetAction(
           currentUri,
@@ -211,6 +218,9 @@ class _MainScreenState extends State<MainScreen> {
     required MainState state,
     required MainEntity data,
     required CurrencyConfigEntity currencyConfig,
+    // Not read here: it only needs to be part of the call so a brightness
+    // change reaches this method and re-runs the sync.
+    required Brightness brightness,
   }) {
     if (state is! MainLoaded || data.user.uid.isEmpty) {
       return;
@@ -306,6 +316,18 @@ class _MainScreenState extends State<MainScreen> {
     return switch (action.type) {
       BicountHomeWidgetActionType.openHome => '/',
       BicountHomeWidgetActionType.addTransaction => '/transaction',
+      BicountHomeWidgetActionType.addIncome => '/transaction',
+      BicountHomeWidgetActionType.addExpense => '/transaction',
+      // Keep the id in the shell route: TransactionScreen opens the detail
+      // sheet straight from the `tid` query parameter, so the deep link
+      // still works even if the post-frame action callback is skipped.
+      BicountHomeWidgetActionType.openTransaction => Uri(
+        path: '/transaction',
+        queryParameters: {
+          if ((action.transactionId ?? '').isNotEmpty)
+            'tid': action.transactionId!,
+        },
+      ).toString(),
       _ => _currentShellRoute(),
     };
   }
@@ -333,6 +355,54 @@ class _MainScreenState extends State<MainScreen> {
             return;
           }
           openTransactionSheet(context, data);
+        });
+        return;
+      case BicountHomeWidgetActionType.addIncome:
+        _onItemTapped(2);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) {
+            return;
+          }
+          openTransactionSheet(
+            context,
+            data,
+            initialType: TransactionHandlerInitialType.income,
+            showTypeSelector: false,
+          );
+        });
+        return;
+      case BicountHomeWidgetActionType.addExpense:
+        _onItemTapped(2);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) {
+            return;
+          }
+          openTransactionSheet(
+            context,
+            data,
+            showTypeSelector: false,
+          );
+        });
+        return;
+      case BicountHomeWidgetActionType.openTransaction:
+        final transactionId = action.transactionId;
+        if (transactionId == null || transactionId.isEmpty) {
+          _onItemTapped(2);
+          return;
+        }
+        _onItemTapped(2);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) {
+            return;
+          }
+          // TransactionScreen watches the `tid` query parameter and opens
+          // that transaction's detail sheet once the feed has loaded.
+          context.go(
+            Uri(
+              path: '/transaction',
+              queryParameters: {'tid': transactionId},
+            ).toString(),
+          );
         });
         return;
       case BicountHomeWidgetActionType.openRecurringConfirmation:

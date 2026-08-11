@@ -959,6 +959,108 @@ abstract class AppLocalizations {
   /// **'Due on {date}'**
   String homeWidgetDueOn(Object date);
 
+  /// No description provided for @homeWidgetMonthFlowLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'IN AND OUT · THIS MONTH'**
+  String get homeWidgetMonthFlowLabel;
+
+  /// No description provided for @homeWidgetEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'BICOUNT'**
+  String get homeWidgetEyebrow;
+
+  /// No description provided for @homeWidgetSoldeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'BALANCE'**
+  String get homeWidgetSoldeLabel;
+
+  /// No description provided for @homeWidgetSoldeTotalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'TOTAL BALANCE'**
+  String get homeWidgetSoldeTotalLabel;
+
+  /// No description provided for @homeWidgetAddCta.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Add'**
+  String get homeWidgetAddCta;
+
+  /// No description provided for @homeWidgetIncomeCta.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Income'**
+  String get homeWidgetIncomeCta;
+
+  /// No description provided for @homeWidgetExpenseCta.
+  ///
+  /// In en, this message translates to:
+  /// **'- Expense'**
+  String get homeWidgetExpenseCta;
+
+  /// No description provided for @homeWidgetThisMonthSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'this month'**
+  String get homeWidgetThisMonthSuffix;
+
+  /// No description provided for @homeWidgetThisMonthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'THIS MONTH'**
+  String get homeWidgetThisMonthLabel;
+
+  /// No description provided for @homeWidgetNextSubscriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'NEXT SUBSCRIPTION'**
+  String get homeWidgetNextSubscriptionLabel;
+
+  /// No description provided for @homeWidgetWeekExpensesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'EXPENSES · LAST 7 DAYS'**
+  String get homeWidgetWeekExpensesLabel;
+
+  /// No description provided for @homeWidgetWeekExpensesCompactLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'EXPENSES - 7D'**
+  String get homeWidgetWeekExpensesCompactLabel;
+
+  /// No description provided for @homeWidgetEntriesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'In'**
+  String get homeWidgetEntriesLabel;
+
+  /// No description provided for @homeWidgetExitsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Out'**
+  String get homeWidgetExitsLabel;
+
+  /// No description provided for @homeWidgetToday.
+  ///
+  /// In en, this message translates to:
+  /// **'today'**
+  String get homeWidgetToday;
+
+  /// No description provided for @homeWidgetTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'tomorrow'**
+  String get homeWidgetTomorrow;
+
+  /// No description provided for @homeWidgetInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'in {count} days'**
+  String homeWidgetInDays(Object count);
+
   /// No description provided for @homeAccounts.
   ///
   /// In en, this message translates to:
@@ -1126,6 +1228,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Security'**
   String get settingsSectionSecurity;
+
+  /// No description provided for @settingsSectionWidget.
+  ///
+  /// In en, this message translates to:
+  /// **'Home widget'**
+  String get settingsSectionWidget;
+
+  /// No description provided for @settingsWidgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the widget'**
+  String get settingsWidgetTitle;
+
+  /// No description provided for @settingsWidgetDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your balance and add a transaction without opening the app.'**
+  String get settingsWidgetDescription;
+
+  /// No description provided for @homeWidgetPromoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Bicount to your home screen'**
+  String get homeWidgetPromoTitle;
+
+  /// No description provided for @homeWidgetPromoDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your balance, your last 7 days of spending, and quick shortcuts always visible, without opening the app.'**
+  String get homeWidgetPromoDescription;
+
+  /// No description provided for @homeWidgetPromoBenefitBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Your balance at a glance'**
+  String get homeWidgetPromoBenefitBalance;
+
+  /// No description provided for @homeWidgetPromoBenefitChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Your last 7 days of expenses'**
+  String get homeWidgetPromoBenefitChart;
+
+  /// No description provided for @homeWidgetPromoBenefitQuickAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Quickly add an income or expense'**
+  String get homeWidgetPromoBenefitQuickAdd;
+
+  /// No description provided for @homeWidgetPromoAddCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the widget'**
+  String get homeWidgetPromoAddCta;
+
+  /// No description provided for @homeWidgetPromoAddedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Widget added to your home screen.'**
+  String get homeWidgetPromoAddedSuccess;
+
+  /// No description provided for @homeWidgetPromoAddedFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t add the widget automatically. Follow the steps below.'**
+  String get homeWidgetPromoAddedFailure;
+
+  /// No description provided for @homeWidgetPromoManualTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to add it manually'**
+  String get homeWidgetPromoManualTitle;
+
+  /// No description provided for @homeWidgetPromoStepAndroid1.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press your home screen'**
+  String get homeWidgetPromoStepAndroid1;
+
+  /// No description provided for @homeWidgetPromoStepAndroid2.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \"Widgets\"'**
+  String get homeWidgetPromoStepAndroid2;
+
+  /// No description provided for @homeWidgetPromoStepAndroid3.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for \"Bicount\" and pick a size'**
+  String get homeWidgetPromoStepAndroid3;
+
+  /// No description provided for @homeWidgetPromoStepIos1.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press your home screen'**
+  String get homeWidgetPromoStepIos1;
+
+  /// No description provided for @homeWidgetPromoStepIos2.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the \"+\" button in the top-left corner'**
+  String get homeWidgetPromoStepIos2;
+
+  /// No description provided for @homeWidgetPromoStepIos3.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for \"Bicount\", pick a size, and tap \"Add Widget\"'**
+  String get homeWidgetPromoStepIos3;
+
+  /// No description provided for @homeWidgetPromoGotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get homeWidgetPromoGotIt;
 
   /// No description provided for @settingsEditProfileTitle.
   ///

@@ -9,6 +9,7 @@ import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart'
 import 'package:bicount/features/friend/presentation/screens/friends_directory_screen.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
+import 'package:bicount/features/settings/presentation/screens/home_widget_promo_screen.dart';
 import 'package:bicount/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:bicount/features/settings/presentation/bloc/settings_event.dart';
 import 'package:bicount/features/settings/presentation/bloc/theme_cubit.dart';
@@ -133,6 +134,26 @@ class SettingsContent extends StatelessWidget {
                             context,
                             currencyState,
                             data.connectionState,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              BicountReveal(
+                delay: const Duration(milliseconds: 115),
+                child: SettingsSection(
+                  title: context.l10n.settingsSectionWidget,
+                  children: [
+                    SettingsActionTile(
+                      icon: Icons.widgets_outlined,
+                      title: context.l10n.settingsWidgetTitle,
+                      subtitle: context.l10n.settingsWidgetDescription,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const HomeWidgetPromoScreen(),
                           ),
                         );
                       },
