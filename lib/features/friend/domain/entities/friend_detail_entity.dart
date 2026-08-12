@@ -13,6 +13,8 @@ class FriendDetailEntity extends Equatable {
     required this.canEditProfile,
     required this.canShareProfile,
     required this.isLinkedProfile,
+    required this.canUnlinkProfile,
+    required this.canDeleteProfile,
   });
 
   final FriendsModel friend;
@@ -25,6 +27,14 @@ class FriendDetailEntity extends Equatable {
   final bool canShareProfile;
   final bool isLinkedProfile;
 
+  /// This profile is tied to a real Bicount account, so the two accounts can
+  /// be separated.
+  final bool canUnlinkProfile;
+
+  /// This profile is tied to nobody, so it can be removed along with its
+  /// history.
+  final bool canDeleteProfile;
+
   @override
   List<Object?> get props => [
     friend,
@@ -36,5 +46,7 @@ class FriendDetailEntity extends Equatable {
     canEditProfile,
     canShareProfile,
     isLinkedProfile,
+    canUnlinkProfile,
+    canDeleteProfile,
   ];
 }

@@ -60,6 +60,7 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
         sourceFriendName: event.sourceFriendName,
         sourceFriendEmail: event.sourceFriendEmail,
         sourceFriendImage: event.sourceFriendImage,
+        forceNew: event.forceNew,
       );
       emit(
         state.copyWith(
@@ -70,7 +71,11 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
           flashMessage: null,
         ),
       );
-      add(const _FriendActionSucceeded('Invitation ready to share.'));
+      // Opening the share screen generates the code on its own now, so only
+      // an explicit refresh is worth a confirmation message.
+      if (event.forceNew) {
+        add(const _FriendActionSucceeded('Invitation ready to share.'));
+      }
     } catch (error) {
       add(_FriendActionFailed(error.toString()));
     }
@@ -164,7 +169,14 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     emit(
       state.copyWith(
         status: FriendStatus.ready,
-        hub: event.hub,
+        // The invitation list refreshing must not drop the code currently on
+        // screen: it is rebuilt from a single cache slot that may belong to
+        // another profile.
+        hub: FriendHubEntity(
+          activeShare: state.hub.activeShare ?? event.hub.activeShare,
+          sentInvites: event.hub.sentInvites,
+          receivedInvites: event.hub.receivedInvites,
+        ),
         isSubmitting: false,
         errorMessage: null,
         flashMessage: null,

@@ -7,25 +7,33 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalFriendDataSourceImpl implements FriendLocalDataSource {
   static const _activeShareKey = 'friend_active_share_v1';
+  static const _activeSharePrefix = 'friend_active_share_v2_';
   static const _cachedInvitesKey = 'friend_cached_invites_v1';
+
+  static String _shareKeyFor(String? sourceFriendSid) =>
+      '$_activeSharePrefix${sourceFriendSid ?? 'self'}';
 
   @override
   Future<void> cacheActiveShare(FriendShareEntity share) async {
     final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(
-      _activeShareKey,
-      jsonEncode({
-        'invite_id': share.inviteId,
-        'invite_code': share.inviteCode,
-        'invite_url': share.inviteUrl,
-        'created_at': share.createdAt.toIso8601String(),
-        'expires_at': share.expiresAt.toIso8601String(),
-        'source_friend_sid': share.sourceFriendSid,
-        'source_friend_name': share.sourceFriendName,
-        'source_friend_email': share.sourceFriendEmail,
-        'source_friend_image': share.sourceFriendImage,
-      }),
-    );
+    final payload = jsonEncode({
+      'invite_id': share.inviteId,
+      'invite_code': share.inviteCode,
+      'invite_url': share.inviteUrl,
+      'created_at': share.createdAt.toIso8601String(),
+      'expires_at': share.expiresAt.toIso8601String(),
+      'source_friend_sid': share.sourceFriendSid,
+      'source_friend_name': share.sourceFriendName,
+      'source_friend_email': share.sourceFriendEmail,
+      'source_friend_image': share.sourceFriendImage,
+      'is_synced': share.isSynced,
+    });
+
+    // One slot per shared profile, so sharing a second friend no longer
+    // overwrites the first one's code, plus the legacy single slot that keeps
+    // holding the most recent share.
+    await preferences.setString(_shareKeyFor(share.sourceFriendSid), payload);
+    await preferences.setString(_activeShareKey, payload);
   }
 
   @override
@@ -56,9 +64,12 @@ class LocalFriendDataSourceImpl implements FriendLocalDataSource {
   }
 
   @override
-  Future<FriendShareEntity?> getActiveShare() async {
+  Future<FriendShareEntity?> getActiveShare({String? sourceFriendSid}) async {
     final preferences = await SharedPreferences.getInstance();
-    final rawValue = preferences.getString(_activeShareKey);
+    final key = sourceFriendSid == null
+        ? _activeShareKey
+        : _shareKeyFor(sourceFriendSid);
+    final rawValue = preferences.getString(key);
     if (rawValue == null || rawValue.isEmpty) {
       return null;
     }
@@ -74,6 +85,9 @@ class LocalFriendDataSourceImpl implements FriendLocalDataSource {
       sourceFriendName: map['source_friend_name'] as String?,
       sourceFriendEmail: map['source_friend_email'] as String?,
       sourceFriendImage: map['source_friend_image'] as String?,
+      // Shares cached before this field existed were only ever written after
+      // a successful insert, so treating them as synced stays accurate.
+      isSynced: map['is_synced'] as bool? ?? true,
     );
   }
 

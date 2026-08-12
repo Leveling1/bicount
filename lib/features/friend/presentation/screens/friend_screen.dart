@@ -48,8 +48,16 @@ class _FriendScreenState extends State<FriendScreen> {
       _awaitingInitialInviteLookup = true;
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
       if (inviteCode != null && inviteCode.isNotEmpty) {
         context.read<FriendBloc>().add(FriendInviteCodeReceived(inviteCode));
+      }
+      // Opening the share screen is already the request: the code shows up on
+      // its own, no second tap needed. An existing valid code is reused.
+      if (widget.selectedFriend != null) {
+        _createInvite();
       }
     });
   }
@@ -105,7 +113,14 @@ class _FriendScreenState extends State<FriendScreen> {
                     description: context.l10n.friendShareProfileDescription,
                     activeShare: activeShare,
                     isSubmitting: state.isSubmitting,
-                    onCreate: _createInvite,
+                    // Covers the gap between opening the screen and the first
+                    // frame where the request is actually in flight.
+                    isPreparing:
+                        state.isSubmitting ||
+                        (activeShare == null &&
+                            (state.errorMessage == null ||
+                                state.errorMessage!.isEmpty)),
+                    onCreate: () => _createInvite(forceNew: true),
                     onShare: () => shareFriendInvite(context, activeShare),
                     onCopy: () => copyFriendInvite(context, activeShare),
                     onScan: () => openFriendScanner(
@@ -168,7 +183,7 @@ class _FriendScreenState extends State<FriendScreen> {
     return share.sourceFriendSid == selectedFriend.sid ? share : null;
   }
 
-  void _createInvite() {
+  void _createInvite({bool forceNew = false}) {
     final user = widget.user;
     final friend = widget.selectedFriend;
     if (user == null || friend == null) {
@@ -184,6 +199,7 @@ class _FriendScreenState extends State<FriendScreen> {
         sourceFriendName: friend.username,
         sourceFriendEmail: friend.email,
         sourceFriendImage: friend.image,
+        forceNew: forceNew,
       ),
     );
   }

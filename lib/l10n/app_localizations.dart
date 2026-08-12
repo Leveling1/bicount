@@ -707,6 +707,48 @@ abstract class AppLocalizations {
   /// **'Unable to update this contact right now.'**
   String get runtimeFriendUpdateFailed;
 
+  /// No description provided for @runtimeFriendUnlinkSignInRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to stop sharing.'**
+  String get runtimeFriendUnlinkSignInRequired;
+
+  /// No description provided for @runtimeFriendUnlinkOnlineRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'You need internet to stop sharing. Try again once you are back online.'**
+  String get runtimeFriendUnlinkOnlineRequired;
+
+  /// No description provided for @runtimeFriendUnlinkFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to stop sharing right now. Try again in a moment.'**
+  String get runtimeFriendUnlinkFailed;
+
+  /// No description provided for @runtimeFriendNotLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'This contact is not linked to any account.'**
+  String get runtimeFriendNotLinked;
+
+  /// No description provided for @runtimeFriendDeleteSignInRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to delete this contact.'**
+  String get runtimeFriendDeleteSignInRequired;
+
+  /// No description provided for @runtimeFriendDeleteLinkedBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This contact is linked to a real account. Stop sharing with them first.'**
+  String get runtimeFriendDeleteLinkedBlocked;
+
+  /// No description provided for @runtimeFriendDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to delete this contact right now. Try again in a moment.'**
+  String get runtimeFriendDeleteFailed;
+
   /// No description provided for @runtimeTransactionSaveFailed.
   ///
   /// In en, this message translates to:
@@ -2120,7 +2162,7 @@ abstract class AppLocalizations {
   /// No description provided for @friendShareRefresh.
   ///
   /// In en, this message translates to:
-  /// **'Refresh link'**
+  /// **'New code'**
   String get friendShareRefresh;
 
   /// No description provided for @friendShareLink.
@@ -2134,6 +2176,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan QR'**
   String get friendShareScanQr;
+
+  /// No description provided for @friendSharePreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Your code is coming…'**
+  String get friendSharePreparing;
+
+  /// No description provided for @friendShareUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The code could not be prepared. Tap \"New code\".'**
+  String get friendShareUnavailable;
+
+  /// No description provided for @friendShareOfflineNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no internet. This code does not work for the other person yet. Come back here once you are online again.'**
+  String get friendShareOfflineNotice;
+
+  /// No description provided for @friendUnlinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing with {name}'**
+  String friendUnlinkTitle(Object name);
+
+  /// No description provided for @friendUnlinkIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Here is what will happen:'**
+  String get friendUnlinkIntro;
+
+  /// No description provided for @friendUnlinkKeepYours.
+  ///
+  /// In en, this message translates to:
+  /// **'You keep everything you wrote down. Nothing is erased.'**
+  String get friendUnlinkKeepYours;
+
+  /// No description provided for @friendUnlinkKeepTheirs.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} also keeps everything written down on their side.'**
+  String friendUnlinkKeepTheirs(Object name);
+
+  /// No description provided for @friendUnlinkStopSharing.
+  ///
+  /// In en, this message translates to:
+  /// **'You will no longer see what {name} adds, and {name} will no longer see what you add.'**
+  String friendUnlinkStopSharing(Object name);
+
+  /// No description provided for @friendUnlinkReversible.
+  ///
+  /// In en, this message translates to:
+  /// **'If you change your mind, you can link up again later and get everything back.'**
+  String get friendUnlinkReversible;
+
+  /// No description provided for @friendUnlinkConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, stop sharing'**
+  String get friendUnlinkConfirm;
+
+  /// No description provided for @friendUnlinkSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'You are no longer sharing with {name}.'**
+  String friendUnlinkSuccess(Object name);
+
+  /// No description provided for @friendDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}'**
+  String friendDeleteTitle(Object name);
+
+  /// No description provided for @friendDeleteIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'If you go on, everything you wrote down with {name} will disappear. Forever.'**
+  String friendDeleteIntro(Object name);
+
+  /// No description provided for @friendDeleteTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 entry will be erased} other{{count} entries will be erased}}'**
+  String friendDeleteTransactions(int count);
+
+  /// No description provided for @friendDeleteDebts.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 debt will be erased} other{{count} debts will be erased}}'**
+  String friendDeleteDebts(int count);
+
+  /// No description provided for @friendDeleteRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 automatic payment will stop} other{{count} automatic payments will stop}}'**
+  String friendDeleteRecurring(int count);
+
+  /// No description provided for @friendDeleteNothingRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is written down with {name}. Only the contact will be erased.'**
+  String friendDeleteNothingRecorded(Object name);
+
+  /// No description provided for @friendDeleteBalanceWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Your balance will change, because this money will no longer be counted.'**
+  String get friendDeleteBalanceWarning;
+
+  /// No description provided for @friendDeleteIrreversible.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no going back. Not even we can bring it back.'**
+  String get friendDeleteIrreversible;
+
+  /// No description provided for @friendDeleteKeepHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If you simply do not want to deal with it, you can keep it: it gets in nobody\'s way.'**
+  String get friendDeleteKeepHint;
+
+  /// No description provided for @friendDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete forever'**
+  String get friendDeleteConfirm;
+
+  /// No description provided for @friendDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has been deleted.'**
+  String friendDeleteSuccess(Object name);
 
   /// No description provided for @friendInvitationLinkCopied.
   ///

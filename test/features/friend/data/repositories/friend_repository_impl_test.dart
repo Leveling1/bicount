@@ -19,7 +19,13 @@ class _FakeFriendLocalDataSource implements FriendLocalDataSource {
   }
 
   @override
-  Future<FriendShareEntity?> getActiveShare() async => cachedShare;
+  Future<FriendShareEntity?> getActiveShare({String? sourceFriendSid}) async {
+    if (sourceFriendSid != null &&
+        cachedShare?.sourceFriendSid != sourceFriendSid) {
+      return null;
+    }
+    return cachedShare;
+  }
 
   @override
   Future<List<FriendInviteEntity>> getCachedInvites() async => cachedInvites;
@@ -27,6 +33,9 @@ class _FakeFriendLocalDataSource implements FriendLocalDataSource {
 
 class _FakeFriendRemoteDataSource implements FriendRemoteDataSource {
   FriendShareEntity? createdShare;
+  int createInviteCalls = 0;
+  bool createInviteThrows = false;
+  List<String> unlinkedFriendSids = [];
 
   @override
   Future<void> acceptInvite(String inviteCode, String currentUserId) async {}
@@ -38,6 +47,10 @@ class _FakeFriendRemoteDataSource implements FriendRemoteDataSource {
     required String senderEmail,
     required String senderImage,
   }) async {
+    createInviteCalls += 1;
+    if (createInviteThrows) {
+      throw Exception('offline');
+    }
     createdShare = share;
   }
 
@@ -46,6 +59,18 @@ class _FakeFriendRemoteDataSource implements FriendRemoteDataSource {
 
   @override
   Future<void> rejectInvite(String inviteCode, String currentUserId) async {}
+
+  @override
+  Future<FriendInviteEntity?> findReusableInvite({
+    required String sourceFriendSid,
+    required String currentUserId,
+  }) async => null;
+
+  @override
+  Future<List<String>> unlinkAccounts(String friendSid) async {
+    unlinkedFriendSids.add(friendSid);
+    return [friendSid];
+  }
 
   @override
   Stream<List<FriendInviteEntity>> watchInvites(String currentUserId) {
@@ -97,5 +122,107 @@ void main() {
     expect(share.inviteUrl, contains('/friend/invite?inviteCode='));
     expect(local.cachedShare?.inviteCode, share.inviteCode);
     expect(remote.createdShare?.inviteCode, share.inviteCode);
+    expect(share.isSynced, isTrue);
+  });
+
+  test('opening the share screen again reuses the same code', () async {
+    final local = _FakeFriendLocalDataSource();
+    final remote = _FakeFriendRemoteDataSource();
+    final repository = FriendRepositoryImpl(
+      localDataSource: local,
+      remoteDataSource: remote,
+    );
+
+    final first = await repository.createInvite(
+      senderName: 'youngsolver',
+      senderEmail: 'youngsolver@example.com',
+      senderImage: '',
+      sourceFriendSid: 'friend-1',
+      sourceFriendName: 'Ada',
+      sourceFriendEmail: '',
+      sourceFriendImage: '',
+    );
+    final second = await repository.createInvite(
+      senderName: 'youngsolver',
+      senderEmail: 'youngsolver@example.com',
+      senderImage: '',
+      sourceFriendSid: 'friend-1',
+      sourceFriendName: 'Ada',
+      sourceFriendEmail: '',
+      sourceFriendImage: '',
+    );
+
+    expect(second.inviteCode, first.inviteCode);
+    expect(remote.createInviteCalls, 1);
+  });
+
+  test('asking for a new code replaces the previous one', () async {
+    final local = _FakeFriendLocalDataSource();
+    final remote = _FakeFriendRemoteDataSource();
+    final repository = FriendRepositoryImpl(
+      localDataSource: local,
+      remoteDataSource: remote,
+    );
+
+    final first = await repository.createInvite(
+      senderName: 'youngsolver',
+      senderEmail: 'youngsolver@example.com',
+      senderImage: '',
+      sourceFriendSid: 'friend-1',
+      sourceFriendName: 'Ada',
+      sourceFriendEmail: '',
+      sourceFriendImage: '',
+    );
+    final refreshed = await repository.createInvite(
+      senderName: 'youngsolver',
+      senderEmail: 'youngsolver@example.com',
+      senderImage: '',
+      sourceFriendSid: 'friend-1',
+      sourceFriendName: 'Ada',
+      sourceFriendEmail: '',
+      sourceFriendImage: '',
+      forceNew: true,
+    );
+
+    expect(refreshed.inviteCode, isNot(first.inviteCode));
+    expect(remote.createInviteCalls, 2);
+  });
+
+  test('a code created offline is flagged, then retried once back', () async {
+    final local = _FakeFriendLocalDataSource();
+    final remote = _FakeFriendRemoteDataSource()..createInviteThrows = true;
+    final repository = FriendRepositoryImpl(
+      localDataSource: local,
+      remoteDataSource: remote,
+    );
+
+    final offline = await repository.createInvite(
+      senderName: 'youngsolver',
+      senderEmail: 'youngsolver@example.com',
+      senderImage: '',
+      sourceFriendSid: 'friend-1',
+      sourceFriendName: 'Ada',
+      sourceFriendEmail: '',
+      sourceFriendImage: '',
+    );
+
+    expect(offline.isSynced, isFalse);
+    expect(local.cachedShare?.isSynced, isFalse);
+
+    remote.createInviteThrows = false;
+    final recovered = await repository.createInvite(
+      senderName: 'youngsolver',
+      senderEmail: 'youngsolver@example.com',
+      senderImage: '',
+      sourceFriendSid: 'friend-1',
+      sourceFriendName: 'Ada',
+      sourceFriendEmail: '',
+      sourceFriendImage: '',
+    );
+
+    // Same code, so a link already sent to someone finally works.
+    expect(recovered.inviteCode, offline.inviteCode);
+    expect(recovered.isSynced, isTrue);
+    expect(remote.createInviteCalls, 2);
   });
 }

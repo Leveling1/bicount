@@ -17,6 +17,7 @@ final class FriendCreateInviteRequested extends FriendEvent {
     required this.sourceFriendName,
     required this.sourceFriendEmail,
     required this.sourceFriendImage,
+    this.forceNew = false,
   });
 
   final String senderName;
@@ -26,6 +27,10 @@ final class FriendCreateInviteRequested extends FriendEvent {
   final String sourceFriendName;
   final String sourceFriendEmail;
   final String sourceFriendImage;
+
+  /// Replaces the profile's current code instead of reusing it. Only the
+  /// explicit "new code" action sets this.
+  final bool forceNew;
 }
 
 final class FriendInviteCodeReceived extends FriendEvent {

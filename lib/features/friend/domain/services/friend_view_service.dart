@@ -45,6 +45,10 @@ class FriendViewService {
         friend.relationType == FriendConst.friend &&
         friend.uid != data.user.uid;
     final canShareProfile = canEditProfile && isShareableFriend(friend);
+    // Separating is only meaningful once a real account is behind the
+    // profile; deleting is only offered while nobody is behind it.
+    final canUnlinkProfile = canEditProfile && !isShareableFriend(friend);
+    final canDeleteProfile = canEditProfile && isShareableFriend(friend);
 
     return FriendDetailEntity(
       friend: friend,
@@ -56,6 +60,8 @@ class FriendViewService {
       canEditProfile: canEditProfile,
       canShareProfile: canShareProfile,
       isLinkedProfile: !canShareProfile,
+      canUnlinkProfile: canUnlinkProfile,
+      canDeleteProfile: canDeleteProfile,
     );
   }
 

@@ -64,6 +64,20 @@ String localizeRuntimeMessage(BuildContext context, String message) {
     case 'Unable to save this friend right now.':
     case 'An error occurred while saving your new friend.':
       return context.l10n.runtimeFriendSaveFailed;
+    case 'Sign in to separate these accounts.':
+      return context.l10n.runtimeFriendUnlinkSignInRequired;
+    case 'Connect to the internet to separate these accounts.':
+      return context.l10n.runtimeFriendUnlinkOnlineRequired;
+    case 'Unable to separate these accounts right now.':
+      return context.l10n.runtimeFriendUnlinkFailed;
+    case 'This profile is not linked to an account.':
+      return context.l10n.runtimeFriendNotLinked;
+    case 'Sign in to delete this profile.':
+      return context.l10n.runtimeFriendDeleteSignInRequired;
+    case 'Separate the two accounts before deleting this profile.':
+      return context.l10n.runtimeFriendDeleteLinkedBlocked;
+    case 'Unable to delete this profile right now.':
+      return context.l10n.runtimeFriendDeleteFailed;
     case 'The transaction could not be saved.':
       return context.l10n.runtimeTransactionSaveFailed;
     case 'Unable to delete this transaction right now.':

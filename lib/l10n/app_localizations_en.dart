@@ -317,6 +317,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get runtimeFriendUpdateFailed => 'Unable to update this contact right now.';
 
   @override
+  String get runtimeFriendUnlinkSignInRequired => 'Sign in to stop sharing.';
+
+  @override
+  String get runtimeFriendUnlinkOnlineRequired => 'You need internet to stop sharing. Try again once you are back online.';
+
+  @override
+  String get runtimeFriendUnlinkFailed => 'Unable to stop sharing right now. Try again in a moment.';
+
+  @override
+  String get runtimeFriendNotLinked => 'This contact is not linked to any account.';
+
+  @override
+  String get runtimeFriendDeleteSignInRequired => 'Sign in to delete this contact.';
+
+  @override
+  String get runtimeFriendDeleteLinkedBlocked => 'This contact is linked to a real account. Stop sharing with them first.';
+
+  @override
+  String get runtimeFriendDeleteFailed => 'Unable to delete this contact right now. Try again in a moment.';
+
+  @override
   String get runtimeTransactionSaveFailed => 'The transaction could not be saved.';
 
   @override
@@ -1036,13 +1057,119 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendShareGenerate => 'Generate invite';
 
   @override
-  String get friendShareRefresh => 'Refresh link';
+  String get friendShareRefresh => 'New code';
 
   @override
   String get friendShareLink => 'Share link';
 
   @override
   String get friendShareScanQr => 'Scan QR';
+
+  @override
+  String get friendSharePreparing => 'Your code is coming…';
+
+  @override
+  String get friendShareUnavailable => 'The code could not be prepared. Tap \"New code\".';
+
+  @override
+  String get friendShareOfflineNotice => 'You have no internet. This code does not work for the other person yet. Come back here once you are online again.';
+
+  @override
+  String friendUnlinkTitle(Object name) {
+    return 'Stop sharing with $name';
+  }
+
+  @override
+  String get friendUnlinkIntro => 'Here is what will happen:';
+
+  @override
+  String get friendUnlinkKeepYours => 'You keep everything you wrote down. Nothing is erased.';
+
+  @override
+  String friendUnlinkKeepTheirs(Object name) {
+    return '$name also keeps everything written down on their side.';
+  }
+
+  @override
+  String friendUnlinkStopSharing(Object name) {
+    return 'You will no longer see what $name adds, and $name will no longer see what you add.';
+  }
+
+  @override
+  String get friendUnlinkReversible => 'If you change your mind, you can link up again later and get everything back.';
+
+  @override
+  String get friendUnlinkConfirm => 'Yes, stop sharing';
+
+  @override
+  String friendUnlinkSuccess(Object name) {
+    return 'You are no longer sharing with $name.';
+  }
+
+  @override
+  String friendDeleteTitle(Object name) {
+    return 'Delete $name';
+  }
+
+  @override
+  String friendDeleteIntro(Object name) {
+    return 'If you go on, everything you wrote down with $name will disappear. Forever.';
+  }
+
+  @override
+  String friendDeleteTransactions(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count entries will be erased',
+      one: '1 entry will be erased',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String friendDeleteDebts(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count debts will be erased',
+      one: '1 debt will be erased',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String friendDeleteRecurring(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count automatic payments will stop',
+      one: '1 automatic payment will stop',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String friendDeleteNothingRecorded(Object name) {
+    return 'Nothing is written down with $name. Only the contact will be erased.';
+  }
+
+  @override
+  String get friendDeleteBalanceWarning => 'Your balance will change, because this money will no longer be counted.';
+
+  @override
+  String get friendDeleteIrreversible => 'There is no going back. Not even we can bring it back.';
+
+  @override
+  String get friendDeleteKeepHint => 'If you simply do not want to deal with it, you can keep it: it gets in nobody\'s way.';
+
+  @override
+  String get friendDeleteConfirm => 'Delete forever';
+
+  @override
+  String friendDeleteSuccess(Object name) {
+    return '$name has been deleted.';
+  }
 
   @override
   String get friendInvitationLinkCopied => 'Invitation link copied.';

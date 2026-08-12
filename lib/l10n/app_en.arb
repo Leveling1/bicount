@@ -107,6 +107,13 @@
   "runtimeUnexpectedError": "Something went wrong. Please try again.",
   "runtimeFriendSaveFailed": "Unable to save this contact right now.",
   "runtimeFriendUpdateFailed": "Unable to update this contact right now.",
+  "runtimeFriendUnlinkSignInRequired": "Sign in to stop sharing.",
+  "runtimeFriendUnlinkOnlineRequired": "You need internet to stop sharing. Try again once you are back online.",
+  "runtimeFriendUnlinkFailed": "Unable to stop sharing right now. Try again in a moment.",
+  "runtimeFriendNotLinked": "This contact is not linked to any account.",
+  "runtimeFriendDeleteSignInRequired": "Sign in to delete this contact.",
+  "runtimeFriendDeleteLinkedBlocked": "This contact is linked to a real account. Stop sharing with them first.",
+  "runtimeFriendDeleteFailed": "Unable to delete this contact right now. Try again in a moment.",
   "runtimeTransactionSaveFailed": "The transaction could not be saved.",
   "runtimeTransactionDeleteFailed": "Unable to delete this transaction right now.",
   "runtimeTransactionUpdateFailed": "Unable to update this transaction right now.",
@@ -378,9 +385,92 @@
     }
   },
   "friendShareGenerate": "Generate invite",
-  "friendShareRefresh": "Refresh link",
+  "friendShareRefresh": "New code",
   "friendShareLink": "Share link",
   "friendShareScanQr": "Scan QR",
+  "friendSharePreparing": "Your code is coming…",
+  "friendShareUnavailable": "The code could not be prepared. Tap \"New code\".",
+  "friendShareOfflineNotice": "You have no internet. This code does not work for the other person yet. Come back here once you are online again.",
+  "friendUnlinkTitle": "Stop sharing with {name}",
+  "@friendUnlinkTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendUnlinkIntro": "Here is what will happen:",
+  "friendUnlinkKeepYours": "You keep everything you wrote down. Nothing is erased.",
+  "friendUnlinkKeepTheirs": "{name} also keeps everything written down on their side.",
+  "@friendUnlinkKeepTheirs": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendUnlinkStopSharing": "You will no longer see what {name} adds, and {name} will no longer see what you add.",
+  "@friendUnlinkStopSharing": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendUnlinkReversible": "If you change your mind, you can link up again later and get everything back.",
+  "friendUnlinkConfirm": "Yes, stop sharing",
+  "friendUnlinkSuccess": "You are no longer sharing with {name}.",
+  "@friendUnlinkSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendDeleteTitle": "Delete {name}",
+  "@friendDeleteTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendDeleteIntro": "If you go on, everything you wrote down with {name} will disappear. Forever.",
+  "@friendDeleteIntro": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendDeleteTransactions": "{count, plural, =1{1 entry will be erased} other{{count} entries will be erased}}",
+  "@friendDeleteTransactions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "friendDeleteDebts": "{count, plural, =1{1 debt will be erased} other{{count} debts will be erased}}",
+  "@friendDeleteDebts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "friendDeleteRecurring": "{count, plural, =1{1 automatic payment will stop} other{{count} automatic payments will stop}}",
+  "@friendDeleteRecurring": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "friendDeleteNothingRecorded": "Nothing is written down with {name}. Only the contact will be erased.",
+  "@friendDeleteNothingRecorded": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendDeleteBalanceWarning": "Your balance will change, because this money will no longer be counted.",
+  "friendDeleteIrreversible": "There is no going back. Not even we can bring it back.",
+  "friendDeleteKeepHint": "If you simply do not want to deal with it, you can keep it: it gets in nobody's way.",
+  "friendDeleteConfirm": "Delete forever",
+  "friendDeleteSuccess": "{name} has been deleted.",
+  "@friendDeleteSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "friendInvitationLinkCopied": "Invitation link copied.",
   "friendInvitationReady": "Invitation ready to share.",
   "friendInvitationNotFound": "This invitation was not found.",

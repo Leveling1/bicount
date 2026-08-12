@@ -107,6 +107,13 @@
   "runtimeUnexpectedError": "Une erreur s'est produite. Veuillez réessayer.",
   "runtimeFriendSaveFailed": "Impossible d'enregistrer ce contact pour le moment.",
   "runtimeFriendUpdateFailed": "Impossible de mettre à jour ce contact pour le moment.",
+  "runtimeFriendUnlinkSignInRequired": "Connectez-vous pour arrêter de partager.",
+  "runtimeFriendUnlinkOnlineRequired": "Vous avez besoin d'Internet pour arrêter de partager. Réessayez quand Internet sera revenu.",
+  "runtimeFriendUnlinkFailed": "Impossible d'arrêter le partage pour le moment. Réessayez dans un instant.",
+  "runtimeFriendNotLinked": "Ce contact n'est relié à aucun compte.",
+  "runtimeFriendDeleteSignInRequired": "Connectez-vous pour supprimer ce contact.",
+  "runtimeFriendDeleteLinkedBlocked": "Ce contact est relié à un vrai compte. Arrêtez d'abord de partager avec lui.",
+  "runtimeFriendDeleteFailed": "Impossible de supprimer ce contact pour le moment. Réessayez dans un instant.",
   "runtimeTransactionSaveFailed": "La transaction n'a pas pu être enregistrée.",
   "runtimeTransactionDeleteFailed": "Impossible de supprimer cette transaction pour le moment.",
   "runtimeTransactionUpdateFailed": "Impossible de mettre à jour cette transaction pour le moment.",
@@ -378,9 +385,92 @@
     }
   },
   "friendShareGenerate": "Générer l'invitation",
-  "friendShareRefresh": "Rafraîchir le lien",
+  "friendShareRefresh": "Nouveau code",
   "friendShareLink": "Partager le lien",
   "friendShareScanQr": "Scanner le QR",
+  "friendSharePreparing": "Votre code arrive…",
+  "friendShareUnavailable": "Le code n'a pas pu être préparé. Appuyez sur « Nouveau code ».",
+  "friendShareOfflineNotice": "Vous n'avez pas Internet. Ce code ne marche pas encore pour l'autre personne. Revenez ici quand Internet sera revenu.",
+  "friendUnlinkTitle": "Ne plus partager avec {name}",
+  "@friendUnlinkTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendUnlinkIntro": "Voici ce qui va se passer :",
+  "friendUnlinkKeepYours": "Vous gardez tout ce que vous avez noté. Rien n'est effacé.",
+  "friendUnlinkKeepTheirs": "{name} garde aussi tout ce qu'il a noté de son côté.",
+  "@friendUnlinkKeepTheirs": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendUnlinkStopSharing": "Vous ne verrez plus ce que {name} ajoute, et {name} ne verra plus ce que vous ajoutez.",
+  "@friendUnlinkStopSharing": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendUnlinkReversible": "Si vous changez d'avis, vous pourrez vous relier plus tard et tout retrouver.",
+  "friendUnlinkConfirm": "Oui, ne plus partager",
+  "friendUnlinkSuccess": "Vous ne partagez plus avec {name}.",
+  "@friendUnlinkSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendDeleteTitle": "Supprimer {name}",
+  "@friendDeleteTitle": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendDeleteIntro": "Si vous continuez, tout ce que vous avez noté avec {name} va disparaître. Pour toujours.",
+  "@friendDeleteIntro": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendDeleteTransactions": "{count, plural, =1{1 opération sera effacée} other{{count} opérations seront effacées}}",
+  "@friendDeleteTransactions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "friendDeleteDebts": "{count, plural, =1{1 dette sera effacée} other{{count} dettes seront effacées}}",
+  "@friendDeleteDebts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "friendDeleteRecurring": "{count, plural, =1{1 versement automatique va s'arrêter} other{{count} versements automatiques vont s'arrêter}}",
+  "@friendDeleteRecurring": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "friendDeleteNothingRecorded": "Il n'y a rien de noté avec {name}. Seul le contact sera effacé.",
+  "@friendDeleteNothingRecorded": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "friendDeleteBalanceWarning": "Votre solde va changer, parce que cet argent ne sera plus compté.",
+  "friendDeleteIrreversible": "On ne pourra pas revenir en arrière. Même nous, nous ne pourrons pas le retrouver.",
+  "friendDeleteKeepHint": "Si vous voulez juste ne plus vous en occuper, vous pouvez le garder : il ne gêne rien.",
+  "friendDeleteConfirm": "Supprimer pour toujours",
+  "friendDeleteSuccess": "{name} a été supprimé.",
+  "@friendDeleteSuccess": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "friendInvitationLinkCopied": "Lien d'invitation copié.",
   "friendInvitationReady": "Invitation prête à être partagée.",
   "friendInvitationNotFound": "Cette invitation est introuvable.",

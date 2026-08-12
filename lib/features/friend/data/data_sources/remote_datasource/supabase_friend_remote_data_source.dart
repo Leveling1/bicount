@@ -13,6 +13,62 @@ class SupabaseFriendRemoteDataSource implements FriendRemoteDataSource {
   final SupabaseClient client;
   static const _previewFunctionName = 'friend-invite-preview';
   static const _acceptFunctionName = 'accept-friend-invite';
+  static const _unlinkFunctionName = 'unlink-friend-account';
+
+  @override
+  Future<FriendInviteEntity?> findReusableInvite({
+    required String sourceFriendSid,
+    required String currentUserId,
+  }) async {
+    final rows = await client
+        .from('friend_invites')
+        .select()
+        .eq('sender_uid', currentUserId)
+        .eq('source_friend_sid', sourceFriendSid)
+        .eq('status_id', AppFriendInviteState.pending)
+        .gt('expires_at', DateTime.now().toUtc().toIso8601String())
+        .order('created_at', ascending: false)
+        .limit(1);
+
+    if (rows.isEmpty) {
+      return null;
+    }
+    return _mapInvite(rows.first);
+  }
+
+  @override
+  Future<List<String>> unlinkAccounts(String friendSid) async {
+    try {
+      await _ensureOnline('Connect to the internet to separate these accounts.');
+      final response = await client.functions.invoke(
+        _unlinkFunctionName,
+        body: {'friend_sid': friendSid},
+      );
+
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        final sids = data['unlinked_sids'];
+        if (sids is List) {
+          return sids.whereType<String>().toList();
+        }
+      }
+      // The link is broken server side even when the payload is unexpected;
+      // fall back to the profile the caller asked about.
+      return [friendSid];
+    } on MessageFailure {
+      rethrow;
+    } on AuthException {
+      throw MessageFailure(message: 'Sign in to separate these accounts.');
+    } on SocketException {
+      throw MessageFailure(
+        message: 'Connect to the internet to separate these accounts.',
+      );
+    } catch (_) {
+      throw MessageFailure(
+        message: 'Unable to separate these accounts right now.',
+      );
+    }
+  }
 
   @override
   Future<void> acceptInvite(String inviteCode, String currentUserId) async {

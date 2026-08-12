@@ -12,6 +12,7 @@ class FriendShareEntity extends Equatable {
     this.sourceFriendName,
     this.sourceFriendEmail,
     this.sourceFriendImage,
+    this.isSynced = true,
   });
 
   final String inviteId;
@@ -24,8 +25,28 @@ class FriendShareEntity extends Equatable {
   final String? sourceFriendEmail;
   final String? sourceFriendImage;
 
+  /// Whether the backend already knows this invitation. A code created while
+  /// offline is usable on this device but unreachable for whoever scans it,
+  /// so the share screen warns instead of showing a silently dead QR code.
+  final bool isSynced;
+
   bool get isFriendProfileShare =>
       sourceFriendSid != null && sourceFriendSid!.isNotEmpty;
+
+  bool get isExpired => expiresAt.isBefore(DateTime.now());
+
+  FriendShareEntity copyWith({bool? isSynced}) => FriendShareEntity(
+    inviteId: inviteId,
+    inviteCode: inviteCode,
+    inviteUrl: inviteUrl,
+    createdAt: createdAt,
+    expiresAt: expiresAt,
+    sourceFriendSid: sourceFriendSid,
+    sourceFriendName: sourceFriendName,
+    sourceFriendEmail: sourceFriendEmail,
+    sourceFriendImage: sourceFriendImage,
+    isSynced: isSynced ?? this.isSynced,
+  );
 
   String get subjectName {
     final value = sourceFriendName?.trim();
@@ -46,6 +67,7 @@ class FriendShareEntity extends Equatable {
     sourceFriendName,
     sourceFriendEmail,
     sourceFriendImage,
+    isSynced,
   ];
 }
 

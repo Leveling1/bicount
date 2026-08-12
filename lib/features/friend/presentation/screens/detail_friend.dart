@@ -12,7 +12,9 @@ import 'package:bicount/features/friend/presentation/widgets/detail_friend_skele
 import 'package:bicount/features/friend/presentation/widgets/detail_friend_header.dart';
 import 'package:bicount/features/friend/presentation/widgets/detail_friend_metrics.dart';
 import 'package:bicount/features/friend/presentation/widgets/detail_friend_transaction_section.dart';
+import 'package:bicount/features/friend/presentation/widgets/friend_delete_sheet.dart';
 import 'package:bicount/features/friend/presentation/widgets/friend_profile_sheet.dart';
+import 'package:bicount/features/friend/presentation/widgets/friend_unlink_sheet.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +49,18 @@ class DetailFriend extends StatelessWidget {
                 CustomIconButton(
                   onPressed: () => _openShareFlow(context, currentFriend),
                   icon: Icons.share,
+                ),
+              // Mutually exclusive by nature: a profile is either tied to an
+              // account (separate it) or tied to nobody (delete it).
+              if (detail != null && detail.canUnlinkProfile)
+                CustomIconButton(
+                  onPressed: () => _openUnlinkFlow(context, currentFriend),
+                  icon: Icons.link_off,
+                ),
+              if (detail != null && detail.canDeleteProfile)
+                CustomIconButton(
+                  onPressed: () => _openDeleteFlow(context, currentFriend),
+                  icon: Icons.delete_outline,
                 ),
             ],
           ),
@@ -110,6 +124,50 @@ class DetailFriend extends StatelessWidget {
         selectedFriend: currentFriend,
       ),
     );
+  }
+
+  Future<void> _openUnlinkFlow(
+    BuildContext context,
+    FriendsModel currentFriend,
+  ) async {
+    final unlinked = await showCustomBottomSheet<bool>(
+      context: context,
+      minHeight: 0.7,
+      child: FriendUnlinkSheet(friend: currentFriend),
+    );
+    if (unlinked != true || !context.mounted) {
+      return;
+    }
+
+    NotificationHelper.showSuccessNotification(
+      context,
+      context.l10n.friendUnlinkSuccess(currentFriend.username),
+    );
+    context.read<MainBloc>().add(RefreshMainData());
+  }
+
+  Future<void> _openDeleteFlow(
+    BuildContext context,
+    FriendsModel currentFriend,
+  ) async {
+    final deleted = await showCustomBottomSheet<bool>(
+      context: context,
+      minHeight: 0.7,
+      child: FriendDeleteSheet(friend: currentFriend),
+    );
+    if (deleted != true || !context.mounted) {
+      return;
+    }
+
+    context.read<MainBloc>().add(RefreshMainData());
+    // Raised before leaving: the toast lives in a global overlay and outlives
+    // the screen, but reading the theme from a popped context would not.
+    NotificationHelper.showSuccessNotification(
+      context,
+      context.l10n.friendDeleteSuccess(currentFriend.username),
+    );
+    // The profile this screen is showing no longer exists.
+    Navigator.of(context).pop();
   }
 
   Future<void> _openEditFlow(
