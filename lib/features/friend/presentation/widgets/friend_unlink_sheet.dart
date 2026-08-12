@@ -70,7 +70,7 @@ class _FriendUnlinkSheetState extends State<FriendUnlinkSheet> {
         AppDimens.spacerSmall,
         CustomOutlinedButton(
           onPressed: _isSubmitting ? () {} : () => Navigator.of(context).pop(),
-          text: 'context.l10n.commonCancel',
+          text: context.l10n.commonCancel,
           loading: false,
         ),
         AppDimens.spacerLarge,
