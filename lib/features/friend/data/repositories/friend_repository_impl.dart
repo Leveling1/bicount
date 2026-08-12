@@ -515,6 +515,18 @@ class FriendRepositoryImpl implements FriendRepository {
       );
       await repository.delete<FriendsModel>(rows.isEmpty ? friend : rows.first);
 
+      // A QR code already handed out must stop working: without this it would
+      // point at a profile that no longer exists.
+      await localDataSource.clearActiveShare(sid);
+      try {
+        await remoteDataSource.cancelPendingInvites(
+          sourceFriendSid: sid,
+          currentUserId: currentUserId,
+        );
+      } catch (error) {
+        debugPrint('Could not retire invitations for the deleted profile: $error');
+      }
+
       unawaited(
         Repository()
             .notifySubscriptionsWithLocalData<FriendsModel>()

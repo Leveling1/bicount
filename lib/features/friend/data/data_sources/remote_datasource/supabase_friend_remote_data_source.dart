@@ -37,6 +37,25 @@ class SupabaseFriendRemoteDataSource implements FriendRemoteDataSource {
   }
 
   @override
+  Future<void> cancelPendingInvites({
+    required String sourceFriendSid,
+    required String currentUserId,
+  }) async {
+    // Marked expired rather than deleted: the row stays as a trace, and both
+    // the expiry check and the status check in the accept function now reject
+    // the code instead of failing on a profile that no longer exists.
+    await client
+        .from('friend_invites')
+        .update({
+          'status_id': AppFriendInviteState.expired,
+          'expires_at': DateTime.now().toUtc().toIso8601String(),
+        })
+        .eq('sender_uid', currentUserId)
+        .eq('source_friend_sid', sourceFriendSid)
+        .eq('status_id', AppFriendInviteState.pending);
+  }
+
+  @override
   Future<List<String>> unlinkAccounts(String friendSid) async {
     try {
       await _ensureOnline('Connect to the internet to separate these accounts.');

@@ -92,6 +92,22 @@ class LocalFriendDataSourceImpl implements FriendLocalDataSource {
   }
 
   @override
+  Future<void> clearActiveShare(String sourceFriendSid) async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.remove(_shareKeyFor(sourceFriendSid));
+
+    // The legacy single slot may still point at the profile being removed.
+    final rawValue = preferences.getString(_activeShareKey);
+    if (rawValue == null || rawValue.isEmpty) {
+      return;
+    }
+    final map = jsonDecode(rawValue) as Map<String, dynamic>;
+    if (map['source_friend_sid'] == sourceFriendSid) {
+      await preferences.remove(_activeShareKey);
+    }
+  }
+
+  @override
   Future<List<FriendInviteEntity>> getCachedInvites() async {
     final preferences = await SharedPreferences.getInstance();
     final rawValue = preferences.getString(_cachedInvitesKey);

@@ -28,6 +28,13 @@ class _FakeFriendLocalDataSource implements FriendLocalDataSource {
   }
 
   @override
+  Future<void> clearActiveShare(String sourceFriendSid) async {
+    if (cachedShare?.sourceFriendSid == sourceFriendSid) {
+      cachedShare = null;
+    }
+  }
+
+  @override
   Future<List<FriendInviteEntity>> getCachedInvites() async => cachedInvites;
 }
 
@@ -71,6 +78,16 @@ class _FakeFriendRemoteDataSource implements FriendRemoteDataSource {
     unlinkedFriendSids.add(friendSid);
     return [friendSid];
   }
+
+  @override
+  Future<void> cancelPendingInvites({
+    required String sourceFriendSid,
+    required String currentUserId,
+  }) async {
+    cancelledInviteSids.add(sourceFriendSid);
+  }
+
+  List<String> cancelledInviteSids = [];
 
   @override
   Stream<List<FriendInviteEntity>> watchInvites(String currentUserId) {

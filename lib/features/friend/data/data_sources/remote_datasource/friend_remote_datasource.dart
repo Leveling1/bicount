@@ -23,4 +23,11 @@ abstract class FriendRemoteDataSource {
   /// Breaks the link on both sides at once. Returns the profile ids that
   /// stopped being shared.
   Future<List<String>> unlinkAccounts(String friendSid);
+
+  /// Retires every still-pending invitation created for [sourceFriendSid], so
+  /// a code already handed out stops working once the profile is deleted.
+  Future<void> cancelPendingInvites({
+    required String sourceFriendSid,
+    required String currentUserId,
+  });
 }
