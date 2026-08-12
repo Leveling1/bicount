@@ -251,6 +251,7 @@ private struct SmallLayout: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
       EyebrowText(text: entry.eyebrow, color: entry.subtitleColor)
+        .frame(maxWidth: .infinity, alignment: .center)
 
       // Balance and totals share one expanding block so they stay centred
       // between the eyebrow and the button (mirrors the Android XS layout).
