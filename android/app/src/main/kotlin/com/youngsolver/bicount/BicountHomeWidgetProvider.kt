@@ -22,6 +22,13 @@ import es.antonborri.home_widget.HomeWidgetProvider
 
 private const val TAG = "BicountHomeWidget"
 
+/**
+ * Mirrors `BicountHomeWidgetAction.openHomeUri()` on the Dart side. Hardcoded
+ * on purpose: the empty card is rendered precisely when no action URI has
+ * been published yet.
+ */
+private const val OPEN_HOME_URI = "bicount://widget/open-home?homeWidget=1"
+
 class BicountHomeWidgetProvider : HomeWidgetProvider() {
     override fun onUpdate(
         context: Context,
@@ -41,6 +48,18 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
         } catch (error: Exception) {
             Log.e(TAG, "Failed to read widget data, using safe defaults", error)
             WidgetData.safeDefaults()
+        }
+
+        // Nothing published yet: one card at every size, no size map needed.
+        if (!data.hasData) {
+            appWidgetIds.forEach { widgetId ->
+                try {
+                    appWidgetManager.updateAppWidget(widgetId, buildEmptyViews(context))
+                } catch (error: Exception) {
+                    Log.e(TAG, "Empty layout failed for widget $widgetId", error)
+                }
+            }
+            return
         }
 
         appWidgetIds.forEach { widgetId ->
@@ -125,6 +144,19 @@ class BicountHomeWidgetProvider : HomeWidgetProvider() {
     }
 
     // ── Layout builders ──────────────────────────────────────────────────
+
+    /**
+     * Card shown before the app has published anything: logo and a single
+     * label, both following the system theme through resource qualifiers.
+     * The tap target is wired to a fixed URI because the action URIs are
+     * published with the data, so none exist yet — without it the card would
+     * invite a tap and do nothing.
+     */
+    private fun buildEmptyViews(context: Context): RemoteViews {
+        val views = RemoteViews(context.packageName, R.layout.bicount_home_widget_empty)
+        setClick(context, views, R.id.widget_empty_root, OPEN_HOME_URI)
+        return views
+    }
 
     private fun buildXsViews(context: Context, data: WidgetData): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.bicount_home_widget_xs)
@@ -324,6 +356,13 @@ private class RecentItem(
 
 /** All the widget's persisted state, read once per update pass. */
 private class WidgetData(
+    /**
+     * Whether the app has ever published a snapshot. False on a fresh install
+     * and while the app has been installed but never opened: the data layouts
+     * would then render with a placeholder balance, blank totals and an empty
+     * chart, so the empty card is shown instead.
+     */
+    val hasData: Boolean,
     val isDarkTheme: Boolean,
     val eyebrow: String,
     val balance: String,
@@ -401,6 +440,7 @@ private class WidgetData(
 
         /** Never touches SharedPreferences — used when reading stored data itself fails. */
         fun safeDefaults(): WidgetData = WidgetData(
+            hasData = false,
             isDarkTheme = false,
             eyebrow = "BICOUNT",
             balance = "Bicount",
@@ -473,6 +513,9 @@ private class WidgetData(
             val defaultButton = context.getString(R.string.bicount_home_widget_default_button)
 
             return WidgetData(
+                // The balance is written on every publish, so its presence is
+                // the marker for "the app has run at least once".
+                hasData = prefs.contains("bicount_widget_balance"),
                 isDarkTheme = prefs.getBoolean("bicount_widget_theme_is_dark", false),
                 eyebrow = str("bicount_widget_eyebrow", "BICOUNT"),
                 balance = str("bicount_widget_balance", defaultTitle),

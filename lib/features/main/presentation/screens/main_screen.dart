@@ -34,22 +34,45 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final PageController pageController = PageController();
+  late final PageController pageController;
   final TextEditingController searchTransaction = TextEditingController();
   static String? _lastScheduledInviteCode;
 
   bool showSearchBar = false;
-  int _selectedIndex = 0;
+  late int _selectedIndex;
   int _selectedIndexTransaction = 0;
   String? _lastHandledWidgetActionToken;
 
   @override
   void initState() {
     super.initState();
+    // Opening straight on the tab the widget action targets. The action
+    // itself still waits for the data to be loaded before it runs — only the
+    // starting tab changes, so the home screen is no longer shown and then
+    // snapped away once loading finishes.
+    _selectedIndex = _initialTabForPendingWidgetAction();
+    pageController = PageController(initialPage: _selectedIndex);
     BicountHomeWidgetService.instance.addListener(_handleWidgetActionChange);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MainBloc>().add(GetAllStartData());
     });
+  }
+
+  /// Tab the pending widget action will land on, known before the first
+  /// frame: the launch URI is read while the app boots, ahead of `runApp`.
+  int _initialTabForPendingWidgetAction() {
+    final action = BicountHomeWidgetService.instance.pendingAction;
+    if (action == null) {
+      return 0;
+    }
+
+    return switch (action.type) {
+      BicountHomeWidgetActionType.addTransaction ||
+      BicountHomeWidgetActionType.addIncome ||
+      BicountHomeWidgetActionType.addExpense ||
+      BicountHomeWidgetActionType.openTransaction => 2,
+      _ => 0,
+    };
   }
 
   @override
@@ -265,22 +288,12 @@ class _MainScreenState extends State<MainScreen> {
     _lastHandledWidgetActionToken = widgetLaunchToken;
     service.clearPendingAction();
 
-    if (uriAction != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) {
-          return;
-        }
-        context.replace(_shellRouteForWidgetAction(pendingAction));
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) {
-            return;
-          }
-          _performPendingWidgetAction(pendingAction, data);
-        });
-      });
-      return;
-    }
-
+    // No route change before running the action. `/` and `/transaction` are
+    // separate routes that each build their own MainScreen, so moving the
+    // route here disposed the State owning the callback below: it woke up
+    // unmounted, dropped the action, and the freshly built State had nothing
+    // left to act on — the app opened on the right tab with no form. Changing
+    // tab only drives the PageView, so the action runs on this State.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
         return;
@@ -310,34 +323,6 @@ class _MainScreenState extends State<MainScreen> {
 
     return currentUri.queryParameters[BicountHomeWidgetAction
         .launchTokenQueryParam];
-  }
-
-  String _shellRouteForWidgetAction(BicountHomeWidgetAction action) {
-    return switch (action.type) {
-      BicountHomeWidgetActionType.openHome => '/',
-      BicountHomeWidgetActionType.addTransaction => '/transaction',
-      BicountHomeWidgetActionType.addIncome => '/transaction',
-      BicountHomeWidgetActionType.addExpense => '/transaction',
-      // Keep the id in the shell route: TransactionScreen opens the detail
-      // sheet straight from the `tid` query parameter, so the deep link
-      // still works even if the post-frame action callback is skipped.
-      BicountHomeWidgetActionType.openTransaction => Uri(
-        path: '/transaction',
-        queryParameters: {
-          if ((action.transactionId ?? '').isNotEmpty)
-            'tid': action.transactionId!,
-        },
-      ).toString(),
-      _ => _currentShellRoute(),
-    };
-  }
-
-  String _currentShellRoute() {
-    return switch (_selectedIndex) {
-      1 => '/analysis',
-      2 => '/transaction',
-      _ => '/',
-    };
   }
 
   void _performPendingWidgetAction(

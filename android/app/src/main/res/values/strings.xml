@@ -4,4 +4,12 @@
     <string name="bicount_home_widget_default_title">Open Bicount</string>
     <string name="bicount_home_widget_default_subtitle">Sign in to refresh your finance snapshot.</string>
     <string name="bicount_home_widget_default_button">Open app</string>
+    <string name="bicount_home_widget_description">Your balance, this month\'s money in and out, and quick entry.</string>
+    <!-- Sample values for the widget picker preview only. Never displayed on
+         a placed widget, which always shows real data. -->
+    <string name="bicount_home_widget_preview_eyebrow">BICOUNT</string>
+    <string name="bicount_home_widget_preview_balance">455.5 $</string>
+    <string name="bicount_home_widget_preview_in">In 505.5 $</string>
+    <string name="bicount_home_widget_preview_out">Out 50 $</string>
+    <string name="bicount_home_widget_preview_cta">+ Add</string>
 </resources>

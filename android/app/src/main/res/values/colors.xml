@@ -2,4 +2,8 @@
 <resources>
   <color name="ic_launcher_background">#FF132318</color>
   <color name="notification_accent">#FF132318</color>
+  <!-- Widget states rendered without any published palette: the empty card
+       and the picker preview. Qualifier-based so they follow the system. -->
+  <color name="widget_title">#FF212121</color>
+  <color name="widget_subtitle">#FF9AA0A6</color>
 </resources>

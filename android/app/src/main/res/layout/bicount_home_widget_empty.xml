@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Shown until the app has published anything: freshly installed, or installed
+  but never opened. The data layouts would render here with blank amounts and
+  an empty chart, which is what made this state look broken. Everything below
+  resolves through resource qualifiers, so it follows the system theme even
+  though no palette has ever been published.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_empty_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/widget_surface_empty">
+
+    <ImageView
+        android:id="@+id/widget_empty_logo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/splash"
+        android:contentDescription="@string/bicount_home_widget_name" />
+
+    <TextView
+        android:id="@+id/widget_empty_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="@string/bicount_home_widget_default_title"
+        android:textColor="@color/widget_title"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+</LinearLayout>

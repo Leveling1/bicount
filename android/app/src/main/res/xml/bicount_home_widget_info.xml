@@ -6,5 +6,7 @@
     android:targetCellHeight="2"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0"
-    android:initialLayout="@layout/bicount_home_widget_xs"
+    android:initialLayout="@layout/bicount_home_widget_empty"
+    android:previewLayout="@layout/bicount_home_widget_preview"
+    android:description="@string/bicount_home_widget_description"
     android:widgetCategory="home_screen" />

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The widget's own texts come from Dart once data has been published. These
+  Android strings only cover what is rendered before that: the empty card and
+  the picker entry.
+-->
+<resources>
+    <string name="bicount_home_widget_name">Aperçu Bicount</string>
+    <string name="bicount_home_widget_default_title">Ouvrir Bicount</string>
+    <string name="bicount_home_widget_default_subtitle">Connectez-vous pour actualiser votre aperçu.</string>
+    <string name="bicount_home_widget_default_button">Ouvrir l\'app</string>
+    <string name="bicount_home_widget_description">Votre solde, vos entrées et sorties du mois, et l\'ajout rapide.</string>
+    <string name="bicount_home_widget_preview_eyebrow">BICOUNT</string>
+    <string name="bicount_home_widget_preview_balance">455,5 $</string>
+    <string name="bicount_home_widget_preview_in">Entrées 505,5 $</string>
+    <string name="bicount_home_widget_preview_out">Sorties 50 $</string>
+    <string name="bicount_home_widget_preview_cta">+ Ajouter</string>
+</resources>
