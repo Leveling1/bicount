@@ -35,7 +35,9 @@ class SettingsScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: CustomAppBar(title: context.l10n.settingsTitle),
-        body: const SettingsContent(),
+        body: SafeArea(
+          child: const SettingsContent(),
+        ),
       ),
     );
   }
