@@ -99,6 +99,7 @@ class DetailFriend extends StatelessWidget {
                           detail: detail,
                           user: data.user,
                           friends: data.friends,
+                          debts: data.debts,
                         ),
                       ),
                     ],

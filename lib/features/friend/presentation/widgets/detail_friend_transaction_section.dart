@@ -4,6 +4,7 @@ import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/core/widgets/transaction_card.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/friend/domain/entities/friend_detail_entity.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_detail_args.dart';
@@ -17,11 +18,16 @@ class DetailFriendTransactionSection extends StatelessWidget {
     required this.detail,
     required this.user,
     required this.friends,
+    required this.debts,
   });
 
   final FriendDetailEntity detail;
   final UserModel user;
   final List<FriendsModel> friends;
+
+  /// Forwarded to the transaction detail so a debt opened with this friend
+  /// still shows its repayment progress from here.
+  final List<DebtModel> debts;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +69,7 @@ class DetailFriendTransactionSection extends StatelessWidget {
                               user: user,
                               transactionDetail: entity,
                               friends: friends,
+                              debts: debts,
                             ),
                           ),
                         );

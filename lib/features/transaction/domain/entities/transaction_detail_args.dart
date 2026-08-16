@@ -10,10 +10,14 @@ class TransactionDetailArgs {
   final List<FriendsModel> friends;
   final List<DebtModel> debts;
 
+  /// [debts] is required on purpose. It used to default to an empty list, and
+  /// a caller that forgot it silently lost every debt detail — the screen
+  /// still rendered, just without the repayment rows or the "view debt"
+  /// button. Making it explicit turns that omission into a compile error.
   TransactionDetailArgs({
     required this.user,
     required this.transactionDetail,
     required this.friends,
-    this.debts = const [],
+    required this.debts,
   });
 }
