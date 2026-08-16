@@ -64,7 +64,9 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
   }
 
   @override
-  Future<Either<Failure, void>> signOut() async {
+  Future<Either<Failure, void>> signOut({
+    bool forgetNotificationChoices = false,
+  }) async {
     try {
       try {
         await FlutterLocalNotificationsPlugin().cancelAll();
@@ -75,13 +77,21 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
       final preferences = await SharedPreferences.getInstance();
       final preservedEntries = <String, Object>{};
       for (final key in preferences.getKeys()) {
-        if (key.startsWith('notif_perm_') || key == 'notif_last_fcm_token') {
+        // The OS-level permission belongs to the device, not the session, so
+        // a plain sign-out keeps those answers rather than asking again.
+        // Deleting the account is different: the next session is somebody
+        // else, even behind the same address.
+        if (key.startsWith('notif_perm_') && !forgetNotificationChoices) {
           final value = preferences.get(key);
           if (value != null) {
             preservedEntries[key] = value;
           }
         }
       }
+      // The last known push token is deliberately not preserved. Keeping it
+      // made the next session look "already in sync" while the stored token
+      // still pointed at the previous account, so the new one never
+      // registered and silently received nothing.
       await preferences.clear();
       for (final entry in preservedEntries.entries) {
         final value = entry.value;

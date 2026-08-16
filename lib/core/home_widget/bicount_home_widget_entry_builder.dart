@@ -111,7 +111,15 @@ class BicountHomeWidgetEntryBuilder {
       negativeColor: negativeColor,
     );
 
+    // Signed in either way: with no activity every amount really is zero, so
+    // the card shows zeros rather than the signed-out placeholder.
+    final hasActivity =
+        recentItems.isNotEmpty || monthIncome != 0 || monthExpense != 0;
+
     return BicountHomeWidgetEntry(
+      state: hasActivity
+          ? BicountHomeWidgetState.populated
+          : BicountHomeWidgetState.empty,
       isDarkTheme: isDarkTheme,
       eyebrow: l10n.homeWidgetEyebrow,
       balance: NumberFormatUtils.formatCurrency(

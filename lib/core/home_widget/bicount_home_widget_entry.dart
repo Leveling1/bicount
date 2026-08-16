@@ -1,3 +1,22 @@
+/// Which situation a snapshot describes. Published explicitly because the
+/// native side used to infer it from blank strings, which cannot tell "nobody
+/// is signed in" from "signed in with nothing recorded yet" — two states that
+/// deserve very different cards.
+enum BicountHomeWidgetState {
+  /// No session. Amounts are unknown, not zero.
+  signedOut('signed_out'),
+
+  /// Signed in, but no activity to show. Amounts really are zero.
+  empty('empty'),
+
+  /// Signed in with activity.
+  populated('populated');
+
+  const BicountHomeWidgetState(this.storageValue);
+
+  final String storageValue;
+}
+
 /// Snapshot of everything a Bicount home widget layout could possibly need,
 /// computed once in Dart and mirrored natively (Android RemoteViews / iOS
 /// WidgetKit). Each native layout only reads the subset of fields relevant
@@ -5,6 +24,7 @@
 /// duplicating it per platform.
 class BicountHomeWidgetEntry {
   const BicountHomeWidgetEntry({
+    this.state = BicountHomeWidgetState.populated,
     required this.isDarkTheme,
     required this.eyebrow,
     required this.balance,
@@ -49,6 +69,10 @@ class BicountHomeWidgetEntry {
     required this.subtitleColor,
     required this.buttonTextColor,
   });
+
+  /// What this snapshot represents. Drives which card the native side draws,
+  /// instead of leaving it to guess from empty labels.
+  final BicountHomeWidgetState state;
 
   final bool isDarkTheme;
 
@@ -139,6 +163,7 @@ class BicountHomeWidgetEntry {
       (monthExpenseValue ?? 0) != 0;
 
   String get signature => [
+    state.storageValue,
     isDarkTheme,
     eyebrow,
     balance,

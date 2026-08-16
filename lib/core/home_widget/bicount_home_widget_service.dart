@@ -49,6 +49,9 @@ class BicountHomeWidgetService extends ChangeNotifier {
       'bicount_widget_recent_item_amount_label';
   static const _recentItemAmountColorKey =
       'bicount_widget_recent_item_amount_color';
+  /// Tells the native side which card to draw. Without it, "signed out" and
+  /// "signed in with nothing yet" both arrive as a set of empty strings.
+  static const _stateKey = 'bicount_widget_state';
   static const _singleButtonLabelKey = 'bicount_widget_single_button_label';
   static const _singleButtonActionUriKey =
       'bicount_widget_single_button_action_uri';
@@ -187,14 +190,17 @@ class BicountHomeWidgetService extends ChangeNotifier {
     }
 
     try {
+      // Only the state matters here: the native side draws its own signed-out
+      // card from it. Sending half-filled labels is what used to leave the
+      // widget with an empty balance and two unlabelled buttons.
       await _saveEntry(
         const BicountHomeWidgetEntry(
+          state: BicountHomeWidgetState.signedOut,
           isDarkTheme: false,
           eyebrow: 'BICOUNT',
           balance: '',
           balanceColor: 0xFF212121,
           mainActionUri: 'bicount://widget/open-home?homeWidget=1',
-          singleButtonLabel: '+ Add',
           singleButtonActionUri: 'bicount://widget/open-home?homeWidget=1',
           titleColor: 0xFF212121,
           subtitleColor: 0xFF757575,
@@ -213,6 +219,10 @@ class BicountHomeWidgetService extends ChangeNotifier {
   }
 
   Future<void> _saveEntry(BicountHomeWidgetEntry entry) async {
+    await HomeWidget.saveWidgetData<String>(
+      _stateKey,
+      entry.state.storageValue,
+    );
     await HomeWidget.saveWidgetData<bool>(_themeKey, entry.isDarkTheme);
     await HomeWidget.saveWidgetData<String>(_eyebrowKey, entry.eyebrow);
     await HomeWidget.saveWidgetData<String>(_balanceKey, entry.balance);

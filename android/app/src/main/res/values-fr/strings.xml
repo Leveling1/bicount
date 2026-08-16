@@ -9,6 +9,10 @@
     <string name="bicount_home_widget_default_title">Ouvrir Bicount</string>
     <string name="bicount_home_widget_default_subtitle">Connectez-vous pour actualiser votre aperçu.</string>
     <string name="bicount_home_widget_default_button">Ouvrir l\'app</string>
+    <string name="bicount_home_widget_default_income_button">+ Revenu</string>
+    <string name="bicount_home_widget_default_expense_button">+ Dépense</string>
+    <string name="bicount_home_widget_default_entries">Entrées</string>
+    <string name="bicount_home_widget_default_exits">Sorties</string>
     <string name="bicount_home_widget_description">Votre solde, vos entrées et sorties du mois, et l\'ajout rapide.</string>
     <string name="bicount_home_widget_preview_eyebrow">BICOUNT</string>
     <string name="bicount_home_widget_preview_balance">455,5 $</string>

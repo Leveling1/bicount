@@ -38,7 +38,9 @@ class _SettingsDeleteAccountSheetState
           previous.feedback != current.feedback &&
           current.feedback?.action == SettingsPendingAction.deleteAccount &&
           current.feedback?.isError == false,
-      listener: (context, state) => Navigator.of(context).pop(),
+      // Reports the success to the caller, which ends the session only once
+      // this sheet is fully dismissed.
+      listener: (context, state) => Navigator.of(context).pop(true),
       child: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, state) {
           return Form(

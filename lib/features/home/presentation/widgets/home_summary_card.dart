@@ -71,44 +71,46 @@ class HomeSummaryCard extends StatelessWidget {
         const SizedBox(height: AppDimens.spacingMedium),
         BicountReveal(
           delay: const Duration(milliseconds: 110),
-          child: Row(
-            children: [
-              Expanded(
-                child: CardTypeRevenue(
-                  onTap: onMonthlyInflowTap ?? () {},
-                  label: l10n.homeMonthlyInflow,
-                  amount: monthlyInflow,
-                  icon: SvgPicture.asset(
-                    IconLinks.income,
-                    width: AppDimens.iconSizeSmall,
-                    height: AppDimens.iconSizeSmall,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
+          child: IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  child: CardTypeRevenue(
+                    onTap: onMonthlyInflowTap ?? () {},
+                    label: l10n.homeMonthlyInflow,
+                    amount: monthlyInflow,
+                    icon: SvgPicture.asset(
+                      IconLinks.income,
+                      width: AppDimens.iconSizeSmall,
+                      height: AppDimens.iconSizeSmall,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
                     ),
+                    color: incomeColor,
                   ),
-                  color: incomeColor,
                 ),
-              ),
-              const SizedBox(width: AppDimens.marginMedium),
-              Expanded(
-                child: CardTypeRevenue(
-                  onTap: onMonthlyOutflowTap ?? () {},
-                  label: l10n.homeMonthlyOutflow,
-                  amount: monthlyOutflow,
-                  icon: SvgPicture.asset(
-                    IconLinks.expense,
-                    width: AppDimens.iconSizeSmall,
-                    height: AppDimens.iconSizeSmall,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
+                const SizedBox(width: AppDimens.marginMedium),
+                Expanded(
+                  child: CardTypeRevenue(
+                    onTap: onMonthlyOutflowTap ?? () {},
+                    label: l10n.homeMonthlyOutflow,
+                    amount: monthlyOutflow,
+                    icon: SvgPicture.asset(
+                      IconLinks.expense,
+                      width: AppDimens.iconSizeSmall,
+                      height: AppDimens.iconSizeSmall,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
                     ),
+                    color: expenseColor,
                   ),
-                  color: expenseColor,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

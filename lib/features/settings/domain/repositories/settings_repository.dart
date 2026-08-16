@@ -15,5 +15,9 @@ abstract class SettingsRepository {
   });
   Future<void> requestProAccess(ProUpgradeRequestEntity request);
   Future<void> signOut();
+
+  /// Ends the session after the account has been deleted. Separate from
+  /// [deleteAccount] so the confirmation UI can close first.
+  Future<void> finalizeAccountDeletion();
   Future<void> deleteAccount(DeleteAccountRequestEntity request);
 }

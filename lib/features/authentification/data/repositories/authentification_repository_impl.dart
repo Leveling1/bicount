@@ -92,7 +92,9 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
   }
 
   @override
-  Future<Either<Failure, void>> signOut() async {
+  Future<Either<Failure, void>> signOut({
+    bool forgetNotificationChoices = false,
+  }) async {
     Failure? localFailure;
 
     try {
@@ -100,7 +102,9 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
     } catch (e) {
       debugPrint('Remote sign out warning: $e');
     } finally {
-      final localSignOut = await localDataSource.signOut();
+      final localSignOut = await localDataSource.signOut(
+        forgetNotificationChoices: forgetNotificationChoices,
+      );
       localSignOut.fold((failure) => localFailure = failure, (_) => null);
     }
 

@@ -8,7 +8,9 @@ abstract class AuthentificationRepository {
 
   Future<Either<Failure, void>> verifyEmailOtp(String email, String code);
 
-  Future<Either<Failure, void>> signOut();
+  /// [forgetNotificationChoices] clears the per-device notification answers
+  /// too, so the next account is asked again. Reserved for account deletion.
+  Future<Either<Failure, void>> signOut({bool forgetNotificationChoices});
 
   Future<Either<Failure, AuthResponse>> authWithGoogle();
 

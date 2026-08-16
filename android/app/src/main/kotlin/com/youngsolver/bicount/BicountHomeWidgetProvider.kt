@@ -513,9 +513,15 @@ private class WidgetData(
             val defaultButton = context.getString(R.string.bicount_home_widget_default_button)
 
             return WidgetData(
-                // The balance is written on every publish, so its presence is
-                // the marker for "the app has run at least once".
-                hasData = prefs.contains("bicount_widget_balance"),
+                // Published explicitly by the app. Falling back on the balance
+                // key is only for snapshots written before this key existed:
+                // testing its presence alone is not enough, since signing out
+                // used to write it as an empty string.
+                hasData = when (prefs.getString("bicount_widget_state", null)) {
+                    "signed_out" -> false
+                    "empty", "populated" -> true
+                    else -> str("bicount_widget_balance").isNotBlank()
+                },
                 isDarkTheme = prefs.getBoolean("bicount_widget_theme_is_dark", false),
                 eyebrow = str("bicount_widget_eyebrow", "BICOUNT"),
                 balance = str("bicount_widget_balance", defaultTitle),
@@ -545,9 +551,15 @@ private class WidgetData(
                 recentItemAmountColor = color("bicount_widget_recent_item_amount_color", 0xFF212121.toInt()),
                 singleButtonLabel = str("bicount_widget_single_button_label", defaultButton),
                 singleButtonActionUri = str("bicount_widget_single_button_action_uri"),
-                incomeButtonLabel = str("bicount_widget_income_button_label"),
+                incomeButtonLabel = str(
+                    "bicount_widget_income_button_label",
+                    context.getString(R.string.bicount_home_widget_default_income_button),
+                ),
                 incomeButtonActionUri = str("bicount_widget_income_button_action_uri"),
-                expenseButtonLabel = str("bicount_widget_expense_button_label"),
+                expenseButtonLabel = str(
+                    "bicount_widget_expense_button_label",
+                    context.getString(R.string.bicount_home_widget_default_expense_button),
+                ),
                 expenseButtonActionUri = str("bicount_widget_expense_button_action_uri"),
                 monthDailyIncome = str("bicount_widget_month_daily_income")
                     .split(LIST_DELIMITER)
@@ -563,8 +575,14 @@ private class WidgetData(
                 nextItemSectionLabel = str("bicount_widget_next_item_section_label"),
                 weekSectionLabel = str("bicount_widget_week_section_label"),
                 weekSectionCompactLabel = str("bicount_widget_week_section_compact_label"),
-                entriesLabel = str("bicount_widget_entries_label"),
-                exitsLabel = str("bicount_widget_exits_label"),
+                entriesLabel = str(
+                    "bicount_widget_entries_label",
+                    context.getString(R.string.bicount_home_widget_default_entries),
+                ),
+                exitsLabel = str(
+                    "bicount_widget_exits_label",
+                    context.getString(R.string.bicount_home_widget_default_exits),
+                ),
                 titleColor = color("bicount_widget_title_color", 0xFF212121.toInt()),
                 subtitleColor = color("bicount_widget_subtitle_color", 0xFF9AA0A6.toInt()),
                 buttonTextColor = color("bicount_widget_button_text_color", 0xFFF9F9F9.toInt()),

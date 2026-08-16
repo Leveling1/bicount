@@ -5,5 +5,8 @@ abstract class AuthentificationLocalDataSource {
   Future<Either<Failure, void>> ensureCurrentUserProfile({String? emailHint});
 
   // For the log out process
-  Future<Either<Failure, void>> signOut();
+  /// [forgetNotificationChoices] also drops the per-device notification
+  /// answers, so the next account is prompted again. Used when the account is
+  /// deleted rather than simply signed out.
+  Future<Either<Failure, void>> signOut({bool forgetNotificationChoices});
 }

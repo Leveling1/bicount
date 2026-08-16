@@ -10,6 +10,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SettingsProAccessRequested>(_onProAccessRequested);
     on<SettingsSignOutRequested>(_onSignOutRequested);
     on<SettingsDeleteAccountRequested>(_onDeleteAccountRequested);
+    on<SettingsAccountDeletionFinalized>(_onAccountDeletionFinalized);
     on<SettingsFeedbackConsumed>(_onFeedbackConsumed);
   }
 
@@ -61,6 +62,30 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       successMessage: 'Your account deletion request has been submitted.',
       task: () => _repository.deleteAccount(event.request),
     );
+  }
+
+  Future<void> _onAccountDeletionFinalized(
+    SettingsAccountDeletionFinalized event,
+    Emitter<SettingsState> emit,
+  ) async {
+    // No feedback emitted on purpose: the session drop navigates away on its
+    // own, and a message here would race with that.
+    try {
+      await _repository.finalizeAccountDeletion();
+    } catch (error) {
+      // The account is already gone server side; a local failure must not
+      // strand the user on a dead session screen.
+      final message = error is Failure ? error.message : '$error';
+      emit(
+        state.copyWith(
+          feedback: SettingsFeedback(
+            action: SettingsPendingAction.deleteAccount,
+            message: message,
+            isError: true,
+          ),
+        ),
+      );
+    }
   }
 
   void _onFeedbackConsumed(

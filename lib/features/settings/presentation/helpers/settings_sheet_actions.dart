@@ -9,14 +9,16 @@ import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/features/currency/domain/entities/app_currency_entity.dart';
 import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/settings/domain/entities/theme_preference.dart';
+import 'package:bicount/features/settings/presentation/bloc/settings_bloc.dart';
+import 'package:bicount/features/settings/presentation/bloc/settings_event.dart';
 import 'package:bicount/features/settings/presentation/bloc/theme_cubit.dart';
 import 'package:bicount/features/settings/presentation/widgets/settings_delete_account_sheet.dart';
 import 'package:bicount/features/settings/presentation/widgets/settings_option_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void showSettingsSheet(BuildContext context, Widget child) {
-  showCustomBottomSheet(
+Future<T?> showSettingsSheet<T>(BuildContext context, Widget child) {
+  return showCustomBottomSheet<T>(
     context: context,
     minHeight: 0.8,
     color: null,
@@ -100,10 +102,24 @@ void showCurrencySettingsSheet(BuildContext context, CurrencyState state, int co
 }
 
 Future<void> confirmDeleteAccountRequest(BuildContext context) async {
+  final settingsBloc = context.read<SettingsBloc>();
+
   confirmDelete(
     context,
     title: context.l10n.settingsDeleteConfirmTitle,
     description: context.l10n.settingsDeleteConfirmDescription,
-    onConfirm: () => showSettingsSheet(context, const SettingsDeleteAccountSheet()),
+    onConfirm: () async {
+      final deleted = await showSettingsSheet<bool>(
+        context,
+        const SettingsDeleteAccountSheet(),
+      );
+      if (deleted != true) {
+        return;
+      }
+      // The session is dropped only now. Doing it while the sheet was still
+      // open rebuilt the whole route stack underneath it and left a black
+      // screen.
+      settingsBloc.add(const SettingsAccountDeletionFinalized());
+    },
   );
 }

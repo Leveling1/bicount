@@ -90,12 +90,23 @@ class SettingsRepositoryImpl implements SettingsRepository {
     try {
       await Repository().pauseRealtimeBindings();
       await _remoteDataSource.deleteAccount(request);
-      await signOut();
     } on Failure {
       rethrow;
     } catch (e) {
       throw MessageFailure(message: 'Unable to delete your account right now.');
     }
+  }
+
+  @override
+  Future<void> finalizeAccountDeletion() async {
+    // Kept apart from deleteAccount: dropping the session redirects the whole
+    // route stack, and doing that while the confirmation sheet is still open
+    // tore the screen down under it and left a black frame. The caller runs
+    // this once the sheet is closed.
+    final result = await _authentificationRepository.signOut(
+      forgetNotificationChoices: true,
+    );
+    result.fold((failure) => throw failure, (_) => null);
   }
 
   SettingsMemojiPageEntity _mergeMemojiPages(

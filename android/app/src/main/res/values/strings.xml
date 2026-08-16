@@ -4,6 +4,12 @@
     <string name="bicount_home_widget_default_title">Open Bicount</string>
     <string name="bicount_home_widget_default_subtitle">Sign in to refresh your finance snapshot.</string>
     <string name="bicount_home_widget_default_button">Open app</string>
+    <!-- Fallbacks so a card is never drawn half-empty, whatever the app
+         published. Normally overridden by the values coming from Dart. -->
+    <string name="bicount_home_widget_default_income_button">+ Income</string>
+    <string name="bicount_home_widget_default_expense_button">+ Expense</string>
+    <string name="bicount_home_widget_default_entries">In</string>
+    <string name="bicount_home_widget_default_exits">Out</string>
     <string name="bicount_home_widget_description">Your balance, this month\'s money in and out, and quick entry.</string>
     <!-- Sample values for the widget picker preview only. Never displayed on
          a placed widget, which always shows real data. -->

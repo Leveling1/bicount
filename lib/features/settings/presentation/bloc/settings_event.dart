@@ -28,6 +28,11 @@ class SettingsDeleteAccountRequested extends SettingsEvent {
   final DeleteAccountRequestEntity request;
 }
 
+/// Ends the session once the deletion confirmation sheet has closed.
+class SettingsAccountDeletionFinalized extends SettingsEvent {
+  const SettingsAccountDeletionFinalized();
+}
+
 class SettingsFeedbackConsumed extends SettingsEvent {
   const SettingsFeedbackConsumed();
 }
