@@ -70,9 +70,9 @@ class DetailFriend extends StatelessWidget {
                   child: ListView(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppDimens.paddingMedium,
-                      vertical: AppDimens.paddingMedium,
                     ),
                     children: [
+                      AppDimens.spacerMedium,
                       BicountReveal(
                         delay: const Duration(milliseconds: 30),
                         child: DetailFriendHeader(
@@ -102,6 +102,7 @@ class DetailFriend extends StatelessWidget {
                           debts: data.debts,
                         ),
                       ),
+                      AppDimens.spacerMedium,
                     ],
                   ),
                 ),

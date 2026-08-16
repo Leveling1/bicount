@@ -276,7 +276,9 @@ private struct SmallLayout: View {
           .minimumScaleFactor(0.7)
         Spacer(minLength: 0)
       }
-      .frame(maxWidth: .infinity)
+      // maxHeight is what makes the spacers above able to centre anything.
+      // Without it the block sized to its content and they collapsed to zero.
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
 
       WidgetButton(
         label: entry.singleButtonLabel,
@@ -314,8 +316,10 @@ private struct MediumLayout: View {
 
       EyebrowText(text: entry.monthSectionLabel, color: entry.subtitleColor, size: 10)
 
+      // These rows size to their content; the free space is distributed by
+      // the spacer below, in the enclosing stack. Spacers placed here had no
+      // height to share and collapsed to nothing.
       VStack(spacing: 6) {
-        Spacer(minLength: 0)
         MoneyRow(
           label: entry.entriesLabel,
           amount: entry.monthIncomeLabel,
@@ -328,9 +332,10 @@ private struct MediumLayout: View {
           labelColor: entry.subtitleColor,
           amountColor: expenseColor
         )
-        Spacer(minLength: 0)
       }
       .padding(.top, 8)
+
+      Spacer(minLength: 8)
 
       HStack(spacing: 8) {
         WidgetButton(
@@ -587,6 +592,26 @@ struct BicountHomeWidget: Widget {
     .configurationDisplayName("Bicount overview")
     .description("Quick access to your balance and finance actions.")
     .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+    .bicountContentMargins()
+  }
+}
+
+private extension WidgetConfiguration {
+  /// iOS 17 insets widget content by a default margin. The layout already
+  /// draws its own rounded card and pads it by 16, so that margin was applied
+  /// on top: the card could never reach the widget edges, and the content sat
+  /// roughly 32pt in on every side. On the medium size, where height is
+  /// scarcest, it squeezed the totals and the buttons together.
+  ///
+  /// Turning it off hands the full area back to the layout, which then owns
+  /// every inset — matching the Android rendering.
+  @ViewBuilder
+  func bicountContentMargins() -> some WidgetConfiguration {
+    if #available(iOSApplicationExtension 17.0, *) {
+      self.contentMarginsDisabled()
+    } else {
+      self
+    }
   }
 }
 
