@@ -65,6 +65,15 @@ class CurrencyAmountService {
           config: config,
         );
 
+    // No rate for the source currency: the amount could not be expressed in
+    // CDF, so dividing it by the target rate would not convert anything — it
+    // would shrink a real amount by three orders of magnitude and present the
+    // result as a total. 493.64 CAD came out as 0.22 $ that way. Returning it
+    // unconverted keeps the magnitude honest until the rate is available.
+    if (normalizedCdfAmount == null) {
+      return convertedAmount ?? originalAmount;
+    }
+
     if (normalizedReference ==
         CurrencyConfigEntity.defaultReferenceCurrencyCode) {
       return normalizedCdfAmount;
@@ -88,7 +97,10 @@ class CurrencyAmountService {
     return normalizedCdfAmount / targetRate;
   }
 
-  double _resolveFallbackAmountCdf({
+  /// CDF value of [originalAmount], or null when no rate lets us compute it.
+  /// Null is deliberate: it used to return the amount untouched, which the
+  /// caller then treated as if it were already in CDF.
+  double? _resolveFallbackAmountCdf({
     required double originalAmount,
     required String originalCurrencyCode,
     required CurrencyConfigEntity config,
@@ -124,6 +136,6 @@ class CurrencyAmountService {
       return convertedAmount;
     }
 
-    return originalAmount;
+    return null;
   }
 }

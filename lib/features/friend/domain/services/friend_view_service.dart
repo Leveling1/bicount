@@ -38,8 +38,12 @@ class FriendViewService {
                 _resolveSortDate(right).compareTo(_resolveSortDate(left)),
           );
 
-    final totalGiven = friend.give ?? 0;
-    final totalReceived = friend.receive ?? 0;
+    // `give` and `receive` are named from the friend's side: `give` adds up
+    // what the friend sent, `receive` what the friend was sent. The two cards
+    // read from the user's side, so they take the opposite field — what the
+    // friend received is what the user paid out.
+    final totalGiven = friend.receive ?? 0;
+    final totalReceived = friend.give ?? 0;
 
     final canEditProfile =
         friend.relationType == FriendConst.friend &&

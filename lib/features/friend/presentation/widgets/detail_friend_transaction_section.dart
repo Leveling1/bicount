@@ -43,9 +43,12 @@ class DetailFriendTransactionSection extends StatelessWidget {
           isMargin: false,
           isPadding: false,
           child: detail.transactions.isEmpty
-              ? Text(
-                  context.l10n.friendTransactionsEmpty,
-                  style: Theme.of(context).textTheme.bodySmall,
+              ? Padding(
+                  padding: const EdgeInsets.all(AppDimens.paddingMedium),
+                  child: Text(
+                    context.l10n.friendTransactionsEmpty,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 )
               : ListView.separated(
                   shrinkWrap: true,

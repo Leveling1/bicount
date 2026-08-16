@@ -78,6 +78,18 @@ class CurrencyRepositoryImpl {
 
     try {
       await refreshCurrencies();
+
+      // Rates for the whole catalogue, not just the reference currency.
+      // Snapshots are otherwise fetched only for currencies typed on this
+      // device, so a shared account bringing in transactions in a currency
+      // never recorded here left that currency without any rate — and every
+      // total involving it came out wrong.
+      await _refreshLatestSnapshots(
+        currentConfig.currencies
+            .map((currency) => currency.code)
+            .toSet(),
+      );
+
       await ensureReferenceHistory(
         currentConfig.referenceCurrencyCode,
         includeStoredDates: true,
