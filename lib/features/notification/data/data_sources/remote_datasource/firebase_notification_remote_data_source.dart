@@ -8,6 +8,18 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+/// Current messaging token, or null while it cannot be obtained yet. On Apple
+/// platforms `getToken()` throws until the device is registered with APNs —
+/// a "not yet" answer that must not surface as a failure, nor be mistaken for
+/// "no token exists".
+Future<String?> readDeviceToken(FirebaseMessaging messaging) async {
+  try {
+    return await messaging.getToken();
+  } catch (_) {
+    return null;
+  }
+}
+
 class FirebaseNotificationRemoteDataSource
     implements NotificationRemoteDataSource {
   static const _allUsersTopic = 'all_users';
@@ -74,15 +86,11 @@ class FirebaseNotificationRemoteDataSource
       await messaging.getNotificationSettings(),
     );
 
-    final token = await messaging.getToken();
-    final userId = supabase.auth.currentUser?.id;
-
-    if (token == null || userId == null) {
-      return;
-    }
-
-    await _persistDeviceToken(userId, token);
-
+    // Subscribed before the first read, and never behind an early return.
+    // On iOS the token does not exist until APNs registration completes, and
+    // it then arrives only through this stream. Wiring it afterwards meant a
+    // device that came up empty was never registered at all — which is why
+    // iOS devices stopped receiving anything.
     _tokenRefreshSubscription ??= messaging.onTokenRefresh.listen((
       freshToken,
     ) async {
@@ -93,6 +101,19 @@ class FirebaseNotificationRemoteDataSource
 
       await _persistDeviceToken(currentUserId, freshToken);
     });
+
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) {
+      return;
+    }
+
+    // Null simply means "not ready yet"; the stream above takes over.
+    final token = await readDeviceToken(messaging);
+    if (token == null) {
+      return;
+    }
+
+    await _persistDeviceToken(userId, token);
   }
 
   Future<void> _persistDeviceToken(String userId, String token) async {

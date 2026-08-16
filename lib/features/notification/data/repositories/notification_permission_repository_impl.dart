@@ -1,5 +1,7 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:bicount/features/notification/data/data_sources/local_datasource/notification_permission_local_data_source.dart';
+import 'package:bicount/features/notification/data/data_sources/remote_datasource/firebase_notification_remote_data_source.dart'
+    show readDeviceToken;
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/notification_remote_datasource.dart';
 import 'package:bicount/features/notification/domain/entities/notifiable_action.dart';
 import 'package:bicount/features/notification/domain/repositories/notification_permission_repository.dart';
@@ -73,7 +75,7 @@ class NotificationPermissionRepositoryImpl
   @override
   Future<void> syncDeviceToken() async {
     await remoteDataSource.syncDeviceToken();
-    final token = await messaging.getToken();
+    final token = await readDeviceToken(messaging);
     if (token != null) {
       await localDataSource.saveFcmToken(token);
     }
@@ -81,9 +83,13 @@ class NotificationPermissionRepositoryImpl
 
   @override
   Future<bool> hasFcmTokenChanged() async {
-    final currentToken = await messaging.getToken();
+    final currentToken = await readDeviceToken(messaging);
     if (currentToken == null) {
-      return false;
+      // Unreadable, the normal state on iOS while APNs registration is
+      // pending. Answering "unchanged" skipped the sync entirely and left the
+      // device unreachable, so ask for one: it is idempotent, and it installs
+      // the refresh listener that will catch the token when it lands.
+      return true;
     }
     final lastToken = await localDataSource.getLastFcmToken();
     return lastToken == null || lastToken != currentToken;

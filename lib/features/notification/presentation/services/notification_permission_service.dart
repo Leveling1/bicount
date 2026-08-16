@@ -65,6 +65,10 @@ class NotificationPermissionService {
   /// Returns true when notifications are authorised by the time it resolves.
   Future<bool> manageFromSettings(BuildContext context) async {
     if (await repository.isOsPermissionAuthorized()) {
+      // Registered right away rather than waiting for the user to come back:
+      // a device whose token never reached the server is exactly the case
+      // someone opening this screen is trying to fix.
+      await repository.syncDeviceToken();
       // Already on: the only remaining control lives in the OS, and this is
       // also where the user turns them back off.
       await repository.openSystemNotificationSettings();
