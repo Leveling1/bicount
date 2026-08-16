@@ -603,13 +603,40 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsSectionSecurity => 'Sécurité';
 
   @override
-  String get settingsSectionWidget => 'Widget d\'accueil';
+  String get settingsSectionDevice => 'Sur votre téléphone';
 
   @override
   String get settingsWidgetTitle => 'Ajouter le widget';
 
   @override
   String get settingsWidgetDescription => 'Consultez votre solde et ajoutez une transaction sans ouvrir l\'app.';
+
+  @override
+  String get settingsNotificationsTitle => 'Notifications';
+
+  @override
+  String get settingsNotificationsChecking => 'Vérification…';
+
+  @override
+  String get settingsNotificationsEnabled => 'Activées · appuyez pour les gérer';
+
+  @override
+  String get settingsNotificationsDisabled => 'Désactivées · appuyez pour les activer';
+
+  @override
+  String get notifSettingsPrimaryReason => 'Être prévenu au bon moment vous évite d\'oublier une échéance ou de rater ce qu\'un proche a noté.';
+
+  @override
+  String get notifSettingsReasonDebts => 'Un remboursement arrive à échéance';
+
+  @override
+  String get notifSettingsReasonShared => 'Quelqu\'un partage un compte avec vous';
+
+  @override
+  String get notifSettingsReasonSalary => 'Un salaire ou un versement récurrent tombe';
+
+  @override
+  String get notifSettingsOpenSystemSettings => 'Ouvrir les réglages du téléphone';
 
   @override
   String get homeWidgetPromoTitle => 'Ajoutez Bicount à votre écran d\'accueil';

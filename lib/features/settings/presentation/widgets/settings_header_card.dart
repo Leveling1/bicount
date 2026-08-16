@@ -25,7 +25,7 @@ class SettingsHeaderCard extends StatelessWidget {
         child: Row(
           children: [
             SettingsAvatar(image: user.image, radius: 28),
-            AppDimens.spacerMedium,
+            AppDimens.spacerWidthMedium,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,15 +34,18 @@ class SettingsHeaderCard extends StatelessWidget {
                     user.username,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  AppDimens.spacerMini,
-                  Text(user.email, style: Theme.of(context).textTheme.bodySmall),
-                  AppDimens.spacerSmall,
+                  //AppDimens.spacerMini,
+                  Text(
+                    user.email,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  /*AppDimens.spacerSmall,
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).primaryColor,
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),

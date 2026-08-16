@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:bicount/features/notification/data/data_sources/local_datasource/notification_permission_local_data_source.dart';
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/notification_remote_datasource.dart';
 import 'package:bicount/features/notification/domain/entities/notifiable_action.dart';
@@ -86,6 +87,11 @@ class NotificationPermissionRepositoryImpl
     }
     final lastToken = await localDataSource.getLastFcmToken();
     return lastToken == null || lastToken != currentToken;
+  }
+
+  @override
+  Future<void> openSystemNotificationSettings() async {
+    await AppSettings.openAppSettings(type: AppSettingsType.notification);
   }
 
   bool _isAuthorized(AuthorizationStatus status) {

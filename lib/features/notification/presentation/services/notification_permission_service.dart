@@ -56,6 +56,62 @@ class NotificationPermissionService {
     return granted;
   }
 
+  /// Current OS answer, for the settings entry to display.
+  Future<bool> isEnabledOnDevice() => repository.isOsPermissionAuthorized();
+
+  /// Entry point from the settings screen, where the user came deliberately —
+  /// so unlike [requestForAction] it never skips, whatever was granted before.
+  ///
+  /// Returns true when notifications are authorised by the time it resolves.
+  Future<bool> manageFromSettings(BuildContext context) async {
+    if (await repository.isOsPermissionAuthorized()) {
+      // Already on: the only remaining control lives in the OS, and this is
+      // also where the user turns them back off.
+      await repository.openSystemNotificationSettings();
+      return true;
+    }
+
+    // The native dialog can only ever be shown once per install. Once it has
+    // been answered with a refusal, the OS settings are the only way back,
+    // so the screen sends the user there instead of a button that does
+    // nothing.
+    final mustUseSystemSettings = await repository
+        .isOsPermissionPermanentlyDenied();
+
+    if (!context.mounted || _isPromptVisible) {
+      return false;
+    }
+
+    _isPromptVisible = true;
+    bool granted = false;
+    try {
+      granted =
+          await _showSettingsPermissionScreen(
+            context,
+            mustUseSystemSettings: mustUseSystemSettings,
+          ) ??
+          false;
+    } finally {
+      _isPromptVisible = false;
+    }
+
+    if (granted) {
+      await repository.syncDeviceToken();
+    }
+    return granted;
+  }
+
+  /// Re-reads the OS answer and registers the device if it turned to granted.
+  /// Called when the app comes back to the foreground, since a change made in
+  /// the system settings never notifies the app.
+  Future<bool> refreshAfterReturningFromSystemSettings() async {
+    final authorized = await repository.isOsPermissionAuthorized();
+    if (authorized) {
+      await repository.syncDeviceToken();
+    }
+    return authorized;
+  }
+
   Future<void> checkDeviceState() async {
     final grantedActions = await repository.getGrantedActions();
     if (grantedActions.isEmpty) {
@@ -133,6 +189,41 @@ class NotificationPermissionService {
           enableLabel: l10n.notifPermissionEnable,
           skipLabel: l10n.notifPermissionSkip,
           onEnablePressed: repository.requestOsPermission,
+        ),
+      ),
+    );
+  }
+
+  Future<bool?> _showSettingsPermissionScreen(
+    BuildContext context, {
+    required bool mustUseSystemSettings,
+  }) {
+    final l10n = context.l10n;
+    return Navigator.of(context).push<bool>(
+      _buildPermissionRoute(
+        NotificationPermissionScreen(
+          icon: Icons.notifications_active_outlined,
+          title: l10n.notifPermissionTitle,
+          primaryReason: l10n.notifSettingsPrimaryReason,
+          otherReasonsTitle: l10n.notifPermissionOtherReasonsTitle,
+          otherReasons: [
+            l10n.notifSettingsReasonDebts,
+            l10n.notifSettingsReasonShared,
+            l10n.notifSettingsReasonSalary,
+          ],
+          enableLabel: mustUseSystemSettings
+              ? l10n.notifSettingsOpenSystemSettings
+              : l10n.notifPermissionEnable,
+          skipLabel: l10n.notifPermissionSkip,
+          onEnablePressed: () async {
+            if (!mustUseSystemSettings) {
+              return repository.requestOsPermission();
+            }
+            // Nothing can be granted from here: the answer comes back with
+            // the app, and the caller re-reads it on resume.
+            await repository.openSystemNotificationSettings();
+            return false;
+          },
         ),
       ),
     );

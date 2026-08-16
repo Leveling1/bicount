@@ -16,4 +16,9 @@ abstract class NotificationPermissionRepository {
   Future<bool> isOsPermissionPermanentlyDenied();
   Future<void> syncDeviceToken();
   Future<bool> hasFcmTokenChanged();
+
+  /// Opens the OS notification settings for this app. The only way back once
+  /// the system dialog has been answered: neither platform lets an app grant
+  /// or revoke the permission itself.
+  Future<void> openSystemNotificationSettings();
 }

@@ -603,13 +603,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSectionSecurity => 'Security';
 
   @override
-  String get settingsSectionWidget => 'Home widget';
+  String get settingsSectionDevice => 'On your phone';
 
   @override
   String get settingsWidgetTitle => 'Add the widget';
 
   @override
   String get settingsWidgetDescription => 'Check your balance and add a transaction without opening the app.';
+
+  @override
+  String get settingsNotificationsTitle => 'Notifications';
+
+  @override
+  String get settingsNotificationsChecking => 'Checking…';
+
+  @override
+  String get settingsNotificationsEnabled => 'On · tap to manage';
+
+  @override
+  String get settingsNotificationsDisabled => 'Off · tap to turn on';
+
+  @override
+  String get notifSettingsPrimaryReason => 'Being told at the right moment keeps you from missing a due date, or missing what someone close to you wrote down.';
+
+  @override
+  String get notifSettingsReasonDebts => 'A repayment is coming due';
+
+  @override
+  String get notifSettingsReasonShared => 'Someone shares an account with you';
+
+  @override
+  String get notifSettingsReasonSalary => 'A salary or a recurring payment lands';
+
+  @override
+  String get notifSettingsOpenSystemSettings => 'Open phone settings';
 
   @override
   String get homeWidgetPromoTitle => 'Add Bicount to your home screen';

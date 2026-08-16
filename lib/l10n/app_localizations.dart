@@ -1271,11 +1271,11 @@ abstract class AppLocalizations {
   /// **'Security'**
   String get settingsSectionSecurity;
 
-  /// No description provided for @settingsSectionWidget.
+  /// No description provided for @settingsSectionDevice.
   ///
   /// In en, this message translates to:
-  /// **'Home widget'**
-  String get settingsSectionWidget;
+  /// **'On your phone'**
+  String get settingsSectionDevice;
 
   /// No description provided for @settingsWidgetTitle.
   ///
@@ -1288,6 +1288,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Check your balance and add a transaction without opening the app.'**
   String get settingsWidgetDescription;
+
+  /// No description provided for @settingsNotificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settingsNotificationsTitle;
+
+  /// No description provided for @settingsNotificationsChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get settingsNotificationsChecking;
+
+  /// No description provided for @settingsNotificationsEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'On · tap to manage'**
+  String get settingsNotificationsEnabled;
+
+  /// No description provided for @settingsNotificationsDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Off · tap to turn on'**
+  String get settingsNotificationsDisabled;
+
+  /// No description provided for @notifSettingsPrimaryReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Being told at the right moment keeps you from missing a due date, or missing what someone close to you wrote down.'**
+  String get notifSettingsPrimaryReason;
+
+  /// No description provided for @notifSettingsReasonDebts.
+  ///
+  /// In en, this message translates to:
+  /// **'A repayment is coming due'**
+  String get notifSettingsReasonDebts;
+
+  /// No description provided for @notifSettingsReasonShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone shares an account with you'**
+  String get notifSettingsReasonShared;
+
+  /// No description provided for @notifSettingsReasonSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'A salary or a recurring payment lands'**
+  String get notifSettingsReasonSalary;
+
+  /// No description provided for @notifSettingsOpenSystemSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open phone settings'**
+  String get notifSettingsOpenSystemSettings;
 
   /// No description provided for @homeWidgetPromoTitle.
   ///
