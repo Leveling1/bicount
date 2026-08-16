@@ -592,26 +592,9 @@ struct BicountHomeWidget: Widget {
     .configurationDisplayName("Bicount overview")
     .description("Quick access to your balance and finance actions.")
     .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
-    .bicountContentMargins()
-  }
-}
-
-private extension WidgetConfiguration {
-  /// iOS 17 insets widget content by a default margin. The layout already
-  /// draws its own rounded card and pads it by 16, so that margin was applied
-  /// on top: the card could never reach the widget edges, and the content sat
-  /// roughly 32pt in on every side. On the medium size, where height is
-  /// scarcest, it squeezed the totals and the buttons together.
-  ///
-  /// Turning it off hands the full area back to the layout, which then owns
-  /// every inset — matching the Android rendering.
-  @ViewBuilder
-  func bicountContentMargins() -> some WidgetConfiguration {
-    if #available(iOSApplicationExtension 17.0, *) {
-      self.contentMarginsDisabled()
-    } else {
-      self
-    }
+    // WidgetKit keeps this modifier compatible with iOS 15 and only disables
+    // the system margins on iOS 17+, so no custom availability wrapper is needed.
+    .contentMarginsDisabled()
   }
 }
 
