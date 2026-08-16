@@ -1383,6 +1383,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transactionViewDebtDetailsCta => 'Voir la dette';
 
   @override
+  String get transactionDebtDueOn => 'À rembourser le';
+
+  @override
+  String get transactionDebtRemaining => 'Reste à payer';
+
+  @override
+  String get transactionDebtAlreadyPaid => 'Déjà payé';
+
+  @override
+  String get transactionDebtSettledOn => 'Soldée le';
+
+  @override
   String get transactionConfirmSalaryCta => 'Confirmer la prochaine échéance de salaire';
 
   @override

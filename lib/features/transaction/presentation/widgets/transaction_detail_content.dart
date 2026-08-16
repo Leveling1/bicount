@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/friend_const.dart';
+import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/transaction_direction_service.dart';
@@ -11,6 +12,7 @@ import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/core/widgets/custom_badge.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/details_card.dart';
+import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_detail_args.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_actions.dart';
@@ -26,6 +28,7 @@ class TransactionDetailContent extends StatelessWidget {
     required this.transaction,
     required this.canManage,
     required this.isLoading,
+    this.debt,
     this.onDeletePressed,
     this.onEditPressed,
     this.onViewDebtPressed,
@@ -42,6 +45,10 @@ class TransactionDetailContent extends StatelessWidget {
   /// transaction and the viewer can manage that debt (same condition as
   /// [onEditPressed]). Opens the full debt detail sheet.
   final VoidCallback? onViewDebtPressed;
+
+  /// Debt this transaction belongs to, either because it opened it or
+  /// because it repays it. Drives the repayment progress rows.
+  final DebtModel? debt;
 
   /// Shown only when this transaction is an already-confirmed salary linked
   /// to a recurring plan that has another occurrence currently awaiting
@@ -190,6 +197,7 @@ class TransactionDetailContent extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (debt != null) _buildDebtProgress(context, debt!),
                 DetailsCard(
                   child: Column(
                     children: [
@@ -246,6 +254,60 @@ class TransactionDetailContent extends StatelessWidget {
         ),
         const SizedBox(height: AppDimens.paddingLarge),
       ],
+    );
+  }
+
+  /// Repayment progress of the debt behind this transaction. Once nothing is
+  /// left to pay, only the date it was settled matters — the amounts would
+  /// just restate a finished story.
+  Widget _buildDebtProgress(BuildContext context, DebtModel debt) {
+    final isSettled =
+        debt.remainingAmount <= 0 || !AppDebtState.isOpen(debt.status);
+
+    if (isSettled) {
+      // closedAt is stamped the moment the balance reaches zero, so it is the
+      // last repayment. Older rows may predate it, hence the fallback.
+      final settledOn = DateTime.tryParse(
+        debt.closedAt ?? debt.updatedAt ?? '',
+      );
+      return DetailsCard(
+        child: TransactionDetailRow(
+          title: context.l10n.transactionDebtSettledOn,
+          content: settledOn == null ? '-' : formatedDate(settledOn),
+        ),
+      );
+    }
+
+    return DetailsCard(
+      child: Column(
+        children: [
+          TransactionDetailRow(
+            title: context.l10n.transactionDebtDueOn,
+            content: switch (DateTime.tryParse(debt.dueDate)) {
+              final dueDate? => formatedDate(dueDate),
+              null => '-',
+            },
+          ),
+          const SizedBox(height: 8),
+          TransactionDetailRow(
+            title: context.l10n.transactionDebtRemaining,
+            content: NumberFormatUtils.formatCurrency(
+              debt.remainingAmount,
+              currencyCode: debt.currency,
+            ),
+          ),
+          if (debt.repaidAmount > 0) ...[
+            const SizedBox(height: 8),
+            TransactionDetailRow(
+              title: context.l10n.transactionDebtAlreadyPaid,
+              content: NumberFormatUtils.formatCurrency(
+                debt.repaidAmount,
+                currencyCode: debt.currency,
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 

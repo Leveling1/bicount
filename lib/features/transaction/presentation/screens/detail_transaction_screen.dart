@@ -56,6 +56,29 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
     return debt.remainingAmount > 0 && AppDebtState.isOpen(debt.status);
   }
 
+  /// Debt this transaction belongs to, whether it opened it or repays it.
+  /// A repayment shows its parent debt's progress, which is exactly the
+  /// context someone looking at that payment wants.
+  DebtModel? get _relatedDebt {
+    final principal = _principalDebt;
+    if (principal != null) {
+      return principal;
+    }
+
+    final originId = widget.transaction.transactionDetail.originId;
+    if (originId == null || originId.isEmpty) {
+      return null;
+    }
+
+    for (final debt in widget.transaction.debts) {
+      if (debt.debtId == originId) {
+        return debt;
+      }
+    }
+
+    return null;
+  }
+
   void _openDebtDetail(
     BuildContext context,
     DebtModel debt,
@@ -173,6 +196,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
               transaction: widget.transaction,
               canManage: canManageDebt,
               isLoading: isLoading,
+              debt: principalDebt,
               onDeletePressed: canManageDebt
                   ? () => _confirmDebtDelete(context, principalDebt)
                   : null,
@@ -233,6 +257,7 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
             transaction: widget.transaction,
             canManage: canManage,
             isLoading: state is TransactionLoading,
+            debt: _relatedDebt,
             onDeletePressed: canManage
                 ? () => confirmDelete(
                     context,

@@ -2723,6 +2723,30 @@ abstract class AppLocalizations {
   /// **'View debt'**
   String get transactionViewDebtDetailsCta;
 
+  /// No description provided for @transactionDebtDueOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Due on'**
+  String get transactionDebtDueOn;
+
+  /// No description provided for @transactionDebtRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Left to pay'**
+  String get transactionDebtRemaining;
+
+  /// No description provided for @transactionDebtAlreadyPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Already paid'**
+  String get transactionDebtAlreadyPaid;
+
+  /// No description provided for @transactionDebtSettledOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Settled on'**
+  String get transactionDebtSettledOn;
+
   /// No description provided for @transactionConfirmSalaryCta.
   ///
   /// In en, this message translates to:
