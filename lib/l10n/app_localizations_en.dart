@@ -1284,10 +1284,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendLinkHint => 'This contact is still local to your account. Use the share button to link it when the person has created a Bicount profile.';
 
   @override
-  String get friendGiven => 'Paid out';
+  String get friendGiven => 'Given';
 
   @override
-  String get friendReceived => 'Collected';
+  String get friendReceived => 'Received';
 
   @override
   String get friendNet => 'Net balance';

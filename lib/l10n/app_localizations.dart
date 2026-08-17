@@ -2528,13 +2528,13 @@ abstract class AppLocalizations {
   /// No description provided for @friendGiven.
   ///
   /// In en, this message translates to:
-  /// **'Paid out'**
+  /// **'Given'**
   String get friendGiven;
 
   /// No description provided for @friendReceived.
   ///
   /// In en, this message translates to:
-  /// **'Collected'**
+  /// **'Received'**
   String get friendReceived;
 
   /// No description provided for @friendNet.
