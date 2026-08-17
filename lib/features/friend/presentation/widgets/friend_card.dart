@@ -78,9 +78,9 @@ class FriendCard extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      give,
+                                      receive,
                                       style: TextStyle(
-                                        color: give == '0.00'
+                                        color: receive == '0.00'
                                             ? Theme.of(
                                                 context,
                                               ).textTheme.bodySmall!.color
@@ -106,9 +106,9 @@ class FriendCard extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                receive,
+                                give,
                                 style: TextStyle(
-                                  color: receive == '0.00'
+                                  color: give == '0.00'
                                       ? Theme.of(
                                           context,
                                         ).textTheme.bodySmall!.color
