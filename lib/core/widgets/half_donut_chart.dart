@@ -27,6 +27,10 @@ class HalfDonutChart extends StatefulWidget {
   final double size;
   final double strokeWidth;
   final double gapDegrees;
+
+  /// Share of the half ring guaranteed to every non-zero segment, so a tiny
+  /// amount stays visible instead of collapsing to nothing.
+  final double minSegmentFraction;
   final Duration animationDuration;
   final Curve animationCurve;
   final TextStyle? centerLabelStyle;
@@ -41,8 +45,9 @@ class HalfDonutChart extends StatefulWidget {
     required this.segments,
     this.centerSubLabel,
     this.size = 260,
-    this.strokeWidth = 18,
+    this.strokeWidth = 46,
     this.gapDegrees = 5,
+    this.minSegmentFraction = 0.02,
     this.animationDuration = const Duration(milliseconds: 600),
     this.animationCurve = Curves.easeInOutCubic,
     this.centerLabelStyle,
@@ -65,8 +70,6 @@ class _HalfDonutChartState extends State<HalfDonutChart>
   List<double> _newValues = [];
   double _oldTotal = 0;
   double _newTotal = 0;
-
-  static const _compactThreshold = 100000;
 
   @override
   void initState() {
@@ -175,12 +178,16 @@ class _HalfDonutChartState extends State<HalfDonutChart>
                   total: animatedTotal,
                   strokeWidth: widget.strokeWidth,
                   gapDegrees: widget.gapDegrees,
-                  trackColor: Theme.of(context).cardColor,
+                  minSegmentFraction: widget.minSegmentFraction,
                 ),
-                child: _buildCenterText(context, displayTotal),
               ),
             ),
-            const SizedBox(height: 28),
+            // Below the chart rather than inside it. Centred, the total was
+            // bounded by the space between the two sides of the arc and ran
+            // into it as soon as the amount grew; here it has the full width.
+            const SizedBox(height: 16),
+            _buildTotalText(context, displayTotal),
+            const SizedBox(height: 20),
             // ── Legend ──
             _buildLegend(context, animatedValues, animatedTotal),
           ],
@@ -189,21 +196,21 @@ class _HalfDonutChartState extends State<HalfDonutChart>
     );
   }
 
-  Widget _buildCenterText(BuildContext context, double displayTotal) {
-    return Align(
-      alignment: const Alignment(0, 0.85),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            NumberFormatUtils.compactCurrency(
+  Widget _buildTotalText(BuildContext context, double displayTotal) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Kept on one line and allowed to shrink instead of wrapping: the
+        // total is the anchor of this card, and a two-line amount reads as
+        // two numbers.
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            NumberFormatUtils.formatCurrency(
               displayTotal,
               currencyCode: widget.currencyCode,
-              compactThreshold: _compactThreshold,
-              thousandSuffix: 'k',
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
             style:
                 widget.centerLabelStyle ??
                 TextStyle(
@@ -213,21 +220,21 @@ class _HalfDonutChartState extends State<HalfDonutChart>
                   height: 1,
                 ),
           ),
-          if (widget.centerSubLabel != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              widget.centerSubLabel!,
-              style:
-                  widget.centerSubLabelStyle ??
-                  TextStyle(
-                    color: Theme.of(context).textTheme.bodySmall?.color,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                  ),
-            ),
-          ],
+        ),
+        if (widget.centerSubLabel != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            widget.centerSubLabel!,
+            style:
+                widget.centerSubLabelStyle ??
+                TextStyle(
+                  color: Theme.of(context).textTheme.bodySmall?.color,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                ),
+          ),
         ],
-      ),
+      ],
     );
   }
 
@@ -240,9 +247,14 @@ class _HalfDonutChartState extends State<HalfDonutChart>
       children: List.generate(widget.segments.length, (i) {
         final segment = widget.segments[i];
         final value = i < animatedValues.length ? animatedValues[i] : 0.0;
-        final percentage = animatedTotal > 0
-            ? (value / animatedTotal * 100).round()
-            : 0;
+        // A real amount that rounds down to zero reads as "nothing here",
+        // which is wrong: 1 000 out of 100 000 000 is small, not absent.
+        // "< 1 %" says small and keeps the line meaningful. Exact zero stays
+        // "0 %".
+        final share = animatedTotal > 0 ? value / animatedTotal * 100 : 0.0;
+        final percentageLabel = share > 0 && share < 1
+            ? '< 1%'
+            : '${share.round()}%';
 
         return Padding(
           padding: EdgeInsets.only(
@@ -271,7 +283,7 @@ class _HalfDonutChartState extends State<HalfDonutChart>
                 ),
               ),
               Text(
-                '${NumberFormatUtils.formatCurrency(value, currencyCode: segment.displayCurrencyCode)} | $percentage%',
+                '${NumberFormatUtils.formatCurrency(value, currencyCode: segment.displayCurrencyCode)} | $percentageLabel',
                 style:
                     widget.legendValueStyle ??
                     TextStyle(
@@ -295,7 +307,7 @@ class _HalfDonutPainter extends CustomPainter {
   final double total;
   final double strokeWidth;
   final double gapDegrees;
-  final Color trackColor;
+  final double minSegmentFraction;
 
   _HalfDonutPainter({
     required this.values,
@@ -303,7 +315,7 @@ class _HalfDonutPainter extends CustomPainter {
     required this.total,
     required this.strokeWidth,
     required this.gapDegrees,
-    required this.trackColor,
+    required this.minSegmentFraction,
   });
 
   @override
@@ -323,6 +335,27 @@ class _HalfDonutPainter extends CustomPainter {
 
     if (total <= 0) return;
 
+    // Every non-zero amount gets a floor so it stays visible, however small:
+    // 1 000 out of 100 000 000 would otherwise be thinner than a pixel and
+    // vanish from the chart while still being listed in the legend.
+    //
+    // The floor covers the cap compensation on top of the visible share,
+    // because each arc is pulled in by 2 * capAngle before anything is drawn.
+    // With a thick stroke that overhead alone exceeds what a small share
+    // would ever be granted, and the segment would collapse to the clamp.
+    //
+    // The floor is taken out of the sweep first and the rest shared
+    // proportionally, so the segments still add up to exactly the half ring.
+    // Proportions are therefore slightly compressed; the legend carries the
+    // exact figures.
+    var minSweep = 2 * capAngle + usableSweep * minSegmentFraction;
+    if (activeCount > 0 && minSweep * activeCount > usableSweep) {
+      // Too many segments to guarantee the floor: share everything equally
+      // rather than overflow the half ring.
+      minSweep = usableSweep / activeCount;
+    }
+    final proportionalSweep = usableSweep - minSweep * activeCount;
+
     // ── Segments ──
     double currentAngle = pi;
 
@@ -331,7 +364,7 @@ class _HalfDonutPainter extends CustomPainter {
       if (value <= 0) continue;
 
       final fraction = value / total;
-      final sweep = usableSweep * fraction;
+      final sweep = minSweep + proportionalSweep * fraction;
 
       // Shrink each arc inward by the cap overshoot so
       // round ends don't eat into the gap.
