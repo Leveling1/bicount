@@ -77,6 +77,8 @@ Main layout:
 - lib/features/add_fund
 - lib/features/authentification
 - lib/features/company
+- lib/features/currency
+- lib/features/debt
 - lib/features/friend
 - lib/features/analysis
 - lib/features/group
@@ -87,6 +89,7 @@ Main layout:
 - lib/features/project
 - lib/features/recurring_fundings
 - lib/features/salary
+- lib/features/settings
 - lib/features/subscription
 - lib/features/transaction
 
@@ -442,7 +445,9 @@ Main files:
 
 Supported flows:
 
-- create invite
+- open the share screen, which generates the code on its own (no second tap)
+- reuse a pending, non-expired invite for the same profile instead of creating a new row on every open
+- retry a code created offline with the same invite_code once connectivity returns
 - generate shareable HTTPS link
 - generate QR code
 - scan QR code
@@ -450,14 +455,27 @@ Supported flows:
 - preview invite
 - accept invite
 - reject invite
+- unlink two linked accounts on both sides, destroying nothing
+- delete an unlinked profile together with its transactions, debts and recurring transfers
 - watch sent and received invites in realtime
+
+A link is a symmetric pair of `friends` rows:
+
+- shared row: fid = sharer, uid = receiver
+- mirror row: fid = receiver, uid = sharer
+
+Unlinking clears `uid` on both and records the ex-partner in `friends.former_uid`,
+which is what lets a later re-link find the existing mirror instead of creating a
+duplicate contact.
 
 Backend expectation:
 
 - table friend_invites
 - table friend_invites_statut
+- column friends.former_uid
 - Edge Function friend-invite-preview
 - Edge Function accept-friend-invite
+- Edge Function unlink-friend-account
 
 ### notification
 
@@ -481,13 +499,29 @@ Main files:
 
 Current behavior:
 
-- asks notification permission
-- syncs FCM device token to Supabase when possible
+- asks notification permission contextually, from a full explainer screen
+- exposes a Notifications entry in Settings showing the current OS answer, which
+  raises the native dialog or opens the system settings depending on what is
+  still possible, and re-reads the answer when the app returns to the foreground
+- syncs the FCM device token to Supabase
 - listens for foreground messages
 - listens for opened notifications
 - listens for app links
 - routes to target screens when payload contains route
 - schedules subscription reminders locally
+
+Device token rules, do not regress these:
+
+- `onTokenRefresh` is subscribed **before** any `getToken()` read and is never
+  placed behind an early return. On Apple platforms the token does not exist
+  until APNs registration completes, so the first read returns null and the real
+  token only ever arrives through that stream.
+- `getToken()` is always called through `readDeviceToken`, which turns the iOS
+  "not registered yet" throw into null instead of an error.
+- `hasFcmTokenChanged()` answers **true** when the token cannot be read. Answering
+  "unchanged" skipped the sync entirely and left the device unreachable.
+- signing out does not preserve `notif_last_fcm_token`: a token unchanged but a
+  uid changed must still be written.
 
 ### company, group, project
 
@@ -516,15 +550,34 @@ Additional backend expectations introduced during V1 finishing work:
 
 - friend_invites
 - friend_invites_statut
+- friends.former_uid
 - fcm_tokens
 - notification_events
+- debts
+- currencies
+- exchange_rate_snapshots
 - recurring_fundings.salary_processing_mode
 - recurring_fundings.salary_reminder_status
 - Edge Function friend-invite-preview
 - Edge Function accept-friend-invite
+- Edge Function unlink-friend-account
+- Edge Function process_debt_notifications, scheduled twice a day by pg_cron
+  (`mode=reminder` the day before, `mode=due` on the day)
+- Edge Function send_push_notification, triggered by a row trigger on notifications
 - FCM push dispatch function
 - realtime enabled for friend and finance tables
 - recurring reminder notifications routed to `/recurring-fundings`
+
+Row level security on `friends`:
+
+- SELECT and UPDATE share the same expression, `fid = auth.uid() OR uid = auth.uid()`.
+  Keeping them identical is what guarantees any row the app can read it can still
+  write, so tightening UPDATE cannot break an installed release.
+- DELETE is `fid = auth.uid() AND uid IS NULL`. The "only an unlinked profile can
+  be deleted" rule lives in the database, not only in the UI.
+- `transactions.sender_id` and `transactions.beneficiary_id` have **no** foreign key
+  to `friends.sid`, so nothing cascades. Deleting a profile must remove its
+  recurring transfers, then its debts, then its transactions, in that order.
 
 Reference documents:
 
@@ -653,21 +706,29 @@ Generate a feature:
 
 Typical checks:
 
-- flutter pub get --offline
-- flutter analyze lib
+- flutter pub get
+- flutter gen-l10n after touching lib/l10n/*.arb
+- dart analyze
 - flutter test
-- cd android then run gradlew.bat :app:assembleDebug
+- flutter build apk --debug
+
+Known baseline: one pre-existing test failure in
+transaction_repository_impl_test.dart ("editing an expense into a subscription"),
+expecting 2026-04-09 and getting 2026-04-11. It is unrelated to current work — do
+not treat it as a regression you introduced.
 
 ## Current Status Snapshot
 
 Current state of the codebase:
 
+- version 1.0.1+6, published target Android and iOS
 - V1 visible flow is coherent without company
-- analysis, friends, notifications, and grouped splits are implemented
-- transaction, subscription, add_fund, and recurring_fundings now have separate active feature ownership
+- analysis, friends, debts, notifications, and grouped splits are implemented
+- transaction, subscription, add_fund, and recurring_fundings have separate active feature ownership
+- home widget shipped on both platforms, including its signed-out card
 - offline-first and realtime scaffolding is stronger than at project start
-- backend still needs to match the documented contracts for full production behavior
-- device-level QA remains important before external prospect distribution
+- device-level QA remains important, especially on iOS: nothing in ios/ has been
+  compiled or run from the Windows workstation used for most of this work
 
 ## Settings Feature Update
 
@@ -1291,7 +1352,7 @@ Do not re-wire them unless the user explicitly reverts the architecture.
 New model:
 
 - `RecurringTransfertModel` lives in `lib/features/recurring_fundings/data/models/recurring_transfert.model.dart`
-- type IDs are centralized in `lib/core/constants/recurring_transfert_type.dart`
+- type IDs are centralized in `lib/core/constants/transaction_types.dart` (`TransactionTypes`)
 - `TransactionModel` gains three new columns: `recurring_transfert_id`, `recurring_occurrence_date`, `generation_mode`
 
 Type semantics:
@@ -1469,3 +1530,123 @@ Rules:
 - do not fold debt principal into the generic income or expense buckets in the graph summaries
 - keep the visible chart labels localized through the shared breakdown label helper so the UI stays consistent in both French and English
 - analysis chart segment colors must come from AppColors and OtherTheme, not from hard-coded color lists inside the chart widgets
+
+## Home Widget Rework (2026-08-19)
+
+The widget is shipped on both platforms and is driven entirely from Dart. Native
+code only renders what has been published.
+
+Published state marker, `bicount_widget_state`:
+
+- `signed_out` — no session, amounts are unknown, not zero
+- `empty` — signed in with no activity, amounts really are zero
+- `populated` — signed in with activity
+
+This exists because the native side used to infer the situation from blank
+strings, which cannot tell "nobody is signed in" from "signed in with nothing
+yet". Signing out publishes `signed_out`; it must not publish half-filled labels.
+
+Android:
+
+- `BicountHomeWidgetProvider.kt` picks a layout from a `RemoteViews(Map<SizeF, …>)`
+  on API 31+, with an `onAppWidgetOptionsChanged` fallback below
+- only `@RemoteView`-annotated classes inflate. `View` and `Space` are **not**
+  allowed and produce "Can't load widget"
+- an absent state key falls back to testing whether the balance string is
+  non-blank, which is what unblocks installs that predate the marker
+- every label has a resource fallback, so a card is never drawn half-empty
+- `bicount_home_widget_empty.xml` is both the empty card and the `initialLayout`
+- `previewLayout` points at a dedicated layout with sample values; pointing it at
+  a real layout would render an empty card in the picker
+
+iOS:
+
+- `contentMarginsDisabled()` is required. iOS 17 adds its own content margin on
+  top of the layout's own card and padding, which insets everything twice
+- spacers only distribute space inside a frame that actually expands; a `VStack`
+  sized to its content collapses them to nothing
+
+Doubles cross the bridge as raw IEEE-754 bits in a Long, flagged by
+`home_widget.double.<key>`. Reading such a key as a number yields ~4.6e18.
+
+## Currency Correctness (2026-08-19)
+
+Two independent defects, both fixed:
+
+- exchange rates were fetched **on demand** only, for the currency being typed and
+  the reference currency. A currency arriving through a shared account and never
+  typed on this device had no rate at all. `hydrate()` now refreshes the whole
+  catalogue in one call.
+- when the source rate was missing, `_resolveFallbackAmountCdf` returned the
+  amount untouched and the caller divided it by the target rate — treating CAD as
+  CDF and shrinking it by three orders of magnitude. It now returns null and the
+  caller stops instead of dividing.
+
+Rule: a missing rate must never produce a number. On a money app, showing nothing
+or the unconverted amount beats showing a confident wrong total.
+
+`currencies.symbol` is data, not code: CAD and USD both shipped as `$`, which made
+them indistinguishable in lists. CAD is now `C$`.
+
+## Friend Metric Semantics (2026-08-19)
+
+`FriendsModel.give` and `FriendsModel.receive` are named from the **friend's**
+side: `give` accumulates what the friend sent, `receive` what the friend was sent.
+
+Both screens read from the **user's** side and therefore take the opposite field:
+
+- "Donné" / "Given" shows `friend.receive`
+- "Reçu" / "Received" shows `friend.give`
+
+Getting this backwards is silent — the numbers still look plausible. Check
+`FriendViewService.buildDetail` and `FriendCard` together whenever touching it.
+
+## Transaction Detail Debt Rows (2026-08-19)
+
+A debt transaction shows its repayment progress: due date, amount left, amount
+already paid, or just the settled date once nothing is left. It covers both the
+principal transaction and its repayments, resolved by `_relatedDebt`.
+
+`TransactionDetailArgs.debts` is **required** on purpose. It used to default to an
+empty list, and the friend-profile entry point simply forgot it — the screen still
+rendered, minus every debt detail and the "view debt" button, with nothing
+signalling the omission. This looked like an iOS-only bug for a while; it was the
+entry point, not the platform.
+
+## Account Deletion And Sign Out (2026-08-19)
+
+- `deleteAccount()` no longer signs out. Dropping the session redirects the whole
+  route stack, and doing it while the confirmation sheet was still open tore the
+  screen down under it and left a black frame. The sheet closes first, then
+  `SettingsAccountDeletionFinalized` ends the session.
+- `signOut(forgetNotificationChoices:)` keeps the per-device `notif_perm_*`
+  answers on a plain sign-out — the OS permission belongs to the device — but
+  clears them when the account is deleted, since the next session is somebody
+  else even behind the same address.
+
+## Debt Reminders To Both Parties (2026-08-19)
+
+`process_debt_notifications` used to insert a single notification for
+`debt.created_by`. `lender_id` and `borrower_id` were never read, so the
+counterparty was never told, linked account or not.
+
+It now resolves both ids to real accounts — each is either a `users.uid` or a
+`friends.sid` whose `uid` is set — and sends one notification per party with
+role-adapted wording. A purely local contact resolves to nobody and is skipped.
+
+`last_due_notification_at` is one stamp **per debt**, not per recipient. It is set
+as soon as one party was reached: a retry would re-notify those who already got it,
+which is worse than the rare miss recorded in the response.
+
+## Known Gaps
+
+Carried forward deliberately, not oversights:
+
+- `fcm_tokens` has no DELETE policy, so client-side purges are silently ignored;
+  only the service role can remove a token
+- one token is kept per account, so installing on a second device silently stops
+  the first
+- the widget only refreshes while the app runs; there is no background worker
+- iOS has no equivalent of the Android signed-out card: `current()` reads the
+  shared preferences with per-key defaults and never tests the state marker
+- `RealtimeSubscribeException` timeouts surface as unhandled exceptions in logs
