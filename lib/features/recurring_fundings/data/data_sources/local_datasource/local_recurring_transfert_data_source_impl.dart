@@ -1,4 +1,5 @@
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/offline_model.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
@@ -11,7 +12,6 @@ import 'package:bicount/features/recurring_fundings/data/models/recurring_transf
 import 'package:bicount/features/recurring_fundings/domain/entities/update_recurring_transfert_request_entity.dart';
 import 'package:bicount/features/salary/domain/entities/salary_occurrence_entity.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -105,7 +105,7 @@ class LocalRecurringTransfertDataSourceImpl
     RecurringTransfertModel recurringTransfert,
   ) async {
     final linkedTransactions = await Repository().get<TransactionModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
       query: Query(
         where: [
           Where.exact('originId', recurringTransfert.recurringTransfertId),
@@ -220,7 +220,7 @@ class LocalRecurringTransfertDataSourceImpl
     }
 
     final items = await Repository().get<RecurringTransfertModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
       query: Query(
         where: [Where.exact('recurringTransfertId', recurringTransfertId)],
       ),
@@ -233,7 +233,7 @@ class LocalRecurringTransfertDataSourceImpl
     DateTime expectedDate,
   ) async {
     final items = await Repository().get<TransactionModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
       query: Query(where: [Where.exact('originId', recurringTransfertId)]),
     );
     final targetDay = _scheduleService.startOfDay(expectedDate);

@@ -1,10 +1,10 @@
+import 'package:bicount/core/offline/offline_model.dart';
 import 'dart:async';
 
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/constants/app_config.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:bicount/features/friend/data/data_sources/local_datasource/friend_local_datasource.dart';
 import 'package:bicount/features/friend/data/data_sources/remote_datasource/friend_remote_datasource.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
@@ -85,13 +85,13 @@ class FriendRepositoryImpl implements FriendRepository {
       isSynced: false,
     );
 
+    await localDataSource.cacheActiveShare(share);
     final synced = await _pushInvite(
       share: share,
       senderName: senderName,
       senderEmail: senderEmail,
       senderImage: senderImage,
     );
-
     await localDataSource.cacheActiveShare(synced);
     return synced;
   }
@@ -118,15 +118,16 @@ class FriendRepositoryImpl implements FriendRepository {
       return usableCache;
     }
 
-    // Asked before any retry: a code created offline may in fact have reached
-    // the backend, and re-sending it would clash with the stored row.
+    // Check whether a code created offline actually reached the backend.
     final currentUserId = _currentUserId;
     if (currentUserId != null) {
       try {
-        final invite = await remoteDataSource.findReusableInvite(
-          sourceFriendSid: sourceFriendSid,
-          currentUserId: currentUserId,
-        );
+        final invite = await remoteDataSource
+            .findReusableInvite(
+              sourceFriendSid: sourceFriendSid,
+              currentUserId: currentUserId,
+            )
+            .timeout(const Duration(seconds: 2));
         if (invite != null) {
           final share = FriendShareEntity(
             inviteId: invite.inviteId,
@@ -142,20 +143,13 @@ class FriendRepositoryImpl implements FriendRepository {
           await localDataSource.cacheActiveShare(share);
           return share;
         }
-        if (usableCache == null) {
-          return null;
-        }
+        if (usableCache == null) return null;
       } catch (_) {
-        // Offline or unreachable: fall through to the cached code below.
+        // Offline or unreachable: retry the cached code below.
       }
     }
 
-    if (usableCache == null) {
-      return null;
-    }
-
-    // Created while offline and genuinely unknown to the backend: retry the
-    // same code so a link already sent to someone finally becomes valid.
+    if (usableCache == null) return null;
     final retried = await _pushInvite(
       share: usableCache,
       senderName: senderName,
@@ -259,7 +253,7 @@ class FriendRepositoryImpl implements FriendRepository {
 
     try {
       final currentFriends = await Repository().get<FriendsModel>(
-        policy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineReadPolicy.localOnly,
         query: Query(where: [Where.exact('sid', friend.sid)]),
       );
       final currentFriend = currentFriends.isEmpty
@@ -278,23 +272,9 @@ class FriendRepositoryImpl implements FriendRepository {
         relationType: currentFriend.relationType,
         personalIncome: currentFriend.personalIncome,
         companyIncome: currentFriend.companyIncome,
-      )..primaryKey = currentFriend.primaryKey;
+      );
 
-      await Repository().sqliteProvider.upsert<FriendsModel>(
-        updatedFriend,
-        repository: Repository(),
-      );
-      unawaited(
-        Repository()
-            .notifySubscriptionsWithLocalData<FriendsModel>()
-            .catchError((_) {}),
-      );
-      unawaited(
-        // ignore: body_might_complete_normally_catch_error
-        Repository().upsert<FriendsModel>(updatedFriend).catchError((e) {
-          debugPrint('Background friend update sync: $e');
-        }),
-      );
+      await Repository().upsert<FriendsModel>(updatedFriend);
     } catch (_) {
       throw MessageFailure(message: 'Unable to update this friend right now.');
     }
@@ -352,7 +332,7 @@ class FriendRepositoryImpl implements FriendRepository {
   Future<void> _detachLocalFriendRow(String sid, String currentUserId) async {
     final repository = Repository();
     final rows = await repository.get<FriendsModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
       query: Query(where: [Where.exact('sid', sid)]),
     );
     if (rows.isEmpty) {
@@ -384,11 +364,12 @@ class FriendRepositoryImpl implements FriendRepository {
       relationType: row.relationType,
       personalIncome: row.personalIncome,
       companyIncome: row.companyIncome,
-    )..primaryKey = row.primaryKey;
+    );
 
     await repository.sqliteProvider.upsert<FriendsModel>(
       detached,
       repository: repository,
+      queue: false,
     );
   }
 
@@ -402,7 +383,7 @@ class FriendRepositoryImpl implements FriendRepository {
     final repository = Repository();
 
     final transactions = await repository.get<TransactionModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
     );
     for (final transaction in transactions) {
       if (transaction.uid == currentUserId) {
@@ -418,7 +399,7 @@ class FriendRepositoryImpl implements FriendRepository {
     }
 
     final debts = await repository.get<DebtModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
     );
     for (final debt in debts) {
       if (debt.createdBy == currentUserId) {
@@ -439,13 +420,13 @@ class FriendRepositoryImpl implements FriendRepository {
     final sid = friend.sid;
 
     final transactions = await repository.get<TransactionModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
     );
     final debts = await repository.get<DebtModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
     );
     final recurrings = await repository.get<RecurringTransfertModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
     );
 
     return FriendDeletionImpact(
@@ -482,7 +463,7 @@ class FriendRepositoryImpl implements FriendRepository {
       // Scheduled transfers first: leaving one behind would keep creating
       // entries for a profile that no longer exists.
       final recurrings = await repository.get<RecurringTransfertModel>(
-        policy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineReadPolicy.localOnly,
       );
       for (final recurring in recurrings) {
         if (recurring.senderId == sid || recurring.beneficiaryId == sid) {
@@ -492,7 +473,7 @@ class FriendRepositoryImpl implements FriendRepository {
 
       // Then the debts, which point at transactions we are about to remove.
       final debts = await repository.get<DebtModel>(
-        policy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineReadPolicy.localOnly,
       );
       for (final debt in debts) {
         if (debt.lenderId == sid || debt.borrowerId == sid) {
@@ -501,7 +482,7 @@ class FriendRepositoryImpl implements FriendRepository {
       }
 
       final transactions = await repository.get<TransactionModel>(
-        policy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineReadPolicy.localOnly,
       );
       for (final transaction in transactions) {
         if (transaction.senderId == sid || transaction.beneficiaryId == sid) {
@@ -510,7 +491,7 @@ class FriendRepositoryImpl implements FriendRepository {
       }
 
       final rows = await repository.get<FriendsModel>(
-        policy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineReadPolicy.localOnly,
         query: Query(where: [Where.exact('sid', sid)]),
       );
       await repository.delete<FriendsModel>(rows.isEmpty ? friend : rows.first);
@@ -524,7 +505,9 @@ class FriendRepositoryImpl implements FriendRepository {
           currentUserId: currentUserId,
         );
       } catch (error) {
-        debugPrint('Could not retire invitations for the deleted profile: $error');
+        debugPrint(
+          'Could not retire invitations for the deleted profile: $error',
+        );
       }
 
       unawaited(

@@ -26,7 +26,8 @@ class CurrencyRemoteDataSourceImpl implements CurrencyRemoteDataSource {
         .from('currencies')
         .select('code, name, symbol, decimals, display_order, is_active')
         .eq('is_active', true)
-        .order('display_order');
+        .order('display_order')
+        .timeout(const Duration(seconds: 5));
 
     return _parseCurrencies(rows);
   }
@@ -56,7 +57,8 @@ class CurrencyRemoteDataSourceImpl implements CurrencyRemoteDataSource {
           'snapshot_id, currency_code, rate_date, rate_to_cdf, provider, source_url, created_at',
         )
         .inFilter('currency_code', requestedCodes.toList())
-        .order('rate_date', ascending: false);
+        .order('rate_date', ascending: false)
+        .timeout(const Duration(seconds: 5));
 
     final snapshotsByCode = <String, ExchangeRateSnapshotEntity>{};
     for (final row in rows as List<dynamic>) {
@@ -98,7 +100,8 @@ class CurrencyRemoteDataSourceImpl implements CurrencyRemoteDataSource {
         )
         .inFilter('currency_code', requestedCodes.toList())
         .inFilter('rate_date', requestedDates.toList())
-        .order('rate_date');
+        .order('rate_date')
+        .timeout(const Duration(seconds: 5));
 
     return (rows as List<dynamic>)
         .cast<Map<String, dynamic>>()

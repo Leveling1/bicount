@@ -9,7 +9,7 @@ import 'package:dartz/dartz.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../../brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'subscription_local_sync_helper.dart';
 
 class LocalSubscriptionDataSourceImpl implements SubscriptionLocalDataSource {

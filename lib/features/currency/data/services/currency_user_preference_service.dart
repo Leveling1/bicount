@@ -1,6 +1,6 @@
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/offline_model.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -66,7 +66,7 @@ class CurrencyUserPreferenceService {
 
     try {
       final users = await Repository().get<UserModel>(
-        policy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineReadPolicy.localOnly,
         query: Query(where: [Where.exact('uid', uid)]),
       );
       if (users.isEmpty) {
@@ -96,7 +96,7 @@ class CurrencyUserPreferenceService {
   Future<String?> _readLocalReferenceCurrency(String uid) async {
     try {
       final users = await Repository().get<UserModel>(
-        policy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineReadPolicy.localOnly,
         query: Query(where: [Where.exact('uid', uid)]),
       );
       if (users.isEmpty) {

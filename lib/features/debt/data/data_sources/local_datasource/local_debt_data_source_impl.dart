@@ -1,38 +1,18 @@
-import 'dart:async';
+import 'package:bicount/core/offline/offline_model.dart';
 
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/debt/data/data_sources/local_datasource/debt_local_datasource.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
-import 'package:flutter/foundation.dart';
 
 class LocalDebtDataSourceImpl implements DebtLocalDataSource {
   @override
   Future<void> createDebt(DebtModel debt) async {
-    await Repository().sqliteProvider.upsert<DebtModel>(
-      debt,
-      repository: Repository(),
-    );
-    unawaited(
-      // ignore: body_might_complete_normally_catch_error
-      Repository().upsert<DebtModel>(debt).catchError((e) {
-        debugPrint('Background debt sync: $e');
-      }),
-    );
+    await Repository().upsert<DebtModel>(debt);
   }
 
   @override
   Future<void> updateDebt(DebtModel debt) async {
-    await Repository().sqliteProvider.upsert<DebtModel>(
-      debt,
-      repository: Repository(),
-    );
-    unawaited(
-      // ignore: body_might_complete_normally_catch_error
-      Repository().upsert<DebtModel>(debt).catchError((e) {
-        debugPrint('Background debt update sync: $e');
-      }),
-    );
+    await Repository().upsert<DebtModel>(debt);
   }
 
   @override
@@ -50,7 +30,7 @@ class LocalDebtDataSourceImpl implements DebtLocalDataSource {
     }
 
     final items = await Repository().get<DebtModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
       query: Query(where: [Where.exact('debtId', debtId)]),
     );
     return items.isEmpty ? null : items.first;
@@ -65,7 +45,7 @@ class LocalDebtDataSourceImpl implements DebtLocalDataSource {
     }
 
     final items = await Repository().get<DebtModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
       query: Query(
         where: [Where.exact('principalTransactionId', principalTransactionId)],
       ),
@@ -75,6 +55,6 @@ class LocalDebtDataSourceImpl implements DebtLocalDataSource {
 
   @override
   Future<List<DebtModel>> getAllDebts() {
-    return Repository().get<DebtModel>(policy: OfflineFirstGetPolicy.localOnly);
+    return Repository().get<DebtModel>(policy: OfflineReadPolicy.localOnly);
   }
 }

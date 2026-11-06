@@ -1,4 +1,5 @@
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/offline_model.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/core/services/recurring_funding_local_service.dart';
@@ -7,7 +8,6 @@ import 'package:bicount/features/add_fund/data/data_sources/local_datasource/add
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/add_fund/domain/entities/add_account_funding_entity.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -144,7 +144,7 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
 
   Future<AccountFundingModel?> _findFunding(String fundingId) async {
     final items = await Repository().get<AccountFundingModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
       query: Query(where: [Where.exact('fundingId', fundingId)]),
     );
     return items.isEmpty ? null : items.first;

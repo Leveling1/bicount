@@ -7,6 +7,28 @@ It explains the product, the current V1 release scope, the architecture, the dat
 
 Read this file before modifying the app.
 
+## Current Offline Storage (V2 migration)
+
+The current source uses `lib/core/offline` for SQLite storage, typed model codecs,
+a durable operation outbox, Supabase reconciliation, and realtime listeners.
+The older Brick sections below describe the previous V1 implementation and are
+retained as migration history. Do not reintroduce its packages or generated code.
+The old database and HTTP queue filenames are read only during an additive,
+per-user migration; do not erase either source before recovery succeeds.
+
+Backend audit on 2026-11-06: the connected Bicount Supabase project has already
+dropped `account_funding`, `subscriptions`, and `recurring_fundings` after
+unifying them into `transactions` and `recurring_transfert`. The current mobile
+codecs still depend on those removed tables. See `docs/OFFLINE_FIRST_V2.md`;
+do not treat the V2 sync as production-ready until the mobile data layer is
+aligned with this backend contract.
+
+Local writes and outbox intents commit in one SQLite transaction. Pending
+operations are compacted by record, retried with backoff, and kept across sign-out
+in a database isolated by authenticated user ID. Remote rows and deletes are
+reconciled into local storage, while pending local changes take precedence until
+the server acknowledges them. See `docs/OFFLINE_FIRST_V2.md` for the contract.
+
 ## Product Summary
 
 Bicount is a Flutter mobile application focused on personal finance and shared money flows.

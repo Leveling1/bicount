@@ -1,14 +1,14 @@
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/offline_model.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
 
 Future<SubscriptionModel?> findSubscription(String subscriptionId) async {
   final items = await Repository().get<SubscriptionModel>(
-    policy: OfflineFirstGetPolicy.localOnly,
+    policy: OfflineReadPolicy.localOnly,
     query: Query(where: [Where.exact('subscriptionId', subscriptionId)]),
   );
   return items.isEmpty ? null : items.first;
@@ -95,7 +95,7 @@ Future<void> syncSubscriptionCompanions({
 
 Future<FriendsModel?> _findFriend(String sid) async {
   final items = await Repository().get<FriendsModel>(
-    policy: OfflineFirstGetPolicy.localOnly,
+    policy: OfflineReadPolicy.localOnly,
     query: Query(where: [Where.exact('sid', sid)]),
   );
   return items.isEmpty ? null : items.first;
@@ -106,7 +106,7 @@ Future<TransactionModel?> _findSubscriptionTransaction(
   String subscriptionId,
 ) async {
   final items = await Repository().get<TransactionModel>(
-    policy: OfflineFirstGetPolicy.localOnly,
+    policy: OfflineReadPolicy.localOnly,
     query: Query(
       where: [
         Where.exact('senderId', currentUserId),

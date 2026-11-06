@@ -1,11 +1,10 @@
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/offline_model.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/core/services/recurring_funding_schedule_service.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
-import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:flutter/foundation.dart';
 
 class CurrencyRecordHistoryService {
@@ -45,10 +44,9 @@ class CurrencyRecordHistoryService {
         .toSet();
   }
 
-  Future<List<T>>
-  _safeLocalGet<T extends OfflineFirstWithSupabaseModel>() async {
+  Future<List<T>> _safeLocalGet<T extends OfflineModel>() async {
     try {
-      return await Repository().get<T>(policy: OfflineFirstGetPolicy.localOnly);
+      return await Repository().get<T>(policy: OfflineReadPolicy.localOnly);
     } catch (error) {
       debugPrint('Currency history local read warning for $T: $error');
       return const [];

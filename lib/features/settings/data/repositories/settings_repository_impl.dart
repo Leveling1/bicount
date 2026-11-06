@@ -1,5 +1,5 @@
 import 'package:bicount/core/errors/failure.dart';
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/authentification/data/repositories/authentification_repository_impl.dart';
 import 'package:bicount/features/settings/data/data_sources/local_datasource/settings_local_datasource.dart';
 import 'package:bicount/features/settings/data/data_sources/remote_datasource/settings_remote_datasource.dart';

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:bicount/core/constants/secrets.dart';
 import 'package:bicount/core/errors/failure.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/settings/data/models/settings_memoji_page_model.dart';
 import 'package:bicount/features/settings/domain/entities/delete_account_request_entity.dart';
 import 'package:bicount/features/settings/domain/entities/settings_memoji_page_entity.dart';
@@ -70,7 +71,7 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
       throw MessageFailure(message: 'Authentication failure');
     }
 
-    await _client.from('pro_upgrade_requests').upsert({
+    final payload = <String, Object?>{
       'request_id': request.requestId,
       'user_uid': user.id,
       'contact_email': request.contactEmail,
@@ -78,7 +79,21 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
       'use_case': request.useCase,
       'created_at': DateTime.now().toUtc().toIso8601String(),
       'status': 'pending',
-    });
+    };
+    try {
+      await _client
+          .from('pro_upgrade_requests')
+          .upsert(payload, onConflict: 'request_id', ignoreDuplicates: true)
+          .timeout(const Duration(seconds: 3));
+    } catch (_) {
+      await Repository().queueRemoteUpsert(
+        table: 'pro_upgrade_requests',
+        key: 'request_id',
+        recordId: request.requestId,
+        row: payload,
+        ignoreDuplicates: true,
+      );
+    }
   }
 
   @override

@@ -1,40 +1,23 @@
-import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_supabase/brick_supabase.dart';
+import 'package:bicount/core/offline/offline_model.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../core/constants/tables_name.dart';
-
-@ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(tableName: TablesName.friends),
-)
-class FriendsModel extends OfflineFirstWithSupabaseModel {
+class FriendsModel extends OfflineModel {
   final String? uid;
   final String? fid;
   final String image;
   final String username;
   final String email;
 
-  @Supabase(ignore: true)
   final double? give;
 
-  @Supabase(ignore: true)
   final double? receive;
 
-  @Supabase(name: 'relation_type')
-  @Sqlite()
   final int relationType;
 
-  @Supabase(ignore: true)
-  @Sqlite(name: 'personal_income')
   final double? personalIncome;
 
-  @Supabase(ignore: true)
-  @Sqlite(name: 'company_income')
   final double? companyIncome;
 
-  @Supabase(unique: true, name: 'sid')
-  @Sqlite(index: true, unique: true)
   final String sid;
 
   FriendsModel({

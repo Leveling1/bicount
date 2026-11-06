@@ -7,7 +7,7 @@ This document lists the backend work required for the Bicount `settings` feature
 The new settings flow can:
 
 - request access to `Bicount Pro`
-- edit the visible profile locally through Brick sync
+- edit the visible profile locally through the V2 SQLite outbox and Supabase sync
 - change theme locally
 - change language locally
 - sign out
@@ -20,6 +20,9 @@ Only the following parts require backend support:
 - Edge Function `delete-account`
 
 Theme and language do not require backend work.
+Profile edits and Bicount Pro requests made without a connection are delivered
+when connectivity returns. `pro_upgrade_requests.request_id` must remain unique
+so an outbox retry cannot create a duplicate request.
 
 ## Table 1: pro_upgrade_requests
 

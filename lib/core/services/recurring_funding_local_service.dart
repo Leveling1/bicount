@@ -1,4 +1,4 @@
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 

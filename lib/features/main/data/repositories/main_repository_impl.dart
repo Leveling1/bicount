@@ -1,4 +1,4 @@
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';

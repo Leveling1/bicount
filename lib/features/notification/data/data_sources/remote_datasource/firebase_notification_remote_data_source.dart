@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:bicount/core/constants/app_config.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/notification_remote_datasource.dart';
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -129,7 +130,8 @@ class FirebaseNotificationRemoteDataSource
         await supabase
             .from('fcm_tokens')
             .select('token_id')
-            .eq('user_uid', userId),
+            .eq('user_uid', userId)
+            .timeout(const Duration(seconds: 3)),
       );
 
       if (existingRows.isNotEmpty) {
@@ -139,26 +141,36 @@ class FirebaseNotificationRemoteDataSource
           await supabase
               .from('fcm_tokens')
               .update(payload)
-              .eq('token_id', primaryTokenId);
+              .eq('token_id', primaryTokenId)
+              .timeout(const Duration(seconds: 3));
 
           await supabase
               .from('fcm_tokens')
               .delete()
               .eq('user_uid', userId)
-              .neq('token_id', primaryTokenId);
+              .neq('token_id', primaryTokenId)
+              .timeout(const Duration(seconds: 3));
           return;
         }
 
         await supabase
             .from('fcm_tokens')
             .update(payload)
-            .eq('user_uid', userId);
+            .eq('user_uid', userId)
+            .timeout(const Duration(seconds: 3));
         return;
       }
 
-      await supabase.from('fcm_tokens').insert(payload);
+      await supabase
+          .from('fcm_tokens')
+          .insert(payload)
+          .timeout(const Duration(seconds: 3));
     } catch (_) {
-      // The handoff document describes the required Supabase table.
+      try {
+        await Repository().queueFcmToken(userId: userId, row: payload);
+      } catch (_) {
+        // Authentication may already have ended during token refresh.
+      }
     }
   }
 

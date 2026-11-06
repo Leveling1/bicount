@@ -1,16 +1,16 @@
+import 'package:bicount/core/offline/offline_model.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/home_widget/bicount_home_widget_service.dart';
 import 'package:bicount/features/authentification/data/data_sources/local_datasource/authentification_local_datasource.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
-import 'package:brick_core/query.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../../brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import '../../models/user.model.dart';
 
 class LocalAuthentification implements AuthentificationLocalDataSource {

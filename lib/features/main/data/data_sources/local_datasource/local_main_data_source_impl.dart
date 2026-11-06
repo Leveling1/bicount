@@ -1,6 +1,7 @@
+import 'package:bicount/core/offline/offline_model.dart';
 import 'dart:async';
 
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
@@ -9,8 +10,6 @@ import 'package:bicount/features/main/data/data_sources/local_datasource/main_lo
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
-import 'package:brick_core/query.dart';
-import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -137,7 +136,7 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     );
   }
 
-  Stream<List<T>> _cachedListStream<T extends OfflineFirstWithSupabaseModel>({
+  Stream<List<T>> _cachedListStream<T extends OfflineModel>({
     required BehaviorSubject<List<T>>? Function() getSubject,
     required void Function(BehaviorSubject<List<T>> subject) setSubject,
     required StreamSubscription<List<T>>? Function() getSubscription,

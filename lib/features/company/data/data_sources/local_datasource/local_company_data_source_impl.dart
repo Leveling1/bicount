@@ -1,12 +1,12 @@
+import 'package:bicount/core/offline/offline_model.dart';
 import 'dart:async';
 
 import 'package:bicount/features/company/data/models/company.model.dart';
 import 'package:bicount/features/company/data/models/company_with_user_link.model.dart';
 import 'package:bicount/features/project/data/models/project.model.dart';
-import 'package:brick_core/core.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../../../brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import '../../../../../core/errors/failure.dart';
 import '../../../../group/data/models/group.model.dart';
 import 'company_local_datasource.dart';

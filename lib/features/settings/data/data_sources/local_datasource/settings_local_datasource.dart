@@ -1,17 +1,13 @@
-import 'dart:async';
+import 'package:bicount/core/offline/offline_model.dart';
 import 'dart:convert';
 
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/settings/data/models/settings_memoji_page_model.dart';
 import 'package:bicount/features/settings/domain/entities/settings_memoji_page_entity.dart';
 import 'package:bicount/features/settings/domain/entities/settings_profile_update_entity.dart';
 import 'package:bicount/features/settings/domain/entities/theme_preference.dart';
-import 'package:brick_core/core.dart';
-import 'package:brick_offline_first/brick_offline_first.dart'
-    show OfflineFirstGetPolicy;
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -67,7 +63,7 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
 
     try {
       final currentUsers = await Repository().get<UserModel>(
-        policy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineReadPolicy.localOnly,
         query: Query(where: [Where.exact('uid', uid)]),
       );
       if (currentUsers.isEmpty) {
@@ -88,21 +84,7 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
         referenceCurrencyCode: currentUser.referenceCurrencyCode,
       );
 
-      await Repository().sqliteProvider.upsert<UserModel>(
-        updatedUser,
-        repository: Repository(),
-      );
-      unawaited(
-        Repository()
-            .notifySubscriptionsWithLocalData<UserModel>()
-            .catchError((_) {}),
-      );
-      unawaited(
-        // ignore: body_might_complete_normally_catch_error
-        Repository().upsert<UserModel>(updatedUser).catchError((e) {
-          debugPrint('Background profile sync: $e');
-        }),
-      );
+      await Repository().upsert<UserModel>(updatedUser);
     } catch (_) {
       throw MessageFailure(message: 'Unable to save your profile right now.');
     }

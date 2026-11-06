@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/errors/failure.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/friend/data/data_sources/remote_datasource/friend_remote_datasource.dart';
 import 'package:bicount/features/friend/domain/entities/friend_invite_entity.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -44,21 +45,38 @@ class SupabaseFriendRemoteDataSource implements FriendRemoteDataSource {
     // Marked expired rather than deleted: the row stays as a trace, and both
     // the expiry check and the status check in the accept function now reject
     // the code instead of failing on a profile that no longer exists.
-    await client
-        .from('friend_invites')
-        .update({
-          'status_id': AppFriendInviteState.expired,
-          'expires_at': DateTime.now().toUtc().toIso8601String(),
-        })
-        .eq('sender_uid', currentUserId)
-        .eq('source_friend_sid', sourceFriendSid)
-        .eq('status_id', AppFriendInviteState.pending);
+    final changes = <String, Object?>{
+      'status_id': AppFriendInviteState.expired,
+      'expires_at': DateTime.now().toUtc().toIso8601String(),
+    };
+    try {
+      await client
+          .from('friend_invites')
+          .update(changes)
+          .eq('sender_uid', currentUserId)
+          .eq('source_friend_sid', sourceFriendSid)
+          .eq('status_id', AppFriendInviteState.pending)
+          .timeout(const Duration(seconds: 3));
+    } catch (_) {
+      await Repository().queueRemoteUpdate(
+        table: 'friend_invites',
+        recordId: sourceFriendSid,
+        filters: {
+          'sender_uid': currentUserId,
+          'source_friend_sid': sourceFriendSid,
+          'status_id': AppFriendInviteState.pending,
+        },
+        changes: changes,
+      );
+    }
   }
 
   @override
   Future<List<String>> unlinkAccounts(String friendSid) async {
     try {
-      await _ensureOnline('Connect to the internet to separate these accounts.');
+      await _ensureOnline(
+        'Connect to the internet to separate these accounts.',
+      );
       final response = await client.functions.invoke(
         _unlinkFunctionName,
         body: {'friend_sid': friendSid},
@@ -140,7 +158,20 @@ class SupabaseFriendRemoteDataSource implements FriendRemoteDataSource {
       'source_friend_image': share.sourceFriendImage,
     };
 
-    await client.from('friend_invites').insert(payload);
+    try {
+      await client
+          .from('friend_invites')
+          .upsert(payload, onConflict: 'invite_id')
+          .timeout(const Duration(seconds: 2));
+    } catch (_) {
+      await Repository().queueRemoteUpsert(
+        table: 'friend_invites',
+        key: 'invite_id',
+        recordId: share.inviteId,
+        row: payload,
+      );
+      rethrow;
+    }
   }
 
   @override

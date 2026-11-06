@@ -1,4 +1,5 @@
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/offline_model.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
@@ -14,7 +15,6 @@ import 'package:bicount/features/transaction/domain/entities/create_transaction_
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:bicount/features/transaction/domain/services/transaction_split_resolver.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -110,7 +110,8 @@ class TransactionRepositoryImpl extends TransactionRepository {
             principalAmount: transaction.totalAmount,
             expectedRepaymentAmount: expectedRepaymentAmount,
             remainingAmount: expectedRepaymentAmount,
-            expectedRepaymentCurrency: transaction.debtExpectedRepaymentCurrency,
+            expectedRepaymentCurrency:
+                transaction.debtExpectedRepaymentCurrency,
             dueDate: dueDate,
             createdAt: now,
             updatedAt: now,
@@ -231,7 +232,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
       }
 
       final currentTransactions = await Repository().get<TransactionModel>(
-        policy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineReadPolicy.localOnly,
         query: Query(where: [Where.exact('tid', transaction.tid)]),
       );
 
@@ -299,7 +300,9 @@ class TransactionRepositoryImpl extends TransactionRepository {
         );
       }
 
-      final currentRecord = await _findStoredTransaction(previousTransaction.tid);
+      final currentRecord = await _findStoredTransaction(
+        previousTransaction.tid,
+      );
       final resolvedSplits = splitResolver.resolve(transaction);
       final partyTransactionType = _resolvePartyTransactionType(transaction);
       if (resolvedSplits.length != 1) {
@@ -321,7 +324,8 @@ class TransactionRepositoryImpl extends TransactionRepository {
         resolvedParties: resolvedParties,
       );
 
-      final storedOriginId = currentRecord?.originId ?? previousTransaction.originId;
+      final storedOriginId =
+          currentRecord?.originId ?? previousTransaction.originId;
       final canConvertBaseTransaction =
           storedOriginId == null || storedOriginId.isEmpty;
       if (!canConvertBaseTransaction &&
@@ -331,11 +335,13 @@ class TransactionRepositoryImpl extends TransactionRepository {
         );
       }
 
-      String? originId = currentRecord?.originId ?? previousTransaction.originId;
+      String? originId =
+          currentRecord?.originId ?? previousTransaction.originId;
       String? originOccurrenceDate =
           currentRecord?.originOccurrenceDate ??
           previousTransaction.originOccurrenceDate;
-      int? frequency = currentRecord?.frequency ?? previousTransaction.frequency;
+      int? frequency =
+          currentRecord?.frequency ?? previousTransaction.frequency;
       int? generationMode = currentRecord?.generationMode;
 
       if (canConvertBaseTransaction && transaction.isDebt) {
@@ -355,13 +361,14 @@ class TransactionRepositoryImpl extends TransactionRepository {
           transaction.isRecurring &&
           transaction.recurringFrequency != null &&
           transaction.recurringTypeId != null) {
-        createdRecurringTransfert = await _createRecurringTransfertFromTransaction(
-          ownerUid: ownerUid,
-          transaction: transaction,
-          amount: split.amount,
-          sender: sender,
-          beneficiary: beneficiary,
-        );
+        createdRecurringTransfert =
+            await _createRecurringTransfertFromTransaction(
+              ownerUid: ownerUid,
+              transaction: transaction,
+              amount: split.amount,
+              sender: sender,
+              beneficiary: beneficiary,
+            );
         originId = createdRecurringTransfert.recurringTransfertId;
         originOccurrenceDate = transaction.date;
         frequency = transaction.recurringFrequency;
@@ -415,7 +422,7 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
     try {
       final currentTransactions = await Repository().get<TransactionModel>(
-        policy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineReadPolicy.localOnly,
         query: Query(where: [Where.exact('tid', tid)]),
       );
 

@@ -1,18 +1,11 @@
-import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_supabase/brick_supabase.dart';
+import 'package:bicount/core/offline/offline_model.dart';
 import 'package:uuid/uuid.dart';
 
-@ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(tableName: 'memoji'),
-)
-class MemojiModel extends OfflineFirstWithSupabaseModel {
+class MemojiModel extends OfflineModel {
   final String name;
   final String link;
   final String sexe;
 
-  @Supabase(unique: true, name: 'mid')
-  @Sqlite(index: true, unique: true, name: 'mid')
   final String? mid;
 
   MemojiModel({

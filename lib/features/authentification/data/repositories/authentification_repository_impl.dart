@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -96,6 +97,9 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
     bool forgetNotificationChoices = false,
   }) async {
     Failure? localFailure;
+    final deletedUserId = forgetNotificationChoices
+        ? Supabase.instance.client.auth.currentUser?.id
+        : null;
 
     try {
       await remoteDataSource.signOut();
@@ -110,6 +114,14 @@ class AuthentificationRepositoryImpl implements AuthentificationRepository {
 
     if (localFailure != null) {
       return Left(AuthenticationFailure(message: localFailure!.message));
+    }
+
+    if (deletedUserId != null) {
+      try {
+        await Repository().purgeDeletedAccountData(deletedUserId);
+      } catch (error) {
+        debugPrint('Deleted account cache cleanup warning: $error');
+      }
     }
 
     return const Right(null);

@@ -1,4 +1,4 @@
-import 'package:bicount/brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/core/bloc/bloc_scope.dart';
 import 'package:bicount/core/constants/firebase_options.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
@@ -19,16 +19,6 @@ Future<void> bootstrapBicountApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Repository.configure(databaseFactory);
-  await Repository().ensureCoreTablesExist();
-  await Repository().repairCoreColumnsMigrationStateIfNeeded();
-  await Repository().repairRecurringFundingMigrationStateIfNeeded();
-  await Repository().repairCurrencyFxMigrationStateIfNeeded();
-  await Repository().repairUserReferenceCurrencyMigrationStateIfNeeded();
-  await Repository().repairSalaryTrackingMigrationStateIfNeeded();
-  await Repository().repairRecurringTransfertMigrationStateIfNeeded();
-  await Repository().repairDebtAndOriginMigrationStateIfNeeded();
-  await Repository().repairDebtRepaymentCurrencyMigrationStateIfNeeded();
-  await Repository().repairLegacyOfflineQueueIfNeeded();
   await Repository().initialize();
 }
 
@@ -48,9 +38,7 @@ class MyApp extends StatelessWidget {
               builder: (context, localeState) {
                 return BlocBuilder<CurrencyCubit, CurrencyState>(
                   builder: (context, _) {
-                    final resolvedLocale = _resolveLocale(
-                      localeState.locale,
-                    );
+                    final resolvedLocale = _resolveLocale(localeState.locale);
                     Intl.defaultLocale = resolvedLocale.toLanguageTag();
 
                     return MaterialApp.router(

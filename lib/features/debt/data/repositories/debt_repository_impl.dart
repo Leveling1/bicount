@@ -1,3 +1,4 @@
+import 'package:bicount/core/offline/offline_model.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
@@ -14,11 +15,10 @@ import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 
 class DebtRepositoryImpl implements DebtRepository {
   DebtRepositoryImpl(
@@ -267,7 +267,7 @@ class DebtRepositoryImpl implements DebtRepository {
     }
 
     final friends = await Repository().get<FriendsModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
     );
     final participantIds = participantIdentityService.currentUserParticipantIds(
       currentUserId: currentUserId,
@@ -393,7 +393,7 @@ class DebtRepositoryImpl implements DebtRepository {
 
   Future<List<TransactionModel>> _findLinkedTransactions(String debtId) {
     return Repository().get<TransactionModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
       query: Query(where: [Where.exact('originId', debtId)]),
     );
   }
@@ -404,7 +404,7 @@ class DebtRepositoryImpl implements DebtRepository {
     }
 
     final items = await Repository().get<TransactionModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
       query: Query(where: [Where.exact('tid', transactionId)]),
     );
     return items.isEmpty ? null : items.first;

@@ -1,18 +1,15 @@
-import 'dart:async';
+import 'package:bicount/core/offline/offline_model.dart';
 
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
-import 'package:bicount/brick/repository.dart';
-import 'package:bicount/features/authentification/data/models/user.model.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/currency/domain/entities/currency_quote_entity.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/data_sources/local_datasource/transaction_local_datasource.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -54,26 +51,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         transactionType: transactionType,
       );
 
-      // Optimistic save: Write to SQLite immediately
-      await Repository().sqliteProvider.upsert<FriendsModel>(
-        friendAdd,
-        repository: Repository(),
-      );
-
-      // Notify subscriptions so the friend list updates immediately.
-      unawaited(
-        Repository()
-            .notifySubscriptionsWithLocalData<FriendsModel>()
-            .catchError((_) {}),
-      );
-
-      // Background sync: Let Brick handle remote/offline queue without blocking
-      unawaited(
-        // ignore: body_might_complete_normally_catch_error
-        Repository().upsert<FriendsModel>(friendAdd).catchError((e) {
-          debugPrint('Background friend sync: $e');
-        }),
-      );
+      await Repository().upsert<FriendsModel>(friendAdd);
 
       return Right(friendAdd);
     } catch (_) {
@@ -88,7 +66,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   }) async {
     try {
       final localFriends = await Repository().get<FriendsModel>(
-        policy: OfflineFirstGetPolicy.localOnly,
+        policy: OfflineReadPolicy.localOnly,
       );
       return Right(
         _friendMatcher.findMatch(
@@ -158,38 +136,12 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         generationMode: generationMode ?? 0,
       );
 
-      // Optimistic save: Write to SQLite immediately.
-      // This ensures the data is persisted locally even if network/auth is slow.
-      await Repository().sqliteProvider.upsert<TransactionModel>(
-        transactionModel,
-        repository: Repository(),
-      );
+      await Repository().upsert<TransactionModel>(transactionModel);
 
       // Apply finance effects locally so balances update immediately.
       await _offlineFinanceLocalService.applyTransactionEffects(
         currentUserId: uid,
         transaction: transactionModel,
-      );
-
-      // Notify subscriptions so the UI reflects local changes immediately
-      // without waiting for Supabase realtime events.
-      unawaited(
-        Repository()
-            .notifySubscriptionsWithLocalData<TransactionModel>()
-            .catchError((_) {}),
-      );
-      unawaited(
-        Repository()
-            .notifySubscriptionsWithLocalData<UserModel>()
-            .catchError((_) {}),
-      );
-
-      // Background sync: Let Brick handle remote/offline queue in the background.
-      unawaited(
-        // ignore: body_might_complete_normally_catch_error
-        Repository().upsert<TransactionModel>(transactionModel).catchError((e) {
-          debugPrint('Background transaction sync: $e');
-        }),
       );
 
       return const Right(null);
@@ -253,41 +205,25 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         fxRateDate: quote.fxRateDate,
         fxSnapshotId: quote.fxSnapshotId,
         image: image,
-        frequency: frequency ?? currentRecord?.frequency ?? previousTransaction.frequency,
+        frequency:
+            frequency ??
+            currentRecord?.frequency ??
+            previousTransaction.frequency,
         category: category,
-        originId: originId ?? currentRecord?.originId ?? previousTransaction.originId,
+        originId:
+            originId ?? currentRecord?.originId ?? previousTransaction.originId,
         originOccurrenceDate:
             originOccurrenceDate ??
             currentRecord?.originOccurrenceDate ??
             previousTransaction.originOccurrenceDate,
-        generationMode:
-            generationMode ?? currentRecord?.generationMode ?? 0,
+        generationMode: generationMode ?? currentRecord?.generationMode ?? 0,
         createdAt:
-            currentRecord?.createdAt ?? 
+            currentRecord?.createdAt ??
             previousTransaction.createdAt?.toIso8601String() ??
             DateTime.now().toIso8601String(),
       );
 
-      // Optimistic update: Write to SQLite immediately.
-      await Repository().sqliteProvider.upsert<TransactionModel>(
-        transactionModel,
-        repository: Repository(),
-      );
-
-      // Notify subscriptions so the UI reflects local changes immediately.
-      unawaited(
-        Repository()
-            .notifySubscriptionsWithLocalData<TransactionModel>()
-            .catchError((_) {}),
-      );
-
-      // Background sync: Let Brick handle remote/offline queue.
-      unawaited(
-        // ignore: body_might_complete_normally_catch_error
-        Repository().upsert<TransactionModel>(transactionModel).catchError((e) {
-          debugPrint('Background transaction update sync: $e');
-        }),
-      );
+      await Repository().upsert<TransactionModel>(transactionModel);
 
       return const Right(null);
     } on Failure catch (error) {
@@ -311,7 +247,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     }
 
     final items = await Repository().get<TransactionModel>(
-      policy: OfflineFirstGetPolicy.localOnly,
+      policy: OfflineReadPolicy.localOnly,
       query: Query(where: [Where.exact('tid', tid)]),
     );
     return items.isEmpty ? null : items.first;

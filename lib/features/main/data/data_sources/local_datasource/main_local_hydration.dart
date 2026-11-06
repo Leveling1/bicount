@@ -1,11 +1,8 @@
-import 'package:bicount/brick/repository.dart';
-import 'package:brick_core/query.dart';
-import 'package:brick_offline_first/brick_offline_first.dart'
-    show OfflineFirstGetPolicy;
-import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
+import 'package:bicount/core/offline/offline_model.dart';
+import 'package:bicount/core/offline/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-Future<void> primeUserSubject<T extends OfflineFirstWithSupabaseModel>(
+Future<void> primeUserSubject<T extends OfflineModel>(
   BehaviorSubject<T> subject,
   Query query,
 ) async {
@@ -21,7 +18,7 @@ Future<void> primeUserSubject<T extends OfflineFirstWithSupabaseModel>(
   }
 }
 
-Future<void> primeListSubject<T extends OfflineFirstWithSupabaseModel>(
+Future<void> primeListSubject<T extends OfflineModel>(
   BehaviorSubject<List<T>> subject,
   Query? query,
 ) async {
@@ -37,11 +34,9 @@ Future<void> primeListSubject<T extends OfflineFirstWithSupabaseModel>(
   }
 }
 
-Future<List<T>> loadInitialItems<T extends OfflineFirstWithSupabaseModel>(
-  Query? query,
-) async {
+Future<List<T>> loadInitialItems<T extends OfflineModel>(Query? query) async {
   final localItems = await Repository().get<T>(
-    policy: OfflineFirstGetPolicy.localOnly,
+    policy: OfflineReadPolicy.localOnly,
     query: query,
   );
   if (localItems.isNotEmpty) {

@@ -1,14 +1,7 @@
-import 'package:brick_offline_first_with_supabase/brick_offline_first_with_supabase.dart';
-import 'package:brick_sqlite/brick_sqlite.dart';
-import 'package:brick_supabase/brick_supabase.dart';
+import 'package:bicount/core/offline/offline_model.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../core/constants/tables_name.dart';
-
-@ConnectOfflineFirstWithSupabase(
-  supabaseConfig: SupabaseSerializable(tableName: TablesName.groups),
-)
-class GroupModel extends OfflineFirstWithSupabaseModel {
+class GroupModel extends OfflineModel {
   final String cid;
   final String name;
   final String? description;
@@ -16,8 +9,6 @@ class GroupModel extends OfflineFirstWithSupabaseModel {
   final int? number;
   final String createdAt;
 
-  @Supabase(unique: true, name: 'gid')
-  @Sqlite(index: true, unique: true)
   final String? gid;
 
   GroupModel({

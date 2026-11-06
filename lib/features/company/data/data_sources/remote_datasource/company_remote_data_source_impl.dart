@@ -1,8 +1,8 @@
+import 'package:bicount/core/offline/offline_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../../../brick/repository.dart';
+import 'package:bicount/core/offline/repository.dart';
 import '../../models/company_with_user_link.model.dart';
 import 'company_remote_datasource.dart';
-import 'package:brick_offline_first/brick_offline_first.dart';
 
 class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
   final supabaseInstance = Supabase.instance.client;
@@ -17,7 +17,7 @@ class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
       table: 'companies',
       callback: (payload) async {
         final results = await Repository().get<CompanyWithUserLinkModel>(
-          policy: OfflineFirstGetPolicy.localOnly,
+          policy: OfflineReadPolicy.localOnly,
         );
         if (results.isEmpty) return;
         await Repository().delete<CompanyWithUserLinkModel>(results.first);
