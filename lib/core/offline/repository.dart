@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../constants/secrets.dart';
 import 'offline_codecs.g.dart';
 import 'offline_legacy_copy.dart';
+import 'offline_legacy_finance_migration.dart';
 import 'offline_legacy_import.dart';
 import 'offline_legacy_owner.dart';
 import 'offline_model.dart';
@@ -104,6 +105,7 @@ class Repository {
       'PRIMARY KEY (table_name, record_id))',
     );
     try {
+      await migrateLegacyFinance(db, uid);
       await importLegacyQueue(db, _factory, uid, directory);
       legacyMigrationPending = false;
     } catch (error) {

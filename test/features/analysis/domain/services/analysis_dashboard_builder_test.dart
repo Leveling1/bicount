@@ -238,4 +238,32 @@ void main() {
       expect(latestPoint.cumulativeNet, 915);
     },
   );
+
+  test('migrated self-income contributes only to cashflow inflow', () {
+    final dashboard = builder.build(
+      AnalysisSourceData(
+        currentUserId: currentUserId,
+        friends: const [],
+        recurringTransferts: const [],
+        debts: const [],
+        transactions: [
+          transaction(
+            tid: 'funding',
+            name: 'Deposit',
+            type: TransactionTypes.incomeCode,
+            senderId: currentUserId,
+            beneficiaryId: currentUserId,
+            amount: 42,
+          ),
+        ],
+      ),
+      AnalysisPeriod.month30,
+      currencyConfig,
+    );
+
+    expect(dashboard.inflow, 42);
+    expect(dashboard.outflow, 0);
+    expect(dashboard.cashflowPoints.last.inflow, 42);
+    expect(dashboard.cashflowPoints.last.outflow, 0);
+  });
 }

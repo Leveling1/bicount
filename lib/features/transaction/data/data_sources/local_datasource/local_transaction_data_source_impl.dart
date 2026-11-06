@@ -1,6 +1,7 @@
 import 'package:bicount/core/offline/offline_model.dart';
 
 import 'package:bicount/core/constants/subscription_const.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/core/offline/repository.dart';
@@ -133,6 +134,16 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         category: category,
         originId: originId,
         originOccurrenceDate: originOccurrenceDate,
+        recurringTransfertId:
+            TransactionTypes.expenseTypes.contains(type) ||
+                TransactionTypes.incomeTypes.contains(type)
+            ? originId
+            : null,
+        recurringOccurrenceDate:
+            TransactionTypes.expenseTypes.contains(type) ||
+                TransactionTypes.incomeTypes.contains(type)
+            ? originOccurrenceDate
+            : null,
         generationMode: generationMode ?? 0,
       );
 
@@ -216,6 +227,16 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
             originOccurrenceDate ??
             currentRecord?.originOccurrenceDate ??
             previousTransaction.originOccurrenceDate,
+        recurringTransfertId:
+            TransactionTypes.expenseTypes.contains(type) ||
+                TransactionTypes.incomeTypes.contains(type)
+            ? originId ?? currentRecord?.recurringTransfertId
+            : null,
+        recurringOccurrenceDate:
+            TransactionTypes.expenseTypes.contains(type) ||
+                TransactionTypes.incomeTypes.contains(type)
+            ? originOccurrenceDate ?? currentRecord?.recurringOccurrenceDate
+            : null,
         generationMode: generationMode ?? currentRecord?.generationMode ?? 0,
         createdAt:
             currentRecord?.createdAt ??

@@ -46,6 +46,10 @@ class TransactionModel extends OfflineModel {
 
   final String? originOccurrenceDate;
 
+  final String? recurringTransfertId;
+
+  final String? recurringOccurrenceDate;
+
   final int? generationMode;
 
   final String? tid;
@@ -74,6 +78,8 @@ class TransactionModel extends OfflineModel {
     this.createdAt,
     this.originId,
     this.originOccurrenceDate,
+    this.recurringTransfertId,
+    this.recurringOccurrenceDate,
     this.generationMode,
   }) : tid = tid ?? const Uuid().v4(),
        super();

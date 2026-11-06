@@ -81,6 +81,35 @@ void main() {
     expect(result.user.companyIncome, 20);
   });
 
+  test('counts a migrated self-income once', () {
+    final result = service.project(
+      user: user,
+      friends: const [],
+      transactions: [
+        TransactionModel(
+          uid: 'user-1',
+          gtid: 'funding-1',
+          name: 'Cash deposit',
+          type: 1,
+          senderId: 'user-1',
+          beneficiaryId: 'user-1',
+          date: '2026-03-23',
+          note: '',
+          amount: 30,
+          currency: 'USD',
+          category: Constants.personal,
+        ),
+      ],
+      debts: const [],
+      recurringTransferts: const <RecurringTransfertModel>[],
+      connectionState: Constants.connected,
+      currencyConfig: CurrencyConfigEntity.fallback(),
+    );
+    expect(result.user.balance, 30);
+    expect(result.user.incomes, 30);
+    expect(result.user.expenses, 0);
+  });
+
   test('projects friend totals using sid and linked uid aliases', () {
     final result = service.project(
       user: user,

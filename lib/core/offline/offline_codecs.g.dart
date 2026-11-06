@@ -1139,6 +1139,8 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'createdAt': 'created_at',
     'originId': 'origin_id',
     'originOccurrenceDate': 'origin_occurrence_date',
+    'recurringTransfertId': 'recurring_transfert_id',
+    'recurringOccurrenceDate': 'recurring_occurrence_date',
     'generationMode': 'generation_mode',
     'tid': 'tid',
   },
@@ -1165,6 +1167,8 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'createdAt': 'created_at',
     'originId': 'origin_id',
     'originOccurrenceDate': 'origin_occurrence_date',
+    'recurringTransfertId': 'recurring_transfert_id',
+    'recurringOccurrenceDate': 'recurring_occurrence_date',
     'generationMode': 'generation_mode',
     'tid': 'tid',
   },
@@ -1191,6 +1195,8 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     createdAt: (r['created_at'] as String?),
     originId: (r['origin_id'] as String?),
     originOccurrenceDate: (r['origin_occurrence_date'] as String?),
+    recurringTransfertId: (r['recurring_transfert_id'] as String?),
+    recurringOccurrenceDate: (r['recurring_occurrence_date'] as String?),
     generationMode: (r['generation_mode'] as num?)?.toInt(),
     tid: (r['tid'] as String?),
   ),
@@ -1217,6 +1223,8 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     createdAt: (r['created_at'] as String?),
     originId: (r['origin_id'] as String?),
     originOccurrenceDate: (r['origin_occurrence_date'] as String?),
+    recurringTransfertId: (r['recurring_transfert_id'] as String?),
+    recurringOccurrenceDate: (r['recurring_occurrence_date'] as String?),
     generationMode: (r['generation_mode'] as num?)?.toInt(),
     tid: (r['tid'] as String?),
   ),
@@ -1243,6 +1251,8 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'created_at': m.createdAt,
     'origin_id': m.originId,
     'origin_occurrence_date': m.originOccurrenceDate,
+    'recurring_transfert_id': m.recurringTransfertId,
+    'recurring_occurrence_date': m.recurringOccurrenceDate,
     'generation_mode': m.generationMode,
     'tid': m.tid,
   },
@@ -1269,6 +1279,8 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'created_at': m.createdAt,
     'origin_id': m.originId,
     'origin_occurrence_date': m.originOccurrenceDate,
+    'recurring_transfert_id': m.recurringTransfertId,
+    'recurring_occurrence_date': m.recurringOccurrenceDate,
     'generation_mode': m.generationMode,
     'tid': m.tid,
   },
@@ -1284,8 +1296,6 @@ OfflineCodec<T> codecFor<T>() {
 
 final List<OfflineCodec<dynamic>> allOfflineCodecs = [
   memojiModelCodec,
-  accountFundingModelCodec,
-  recurringFundingModelCodec,
   userModelCodec,
   companyModelCodec,
   companyWithUserLinkModelCodec,
@@ -1294,6 +1304,13 @@ final List<OfflineCodec<dynamic>> allOfflineCodecs = [
   friendsModelCodec,
   projectModelCodec,
   recurringTransfertModelCodec,
-  subscriptionModelCodec,
   transactionModelCodec,
+];
+
+/// Decode old per-device rows and queued requests during additive migration.
+/// These codecs must never be used for Supabase synchronization.
+final List<OfflineCodec<dynamic>> legacyOfflineCodecs = [
+  accountFundingModelCodec,
+  recurringFundingModelCodec,
+  subscriptionModelCodec,
 ];

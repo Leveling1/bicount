@@ -8,6 +8,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_config.dart';
 import 'offline_codecs.g.dart';
+import 'offline_legacy_finance_migration.dart';
+import 'offline_legacy_finance_reconcile.dart';
 import '../constants/secrets.dart';
 import 'offline_model.dart';
 import 'offline_merge.dart';
@@ -69,8 +71,17 @@ class OfflineSync {
     final uid = repository.currentUserId;
     if (uid == null) return;
     try {
-      await repository.database();
+      final db = await repository.database();
       if (repository.legacyMigrationPending) return;
+      if (await hasLegacyFinanceCandidates(db)) {
+        try {
+          await pullCodec(transactionModelCodec);
+          await pullCodec(recurringTransfertModelCodec);
+        } catch (error) {
+          debugPrint('Legacy finance reconciliation will retry: $error');
+          return;
+        }
+      }
       if (!await _push(uid)) return;
       for (final codec in allOfflineCodecs.where(_isEagerCollection)) {
         if (repository.currentUserId != uid) return;
@@ -300,6 +311,12 @@ class OfflineSync {
     }
     if (repository.currentUserId != uid) return;
     final db = await repository.database();
+    await reconcileLegacyFinanceCandidates(
+      db: db,
+      codec: codec,
+      userId: uid,
+      remoteRows: remoteRows,
+    );
     final pending = await db.query(
       'bicount_sync_outbox',
       columns: ['record_id'],

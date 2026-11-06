@@ -2,7 +2,14 @@ import 'dart:convert';
 
 import 'package:path/path.dart' as path;
 import 'package:sqflite_common/sqlite_api.dart';
+import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
+import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
+import 'package:bicount/features/subscription/data/models/subscription.model.dart';
+import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 
+import 'legacy_account_funding_adapter.dart';
+import 'legacy_recurring_adapter.dart';
+import 'legacy_uuid.dart';
 import 'offline_codecs.g.dart';
 import 'offline_legacy_owner.dart';
 import 'outbox/offline_operation.dart';
@@ -60,8 +67,12 @@ Future<void> importLegacyQueue(
       final url = Uri.tryParse(job['url'] as String? ?? '');
       if (url == null) throw StateError('Invalid queued URL at job $jobId');
       final table = url.pathSegments.isEmpty ? '' : url.pathSegments.last;
-      final matches = allOfflineCodecs.where((codec) => codec.table == table);
+      final matches = [
+        ...allOfflineCodecs,
+        ...legacyOfflineCodecs,
+      ].where((codec) => codec.table == table);
       final codec = matches.isEmpty ? null : matches.single;
+      final isRetiredTable = legacyOfflineCodecs.contains(codec);
       final body = job['body'] is String && (job['body'] as String).isNotEmpty
           ? jsonDecode(job['body'] as String)
           : null;
@@ -79,6 +90,9 @@ Future<void> importLegacyQueue(
         }
       }
       if (ids.isEmpty) {
+        if (isRetiredTable) {
+          throw StateError('Cannot safely migrate legacy $table job $jobId.');
+        }
         final raw = OfflineOperation(
           userId: uid,
           collection: 'legacy_http',
@@ -104,14 +118,31 @@ Future<void> importLegacyQueue(
           whereArgs: [id],
           limit: 1,
         );
+        final Object? canonical = local.isEmpty
+            ? null
+            : _canonicalFinanceRow(knownCodec.decodeLocal(local.single));
+        final targetCodec = canonical is TransactionModel
+            ? transactionModelCodec
+            : canonical != null
+            ? recurringTransfertModelCodec
+            : table == 'account_funding'
+            ? transactionModelCodec
+            : table == 'subscriptions' || table == 'recurring_fundings'
+            ? recurringTransfertModelCodec
+            : knownCodec;
+        final targetId = canonical == null
+            ? (isRetiredTable ? canonicalLegacyUuid(table, id) : id)
+            : targetCodec.encodeRemote(canonical)[targetCodec.key].toString();
         final operation = OfflineOperation(
           userId: uid,
-          collection: table,
-          recordId: id,
+          collection: targetCodec.table,
+          recordId: targetId,
           action: local.isEmpty ? 'delete' : 'upsert',
           payload: local.isEmpty
-              ? {knownCodec.key: id}
-              : knownCodec.encodeRemote(knownCodec.decodeLocal(local.single)),
+              ? {targetCodec.key: targetId}
+              : targetCodec.encodeRemote(
+                  canonical ?? knownCodec.decodeLocal(local.single),
+                ),
         );
         await OfflineOutbox(target).commit(operation, (_) async {});
       }
@@ -121,6 +152,13 @@ Future<void> importLegacyQueue(
     await queueDb.close();
   }
 }
+
+Object _canonicalFinanceRow(Object row) => switch (row) {
+  AccountFundingModel funding => fundingAsTransaction(funding),
+  RecurringFundingModel funding => fundingPlanAsRecurring(funding),
+  SubscriptionModel subscription => subscriptionAsRecurring(subscription),
+  _ => row,
+};
 
 String? _requestOwner(String? encodedHeaders) {
   if (encodedHeaders == null || encodedHeaders.isEmpty) return null;

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bicount/core/offline/offline_legacy_import.dart';
+import 'package:bicount/core/offline/legacy_uuid.dart';
 import 'package:bicount/core/offline/outbox/offline_outbox.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as path;
@@ -99,4 +100,75 @@ void main() {
     expect(pending.last.action, 'delete');
     expect(pending.last.recordId, 'row-3');
   });
+
+  test(
+    'rewrites a queued funding request to the unified transactions table',
+    () async {
+      final directory = await Directory.systemTemp.createTemp(
+        'bicount_legacy_job_',
+      );
+      addTearDown(() async {
+        final resolved = path.normalize(directory.absolute.path);
+        final temporaryRoot = path.normalize(
+          Directory.systemTemp.absolute.path,
+        );
+        if (!path.isWithin(temporaryRoot, resolved)) {
+          throw StateError('Test directory escaped the temporary root.');
+        }
+        await directory.delete(recursive: true);
+      });
+      final factory = databaseFactoryFfi;
+      final legacy = await factory.openDatabase(
+        path.join(directory.path, 'my_repository.sqlite'),
+      );
+      await legacy.execute('CREATE TABLE UserModel (uid TEXT)');
+      await legacy.insert('UserModel', {'uid': 'user-1'});
+      await legacy.close();
+      final queue = await factory.openDatabase(
+        path.join(directory.path, 'brick_offline_queue.sqlite'),
+      );
+      await queue.execute(
+        'CREATE TABLE HttpJobs '
+        '(id INTEGER PRIMARY KEY, created_at INTEGER, request_method TEXT, '
+        'url TEXT, body TEXT, headers TEXT)',
+      );
+      await queue.insert('HttpJobs', {
+        'id': 1,
+        'created_at': 1,
+        'request_method': 'POST',
+        'url': 'https://example.supabase.co/rest/v1/account_funding',
+        'body': '{"funding_id":"old-funding","amount":42}',
+        'headers': '{}',
+      });
+      await queue.close();
+      final target = await factory.openDatabase(
+        path.join(directory.path, 'new.sqlite'),
+      );
+      addTearDown(target.close);
+      await target.execute(
+        'CREATE TABLE AccountFundingModel '
+        '(funding_id TEXT, sid TEXT, amount REAL, currency TEXT, '
+        'source TEXT, date TEXT, category INTEGER)',
+      );
+      await target.insert('AccountFundingModel', {
+        'funding_id': 'old-funding',
+        'sid': 'user-1',
+        'amount': 42.0,
+        'currency': 'USD',
+        'source': 'Deposit',
+        'date': '2026-04-01',
+        'category': 0,
+      });
+      await OfflineOutbox(target).initialize();
+      await importLegacyQueue(target, factory, 'user-1', directory.path);
+      final pending = await OfflineOutbox(target).pending('user-1');
+      expect(pending, hasLength(1));
+      expect(pending.single.collection, 'transactions');
+      expect(
+        pending.single.recordId,
+        canonicalLegacyUuid('account_funding', 'old-funding'),
+      );
+      expect(pending.single.payload['type'], 1);
+    },
+  );
 }

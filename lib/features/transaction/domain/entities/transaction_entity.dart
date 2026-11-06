@@ -109,8 +109,10 @@ class TransactionEntity {
       currency: transaction.currency,
       image: transaction.image,
       frequency: transaction.frequency,
-      originId: transaction.originId,
-      originOccurrenceDate: transaction.originOccurrenceDate,
+      originId: transaction.originId ?? transaction.recurringTransfertId,
+      originOccurrenceDate:
+          transaction.originOccurrenceDate ??
+          transaction.recurringOccurrenceDate,
       sender: transaction.senderId,
       beneficiary: transaction.beneficiaryId,
       note: transaction.note,

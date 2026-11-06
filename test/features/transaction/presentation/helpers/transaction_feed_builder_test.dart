@@ -139,6 +139,38 @@ void main() {
     expect(filtered.map((item) => item.id), isNot(contains('expense-linked')));
   });
 
+  test('self-income appears only in the income filter', () {
+    final data = buildMainEntity([
+      transaction(
+        tid: 'migrated-funding',
+        type: TransactionTypes.incomeCode,
+        senderId: currentUserId,
+        beneficiaryId: currentUserId,
+        name: 'Deposit',
+      ),
+    ]);
+    final source = buildTransactionFeed(data);
+
+    expect(
+      filterTransactionFeed(
+        data: data,
+        source: source,
+        query: '',
+        selectedIndex: 1,
+      ).map((item) => item.id),
+      ['migrated-funding'],
+    );
+    expect(
+      filterTransactionFeed(
+        data: data,
+        source: source,
+        query: '',
+        selectedIndex: 2,
+      ),
+      isEmpty,
+    );
+  });
+
   test('expense filter matches current user sender identities', () {
     final data = buildMainEntity(transactions);
 

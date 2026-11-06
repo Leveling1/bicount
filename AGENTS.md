@@ -18,10 +18,10 @@ per-user migration; do not erase either source before recovery succeeds.
 
 Backend audit on 2026-11-06: the connected Bicount Supabase project has already
 dropped `account_funding`, `subscriptions`, and `recurring_fundings` after
-unifying them into `transactions` and `recurring_transfert`. The current mobile
-codecs still depend on those removed tables. See `docs/OFFLINE_FIRST_V2.md`;
-do not treat the V2 sync as production-ready until the mobile data layer is
-aligned with this backend contract.
+unifying them into `transactions` and `recurring_transfert`. Active V2 codecs
+and feature data sources use the unified tables. The three old model codecs are
+kept only to read installed V1 SQLite data and pending HTTP jobs during local
+migration. See `docs/OFFLINE_FIRST_V2.md` for reconciliation and device QA.
 
 Local writes and outbox intents commit in one SQLite transaction. Pending
 operations are compacted by record, retried with backoff, and kept across sign-out
@@ -734,10 +734,7 @@ Typical checks:
 - flutter test
 - flutter build apk --debug
 
-Known baseline: one pre-existing test failure in
-transaction_repository_impl_test.dart ("editing an expense into a subscription"),
-expecting 2026-04-09 and getting 2026-04-11. It is unrelated to current work — do
-not treat it as a regression you introduced.
+The old conversion test now expects the date chosen in the update request.
 
 ## Current Status Snapshot
 

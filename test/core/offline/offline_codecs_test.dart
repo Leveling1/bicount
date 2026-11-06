@@ -1,6 +1,7 @@
 import 'package:bicount/core/offline/offline_codecs.g.dart';
 import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -50,5 +51,28 @@ void main() {
     expect(codec.toLocal(friend)['give'], 20);
     expect(codec.toRemote(friend).containsKey('give'), isFalse);
     expect(codec.fromLocal(codec.toLocal(friend)).receive, 5);
+  });
+
+  test('backend recurring linkage survives a local transaction round trip', () {
+    final codec = codecFor<TransactionModel>();
+    final transaction = codec.fromRemote({
+      'tid': 'transaction-1',
+      'gtid': 'group-1',
+      'uid': 'user-1',
+      'name': 'Salary',
+      'type': 3,
+      'sender_id': 'user-1',
+      'beneficiary_id': 'user-1',
+      'date': '2026-04-09',
+      'amount': 100,
+      'currency': 'USD',
+      'recurring_transfert_id': 'plan-1',
+      'recurring_occurrence_date': '2026-04-09',
+    });
+    final restored = codec.fromLocal(codec.toLocal(transaction));
+
+    expect(restored.recurringTransfertId, 'plan-1');
+    expect(restored.recurringOccurrenceDate, '2026-04-09');
+    expect(codec.toRemote(restored)['recurring_transfert_id'], 'plan-1');
   });
 }

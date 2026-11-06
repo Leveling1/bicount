@@ -168,6 +168,9 @@ class AnalysisTimeSeriesBuilder {
     Set<String> knownFriendParticipantIds = const {},
   }) {
     if (currentUserParticipantIds != null) {
+      if (_isSelfMovement(transaction, currentUserParticipantIds)) {
+        return TransactionTypes.isIncomeType(transaction.type);
+      }
       return identityService.isMineWithFallback(
         candidateId: transaction.beneficiaryId,
         counterpartId: transaction.senderId,
@@ -187,6 +190,9 @@ class AnalysisTimeSeriesBuilder {
     Set<String> knownFriendParticipantIds = const {},
   }) {
     if (currentUserParticipantIds != null) {
+      if (_isSelfMovement(transaction, currentUserParticipantIds)) {
+        return TransactionTypes.isExpenseType(transaction.type);
+      }
       return identityService.isMineWithFallback(
         candidateId: transaction.senderId,
         counterpartId: transaction.beneficiaryId,
@@ -200,4 +206,11 @@ class AnalysisTimeSeriesBuilder {
         transaction.type == TransactionTypes.otherRecurringExpenseCode ||
         transaction.type == TransactionTypes.othersCode;
   }
+
+  bool _isSelfMovement(
+    TransactionModel transaction,
+    Set<String> currentUserParticipantIds,
+  ) =>
+      currentUserParticipantIds.contains(transaction.senderId) &&
+      currentUserParticipantIds.contains(transaction.beneficiaryId);
 }

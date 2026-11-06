@@ -225,7 +225,7 @@ void main() {
       );
       expect(
         localDataSource.updatedTransaction?.originOccurrenceDate,
-        previousTransaction.date.toIso8601String(),
+        request.date,
       );
       expect(
         localDataSource.updatedTransaction?.frequency,

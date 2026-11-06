@@ -5,6 +5,7 @@ import 'package:bicount/features/currency/domain/entities/exchange_rate_snapshot
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
 import 'package:bicount/features/recurring_fundings/domain/services/recurring_plan_collection_builder.dart';
+import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -65,6 +66,36 @@ void main() {
     expect(monthlyById['monthly'], closeTo(120, 0.0001));
     expect(monthlyById['quarterly'], closeTo(40, 0.0001));
     expect(monthlyById['yearly'], closeTo(10, 0.0001));
+  });
+
+  test('counts backend occurrences linked by recurring_transfert_id', () {
+    final collection = builder.build(
+      recurringTransferts: [
+        plan(id: 'plan-1', frequency: Frequency.monthly, amount: 120),
+      ],
+      transactions: [
+        TransactionModel(
+          uid: 'user-1',
+          gtid: 'group-1',
+          name: 'Plan plan-1',
+          type: TransactionTypes.subscriptionCode,
+          beneficiaryId: 'friend-1',
+          senderId: 'user-1',
+          date: '2026-04-01',
+          note: '',
+          amount: 120,
+          currency: 'CDF',
+          recurringTransfertId: 'plan-1',
+          recurringOccurrenceDate: '2026-04-01',
+        ),
+      ],
+      currencyConfig: currencyConfig,
+      scope: RecurringPlanScope.charge,
+      now: DateTime(2026, 4, 1),
+    );
+
+    expect(collection.plans.single.recordedCount, 1);
+    expect(collection.plans.single.totalRecordedReferenceAmount, 120);
   });
 
   test('monthly load still normalizes legacy quarterly and yearly ids', () {

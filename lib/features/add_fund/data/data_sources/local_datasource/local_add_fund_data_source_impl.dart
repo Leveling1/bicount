@@ -1,5 +1,7 @@
 import 'package:bicount/core/offline/offline_model.dart';
 import 'package:bicount/core/offline/repository.dart';
+import 'package:bicount/core/offline/legacy_account_funding_adapter.dart';
+import 'package:bicount/core/offline/legacy_uuid.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/core/services/offline_finance_local_service.dart';
 import 'package:bicount/core/services/recurring_funding_local_service.dart';
@@ -8,6 +10,7 @@ import 'package:bicount/features/add_fund/data/data_sources/local_datasource/add
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
 import 'package:bicount/features/add_fund/domain/entities/add_account_funding_entity.dart';
+import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -89,7 +92,9 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
       return;
     }
 
-    await Repository().upsert<AccountFundingModel>(accountFundingData);
+    await Repository().upsert<TransactionModel>(
+      fundingAsTransaction(accountFundingData),
+    );
     // applyFundingEffects removed – add_fund is superseded by transaction + recurring_transfert
   }
 
@@ -100,7 +105,9 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
       throw Exception('Account funding not found.');
     }
 
-    await Repository().delete<AccountFundingModel>(currentFunding);
+    final transaction = await _findFundingTransaction(currentFunding.fundingId);
+    if (transaction == null) throw Exception('Account funding not found.');
+    await Repository().delete<TransactionModel>(transaction);
   }
 
   @override
@@ -139,13 +146,24 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
       createdAt: currentFunding.createdAt,
     );
 
-    await Repository().upsert<AccountFundingModel>(updatedFunding);
+    await Repository().upsert<TransactionModel>(
+      fundingAsTransaction(updatedFunding),
+    );
   }
 
   Future<AccountFundingModel?> _findFunding(String fundingId) async {
-    final items = await Repository().get<AccountFundingModel>(
+    final transaction = await _findFundingTransaction(fundingId);
+    return transaction == null ? null : fundingFromTransaction(transaction);
+  }
+
+  Future<TransactionModel?> _findFundingTransaction(String fundingId) async {
+    final items = await Repository().get<TransactionModel>(
       policy: OfflineReadPolicy.localOnly,
-      query: Query(where: [Where.exact('fundingId', fundingId)]),
+      query: Query(
+        where: [
+          Where.exact('tid', canonicalLegacyUuid('account_funding', fundingId)),
+        ],
+      ),
     );
     return items.isEmpty ? null : items.first;
   }

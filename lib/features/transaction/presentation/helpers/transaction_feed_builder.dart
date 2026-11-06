@@ -38,9 +38,21 @@ List<TransactionFeedItem> filterTransactionFeed({
       return true;
     }
 
+    final isSender = currentUserParticipantIds.contains(
+      item.transaction.sender,
+    );
+    final isBeneficiary = currentUserParticipantIds.contains(
+      item.transaction.beneficiary,
+    );
+    final isSelfTransfer = isSender && isBeneficiary;
     return switch (selectedIndex) {
-      1 => currentUserParticipantIds.contains(item.transaction.beneficiary),
-      2 => currentUserParticipantIds.contains(item.transaction.sender),
+      1 =>
+        isBeneficiary &&
+            (!isSelfTransfer || TransactionTypes.isIncomeType(item.filterType)),
+      2 =>
+        isSender &&
+            (!isSelfTransfer ||
+                TransactionTypes.isExpenseType(item.filterType)),
       3 => item.filterType == TransactionTypes.subscriptionCode,
       4 => item.filterType == TransactionTypes.salaryCode,
       5 => item.filterType == TransactionTypes.debtCode,

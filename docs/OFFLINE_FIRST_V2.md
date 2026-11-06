@@ -2,29 +2,30 @@
 
 ## Backend audit (2026-11-06)
 
-The connected Bicount Supabase project (`yudjgfypbsahpukruqta`) is **not yet
-compatible** with the current V2 codecs. Migration `20260409090333`
-intentionally dropped `account_funding`, `subscriptions`, and
-`recurring_fundings` after moving money occurrences to `transactions` and
-recurring templates to `recurring_transfert`. The mobile source still reads and
-writes the three removed tables. The `account_funding` migration generated new
-transaction UUIDs, so an installed-device upgrade also needs an explicit
-identity mapping to avoid duplicate or orphaned local rows. Do not recreate
-the removed tables to mask this mismatch; adapt the mobile data layer to the
-unified backend contract in `docs/recurring_transfert_backend_actions.md`.
+The connected Bicount Supabase project (`yudjgfypbsahpukruqta`) dropped
+`account_funding`, `subscriptions`, and `recurring_fundings` in migration
+`20260409090333`, after moving money occurrences to `transactions` and
+recurring templates to `recurring_transfert`. Active V2 codecs and feature data
+sources now read and write only the unified tables. The old model codecs are
+read-only migration decoders. Legacy funding is represented as a self-income
+transaction and counted once. Recurring transactions read both the older
+`origin_id` link and the backend `recurring_transfert_id` link.
+Editing or deleting a recurring template does not rewrite or erase already
+recorded money transactions.
 
 Realtime publication is active for `users`, `friends`, `transactions`, `debts`,
 and `recurring_transfert`. Their record keys are unique. Backend RLS currently
 allows anonymous `INSERT` on `transactions` with `WITH CHECK (true)`, and
 `fcm_tokens` has no `DELETE` policy, so client-side duplicate cleanup cannot
 remove rows. These findings require backend review before release. No remote
-schema or data was changed during this audit.
+schema or data was changed during this audit or mobile alignment.
 
 ## Runtime contract
 
 - `lib/core/offline/repository.dart` owns an SQLite file per authenticated UID.
-- `offline_codecs.g.dart` maps the 13 existing finance and social models to their
-  existing Supabase columns and legacy SQLite table names.
+- `offline_codecs.g.dart` maps active finance and social models to existing
+  Supabase columns and legacy SQLite table names. The retired model codecs are
+  excluded from active reads, writes, realtime, and snapshot sync.
 - `outbox/` writes a model mutation and its outgoing intent atomically. Each
   record retains only its latest unsent state. UUID model IDs remain unchanged.
 - `offline_sync.dart` pushes pending writes in order, retries failures with
@@ -67,6 +68,14 @@ remain untouched except after the user explicitly deletes the account. If
 conversion fails, remote synchronization pauses while local data remains
 available; the error is logged for recovery.
 
+The three retired finance tables are copied locally into canonical transactions
+and recurring templates before synchronization. Their old UUIDs remain stable
+where possible; non-UUID IDs are mapped deterministically. Before sending old
+queued edits, V2 compares each provisional row with the already migrated remote
+rows, adopts the remote UUID when it can identify the same record, and sends
+only unmatched local work. Ambiguous matches pause reconciliation instead of
+guessing or duplicating money. Old source tables and queue files are retained.
+
 ## Network-only actions
 
 Authentication, invitation acceptance and unlinking, and account deletion
@@ -83,5 +92,4 @@ an uncached currency cannot be converted accurately while offline.
 Run `flutter test test/core/offline`, `flutter test`, and
 `flutter build apk --debug`. Test iOS and upgrade from an installed V1 build on
 real devices before release, including an unsent transaction and a remote
-deletion while the app is offline. The pre-existing transaction subscription
-date assertion remains a separate baseline test failure.
+deletion while the app is offline.

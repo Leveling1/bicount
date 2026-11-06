@@ -1,119 +1,21 @@
 import 'package:bicount/core/offline/offline_model.dart';
 import 'package:bicount/core/offline/repository.dart';
-import 'package:bicount/core/constants/friend_const.dart';
-import 'package:bicount/core/constants/transaction_types.dart';
-import 'package:bicount/features/main/data/models/friends.model.dart';
+import 'package:bicount/core/offline/legacy_recurring_adapter.dart';
+import 'package:bicount/core/offline/legacy_uuid.dart';
 import 'package:bicount/features/subscription/data/models/subscription.model.dart';
-import 'package:bicount/features/transaction/data/models/transaction.model.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 
 Future<SubscriptionModel?> findSubscription(String subscriptionId) async {
-  final items = await Repository().get<SubscriptionModel>(
-    policy: OfflineReadPolicy.localOnly,
-    query: Query(where: [Where.exact('subscriptionId', subscriptionId)]),
-  );
-  return items.isEmpty ? null : items.first;
-}
-
-Future<void> deleteSubscriptionCompanions({
-  required String currentUserId,
-  required String subscriptionId,
-}) async {
-  final existingFriend = await _findFriend(subscriptionId);
-  if (existingFriend != null) {
-    await Repository().delete<FriendsModel>(existingFriend);
-  }
-
-  final existingTransaction = await _findSubscriptionTransaction(
-    currentUserId,
-    subscriptionId,
-  );
-  if (existingTransaction != null) {
-    await Repository().delete<TransactionModel>(existingTransaction);
-  }
-}
-
-Future<void> syncSubscriptionCompanions({
-  required String currentUserId,
-  required SubscriptionModel subscription,
-}) async {
-  final subscriptionId = subscription.subscriptionId;
-  if (subscriptionId == null || subscriptionId.isEmpty) {
-    return;
-  }
-
-  final existingFriend = await _findFriend(subscriptionId);
-  await Repository().upsert<FriendsModel>(
-    FriendsModel(
-      sid: subscriptionId,
-      uid: null,
-      fid: currentUserId,
-      username: subscription.title,
-      email: existingFriend?.email ?? '',
-      image: existingFriend?.image ?? '',
-      give: existingFriend?.give ?? 0,
-      receive: existingFriend?.receive ?? 0,
-      relationType: FriendConst.subscription,
-      personalIncome: existingFriend?.personalIncome ?? 0,
-      companyIncome: existingFriend?.companyIncome ?? 0,
-    ),
-  );
-
-  final existingTransaction = await _findSubscriptionTransaction(
-    currentUserId,
-    subscriptionId,
-  );
-  if (existingTransaction == null) {
-    return;
-  }
-
-  await Repository().upsert<TransactionModel>(
-    TransactionModel(
-      tid: existingTransaction.tid,
-      uid: currentUserId,
-      gtid: existingTransaction.gtid,
-      name: subscription.title,
-      type: TransactionTypes.subscriptionCode,
-      beneficiaryId: subscriptionId,
-      senderId: currentUserId,
-      date: subscription.startDate,
-      note: subscription.notes ?? '',
-      amount: subscription.amount,
-      currency: subscription.currency,
-      referenceCurrencyCode: subscription.referenceCurrencyCode,
-      convertedAmount: subscription.convertedAmount,
-      amountCdf: subscription.amountCdf,
-      rateToCdf: subscription.rateToCdf,
-      fxRateDate: subscription.fxRateDate,
-      fxSnapshotId: subscription.fxSnapshotId,
-      image: existingTransaction.image,
-      frequency: subscription.frequency,
-      category: subscription.category,
-      createdAt: existingTransaction.createdAt,
-    ),
-  );
-}
-
-Future<FriendsModel?> _findFriend(String sid) async {
-  final items = await Repository().get<FriendsModel>(
-    policy: OfflineReadPolicy.localOnly,
-    query: Query(where: [Where.exact('sid', sid)]),
-  );
-  return items.isEmpty ? null : items.first;
-}
-
-Future<TransactionModel?> _findSubscriptionTransaction(
-  String currentUserId,
-  String subscriptionId,
-) async {
-  final items = await Repository().get<TransactionModel>(
+  final items = await Repository().get<RecurringTransfertModel>(
     policy: OfflineReadPolicy.localOnly,
     query: Query(
       where: [
-        Where.exact('senderId', currentUserId),
-        Where.exact('beneficiaryId', subscriptionId),
-        Where.exact('type', TransactionTypes.subscriptionCode),
+        Where.exact(
+          'recurringTransfertId',
+          canonicalLegacyUuid('subscriptions', subscriptionId),
+        ),
       ],
     ),
   );
-  return items.isEmpty ? null : items.first;
+  return items.isEmpty ? null : subscriptionFromRecurring(items.first);
 }

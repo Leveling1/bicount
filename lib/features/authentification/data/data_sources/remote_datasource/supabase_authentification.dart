@@ -102,12 +102,6 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
       final googleUser = await googleSignIn.authenticate();
 
       // ignore: unnecessary_null_comparison
-      if (googleUser == null) {
-        return Left(
-          AuthenticationFailure(message: 'Google sign-in cancelled.'),
-        );
-      }
-
       final authorization =
           await googleUser.authorizationClient.authorizationForScopes(scopes) ??
           await googleUser.authorizationClient.authorizeScopes(scopes);

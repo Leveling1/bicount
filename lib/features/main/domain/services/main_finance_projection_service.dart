@@ -1,4 +1,5 @@
 import 'package:bicount/core/constants/constants.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
@@ -81,8 +82,12 @@ class MainFinanceProjectionService {
       );
       final nativeAmount = transaction.amount;
       final category = transaction.category ?? Constants.personal;
+      final selfMovement =
+          transaction.senderId == transaction.beneficiaryId &&
+          currentUserParticipantIds.contains(transaction.senderId);
 
-      if (currentUserParticipantIds.contains(transaction.senderId)) {
+      if (currentUserParticipantIds.contains(transaction.senderId) &&
+          (!selfMovement || !TransactionTypes.isIncomeType(transaction.type))) {
         _addNative(balanceByCurrency, currencyCode, -nativeAmount);
         _addNative(expensesByCurrency, currencyCode, nativeAmount);
         if (category == Constants.personal) {
@@ -92,7 +97,9 @@ class MainFinanceProjectionService {
         }
       }
 
-      if (currentUserParticipantIds.contains(transaction.beneficiaryId)) {
+      if (currentUserParticipantIds.contains(transaction.beneficiaryId) &&
+          (!selfMovement ||
+              !TransactionTypes.isExpenseType(transaction.type))) {
         _addNative(balanceByCurrency, currencyCode, nativeAmount);
         _addNative(incomesByCurrency, currencyCode, nativeAmount);
         if (category == Constants.personal) {
@@ -193,8 +200,7 @@ class MainFinanceProjectionService {
 
     return friends
         .map(
-          (friend) =>
-              aggregatesById[friend.sid]!.toModel(this, currencyConfig),
+          (friend) => aggregatesById[friend.sid]!.toModel(this, currencyConfig),
         )
         .toList();
   }
