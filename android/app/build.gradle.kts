@@ -4,11 +4,16 @@ import java.io.FileInputStream
 plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services") apply false
     // END: FlutterFire Configuration
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+val localPreprodBuild = System.getenv("BICOUNT_LOCAL_PREPROD_BUILD") == "1"
+if (!localPreprodBuild) {
+    apply(plugin = "com.google.gms.google-services")
 }
 
 val keystoreProperties = Properties()
@@ -35,6 +40,9 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.youngsolver.bicount"
+        manifestPlaceholders["bicountAppLabel"] = if (localPreprodBuild) "Bicount Préproduction" else "Bicount"
+        manifestPlaceholders["bicountLinkHost"] = if (localPreprodBuild) "preprod.invalid" else "bicount.youngsolver.org"
+        manifestPlaceholders["bicountLinkScheme"] = if (localPreprodBuild) "bicount-preprod" else "bicount"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -53,6 +61,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            if (localPreprodBuild) applicationIdSuffix = ".preprod"
+            manifestPlaceholders["bicountPreprodCleartext"] = localPreprodBuild.toString()
+            manifestPlaceholders["bicountFirebaseAutoInit"] = (!localPreprodBuild).toString()
+        }
         release {
             signingConfig = signingConfigs.getByName("release")
         }
