@@ -6,7 +6,7 @@ import 'package:path/path.dart' as path;
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../constants/secrets.dart';
+import '../constants/backend_environment.dart';
 import 'offline_codecs.g.dart';
 import 'offline_legacy_copy.dart';
 import 'offline_legacy_finance_migration.dart';
@@ -27,9 +27,10 @@ class Repository {
   static late DatabaseFactory _factory;
   static Future<void> configure(DatabaseFactory factory) async {
     _factory = factory;
+    BackendEnvironment.validate();
     await Supabase.initialize(
-      url: Secrets.projectUrl,
-      anonKey: Secrets.anonKey,
+      url: BackendEnvironment.projectUrl,
+      anonKey: BackendEnvironment.anonKey,
     );
   }
 
@@ -69,9 +70,11 @@ class Repository {
     final directory = await _factory.getDatabasesPath();
     final target = path.join(
       directory,
-      'bicount_${uid.replaceAll('-', '')}.sqlite',
+      '${BackendEnvironment.isLocalPreproduction ? 'bicount_preprod_' : 'bicount_'}'
+      '${uid.replaceAll('-', '')}.sqlite',
     );
-    if (!await _factory.databaseExists(target)) {
+    if (!BackendEnvironment.isLocalPreproduction &&
+        !await _factory.databaseExists(target)) {
       await copyLegacyDatabaseForSameUser(_factory, uid, directory, target);
     }
     final db = await _factory.openDatabase(target);
@@ -105,8 +108,13 @@ class Repository {
       'PRIMARY KEY (table_name, record_id))',
     );
     try {
-      await migrateLegacyFinance(db, uid);
-      await importLegacyQueue(db, _factory, uid, directory);
+      if (!BackendEnvironment.isLocalPreproduction) {
+        await migrateLegacyFinance(db, uid);
+        await importLegacyQueue(db, _factory, uid, directory);
+      } else {
+        // Initialize the candidate table without importing a production queue.
+        await migrateLegacyFinance(db, uid);
+      }
       legacyMigrationPending = false;
     } catch (error) {
       legacyMigrationPending = true;
@@ -170,7 +178,10 @@ class Repository {
     return rows.map((row) => codec.fromLocal(row)).toList(growable: false);
   }
 
-  Future<T> upsert<T extends OfflineModel>(T model) async {
+  Future<T> upsert<T extends OfflineModel>(
+    T model, {
+    bool isCreation = false,
+  }) async {
     final codec = codecFor<T>();
     final local = codec.toLocal(model);
     final remote = codec.toRemote(model);
@@ -183,6 +194,7 @@ class Repository {
       recordId: id,
       action: 'upsert',
       payload: remote,
+      isCreation: isCreation,
     );
     await OfflineOutbox(db).commit(operation, (tx) async {
       await tx.insert(
@@ -333,7 +345,8 @@ class Repository {
     final directory = await _factory.getDatabasesPath();
     final target = path.join(
       directory,
-      'bicount_${uid.replaceAll('-', '')}.sqlite',
+      '${BackendEnvironment.isLocalPreproduction ? 'bicount_preprod_' : 'bicount_'}'
+      '${uid.replaceAll('-', '')}.sqlite',
     );
     if (!path.isWithin(directory, target)) {
       throw StateError('Local database path escaped the app directory.');
@@ -343,7 +356,8 @@ class Repository {
       if (await file.exists()) await file.delete();
     }
     final legacy = path.join(directory, 'my_repository.sqlite');
-    if (await legacyDatabaseBelongsTo(_factory, legacy, uid)) {
+    if (!BackendEnvironment.isLocalPreproduction &&
+        await legacyDatabaseBelongsTo(_factory, legacy, uid)) {
       for (final name in const [
         'my_repository.sqlite',
         'brick_offline_queue.sqlite',

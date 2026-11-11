@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' as http;
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/constants/secrets.dart';
+import '../../../../core/constants/backend_environment.dart';
 import '../../../../core/errors/failure.dart';
 import '../../domain/entities/project_model.dart';
 import '../../domain/repositories/project_repository.dart';
@@ -28,7 +29,9 @@ class ProjectRepositoryImpl implements ProjectRepository {
     File? logoFile,
   ) async {
     try {
-      final uri = Uri.parse(Secrets.createProjectEndpoint);
+      final uri = Uri.parse(
+        BackendEnvironment.endpoint(Secrets.createProjectEndpoint),
+      );
 
       var request = http.MultipartRequest("POST", uri)
         ..fields['name'] = project.name
@@ -39,7 +42,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
         ..fields['cid'] = project.cid
         ..fields['pid'] = uuid.v4()
         ..headers['Authorization'] = 'Bearer $accessToken'
-        ..headers['apikey'] = Secrets.anonKey;
+        ..headers['apikey'] = BackendEnvironment.anonKey;
       if (logoFile != null) {
         final mimeType = lookupMimeType(logoFile.path) ?? 'image/jpeg';
         final fileStream = http.ByteStream(logoFile.openRead());

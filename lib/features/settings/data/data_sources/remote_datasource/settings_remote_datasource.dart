@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bicount/core/constants/secrets.dart';
+import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/settings/data/models/settings_memoji_page_model.dart';
@@ -30,14 +30,14 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
     int limit = 20,
   }) async {
     final requestUri = Uri.parse(
-      '${Secrets.projectUrl}/functions/v1/get-memoji',
+      '${BackendEnvironment.projectUrl}/functions/v1/get-memoji',
     ).replace(queryParameters: {'page': '$page', 'limit': '$limit'});
 
     final httpClient = HttpClient();
     try {
       final request = await httpClient.getUrl(requestUri);
       request.headers.set(HttpHeaders.acceptHeader, 'application/json');
-      request.headers.set('apikey', Secrets.anonKey);
+      request.headers.set('apikey', BackendEnvironment.anonKey);
 
       final accessToken = _client.auth.currentSession?.accessToken;
       if (accessToken != null && accessToken.isNotEmpty) {

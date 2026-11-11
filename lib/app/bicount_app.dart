@@ -1,6 +1,7 @@
 import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/core/bloc/bloc_scope.dart';
 import 'package:bicount/core/constants/firebase_options.dart';
+import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/localization/presentation/cubit/locale_cubit.dart';
 import 'package:bicount/core/routes/app_router.dart';
 import 'package:bicount/core/themes/app_theme.dart';
@@ -8,16 +9,38 @@ import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart'
 import 'package:bicount/features/settings/presentation/bloc/theme_cubit.dart';
 import 'package:bicount/features/settings/domain/entities/theme_preference.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bicount/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart' show databaseFactory;
 import 'package:toastification/toastification.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 Future<void> bootstrapBicountApp() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  BackendEnvironment.validate();
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+    final package = (await PackageInfo.fromPlatform()).packageName;
+    BackendEnvironment.validateAndroidPackage(package);
+  } else if (BackendEnvironment.isLocalPreproduction) {
+    throw StateError('This isolated preproduction build requires Android.');
+  }
+  await Firebase.initializeApp(
+    options: BackendEnvironment.isLocalPreproduction
+        ? const FirebaseOptions(
+            apiKey: 'local-test-only',
+            appId: '1:1234567890:android:0000000000000000',
+            messagingSenderId: '1234567890',
+            projectId: 'bicount-local-preprod',
+          )
+        : DefaultFirebaseOptions.currentPlatform,
+  );
+  if (BackendEnvironment.isLocalPreproduction) {
+    await FirebaseMessaging.instance.setAutoInitEnabled(false);
+  }
   await Repository.configure(databaseFactory);
   await Repository().initialize();
 }

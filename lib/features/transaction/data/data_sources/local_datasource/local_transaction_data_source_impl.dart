@@ -52,7 +52,7 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         transactionType: transactionType,
       );
 
-      await Repository().upsert<FriendsModel>(friendAdd);
+      await Repository().upsert<FriendsModel>(friendAdd, isCreation: true);
 
       return Right(friendAdd);
     } catch (_) {
@@ -147,7 +147,10 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         generationMode: generationMode ?? 0,
       );
 
-      await Repository().upsert<TransactionModel>(transactionModel);
+      await Repository().upsert<TransactionModel>(
+        transactionModel,
+        isCreation: true,
+      );
 
       // Apply finance effects locally so balances update immediately.
       await _offlineFinanceLocalService.applyTransactionEffects(

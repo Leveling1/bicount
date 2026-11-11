@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:bicount/core/constants/test_account.dart';
+import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:dartz/dartz.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,9 +20,10 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
 
   @override
   Future<void> requestEmailOtp(String email) async {
-    if (email == TestAccount.appleEmailTest ||
-        email == TestAccount.googleEmailTest ||
-        email == TestAccount.userEmailTest) {
+    if (!BackendEnvironment.isLocalPreproduction &&
+        (email == TestAccount.appleEmailTest ||
+            email == TestAccount.googleEmailTest ||
+            email == TestAccount.userEmailTest)) {
       return;
     }
     await supabaseClient.auth.signInWithOtp(
@@ -32,11 +34,13 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
 
   @override
   Future<void> verifyEmailOtp(String email, String code) async {
-    if (email == TestAccount.appleEmailTest &&
-            code == TestAccount.appleOtpTest ||
-        email == TestAccount.googleEmailTest &&
-            code == TestAccount.googleOtpTest ||
-        email == TestAccount.userEmailTest && code == TestAccount.userOtpTest) {
+    if (!BackendEnvironment.isLocalPreproduction &&
+        (email == TestAccount.appleEmailTest &&
+                code == TestAccount.appleOtpTest ||
+            email == TestAccount.googleEmailTest &&
+                code == TestAccount.googleOtpTest ||
+            email == TestAccount.userEmailTest &&
+                code == TestAccount.userOtpTest)) {
       await connectionTest(email);
       return;
     }
@@ -49,6 +53,11 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
 
   @override
   Future<void> authWithApple() async {
+    if (BackendEnvironment.isLocalPreproduction) {
+      throw const AuthException(
+        'Apple sign-in is disabled in local preproduction.',
+      );
+    }
     final rawNonce = supabaseClient.auth.generateRawNonce();
     final hashedNonce = sha256.convert(utf8.encode(rawNonce)).toString();
     final credential = await SignInWithApple.getAppleIDCredential(
@@ -90,6 +99,13 @@ class SupabaseAuthentification implements AuthenticationRemoteDataSource {
 
   @override
   Future<Either<Failure, AuthResponse>> authWithGoogle() async {
+    if (BackendEnvironment.isLocalPreproduction) {
+      return Left(
+        AuthenticationFailure(
+          message: 'Google sign-in is disabled in local preproduction.',
+        ),
+      );
+    }
     try {
       final scopes = ['email', 'profile'];
       final googleSignIn = GoogleSignIn.instance;

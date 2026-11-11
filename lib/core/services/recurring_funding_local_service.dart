@@ -18,6 +18,7 @@ class RecurringFundingLocalService {
   Future<void> createRecurringFunding(RecurringFundingModel funding) async {
     await Repository().upsert<RecurringTransfertModel>(
       fundingPlanAsRecurring(funding),
+      isCreation: true,
     );
   }
 

@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../../../core/constants/secrets.dart';
+import '../../../../core/constants/backend_environment.dart';
 import '../../../../core/errors/failure.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mime/mime.dart';
@@ -38,7 +39,9 @@ class CompanyRepositoryImpl implements CompanyRepository {
   ) async {
     String cid = uuid.v4();
     try {
-      final uri = Uri.parse(Secrets.createCompanyEndpoint);
+      final uri = Uri.parse(
+        BackendEnvironment.endpoint(Secrets.createCompanyEndpoint),
+      );
 
       var request = http.MultipartRequest("POST", uri)
         ..fields['name'] = company.name
@@ -47,7 +50,7 @@ class CompanyRepositoryImpl implements CompanyRepository {
         ..fields['cid'] = cid
         ..fields['lid'] = uuid.v4()
         ..headers['Authorization'] = 'Bearer $accessToken'
-        ..headers['apikey'] = Secrets.anonKey;
+        ..headers['apikey'] = BackendEnvironment.anonKey;
 
       if (logoFile != null) {
         final mimeType = lookupMimeType(logoFile.path) ?? 'image/jpeg';

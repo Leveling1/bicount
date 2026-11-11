@@ -1,4 +1,5 @@
 import 'package:app_settings/app_settings.dart';
+import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/features/notification/data/data_sources/local_datasource/notification_permission_local_data_source.dart';
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/firebase_notification_remote_data_source.dart'
     show readDeviceToken;
@@ -39,6 +40,7 @@ class NotificationPermissionRepositoryImpl
 
   @override
   Future<bool> requestOsPermission() async {
+    if (BackendEnvironment.isLocalPreproduction) return false;
     // Use the result directly from requestPermission() rather than a
     // separate getNotificationSettings() call — on iOS the latter can
     // return stale data immediately after the native dialog is dismissed.
@@ -62,18 +64,21 @@ class NotificationPermissionRepositoryImpl
 
   @override
   Future<bool> isOsPermissionAuthorized() async {
+    if (BackendEnvironment.isLocalPreproduction) return false;
     final settings = await messaging.getNotificationSettings();
     return _isAuthorized(settings.authorizationStatus);
   }
 
   @override
   Future<bool> isOsPermissionPermanentlyDenied() async {
+    if (BackendEnvironment.isLocalPreproduction) return false;
     final settings = await messaging.getNotificationSettings();
     return settings.authorizationStatus == AuthorizationStatus.denied;
   }
 
   @override
   Future<void> syncDeviceToken() async {
+    if (BackendEnvironment.isLocalPreproduction) return;
     await remoteDataSource.syncDeviceToken();
     final token = await readDeviceToken(messaging);
     if (token != null) {
@@ -83,6 +88,7 @@ class NotificationPermissionRepositoryImpl
 
   @override
   Future<bool> hasFcmTokenChanged() async {
+    if (BackendEnvironment.isLocalPreproduction) return false;
     final currentToken = await readDeviceToken(messaging);
     if (currentToken == null) {
       // Unreadable, the normal state on iOS while APNs registration is

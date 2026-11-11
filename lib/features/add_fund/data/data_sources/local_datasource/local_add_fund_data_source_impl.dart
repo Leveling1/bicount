@@ -94,6 +94,7 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
 
     await Repository().upsert<TransactionModel>(
       fundingAsTransaction(accountFundingData),
+      isCreation: true,
     );
     // applyFundingEffects removed – add_fund is superseded by transaction + recurring_transfert
   }

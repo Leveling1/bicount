@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/constants/secrets.dart';
+import '../../../../core/constants/backend_environment.dart';
 import '../../domain/entities/group_model.dart';
 import '../../domain/entities/member_model.dart';
 import '../../domain/repositories/group_repository.dart';
@@ -26,7 +27,9 @@ class GroupRepositoryImpl implements GroupRepository {
   @override
   Future<GroupEntity> createGroup(GroupEntity group, File? logoFile) async {
     try {
-      final uri = Uri.parse(Secrets.createGroupEndpoint);
+      final uri = Uri.parse(
+        BackendEnvironment.endpoint(Secrets.createGroupEndpoint),
+      );
 
       var request = http.MultipartRequest("POST", uri)
         ..fields['name'] = group.name
@@ -34,7 +37,7 @@ class GroupRepositoryImpl implements GroupRepository {
         ..fields['cid'] = group.cid
         ..fields['gid'] = uuid.v4()
         ..headers['Authorization'] = 'Bearer $accessToken'
-        ..headers['apikey'] = Secrets.anonKey;
+        ..headers['apikey'] = BackendEnvironment.anonKey;
       if (logoFile != null) {
         final mimeType = lookupMimeType(logoFile.path) ?? 'image/jpeg';
         final fileStream = http.ByteStream(logoFile.openRead());

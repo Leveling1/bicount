@@ -7,7 +7,7 @@ import 'package:bicount/features/debt/data/models/debt.model.dart';
 class LocalDebtDataSourceImpl implements DebtLocalDataSource {
   @override
   Future<void> createDebt(DebtModel debt) async {
-    await Repository().upsert<DebtModel>(debt);
+    await Repository().upsert<DebtModel>(debt, isCreation: true);
   }
 
   @override

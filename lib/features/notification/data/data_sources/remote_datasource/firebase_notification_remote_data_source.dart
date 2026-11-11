@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:bicount/core/constants/app_config.dart';
+import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/notification/data/data_sources/remote_datasource/notification_remote_datasource.dart';
 import 'package:bicount/features/notification/domain/entities/app_notification_entity.dart';
@@ -72,6 +73,7 @@ class FirebaseNotificationRemoteDataSource
 
   @override
   Future<void> requestPermission() async {
+    if (BackendEnvironment.isLocalPreproduction) return;
     final settings = await messaging.requestPermission(
       alert: true,
       badge: true,
@@ -83,6 +85,7 @@ class FirebaseNotificationRemoteDataSource
 
   @override
   Future<void> syncDeviceToken() async {
+    if (BackendEnvironment.isLocalPreproduction) return;
     await _syncAllUsersTopicMembership(
       await messaging.getNotificationSettings(),
     );

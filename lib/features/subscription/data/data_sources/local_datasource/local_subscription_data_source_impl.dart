@@ -64,6 +64,7 @@ class LocalSubscriptionDataSourceImpl implements SubscriptionLocalDataSource {
 
       await Repository().upsert<RecurringTransfertModel>(
         subscriptionAsRecurring(subscriptionAdd),
+        isCreation: true,
       );
       // createSubscriptionWithEffects removed – subscription is now a transaction
       return const Right(null);

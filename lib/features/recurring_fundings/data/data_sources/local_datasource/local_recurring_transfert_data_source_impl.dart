@@ -163,7 +163,10 @@ class LocalRecurringTransfertDataSourceImpl
         recurringOccurrenceDate: occurrence.expectedDate.toIso8601String(),
         generationMode: TransactionTypes.generationManualConfirmation,
       );
-      await Repository().upsert<TransactionModel>(transaction);
+      await Repository().upsert<TransactionModel>(
+        transaction,
+        isCreation: true,
+      );
       if (_currentUid != null) {
         await _offlineFinanceLocalService.applyTransactionEffects(
           currentUserId: _currentUid!,

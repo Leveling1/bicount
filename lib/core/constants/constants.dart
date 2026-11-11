@@ -4,7 +4,9 @@ class Constants {
 
   /// Default memoji image URL
   static const String memojiDefault =
-      'https://yudjgfypbsahpukruqta.supabase.co/storage/v1/object/public/memoji/memoji_default.png';
+      bool.fromEnvironment('BICOUNT_LOCAL_PREPROD')
+      ? 'http://127.0.0.1:54321/storage/v1/object/public/memoji/memoji_default.png'
+      : 'https://yudjgfypbsahpukruqta.supabase.co/storage/v1/object/public/memoji/memoji_default.png';
 
   /// Transaction categories
   static const personal = 0;
