@@ -14,16 +14,36 @@ class OfflineMerge {
     required String userId,
     required List<Map<String, dynamic>> rows,
     required List<String> confirmedDeletes,
+    int? observedSequence,
+    int? observedGeneration,
   }) async {
+    _validateMarker(observedSequence, observedGeneration);
     await db.transaction((tx) async {
       final protectedIds = await _pendingIds(tx, userId, codec.table);
       for (final row in rows) {
         final id = row[codec.key]?.toString();
         if (id == null || id.isEmpty || protectedIds.contains(id)) continue;
-        await _writeRemote(tx, codec, row, id);
+        await _writeRemote(
+          tx,
+          codec,
+          row,
+          id,
+          userId,
+          observedSequence,
+          observedGeneration,
+        );
       }
       for (final id in confirmedDeletes) {
         if (protectedIds.contains(id)) continue;
+        await _rememberRemote(
+          tx,
+          userId,
+          codec.table,
+          id,
+          null,
+          observedSequence,
+          observedGeneration,
+        );
         final removed = await tx.query(
           codec.localTable,
           where: '"${codec.localKey}" = ?',
@@ -57,44 +77,84 @@ class OfflineMerge {
     required String userId,
     required String id,
     Map<String, dynamic>? row,
+    int? observedSequence,
+    int? observedGeneration,
   }) async {
-    return db.transaction((tx) async {
-      final protectedIds = await _pendingIds(
+    return db.transaction(
+      (tx) => eventInTransaction(
+        tx: tx,
+        codec: codec,
+        userId: userId,
+        id: id,
+        row: row,
+        observedSequence: observedSequence,
+        observedGeneration: observedGeneration,
+      ),
+    );
+  }
+
+  Future<bool> eventInTransaction({
+    required DatabaseExecutor tx,
+    required OfflineCodec<dynamic> codec,
+    required String userId,
+    required String id,
+    Map<String, dynamic>? row,
+    int? observedSequence,
+    int? observedGeneration,
+  }) async {
+    _validateMarker(observedSequence, observedGeneration);
+    final protectedIds = await _pendingIds(
+      tx,
+      userId,
+      codec.table,
+      recordId: id,
+    );
+    if (protectedIds.contains(id)) return false;
+    if (row == null) {
+      await _rememberRemote(
         tx,
         userId,
         codec.table,
-        recordId: id,
+        id,
+        null,
+        observedSequence,
+        observedGeneration,
       );
-      if (protectedIds.contains(id)) return false;
-      if (row == null) {
-        final removed = await tx.query(
-          codec.localTable,
-          where: '"${codec.localKey}" = ?',
-          whereArgs: [id],
-          limit: 1,
+      final removed = await tx.query(
+        codec.localTable,
+        where: '"${codec.localKey}" = ?',
+        whereArgs: [id],
+        limit: 1,
+      );
+      if (removed.isNotEmpty) {
+        await tx.insert(
+          'bicount_removed_record_archive',
+          {
+            'table_name': codec.localTable,
+            'record_id': id,
+            'payload': jsonEncode(removed.single),
+            'removed_at': DateTime.now().toUtc().toIso8601String(),
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
         );
-        if (removed.isNotEmpty) {
-          await tx.insert(
-            'bicount_removed_record_archive',
-            {
-              'table_name': codec.localTable,
-              'record_id': id,
-              'payload': jsonEncode(removed.single),
-              'removed_at': DateTime.now().toUtc().toIso8601String(),
-            },
-            conflictAlgorithm: ConflictAlgorithm.replace,
-          );
-        }
-        await tx.delete(
-          codec.localTable,
-          where: '"${codec.localKey}" = ?',
-          whereArgs: [id],
-        );
-      } else {
-        await _writeRemote(tx, codec, row, id);
       }
-      return true;
-    });
+      await tx.delete(
+        codec.localTable,
+        where: '"${codec.localKey}" = ?',
+        whereArgs: [id],
+      );
+    } else {
+      await _writeRemote(
+        tx,
+        codec,
+        row,
+        id,
+        userId,
+        observedSequence,
+        observedGeneration,
+      );
+    }
+    return true;
   }
 
   Future<Set<String>> _pendingIds(
@@ -111,7 +171,23 @@ class OfflineMerge {
           : 'user_id = ? AND collection = ? AND record_id = ?',
       whereArgs: recordId == null ? [userId, table] : [userId, table, recordId],
     );
-    return rows.map((row) => row['record_id'].toString()).toSet();
+    final ids = rows.map((row) => row['record_id'].toString()).toSet();
+    final candidateTable = await tx.rawQuery(
+      "SELECT 1 FROM sqlite_master WHERE type = 'table' "
+      "AND name = 'bicount_legacy_finance_candidates'",
+    );
+    if (candidateTable.isNotEmpty) {
+      final candidates = await tx.query(
+        'bicount_legacy_finance_candidates',
+        columns: ['target_id'],
+        where: recordId == null
+            ? 'target_table = ?'
+            : 'target_table = ? AND target_id = ?',
+        whereArgs: recordId == null ? [table] : [table, recordId],
+      );
+      ids.addAll(candidates.map((row) => row['target_id'].toString()));
+    }
+    return ids;
   }
 
   Future<void> _writeRemote(
@@ -119,6 +195,9 @@ class OfflineMerge {
     OfflineCodec<dynamic> codec,
     Map<String, dynamic> row,
     String id,
+    String userId,
+    int? observedSequence,
+    int? observedGeneration,
   ) async {
     final serialized = codec.encodeLocal(codec.decodeRemote(row));
     final remoteColumns = codec.columns.keys
@@ -132,5 +211,40 @@ class OfflineMerge {
       whereArgs: [id],
     );
     if (updated == 0) await tx.insert(codec.localTable, serialized);
+    await _rememberRemote(
+      tx,
+      userId,
+      codec.table,
+      id,
+      row,
+      observedSequence,
+      observedGeneration,
+    );
+  }
+
+  Future<void> _rememberRemote(
+    DatabaseExecutor tx,
+    String userId,
+    String table,
+    String id,
+    Map<String, dynamic>? row,
+    int? observedSequence,
+    int? observedGeneration,
+  ) async {
+    await tx.insert('bicount_remote_baseline', {
+      'user_id': userId,
+      'collection': table,
+      'record_id': id,
+      'remote_payload': row == null ? null : jsonEncode(row),
+      'journal_sequence': observedSequence,
+      'journal_generation': observedGeneration,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  void _validateMarker(int? sequence, int? generation) {
+    if ((sequence == null) != (generation == null) ||
+        (sequence != null && (sequence < 0 || generation! <= 0))) {
+      throw ArgumentError('Invalid journal marker.');
+    }
   }
 }

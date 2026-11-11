@@ -41,7 +41,10 @@ class OfflineFinanceLocalService {
   Future<void> createRecurringTransfert(
     RecurringTransfertModel recurringTransfert,
   ) async {
-    await Repository().upsert<RecurringTransfertModel>(recurringTransfert);
+    await Repository().upsert<RecurringTransfertModel>(
+      recurringTransfert,
+      isCreation: true,
+    );
   }
 
   Future<void> _applyTransactionSide({

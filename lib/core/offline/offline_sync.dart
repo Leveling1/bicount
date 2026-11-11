@@ -8,9 +8,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_config.dart';
 import 'offline_codecs.g.dart';
+import 'offline_conditional_delivery.dart';
+import 'offline_fresh_snapshot.dart';
 import 'offline_legacy_finance_migration.dart';
+import 'offline_legacy_acknowledgement.dart';
 import 'offline_legacy_finance_reconcile.dart';
-import '../constants/secrets.dart';
+import 'offline_journal.dart';
+import 'offline_remote_snapshot.dart';
+import '../constants/backend_environment.dart';
 import 'offline_model.dart';
 import 'offline_merge.dart';
 import 'outbox/offline_outbox.dart';
@@ -31,6 +36,16 @@ class OfflineSync {
   Future<void>? _active;
   String? _runningUserId;
   bool _rerunRequested = false;
+  bool _journalInUse = false;
+  static const _conditionalTestEnabled = BackendEnvironment.isConditionalTest;
+
+  static const _journalTables = {
+    'users',
+    'friends',
+    'transactions',
+    'debts',
+    'recurring_transfert',
+  };
 
   SupabaseClient get _client => Supabase.instance.client;
 
@@ -75,20 +90,55 @@ class OfflineSync {
       if (repository.legacyMigrationPending) return;
       if (await hasLegacyFinanceCandidates(db)) {
         try {
-          await pullCodec(transactionModelCodec);
-          await pullCodec(recurringTransfertModelCodec);
+          final candidates = await db.query(
+            'bicount_legacy_finance_candidates',
+            columns: ['target_table'],
+            distinct: true,
+          );
+          final tables = candidates.map((row) => row['target_table']).toSet();
+          for (final codec in [
+            transactionModelCodec,
+            recurringTransfertModelCodec,
+          ]) {
+            if (!tables.contains(codec.table)) continue;
+            final last = _lastPull[codec.table];
+            if (last == null ||
+                DateTime.now().difference(last) > const Duration(minutes: 5)) {
+              await pullCodec(codec);
+            }
+          }
         } catch (error) {
           debugPrint('Legacy finance reconciliation will retry: $error');
           return;
         }
       }
       if (!await _push(uid)) return;
+      var journalActive = false;
+      if (OfflineJournal.enabled) {
+        try {
+          journalActive = await OfflineJournal(
+            client: _client,
+            db: db,
+            userId: uid,
+            currentUserId: () => repository.currentUserId,
+            snapshot: _freshJournalSnapshot,
+            notify: repository.notifyType,
+          ).synchronize();
+        } catch (error) {
+          debugPrint('Journal sync unavailable; using snapshots: $error');
+        }
+      }
+      if (_journalInUse && !journalActive) _lastPull.clear();
+      _journalInUse = journalActive;
       for (final codec in allOfflineCodecs.where(_isEagerCollection)) {
         if (repository.currentUserId != uid) return;
         watchCodec(codec);
         final last = _lastPull[codec.table];
-        if (last == null ||
-            DateTime.now().difference(last) > const Duration(minutes: 5)) {
+        final journalCollection = _journalTables.contains(codec.table);
+        final interval = journalActive && journalCollection
+            ? const Duration(hours: 1)
+            : const Duration(minutes: 5);
+        if (last == null || DateTime.now().difference(last) > interval) {
           try {
             await pullCodec(codec);
           } catch (error) {
@@ -117,12 +167,26 @@ class OfflineSync {
     final db = await repository.database();
     final outbox = OfflineOutbox(db);
     while (repository.currentUserId == uid) {
-      final pending = await outbox.pending(uid, limit: 100);
+      final pending = await outbox.pending(
+        uid,
+        limit: 100,
+        excludeUnresolvedLegacy: true,
+      );
       if (pending.isEmpty) break;
       for (final operation in pending) {
         if (repository.currentUserId != uid) return false;
         try {
-          if (operation.action == 'legacy_http') {
+          if (_conditionalTestEnabled &&
+              _journalTables.contains(operation.collection) &&
+              (operation.action == 'upsert' || operation.action == 'delete')) {
+            await deliverConditionalOperation(
+              db: db,
+              client: _client,
+              operation: operation,
+              currentUserId: () => repository.currentUserId,
+            );
+            continue;
+          } else if (operation.action == 'legacy_http') {
             await _sendLegacyRequest(operation.payload);
           } else if (operation.action == 'remote_upsert') {
             final key = operation.payload['key'] as String;
@@ -227,7 +291,7 @@ class OfflineSync {
 
   Future<void> _sendLegacyRequest(Map<String, Object?> payload) async {
     final uri = Uri.parse(payload['url'] as String);
-    final project = Uri.parse(Secrets.projectUrl);
+    final project = Uri.parse(BackendEnvironment.projectUrl);
     if (uri.scheme != project.scheme ||
         uri.host != project.host ||
         uri.port != project.port) {
@@ -249,7 +313,7 @@ class OfflineSync {
       }
       request.headers.set(name, entry.value.toString());
     }
-    request.headers.set('apikey', Secrets.anonKey);
+    request.headers.set('apikey', BackendEnvironment.anonKey);
     request.headers.set('authorization', 'Bearer $token');
     request.write(payload['body'] as String? ?? '');
     final response = await request.close().timeout(const Duration(seconds: 20));
@@ -269,48 +333,85 @@ class OfflineSync {
     return pullCodec(codec);
   }
 
-  Future<void> pullCodec(OfflineCodec<dynamic> codec) {
+  Future<void> pullCodec(
+    OfflineCodec<dynamic> codec, {
+    int? observedSequence,
+    int? observedGeneration,
+  }) {
     final active = _activePulls[codec.table];
     if (active != null) return active;
     late final Future<void> tracked;
-    tracked = _pullCodec(codec).whenComplete(() {
-      if (identical(_activePulls[codec.table], tracked)) {
-        _activePulls.remove(codec.table);
-      }
-    });
+    tracked =
+        _pullCodec(
+          codec,
+          observedSequence: observedSequence,
+          observedGeneration: observedGeneration,
+        ).whenComplete(() {
+          if (identical(_activePulls[codec.table], tracked)) {
+            _activePulls.remove(codec.table);
+          }
+        });
     _activePulls[codec.table] = tracked;
     return tracked;
   }
 
-  Future<void> _pullCodec(OfflineCodec<dynamic> codec) async {
+  /// A journal watermark is read before this call. An older in-flight pull
+  /// must finish first; otherwise it could be mistaken for a fresh snapshot.
+  Future<void> _freshJournalSnapshot(
+    OfflineCodec<dynamic> codec,
+    int sequence,
+    int generation,
+  ) async {
+    final uid = repository.currentUserId;
+    await refreshAfterOlderPull(
+      olderPull: _activePulls[codec.table],
+      isCurrentAccount: () => uid != null && repository.currentUserId == uid,
+      refresh: () => pullCodec(
+        codec,
+        observedSequence: sequence,
+        observedGeneration: generation,
+      ),
+    );
+  }
+
+  Future<void> _pullCodec(
+    OfflineCodec<dynamic> codec, {
+    int? observedSequence,
+    int? observedGeneration,
+  }) async {
     final uid = repository.currentUserId;
     if (uid == null) return;
-    await repository.database();
+    final db = await repository.database();
     if (repository.legacyMigrationPending) return;
-    const pageSize = 500;
-    String? lastId;
-    final remoteRows = <Map<String, dynamic>>[];
-    while (repository.currentUserId == uid) {
-      final request = _client.from(codec.table).select();
-      final page = lastId == null
-          ? await request
-                .order(codec.key)
-                .limit(pageSize)
-                .timeout(const Duration(seconds: 8))
-          : await request
-                .gt(codec.key, lastId)
-                .order(codec.key)
-                .limit(pageSize)
-                .timeout(const Duration(seconds: 8));
-      remoteRows.addAll(page);
-      if (page.length < pageSize) break;
-      lastId = page.last[codec.key]?.toString();
-      if (lastId == null || lastId.isEmpty) {
-        throw StateError('Cannot page ${codec.table} without ${codec.key}');
+    if (observedSequence == null &&
+        observedGeneration == null &&
+        _journalInUse &&
+        _journalTables.contains(codec.table)) {
+      final markers = await db.query(
+        'bicount_journal_cursor',
+        columns: ['sequence', 'generation'],
+        where: 'user_id = ?',
+        whereArgs: [uid],
+        limit: 1,
+      );
+      if (markers.isNotEmpty) {
+        observedSequence = (markers.single['sequence'] as num).toInt();
+        observedGeneration = (markers.single['generation'] as num).toInt();
       }
     }
+    final remoteRows = await fetchOfflineRemoteSnapshot(
+      client: _client,
+      codec: codec,
+      isCurrentUser: () => repository.currentUserId == uid,
+    );
     if (repository.currentUserId != uid) return;
-    final db = await repository.database();
+    await acknowledgeIdenticalLegacyUpserts(
+      db: db,
+      userId: uid,
+      table: codec.table,
+      key: codec.key,
+      remoteRows: remoteRows,
+    );
     await reconcileLegacyFinanceCandidates(
       db: db,
       codec: codec,
@@ -326,6 +427,13 @@ class OfflineSync {
     final pendingIds = pending
         .map((row) => row['record_id'].toString())
         .toSet();
+    final candidates = await db.query(
+      'bicount_legacy_finance_candidates',
+      columns: ['target_id'],
+      where: 'target_table = ?',
+      whereArgs: [codec.table],
+    );
+    pendingIds.addAll(candidates.map((row) => row['target_id'].toString()));
     final remoteIds = remoteRows
         .map((row) => row[codec.key]?.toString())
         .whereType<String>()
@@ -355,6 +463,8 @@ class OfflineSync {
       userId: uid,
       rows: remoteRows,
       confirmedDeletes: confirmedDeletes,
+      observedSequence: observedSequence,
+      observedGeneration: observedGeneration,
     );
     _lastPull[codec.table] = DateTime.now();
     repository.notifyType(codec.modelType);
@@ -381,7 +491,20 @@ class OfflineSync {
       },
     );
     _channels[codec.table] = channel;
-    channel.subscribe();
+    channel.subscribe((status, error) {
+      if (repository.currentUserId != ownerUserId) return;
+      if (status == RealtimeSubscribeStatus.subscribed) {
+        if (!OfflineJournal.enabled ||
+            !_journalInUse ||
+            !_journalTables.contains(codec.table)) {
+          _lastPull.remove(codec.table);
+        }
+        schedule();
+      } else if (status == RealtimeSubscribeStatus.channelError ||
+          status == RealtimeSubscribeStatus.timedOut) {
+        debugPrint('Realtime for ${codec.table} will reconnect: $error');
+      }
+    });
   }
 
   Future<void> _applyEvent(
@@ -391,6 +514,13 @@ class OfflineSync {
   ) async {
     final uid = repository.currentUserId;
     if (uid == null || uid != ownerUserId) return;
+    if (OfflineJournal.enabled && _journalTables.contains(codec.table)) {
+      // Journal mode uses realtime only as a wake-up signal. Applying an old
+      // payload after a newer journal page could otherwise regress local data.
+      if (!_journalInUse) _lastPull.remove(codec.table);
+      schedule();
+      return;
+    }
     final row = event.eventType == PostgresChangeEvent.delete
         ? event.oldRecord
         : event.newRecord;
@@ -431,6 +561,7 @@ class OfflineSync {
     final channels = _channels.values.toList();
     _channels.clear();
     _lastPull.clear();
+    _journalInUse = false;
     _activePulls.clear();
     _rerunRequested = false;
     for (final timer in _reconcileTimers.values) {

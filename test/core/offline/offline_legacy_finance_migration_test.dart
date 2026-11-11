@@ -11,7 +11,7 @@ void main() {
   sqfliteFfiInit();
 
   test(
-    'old funding is local offline and reconciles to migrated server UUID',
+    'a similar server row with a different UUID cannot prove identity',
     () async {
       final db = await databaseFactoryFfi.openDatabase(inMemoryDatabasePath);
       addTearDown(db.close);
@@ -67,65 +67,74 @@ void main() {
           },
         ],
       );
-      expect(await db.query('TransactionModel'), isEmpty);
-      expect(await hasLegacyFinanceCandidates(db), isFalse);
+      expect(await db.query('TransactionModel'), hasLength(1));
+      expect(await hasLegacyFinanceCandidates(db), isTrue);
       expect(await OfflineOutbox(db).pending('user-1'), isEmpty);
+      expect(await db.query('AccountFundingModel'), hasLength(1));
+      await reconcileLegacyFinanceCandidates(
+        db: db,
+        codec: transactionModelCodec,
+        userId: 'user-1',
+        remoteRows: [
+          {'tid': canonicalLegacyUuid('account_funding', 'old-funding')},
+        ],
+      );
+      expect(await hasLegacyFinanceCandidates(db), isFalse);
+    },
+  );
+
+  test(
+    'unmatched old funding stays local without an automatic write',
+    () async {
+      final db = await databaseFactoryFfi.openDatabase(inMemoryDatabasePath);
+      addTearDown(db.close);
+      final columns = transactionModelCodec.localColumns.values
+          .toSet()
+          .map((column) => '"$column"')
+          .join(', ');
+      await db.execute(
+        'CREATE TABLE TransactionModel '
+        '(_local_id INTEGER PRIMARY KEY AUTOINCREMENT, $columns)',
+      );
+      final recurringColumns = recurringTransfertModelCodec.localColumns.values
+          .toSet()
+          .map((column) => '"$column"')
+          .join(', ');
+      await db.execute(
+        'CREATE TABLE RecurringTransfertModel '
+        '(_local_id INTEGER PRIMARY KEY AUTOINCREMENT, $recurringColumns)',
+      );
+      await db.execute(
+        'CREATE TABLE AccountFundingModel '
+        '(funding_id TEXT, sid TEXT, amount REAL, currency TEXT, '
+        'source TEXT, date TEXT, category INTEGER)',
+      );
+      await db.insert('AccountFundingModel', {
+        'funding_id': 'old-funding',
+        'sid': 'user-1',
+        'amount': 42.0,
+        'currency': 'USD',
+        'source': 'Deposit',
+        'date': '2026-04-01',
+        'category': 0,
+      });
+      await OfflineOutbox(db).initialize();
+      await migrateLegacyFinance(db, 'user-1');
+      await reconcileLegacyFinanceCandidates(
+        db: db,
+        codec: transactionModelCodec,
+        userId: 'user-1',
+        remoteRows: const [],
+      );
+      final pending = await OfflineOutbox(db).pending('user-1');
+      expect(pending, isEmpty);
+      expect(await hasLegacyFinanceCandidates(db), isTrue);
+      expect(await db.query('TransactionModel'), hasLength(1));
       expect(await db.query('AccountFundingModel'), hasLength(1));
     },
   );
 
-  test('unmatched old funding becomes a durable canonical write', () async {
-    final db = await databaseFactoryFfi.openDatabase(inMemoryDatabasePath);
-    addTearDown(db.close);
-    final columns = transactionModelCodec.localColumns.values
-        .toSet()
-        .map((column) => '"$column"')
-        .join(', ');
-    await db.execute(
-      'CREATE TABLE TransactionModel '
-      '(_local_id INTEGER PRIMARY KEY AUTOINCREMENT, $columns)',
-    );
-    final recurringColumns = recurringTransfertModelCodec.localColumns.values
-        .toSet()
-        .map((column) => '"$column"')
-        .join(', ');
-    await db.execute(
-      'CREATE TABLE RecurringTransfertModel '
-      '(_local_id INTEGER PRIMARY KEY AUTOINCREMENT, $recurringColumns)',
-    );
-    await db.execute(
-      'CREATE TABLE AccountFundingModel '
-      '(funding_id TEXT, sid TEXT, amount REAL, currency TEXT, '
-      'source TEXT, date TEXT, category INTEGER)',
-    );
-    await db.insert('AccountFundingModel', {
-      'funding_id': 'old-funding',
-      'sid': 'user-1',
-      'amount': 42.0,
-      'currency': 'USD',
-      'source': 'Deposit',
-      'date': '2026-04-01',
-      'category': 0,
-    });
-    await OfflineOutbox(db).initialize();
-    await migrateLegacyFinance(db, 'user-1');
-    await reconcileLegacyFinanceCandidates(
-      db: db,
-      codec: transactionModelCodec,
-      userId: 'user-1',
-      remoteRows: const [],
-    );
-    final pending = await OfflineOutbox(db).pending('user-1');
-    expect(pending, hasLength(1));
-    expect(pending.single.collection, 'transactions');
-    expect(
-      pending.single.recordId,
-      canonicalLegacyUuid('account_funding', 'old-funding'),
-    );
-    expect(await db.query('AccountFundingModel'), hasLength(1));
-  });
-
-  test('old pending deletion adopts the migrated remote UUID', () async {
+  test('uncertain old deletion remains queued and is not sent', () async {
     final db = await databaseFactoryFfi.openDatabase(inMemoryDatabasePath);
     addTearDown(db.close);
     for (final codec in [transactionModelCodec, recurringTransfertModelCodec]) {
@@ -189,7 +198,34 @@ void main() {
     final pending = await OfflineOutbox(db).pending('user-1');
     expect(pending, hasLength(1));
     expect(pending.single.action, 'delete');
-    expect(pending.single.recordId, 'server-funding');
-    expect(pending.single.payload['tid'], 'server-funding');
+    expect(pending.single.recordId, localId);
+    expect(pending.single.payload['tid'], localId);
+    expect(await hasLegacyFinanceCandidates(db), isTrue);
+    await reconcileLegacyFinanceCandidates(
+      db: db,
+      codec: transactionModelCodec,
+      userId: 'user-1',
+      remoteRows: [
+        {'tid': localId},
+      ],
+    );
+    expect(await hasLegacyFinanceCandidates(db), isTrue);
+    await OfflineOutbox(db).commit(
+      OfflineOperation(
+        userId: 'user-1',
+        collection: 'transactions',
+        recordId: 'independent',
+        action: 'upsert',
+        payload: {'tid': 'independent'},
+      ),
+      (_) async {},
+    );
+    expect(
+      (await OfflineOutbox(db).pending(
+        'user-1',
+        excludeUnresolvedLegacy: true,
+      )).map((operation) => operation.recordId),
+      ['independent'],
+    );
   });
 }

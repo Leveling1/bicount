@@ -45,6 +45,18 @@ Future<void> importLegacyQueue(
       'CREATE TABLE IF NOT EXISTS bicount_legacy_import '
       '(job_id INTEGER PRIMARY KEY)',
     );
+    await target.execute(
+      'CREATE TABLE IF NOT EXISTS bicount_legacy_job_provenance ('
+      'job_id INTEGER NOT NULL, user_id TEXT NOT NULL, collection TEXT NOT NULL, '
+      'record_id TEXT NOT NULL, original_created_at_ms INTEGER, '
+      'PRIMARY KEY (job_id, user_id, collection, record_id))',
+    );
+    await target.execute(
+      'CREATE TABLE IF NOT EXISTS bicount_legacy_finance_candidates '
+      '(source_table TEXT NOT NULL, source_id TEXT NOT NULL, '
+      'target_table TEXT NOT NULL, target_id TEXT NOT NULL, '
+      'PRIMARY KEY (source_table, source_id))',
+    );
     for (final job in jobs) {
       final jobId = job['id'] as int;
       final imported = await target.query(
@@ -106,6 +118,16 @@ Future<void> importLegacyQueue(
           },
         );
         await OfflineOutbox(target).commit(raw, (tx) async {
+          await _rememberLegacyProvenance(tx, job, raw);
+          await tx.insert(
+            'bicount_legacy_pending_guard',
+            {
+              'user_id': uid,
+              'collection': raw.collection,
+              'record_id': raw.recordId,
+            },
+            conflictAlgorithm: ConflictAlgorithm.ignore,
+          );
           await tx.insert('bicount_legacy_import', {'job_id': jobId});
         });
         continue;
@@ -144,7 +166,30 @@ Future<void> importLegacyQueue(
                   canonical ?? knownCodec.decodeLocal(local.single),
                 ),
         );
-        await OfflineOutbox(target).commit(operation, (_) async {});
+        await OfflineOutbox(target).commit(operation, (tx) async {
+          await _rememberLegacyProvenance(tx, job, operation);
+          await tx.insert(
+            'bicount_legacy_pending_guard',
+            {
+              'user_id': uid,
+              'collection': operation.collection,
+              'record_id': operation.recordId,
+            },
+            conflictAlgorithm: ConflictAlgorithm.ignore,
+          );
+          if (isRetiredTable) {
+            await tx.insert(
+              'bicount_legacy_finance_candidates',
+              {
+                'source_table': knownCodec.localTable,
+                'source_id': id,
+                'target_table': targetCodec.table,
+                'target_id': targetId,
+              },
+              conflictAlgorithm: ConflictAlgorithm.ignore,
+            );
+          }
+        });
       }
       await target.insert('bicount_legacy_import', {'job_id': jobId});
     }
@@ -153,11 +198,29 @@ Future<void> importLegacyQueue(
   }
 }
 
-Object _canonicalFinanceRow(Object row) => switch (row) {
+Future<void> _rememberLegacyProvenance(
+  Transaction tx,
+  Map<String, Object?> job,
+  OfflineOperation operation,
+) async {
+  final timestamp = job['created_at'];
+  await tx.insert('bicount_legacy_job_provenance', {
+    'job_id': job['id'],
+    'user_id': operation.userId,
+    'collection': operation.collection,
+    'record_id': operation.recordId,
+    // Brick stores milliseconds since epoch; zero means unknown on old queues.
+    'original_created_at_ms': timestamp is int && timestamp > 0
+        ? timestamp
+        : null,
+  }, conflictAlgorithm: ConflictAlgorithm.ignore);
+}
+
+Object? _canonicalFinanceRow(Object row) => switch (row) {
   AccountFundingModel funding => fundingAsTransaction(funding),
   RecurringFundingModel funding => fundingPlanAsRecurring(funding),
   SubscriptionModel subscription => subscriptionAsRecurring(subscription),
-  _ => row,
+  _ => null,
 };
 
 String? _requestOwner(String? encodedHeaders) {

@@ -74,6 +74,14 @@ void main() {
         'Authorization': 'Bearer header.$otherClaims.signature',
       }),
     });
+    await queue.insert('HttpJobs', {
+      'id': 5,
+      'created_at': 5,
+      'request_method': 'POST',
+      'url': 'https://example.supabase.co/rest/v1/friends',
+      'body': '{"sid":"friend-1"}',
+      'headers': '{}',
+    });
     await queue.close();
 
     final target = await factory.openDatabase(
@@ -85,6 +93,11 @@ void main() {
       '(tid TEXT PRIMARY KEY, amount REAL)',
     );
     await target.insert('TransactionModel', {'tid': 'row-1', 'amount': 40.0});
+    await target.execute('CREATE TABLE FriendsModel (sid TEXT, username TEXT)');
+    await target.insert('FriendsModel', {
+      'sid': 'friend-1',
+      'username': 'Friend',
+    });
     final outbox = OfflineOutbox(target);
     await outbox.initialize();
 
@@ -92,13 +105,27 @@ void main() {
     await importLegacyQueue(target, factory, 'user-1', directory.path);
     final pending = await outbox.pending('user-1');
 
-    expect(pending, hasLength(3));
+    expect(pending, hasLength(4));
     expect(pending.first.action, 'upsert');
     expect(pending.first.recordId, 'row-1');
     expect(pending.first.payload['amount'], 40.0);
     expect(pending[1].action, 'legacy_http');
-    expect(pending.last.action, 'delete');
-    expect(pending.last.recordId, 'row-3');
+    expect(pending[2].action, 'delete');
+    expect(pending[2].recordId, 'row-3');
+    expect(pending.last.collection, 'friends');
+    expect(pending.last.recordId, 'friend-1');
+    expect(pending.last.payload['username'], 'Friend');
+    final provenance = await target.query(
+      'bicount_legacy_job_provenance',
+      where: 'job_id = ?',
+      whereArgs: [5],
+    );
+    expect(provenance.single['original_created_at_ms'], 5);
+    expect(provenance.single['record_id'], 'friend-1');
+    expect(
+      await outbox.pending('user-1', excludeUnresolvedLegacy: true),
+      isEmpty,
+    );
   });
 
   test(
@@ -140,6 +167,15 @@ void main() {
         'body': '{"funding_id":"old-funding","amount":42}',
         'headers': '{}',
       });
+      await queue.insert('HttpJobs', {
+        'id': 2,
+        'created_at': 2,
+        'request_method': 'DELETE',
+        'url':
+            'https://example.supabase.co/rest/v1/account_funding?funding_id=eq.old-deleted',
+        'body': '',
+        'headers': '{}',
+      });
       await queue.close();
       final target = await factory.openDatabase(
         path.join(directory.path, 'new.sqlite'),
@@ -162,13 +198,20 @@ void main() {
       await OfflineOutbox(target).initialize();
       await importLegacyQueue(target, factory, 'user-1', directory.path);
       final pending = await OfflineOutbox(target).pending('user-1');
-      expect(pending, hasLength(1));
-      expect(pending.single.collection, 'transactions');
+      expect(pending, hasLength(2));
+      expect(pending.first.collection, 'transactions');
       expect(
-        pending.single.recordId,
+        pending.first.recordId,
         canonicalLegacyUuid('account_funding', 'old-funding'),
       );
-      expect(pending.single.payload['type'], 1);
+      expect(pending.first.payload['type'], 1);
+      expect(pending.last.action, 'delete');
+      expect(
+        await OfflineOutbox(
+          target,
+        ).pending('user-1', excludeUnresolvedLegacy: true),
+        isEmpty,
+      );
     },
   );
 }

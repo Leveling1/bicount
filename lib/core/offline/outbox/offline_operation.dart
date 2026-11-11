@@ -13,6 +13,8 @@ class OfflineOperation {
     required this.payload,
     DateTime? createdAt,
     this.attempts = 0,
+    this.isCreation = false,
+    this.creationOperationId,
   }) : id = id ?? const Uuid().v4(),
        createdAt = (createdAt ?? DateTime.now()).toUtc();
 
@@ -24,6 +26,10 @@ class OfflineOperation {
   final Map<String, Object?> payload;
   final DateTime createdAt;
   final int attempts;
+  final bool isCreation;
+
+  /// Stable origin of a locally created row; null means provenance is unknown.
+  final String? creationOperationId;
 
   Map<String, Object?> toDatabase() => {
     'operation_id': id,
@@ -33,6 +39,8 @@ class OfflineOperation {
     'action': action,
     'payload': jsonEncode(payload),
     'created_at': createdAt.toIso8601String(),
+    'is_creation': isCreation ? 1 : 0,
+    'creation_operation_id': creationOperationId,
   };
 
   factory OfflineOperation.fromDatabase(Map<String, Object?> row) {
@@ -46,6 +54,8 @@ class OfflineOperation {
           .cast<String, Object?>(),
       createdAt: DateTime.parse(row['created_at'] as String),
       attempts: (row['attempts'] as int?) ?? 0,
+      isCreation: (row['is_creation'] as int? ?? 0) == 1,
+      creationOperationId: row['creation_operation_id'] as String?,
     );
   }
 }
