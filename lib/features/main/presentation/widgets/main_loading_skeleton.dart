@@ -1,43 +1,18 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_skeleton.dart';
 import 'package:flutter/material.dart';
+import 'package:bicount/features/home/presentation/widgets/home_loading_skeleton.dart';
 
-/// Loading placeholders keep the same slots as the corresponding data screens.
 class MainLoadingSkeleton extends StatelessWidget {
   const MainLoadingSkeleton({super.key, required this.index});
-
   final int index;
-
   @override
-  Widget build(BuildContext context) {
-    return switch (index) {
-      1 => const _AnalysisPlaceholder(),
-      2 => const _TransactionPlaceholder(),
-      3 => const _ProfilePlaceholder(),
-      _ => const _HomePlaceholder(),
-    };
-  }
-}
-
-class _HomePlaceholder extends StatelessWidget {
-  const _HomePlaceholder();
-
-  @override
-  Widget build(BuildContext context) => ListView(
-    padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
-    children: const [
-      SizedBox(height: 28),
-      Center(child: BicountSkeletonBox(width: 100, height: 18)),
-      SizedBox(height: 10),
-      Center(child: BicountSkeletonBox(width: 210, height: 38)),
-      SizedBox(height: 28),
-      _TwoCards(height: 112),
-      SizedBox(height: 16),
-      _SectionTitle(),
-      SizedBox(height: 12),
-      _TransactionRows(),
-    ],
-  );
+  Widget build(BuildContext context) => switch (index) {
+    1 => const _AnalysisPlaceholder(),
+    2 => const _TransactionPlaceholder(),
+    3 => const _ProfilePlaceholder(),
+    _ => const HomeLoadingSkeleton(),
+  };
 }
 
 class _ProfilePlaceholder extends StatelessWidget {
