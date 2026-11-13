@@ -1,4 +1,5 @@
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
@@ -34,6 +35,12 @@ class TransactionDirectionService {
     required String currentUserId,
     required List<FriendsModel> friends,
   }) {
+    if (transaction.type == TransactionTypes.walletTransferCode) {
+      return const TransactionDirection(
+        sign: TransactionSign.none,
+        origin: TransactionOrigin.internal,
+      );
+    }
     return _resolve(
       senderId: transaction.sender,
       beneficiaryId: transaction.beneficiary,
@@ -48,6 +55,12 @@ class TransactionDirectionService {
     required String currentUserId,
     required List<FriendsModel> friends,
   }) {
+    if (transaction.type == TransactionTypes.walletTransferCode) {
+      return const TransactionDirection(
+        sign: TransactionSign.none,
+        origin: TransactionOrigin.internal,
+      );
+    }
     return _resolve(
       senderId: transaction.senderId,
       beneficiaryId: transaction.beneficiaryId,

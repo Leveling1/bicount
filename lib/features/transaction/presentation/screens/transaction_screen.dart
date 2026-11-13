@@ -1,4 +1,7 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/constants/backend_environment.dart';
+import 'package:bicount/features/wallet/domain/services/wallet_attribution.dart';
+import 'package:bicount/features/wallet/presentation/widgets/wallet_filter.dart';
 import 'package:bicount/core/services/open_transaction_sheet.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
@@ -33,6 +36,7 @@ class TransactionScreen extends StatefulWidget {
 
 class _TransactionScreenState extends State<TransactionScreen> {
   String? _openedFocusTransactionId;
+  String? _walletId;
 
   @override
   void initState() {
@@ -106,11 +110,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       // Strip the focus query so navigating away and back does not re-open
       // the sheet automatically.
       GoRouter.of(context).go('/transaction');
-      showTransactionFeedDetails(
-        context,
-        data: widget.data,
-        item: resolved,
-      );
+      showTransactionFeedDetails(context, data: widget.data, item: resolved);
     });
   }
 
@@ -120,7 +120,16 @@ class _TransactionScreenState extends State<TransactionScreen> {
     _maybeOpenFocusedTransaction(feed);
     final filteredFeed = filterTransactionFeed(
       data: widget.data,
-      source: feed,
+      source: _walletId == null
+          ? feed
+          : feed
+                .where(
+                  (item) => walletSides(
+                    widget.data,
+                    item.transaction,
+                  ).any((side) => side.id == _walletId),
+                )
+                .toList(),
       query: widget.showSearchBar ? widget.searchController.text : '',
       selectedIndex: widget.selectedIndexTransaction,
     );
@@ -138,6 +147,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
     return Column(
       children: [
+        if (BackendEnvironment.isLocalPreproduction)
+          WalletFilter(
+            walletId: _walletId,
+            onChanged: (id) => setState(() => _walletId = id),
+          ),
         filteredFeed.isNotEmpty
             ? Expanded(
                 child: Padding(

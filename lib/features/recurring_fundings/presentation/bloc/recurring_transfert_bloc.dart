@@ -91,6 +91,7 @@ class RecurringTransfertBloc
         event.occurrence,
         confirmedAmount: event.confirmedAmount,
         confirmedCurrency: event.confirmedCurrency,
+        walletId: event.walletId,
       );
       emit(
         RecurringTransfertActionSuccess(
@@ -115,6 +116,7 @@ class RecurringTransfertBloc
         event.occurrence,
         confirmedAmount: event.confirmedAmount,
         confirmedCurrency: event.confirmedCurrency,
+        walletId: event.walletId,
         switchToAutomatic: true,
       );
       emit(

@@ -1,3 +1,5 @@
+import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -12,6 +14,8 @@ import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
+part 'recurring_plan_frequency_selector.dart';
 
 class RecurringPlanForm extends StatefulWidget {
   const RecurringPlanForm({super.key, required this.summary});
@@ -30,6 +34,10 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
   final TextEditingController _note = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late int _frequency;
+  String? _walletId;
+  bool get _income => TransactionTypes.isIncomeType(
+    widget.summary.recurringTransfert.recurringTransfertTypeId,
+  );
 
   bool isSubmitting = false;
 
@@ -64,6 +72,15 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
       child: Column(
         children: [
           CustomAmountField(amount: _amount, currency: _currency),
+          WalletPicker(
+            label: _income ? context.l10n.walletTo : context.l10n.walletFrom,
+            value:
+                _walletId ??
+                (_income
+                    ? widget.summary.recurringTransfert.beneficiaryWalletId
+                    : widget.summary.recurringTransfert.senderWalletId),
+            onChanged: (id) => setState(() => _walletId = id),
+          ),
           AppDimens.spacerMedium,
           CustomFormField(
             controller: _date,
@@ -120,6 +137,7 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
           note: _note.text.trim(),
           amount: amount,
           currency: _currency.text.trim(),
+          walletId: _walletId,
           frequency: _frequency,
           startDate: _date.text.trim(),
         ),
@@ -143,45 +161,5 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
       5 => Frequency.yearly,
       _ => frequency,
     };
-  }
-}
-
-class _FrequencySelector extends StatelessWidget {
-  const _FrequencySelector({required this.selected, required this.onChanged});
-
-  final int selected;
-  final ValueChanged<int> onChanged;
-
-  static const _frequencies = [
-    Frequency.weekly,
-    Frequency.monthly,
-    Frequency.quarterly,
-    Frequency.yearly,
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.l10n.commonFrequency,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        SizedBox(
-          width: double.infinity,
-          child: Wrap(
-            spacing: AppDimens.spacingSmall,
-            children: _frequencies.map((frequency) {
-              return CustomChoiceChip(
-                label: context.frequencyLabel(frequency),
-                selected: selected == frequency,
-                onSelected: (_) => onChanged(frequency),
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
   }
 }

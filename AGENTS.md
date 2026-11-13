@@ -1669,3 +1669,16 @@ Carried forward deliberately, not oversights:
 - iOS has no equivalent of the Android signed-out card: `current()` reads the
   shared preferences with per-key defaults and never tests the state marker
 - `RealtimeSubscribeException` timeouts surface as unhandled exceptions in logs
+
+## Wallets (local preproduction)
+
+- The Flutter feature lives in `lib/features/wallet`, generated with
+  `clean_structure feature --name wallet`. Use the same command for new
+  feature skeletons.
+- A missing wallet pointer belongs to the Principal of the corresponding
+  linked party. The default identity is stable and cannot be archived.
+- SQLite projects every recognized transaction side into one balance per
+  wallet and original currency. Friend-link changes refresh affected ledger
+  entries. A transfer is one transaction with two wallet pointers.
+- Local preproduction is the only enabled environment for the wallet schema,
+  UI, and automatic occurrences. See `docs/backend_followup_actions.md`.

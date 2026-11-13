@@ -1,4 +1,7 @@
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
+import 'package:bicount/core/constants/backend_environment.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/features/wallet/presentation/screens/wallet_screen.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
@@ -20,11 +23,7 @@ import '../bloc/home_bloc.dart';
 typedef CardTapCallback = void Function(int index);
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({
-    super.key,
-    this.onCardTap,
-    required this.data,
-  });
+  const HomeScreen({super.key, this.onCardTap, required this.data});
 
   static const _monthlyFlowService = HomeMonthlyFlowService();
   final CardTapCallback? onCardTap;
@@ -89,6 +88,14 @@ class HomeScreen extends StatelessWidget {
                 const SliverToBoxAdapter(
                   child: SizedBox(height: AppDimens.spacingMedium),
                 ),
+                if (BackendEnvironment.isLocalPreproduction)
+                  SliverToBoxAdapter(
+                    child: OutlinedButton.icon(
+                      icon: const Icon(Icons.account_balance_wallet_outlined),
+                      label: Text(context.l10n.walletTitle),
+                      onPressed: () => openWallets(context),
+                    ),
+                  ),
                 if (showRecurringStatusCard)
                   SliverToBoxAdapter(
                     child: BicountReveal(

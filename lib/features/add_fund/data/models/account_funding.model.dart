@@ -11,6 +11,7 @@ class AccountFundingModel extends OfflineModel {
   final double amount;
 
   final String currency;
+  final String? walletId;
 
   final String? referenceCurrencyCode;
 
@@ -41,6 +42,7 @@ class AccountFundingModel extends OfflineModel {
     required this.sid,
     required this.amount,
     required this.currency,
+    this.walletId,
     this.referenceCurrencyCode,
     this.convertedAmount,
     this.amountCdf,

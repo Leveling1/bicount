@@ -5,6 +5,8 @@ import 'package:bicount/features/debt/domain/entities/debt_summary_entity.dart';
 import 'package:bicount/features/debt/presentation/widgets/debt_detail_meta_line.dart';
 import 'package:bicount/features/debt/presentation/widgets/debt_detail_payment_section.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_actions.dart';
+import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
+import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
 class DebtDetailSheet extends StatefulWidget {
@@ -41,7 +43,8 @@ class DebtDetailSheet extends StatefulWidget {
   final String permissionHint;
   final String invalidAmountMessage;
   final bool isLoading;
-  final void Function(double amount, String currency) onRecordPayment;
+  final void Function(double amount, String currency, String? walletId)
+  onRecordPayment;
   final VoidCallback? onEditPressed;
   final VoidCallback? onDeletePressed;
 
@@ -119,6 +122,13 @@ class _DebtDetailSheetState extends State<DebtDetailSheet> {
           ),
           const SizedBox(height: AppDimens.spacingLarge),
           if (widget.summary.canRecordPayment && debt.remainingAmount > 0) ...[
+            WalletPicker(
+              label: widget.summary.isReceivable
+                  ? context.l10n.walletTo
+                  : context.l10n.walletFrom,
+              value: _walletId,
+              onChanged: (id) => setState(() => _walletId = id),
+            ),
             DebtDetailPaymentSection(
               amountController: _amountController,
               currencyController: _currencyController,
@@ -144,6 +154,8 @@ class _DebtDetailSheetState extends State<DebtDetailSheet> {
     );
   }
 
+  String? _walletId;
+
   void _submit() {
     if (!(_formKey.currentState?.validate() ?? false)) {
       return;
@@ -157,6 +169,6 @@ class _DebtDetailSheetState extends State<DebtDetailSheet> {
       return;
     }
 
-    widget.onRecordPayment(amount, currency);
+    widget.onRecordPayment(amount, currency, _walletId);
   }
 }

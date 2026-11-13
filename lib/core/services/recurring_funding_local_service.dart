@@ -15,9 +15,12 @@ class RecurringFundingLocalService {
         const RecurringFundingScheduleService(),
   });
 
-  Future<void> createRecurringFunding(RecurringFundingModel funding) async {
+  Future<void> createRecurringFunding(
+    RecurringFundingModel funding, {
+    String? walletId,
+  }) async {
     await Repository().upsert<RecurringTransfertModel>(
-      fundingPlanAsRecurring(funding),
+      fundingPlanAsRecurring(funding, walletId: walletId),
       isCreation: true,
     );
   }

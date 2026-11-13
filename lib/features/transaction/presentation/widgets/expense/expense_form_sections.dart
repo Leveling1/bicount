@@ -11,6 +11,11 @@ extension _ExpenseFormSections on _ExpenseFormState {
     return Column(
       children: [
         CustomAmountField(amount: _amount, currency: _currency),
+        WalletPicker(
+          label: context.l10n.walletFrom,
+          value: _walletId ?? widget.initialTransaction?.senderWalletId,
+          onChanged: (id) => _update(() => _walletId = id),
+        ),
         if (canEditAllFields) ...[
           AppDimens.spacerMedium,
           TransferFormBeneficiariesSection(
@@ -96,20 +101,20 @@ extension _ExpenseFormSections on _ExpenseFormState {
               amount: _amount.text,
               onDebtChanged: (value) {
                 _debtExpectedRepaymentCurrency.text = _currency.text;
-              if (value && _beneficiaryList.length > 1) {
-                NotificationHelper.showFailureNotification(
-                  context,
-                  context.l10n.transactionDebtSingleBeneficiaryOnly,
-                );
-                return;
-              }
-
-              _update(() {
-                _isDebt = value;
-                if (value) {
-                  _isRecurring = false;
+                if (value && _beneficiaryList.length > 1) {
+                  NotificationHelper.showFailureNotification(
+                    context,
+                    context.l10n.transactionDebtSingleBeneficiaryOnly,
+                  );
+                  return;
                 }
-              });
+
+                _update(() {
+                  _isDebt = value;
+                  if (value) {
+                    _isRecurring = false;
+                  }
+                });
               },
             ),
           ),
@@ -145,6 +150,33 @@ extension _ExpenseFormSections on _ExpenseFormState {
           ),
         ],
       ],
+    );
+  }
+
+  Widget _buildForm(BuildContext context) {
+    final friendNames = widget.friends
+        .map((friend) => friend.username)
+        .toList();
+    final splitPreview = _buildPreview();
+
+    return BlocConsumer<TransactionBloc, TransactionState>(
+      listenWhen: (previous, current) =>
+          current is TransactionCreated ||
+          current is TransactionUpdated ||
+          current is TransactionError,
+      listener: _onTransactionStateChanged,
+      builder: (context, state) {
+        return Form(
+          key: _formKey,
+          child: _buildFormBody(
+            context,
+            state: state,
+            friendNames: friendNames,
+            splitPreview: splitPreview,
+            canEditAllFields: canEditAllFields,
+          ),
+        );
+      },
     );
   }
 }

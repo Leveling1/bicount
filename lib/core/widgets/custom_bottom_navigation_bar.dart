@@ -57,7 +57,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                   height: size,
                   colorFilter: ColorFilter.mode(
                     selectedIndex == index
-                        ? AppColors.secondaryColorBasic
+                        ? Theme.of(context).colorScheme.secondary
                         : AppColors.inactiveColorDark,
                     BlendMode.srcIn,
                   ),

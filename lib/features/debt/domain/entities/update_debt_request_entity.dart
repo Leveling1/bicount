@@ -6,6 +6,7 @@ class UpdateDebtRequestEntity {
     required this.principalDate,
     required this.principalAmount,
     required this.currency,
+    this.walletId,
     required this.dueDate,
     required this.expectedRepaymentAmount,
   });
@@ -16,6 +17,7 @@ class UpdateDebtRequestEntity {
   final String principalDate;
   final double principalAmount;
   final String currency;
+  final String? walletId;
   final String dueDate;
   final double expectedRepaymentAmount;
 }

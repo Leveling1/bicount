@@ -1,3 +1,4 @@
+import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
@@ -22,9 +23,17 @@ class SalaryOccurrenceSheet extends StatefulWidget {
 
   final SalaryOccurrenceEntity occurrence;
   final bool isLoading;
-  final void Function(double confirmedAmount, String confirmedCurrency)
+  final void Function(
+    double confirmedAmount,
+    String confirmedCurrency,
+    String? walletId,
+  )
   onConfirmPressed;
-  final void Function(double confirmedAmount, String confirmedCurrency)
+  final void Function(
+    double confirmedAmount,
+    String confirmedCurrency,
+    String? walletId,
+  )
   onAutomaticModePressed;
 
   @override
@@ -62,7 +71,9 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
     return double.tryParse(rawValue.replaceAll(' ', '').replaceAll(',', '.'));
   }
 
-  void _submit(void Function(double, String) callback) {
+  String? _walletId;
+
+  void _submit(void Function(double, String, String?) callback) {
     if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
@@ -74,7 +85,7 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
     if (currency.isEmpty) {
       return;
     }
-    callback(amount, currency);
+    callback(amount, currency, _walletId);
   }
 
   @override
@@ -136,6 +147,13 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: AppDimens.spacingSmall),
+            WalletPicker(
+              label: context.l10n.walletTo,
+              value:
+                  _walletId ??
+                  widget.occurrence.recurringTransfert.beneficiaryWalletId,
+              onChanged: (id) => setState(() => _walletId = id),
+            ),
             SimpleAmountField(
               amount: _amountController,
               currency: _currencyController,

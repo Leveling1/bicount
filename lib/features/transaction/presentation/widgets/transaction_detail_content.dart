@@ -1,3 +1,4 @@
+import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
@@ -17,10 +18,15 @@ import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_detail_args.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_actions.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_row.dart';
+import 'package:bicount/features/wallet/presentation/widgets/transaction_wallet_details.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/utils/formated_text.dart';
+
+part 'transaction_detail_helpers.dart';
+part 'transaction_detail_header.dart';
+part 'transaction_detail_rows.dart';
 
 class TransactionDetailContent extends StatelessWidget {
   const TransactionDetailContent({
@@ -66,7 +72,9 @@ class TransactionDetailContent extends StatelessWidget {
     final uid = Supabase.instance.client.auth.currentUser!.id;
     final formattedDate = formatedDate(data.date);
     final formattedTime = formatedTime(data.date);
-    final formattedCreatedDateTime = formatedDateTime(data.createdAt!);
+    final formattedCreatedDateTime = formatedDateTime(
+      data.createdAt ?? data.date,
+    );
     final direction = _directionService.resolveFromEntity(
       transaction: data,
       currentUserId: uid,
@@ -108,44 +116,8 @@ class TransactionDetailContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (direction.isExternal || canManage)
-                  Row(
-                    children: [
-                      if (direction.isExternal)
-                        CustomBadge(
-                          text: context.l10n.transactionDetailExternalBadge,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      const Spacer(),
-                      if (canManage)
-                        TransactionDetailActions(
-                          iconSize: iconSize,
-                          isLoading: isLoading,
-                          onDeletePressed: onDeletePressed,
-                          onEditPressed: onEditPressed,
-                        ),
-                    ],
-                  ),
-                CircleAvatar(
-                  backgroundColor: Theme.of(context).cardColor,
-                  radius: 40,
-                  child: SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: data.type == TransactionTypes.subscriptionCode
-                        ? Icon(
-                            Icons.subscriptions,
-                            color: Theme.of(context).primaryColor,
-                          )
-                        : data.image?.isNotEmpty == true
-                        ? AppAvatar(image: data.image!, radius: 40)
-                        : Icon(
-                            Icons.payments_outlined,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                  ),
-                ),
-                const SizedBox(height: 12),
+                ..._heading(context, direction, data, iconSize),
+                TransactionWalletDetails(transaction: data),
                 Text(
                   FormatedText().capitalizeFirstLetter(data.name),
                   style: Theme.of(context).textTheme.headlineLarge,
@@ -167,52 +139,13 @@ class TransactionDetailContent extends StatelessWidget {
                   context.transactionTypeLabel(data.type),
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                DetailsCard(
-                  child: Column(
-                    children: [
-                      TransactionDetailRow(
-                        title: context.l10n.commonDate,
-                        content: formattedDate,
-                      ),
-                      const SizedBox(height: 8),
-                      TransactionDetailRow(
-                        title: context.l10n.commonTime,
-                        content: formattedTime,
-                      ),
-                    ],
-                  ),
-                ),
-                DetailsCard(
-                  child: Column(
-                    children: [
-                      TransactionDetailRow(
-                        title: context.l10n.commonSender,
-                        content: sender,
-                      ),
-                      const SizedBox(height: 8),
-                      TransactionDetailRow(
-                        title: context.l10n.commonBeneficiary,
-                        content: beneficiary,
-                      ),
-                    ],
-                  ),
-                ),
-                if (debt != null) _buildDebtProgress(context, debt!),
-                DetailsCard(
-                  child: Column(
-                    children: [
-                      TransactionDetailRow(
-                        title: context.l10n.commonFrequency,
-                        content: context.frequencyLabel(data.frequency!),
-                      ),
-                      if (data.note.isNotEmpty) const SizedBox(height: 8),
-                      if (data.note.isNotEmpty)
-                        TransactionDetailRow(
-                          title: context.l10n.commonNote,
-                          content: data.note,
-                        ),
-                    ],
-                  ),
+                ..._detailRows(
+                  context,
+                  data,
+                  formattedDate,
+                  formattedTime,
+                  sender,
+                  beneficiary,
                 ),
               ],
             ),
@@ -260,71 +193,4 @@ class TransactionDetailContent extends StatelessWidget {
   /// Repayment progress of the debt behind this transaction. Once nothing is
   /// left to pay, only the date it was settled matters — the amounts would
   /// just restate a finished story.
-  Widget _buildDebtProgress(BuildContext context, DebtModel debt) {
-    final isSettled =
-        debt.remainingAmount <= 0 || !AppDebtState.isOpen(debt.status);
-
-    if (isSettled) {
-      // closedAt is stamped the moment the balance reaches zero, so it is the
-      // last repayment. Older rows may predate it, hence the fallback.
-      final settledOn = DateTime.tryParse(
-        debt.closedAt ?? debt.updatedAt ?? '',
-      );
-      return DetailsCard(
-        child: TransactionDetailRow(
-          title: context.l10n.transactionDebtSettledOn,
-          content: settledOn == null ? '-' : formatedDate(settledOn),
-        ),
-      );
-    }
-
-    return DetailsCard(
-      child: Column(
-        children: [
-          TransactionDetailRow(
-            title: context.l10n.transactionDebtDueOn,
-            content: switch (DateTime.tryParse(debt.dueDate)) {
-              final dueDate? => formatedDate(dueDate),
-              null => '-',
-            },
-          ),
-          const SizedBox(height: 8),
-          TransactionDetailRow(
-            title: context.l10n.transactionDebtRemaining,
-            content: NumberFormatUtils.formatCurrency(
-              debt.remainingAmount,
-              currencyCode: debt.currency,
-            ),
-          ),
-          if (debt.repaidAmount > 0) ...[
-            const SizedBox(height: 8),
-            TransactionDetailRow(
-              title: context.l10n.transactionDebtAlreadyPaid,
-              content: NumberFormatUtils.formatCurrency(
-                debt.repaidAmount,
-                currencyCode: debt.currency,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  String _resolvePartyName(
-    String partyId, {
-    required FriendsModel fallback,
-    required Set<String> currentUserIds,
-  }) {
-    if (currentUserIds.contains(partyId)) {
-      return fallback.username;
-    }
-
-    return transaction.friends
-        .firstWhere(
-          (friend) => friend.sid == partyId || friend.uid == partyId,
-          orElse: () => fallback,
-        )
-        .username;
-  }
 }

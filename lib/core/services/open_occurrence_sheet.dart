@@ -36,27 +36,31 @@ Future<void> openOccurrenceSheet(
 
             return SalaryOccurrenceSheet(
               occurrence: occurrence,
-              isLoading: targetId == occurrence.occurrenceId ||
+              isLoading:
+                  targetId == occurrence.occurrenceId ||
                   targetId ==
                       occurrence.recurringTransfert.recurringTransfertId,
-              onConfirmPressed: (confirmedAmount, confirmedCurrency) {
+              onConfirmPressed: (confirmedAmount, confirmedCurrency, walletId) {
                 context.read<RecurringTransfertBloc>().add(
-                      ConfirmSalaryOccurrenceRequested(
-                        occurrence: occurrence,
-                        confirmedAmount: confirmedAmount,
-                        confirmedCurrency: confirmedCurrency,
-                      ),
-                    );
+                  ConfirmSalaryOccurrenceRequested(
+                    occurrence: occurrence,
+                    confirmedAmount: confirmedAmount,
+                    confirmedCurrency: confirmedCurrency,
+                    walletId: walletId,
+                  ),
+                );
               },
-              onAutomaticModePressed: (confirmedAmount, confirmedCurrency) {
-                context.read<RecurringTransfertBloc>().add(
+              onAutomaticModePressed:
+                  (confirmedAmount, confirmedCurrency, walletId) {
+                    context.read<RecurringTransfertBloc>().add(
                       ContinueSalaryAutomaticallyRequested(
                         occurrence: occurrence,
                         confirmedAmount: confirmedAmount,
                         confirmedCurrency: confirmedCurrency,
+                        walletId: walletId,
                       ),
                     );
-              },
+                  },
             );
           },
         ),

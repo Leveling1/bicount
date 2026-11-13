@@ -3,9 +3,11 @@ class RecordDebtPaymentRequestEntity {
     required this.debtId,
     required this.amount,
     required this.currency,
+    this.walletId,
   });
 
   final String debtId;
   final double amount;
   final String currency;
+  final String? walletId;
 }

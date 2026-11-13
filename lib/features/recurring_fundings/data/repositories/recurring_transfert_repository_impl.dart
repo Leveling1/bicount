@@ -54,6 +54,7 @@ class RecurringTransfertRepositoryImpl implements RecurringTransfertRepository {
     SalaryOccurrenceEntity occurrence, {
     required double confirmedAmount,
     required String confirmedCurrency,
+    String? walletId,
     bool switchToAutomatic = false,
   }) async {
     try {
@@ -61,6 +62,7 @@ class RecurringTransfertRepositoryImpl implements RecurringTransfertRepository {
         occurrence,
         confirmedAmount: confirmedAmount,
         confirmedCurrency: confirmedCurrency,
+        walletId: walletId,
         switchToAutomatic: switchToAutomatic,
       );
     } catch (_) {

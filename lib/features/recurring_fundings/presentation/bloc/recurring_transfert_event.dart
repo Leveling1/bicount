@@ -29,11 +29,13 @@ class ConfirmSalaryOccurrenceRequested extends RecurringTransfertEvent {
     required this.occurrence,
     required this.confirmedAmount,
     required this.confirmedCurrency,
+    this.walletId,
   });
 
   final SalaryOccurrenceEntity occurrence;
   final double confirmedAmount;
   final String confirmedCurrency;
+  final String? walletId;
 }
 
 class ContinueSalaryAutomaticallyRequested extends RecurringTransfertEvent {
@@ -41,9 +43,11 @@ class ContinueSalaryAutomaticallyRequested extends RecurringTransfertEvent {
     required this.occurrence,
     required this.confirmedAmount,
     required this.confirmedCurrency,
+    this.walletId,
   });
 
   final SalaryOccurrenceEntity occurrence;
   final double confirmedAmount;
   final String confirmedCurrency;
+  final String? walletId;
 }

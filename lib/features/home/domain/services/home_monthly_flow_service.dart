@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
@@ -39,6 +40,7 @@ class HomeMonthlyFlowService {
     final carryoverByCurrency = <String, double>{};
 
     for (final transaction in data.transactions) {
+      if (transaction.type == TransactionTypes.walletTransferCode) continue;
       final transactionDate = _parseLocalDate(transaction);
       if (transactionDate == null) {
         continue;

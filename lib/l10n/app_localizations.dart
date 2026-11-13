@@ -4006,6 +4006,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All'**
   String get analysisPeriodAllLabel;
+
+  /// No description provided for @walletTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallets'**
+  String get walletTitle;
+
+  /// No description provided for @walletPrincipal.
+  ///
+  /// In en, this message translates to:
+  /// **'Main wallet'**
+  String get walletPrincipal;
+
+  /// No description provided for @walletNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New wallet'**
+  String get walletNew;
+
+  /// No description provided for @walletEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit wallet'**
+  String get walletEdit;
+
+  /// No description provided for @walletName.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet name'**
+  String get walletName;
+
+  /// No description provided for @walletKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet type'**
+  String get walletKind;
+
+  /// No description provided for @walletNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Card network'**
+  String get walletNetwork;
+
+  /// No description provided for @walletBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank account'**
+  String get walletBank;
+
+  /// No description provided for @walletCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get walletCash;
+
+  /// No description provided for @walletCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get walletCard;
+
+  /// No description provided for @walletMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile money'**
+  String get walletMobile;
+
+  /// No description provided for @walletOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get walletOther;
+
+  /// No description provided for @walletColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get walletColor;
+
+  /// No description provided for @walletIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon'**
+  String get walletIcon;
+
+  /// No description provided for @walletArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive wallet'**
+  String get walletArchive;
+
+  /// No description provided for @walletRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore wallet'**
+  String get walletRestore;
+
+  /// No description provided for @walletArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get walletArchived;
+
+  /// No description provided for @walletTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer between wallets'**
+  String get walletTransfer;
+
+  /// No description provided for @walletFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay from'**
+  String get walletFrom;
+
+  /// No description provided for @walletTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive in'**
+  String get walletTo;
+
+  /// No description provided for @walletNoMovements.
+  ///
+  /// In en, this message translates to:
+  /// **'No movements yet'**
+  String get walletNoMovements;
+
+  /// No description provided for @walletError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the wallet change.'**
+  String get walletError;
+
+  /// No description provided for @walletDifferent.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose two different wallets.'**
+  String get walletDifferent;
+
+  /// No description provided for @walletAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All wallets'**
+  String get walletAll;
+
+  /// No description provided for @walletReassign.
+  ///
+  /// In en, this message translates to:
+  /// **'Change wallet'**
+  String get walletReassign;
+
+  /// No description provided for @walletPicker.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get walletPicker;
+
+  /// No description provided for @walletBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get walletBalance;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

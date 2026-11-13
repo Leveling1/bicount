@@ -7,6 +7,7 @@ class AddAccountFundingEntity {
   final String? note;
   final double amount;
   final String currency;
+  final String? walletId;
   final String date;
   final int category;
   final String? sid;
@@ -21,6 +22,7 @@ class AddAccountFundingEntity {
     required this.source,
     required this.amount,
     required this.currency,
+    this.walletId,
     this.note,
     required this.date,
     this.category = Constants.personal,

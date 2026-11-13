@@ -21,6 +21,8 @@ class TransactionEntity {
     this.image,
     this.frequency,
     this.originId,
+    this.senderWalletId,
+    this.beneficiaryWalletId,
     this.originOccurrenceDate,
     required this.sender,
     required this.beneficiary,
@@ -40,6 +42,8 @@ class TransactionEntity {
   final String? image;
   final int? frequency;
   final String? originId;
+  final String? senderWalletId;
+  final String? beneficiaryWalletId;
   final String? originOccurrenceDate;
   final String sender;
   final String beneficiary;
@@ -114,6 +118,8 @@ class TransactionEntity {
           transaction.originOccurrenceDate ??
           transaction.recurringOccurrenceDate,
       sender: transaction.senderId,
+      senderWalletId: transaction.senderWalletId,
+      beneficiaryWalletId: transaction.beneficiaryWalletId,
       beneficiary: transaction.beneficiaryId,
       note: transaction.note,
     );

@@ -7,13 +7,19 @@ import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/debt/domain/entities/update_debt_request_entity.dart';
 import 'package:bicount/features/debt/presentation/widgets/debt_contract_form_fields.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/themes/app_dimens.dart';
+
+part 'debt_contract_form_submission.dart';
+
+part 'debt_contract_form_submit_action.dart';
 
 class DebtContractForm extends StatefulWidget {
   const DebtContractForm({
     super.key,
     required this.debt,
+    required this.isLender,
     required this.principalTransaction,
     required this.counterpartyName,
     required this.isLoading,
@@ -22,6 +28,7 @@ class DebtContractForm extends StatefulWidget {
   });
 
   final DebtModel debt;
+  final bool isLender;
   final TransactionEntity principalTransaction;
   final String counterpartyName;
   final bool isLoading;
@@ -125,6 +132,17 @@ class _DebtContractFormState extends State<DebtContractForm> {
             validatorMessage: context.l10n.transactionEnterValidAmount,
             currencyController: _currencyController,
           ),
+          WalletPicker(
+            label: widget.isLender
+                ? context.l10n.walletFrom
+                : context.l10n.walletTo,
+            value:
+                _walletId ??
+                (widget.isLender
+                    ? widget.debt.lenderWalletId
+                    : widget.debt.borrowerWalletId),
+            onChanged: (id) => setState(() => _walletId = id),
+          ),
           const SizedBox(height: AppDimens.spacingMedium),
           CustomFormField(
             controller: _dueDateController,
@@ -158,52 +176,5 @@ class _DebtContractFormState extends State<DebtContractForm> {
     );
   }
 
-  double? _parseAmount(String? value) {
-    return double.tryParse(
-      (value ?? '').trim().replaceAll(' ', '').replaceAll(',', '.'),
-    );
-  }
-
-  void _syncExpectedAmountFromPrincipal() {
-    if (!_syncExpectedToPrincipal || _isPatchingExpectedAmount) return;
-    if (_expectedAmountController.text == _amountController.text) {
-      return;
-    }
-    _isPatchingExpectedAmount = true;
-    _expectedAmountController.text = _amountController.text;
-    _isPatchingExpectedAmount = false;
-  }
-
-  void _trackExpectedAmountMode() {
-    if (_isPatchingExpectedAmount) return;
-    final expectedText = _expectedAmountController.text.trim();
-    _syncExpectedToPrincipal =
-        expectedText.isEmpty ||
-        _parseAmount(expectedText) == _parseAmount(_amountController.text);
-  }
-
-  void _submit() {
-    if (!(_formKey.currentState?.validate() ?? false)) {
-      return;
-    }
-    final principalAmount = _parseAmount(_amountController.text);
-    final expectedAmount =
-        _parseAmount(_expectedAmountController.text) ?? principalAmount;
-    if (principalAmount == null || expectedAmount == null) {
-      return;
-    }
-
-    widget.onSubmit(
-      UpdateDebtRequestEntity(
-        debtId: widget.debt.debtId ?? '',
-        title: _titleController.text.trim(),
-        note: _noteController.text.trim(),
-        principalDate: resolveFormDateToIso(_dateController.text),
-        principalAmount: principalAmount,
-        currency: _currencyController.text.trim().toUpperCase(),
-        dueDate: resolveFormDateToIso(_dueDateController.text),
-        expectedRepaymentAmount: expectedAmount,
-      ),
-    );
-  }
+  String? _walletId;
 }

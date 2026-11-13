@@ -150,3 +150,17 @@ Backend requis pour ce lot :
 - oui pour vérifier les droits de lecture cross-device et le realtime finance
 - non pour la recherche transaction
 - non pour la localisation des catégories
+## Portefeuilles en préproduction locale
+
+Les migrations `wallet_accounts` et `wallet_recurring_worker` sont
+réservées à la préproduction locale. La première crée les portefeuilles privés,
+le portefeuille Principal et les références sur les trois tables d’opérations.
+Le RPC de reclassement contrôle le côté du participant. La seconde lance les
+échéances automatiques sur la base locale et reprend les portefeuilles du modèle.
+
+SQLite conserve une ligne par portefeuille et devise. Les liens de contacts
+déclenchent la mise à jour des mouvements concernés. Les transferts internes
+saisis dans l’application utilisent la même devise des deux côtés.
+
+Vérifications locales : `python supabase/tests/preprod_wallet_api.py` et
+`flutter test test/features/wallet`.

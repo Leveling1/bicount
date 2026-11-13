@@ -23,6 +23,8 @@ RecurringTransfertModel subscriptionAsRecurring(
     currency: subscription.currency,
     senderId: current?.senderId ?? subscription.sid,
     beneficiaryId: current?.beneficiaryId ?? '',
+    senderWalletId: current?.senderWalletId,
+    beneficiaryWalletId: current?.beneficiaryWalletId,
     frequency: subscription.frequency,
     startDate: subscription.startDate,
     nextDueDate: subscription.nextBillingDate,
@@ -62,7 +64,10 @@ SubscriptionModel? subscriptionFromRecurring(
   );
 }
 
-RecurringTransfertModel fundingPlanAsRecurring(RecurringFundingModel funding) {
+RecurringTransfertModel fundingPlanAsRecurring(
+  RecurringFundingModel funding, {
+  String? walletId,
+}) {
   return RecurringTransfertModel(
     recurringTransfertId: canonicalLegacyUuid(
       'recurring_fundings',
@@ -78,6 +83,7 @@ RecurringTransfertModel fundingPlanAsRecurring(RecurringFundingModel funding) {
     currency: funding.currency,
     senderId: '',
     beneficiaryId: funding.uid,
+    beneficiaryWalletId: walletId,
     frequency: funding.frequency,
     startDate: funding.startDate,
     nextDueDate: funding.nextFundingDate,

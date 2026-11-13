@@ -11,8 +11,10 @@ class TransactionModel extends OfflineModel {
   final int type;
 
   final String beneficiaryId;
+  final String? beneficiaryWalletId;
 
   final String senderId;
+  final String? senderWalletId;
 
   final String date;
 
@@ -61,7 +63,9 @@ class TransactionModel extends OfflineModel {
     required this.name,
     required this.type,
     required this.beneficiaryId,
+    this.beneficiaryWalletId,
     required this.senderId,
+    this.senderWalletId,
     required this.date,
     required this.note,
     required this.amount,

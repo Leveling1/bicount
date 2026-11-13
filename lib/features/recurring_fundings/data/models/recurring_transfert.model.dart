@@ -17,8 +17,10 @@ class RecurringTransfertModel extends OfflineModel {
   final String currency;
 
   final String senderId;
+  final String? senderWalletId;
 
   final String beneficiaryId;
+  final String? beneficiaryWalletId;
 
   final int frequency;
 
@@ -49,7 +51,9 @@ class RecurringTransfertModel extends OfflineModel {
     required this.amount,
     required this.currency,
     required this.senderId,
+    this.senderWalletId,
     required this.beneficiaryId,
+    this.beneficiaryWalletId,
     required this.frequency,
     required this.startDate,
     required this.nextDueDate,

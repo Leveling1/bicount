@@ -1,3 +1,6 @@
+import 'package:bicount/features/wallet/domain/repositories/wallet_repository.dart';
+import 'package:bicount/core/constants/backend_environment.dart';
+import 'package:bicount/features/wallet/data/data_sources/local_datasource/wallet_balance_store.dart';
 import 'package:bicount/core/offline/repository.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
@@ -58,7 +61,7 @@ class MainRepositoryImpl implements MainRepository {
             List<RecurringTransfertModel>,
             int,
             CurrencyConfigEntity,
-            MainEntity
+            Future<MainEntity> Function()
           >(
             userStream,
             friendsStream,
@@ -75,8 +78,26 @@ class MainRepositoryImpl implements MainRepository {
               recurringTransferts,
               connectionState,
               currencyConfig,
-            ) {
+            ) => () async {
+              final repository = Repository();
+              final totals = <String, double>{};
+              final useWallets =
+                  BackendEnvironment.isLocalPreproduction &&
+                  user.uid.isNotEmpty &&
+                  repository.currentUserId == user.uid;
+              if (useWallets) {
+                for (final balance in await readWalletBalances(
+                  await repository.database(),
+                )) {
+                  totals.update(
+                    balance.currency,
+                    (value) => value + balance.minor / walletAmountScale,
+                    ifAbsent: () => balance.minor / walletAmountScale,
+                  );
+                }
+              }
               return projectionService.project(
+                walletTotals: useWallets ? totals : null,
                 user: user,
                 friends: friends,
                 transactions: transactions,
@@ -88,6 +109,7 @@ class MainRepositoryImpl implements MainRepository {
             },
           )
           .debounceTime(const Duration(milliseconds: 50))
+          .asyncMap((project) => project())
           .handleError((error, stackTrace) {
             throw MessageFailure(
               message: 'Error combining startup data: ${error.toString()}',

@@ -1,3 +1,4 @@
+import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
 import 'package:bicount/core/constants/account_funding_const.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
@@ -16,6 +17,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/dropdown_menu_entry.dart';
 import '../../../../core/themes/app_dimens.dart';
 import '../../../../core/widgets/custom_dropdown_menu.dart';
+
+part 'account_funding_form_submission.dart';
 
 class AccountFundingForm extends StatefulWidget {
   const AccountFundingForm({super.key, this.initialFunding, this.onCompleted});
@@ -39,6 +42,8 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
   int? _selectedFrequency;
   int _salaryProcessingMode = SalaryProcessingMode.confirmationRequired;
   int _salaryReminderStatus = SalaryReminderStatus.enabled;
+
+  String? _walletId;
 
   bool get _isEditing => widget.initialFunding != null;
 
@@ -112,6 +117,11 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   CustomAmountField(amount: _amount, currency: _currency),
+                  WalletPicker(
+                    label: context.l10n.walletTo,
+                    value: _walletId ?? widget.initialFunding?.walletId,
+                    onChanged: (id) => setState(() => _walletId = id),
+                  ),
                 ],
               ),
               AppDimens.spacerMedium,
@@ -178,55 +188,5 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
         );
       },
     );
-  }
-
-  void _onStateChanged(BuildContext context, AddFundState state) {
-    if (state is AddFundSaved) {
-      NotificationHelper.showSuccessNotification(
-        context,
-        state.isRecurring
-            ? context.l10n.accountFundingRecurringSavedSuccess
-            : context.l10n.accountFundingSavedSuccess,
-      );
-      final onCompleted = widget.onCompleted;
-      if (onCompleted != null) {
-        onCompleted();
-      } else {
-        Navigator.pop(context);
-      }
-    } else if (state is AddFundFailure) {
-      NotificationHelper.showFailureNotification(
-        context,
-        localizeRuntimeMessage(context, state.message),
-      );
-    }
-  }
-
-  void _submit() {
-    if (!(_formKey.currentState?.validate() ?? false)) {
-      return;
-    }
-
-    if (_isRecurring && _selectedFrequency == null) {
-      NotificationHelper.showFailureNotification(
-        context,
-        context.l10n.validationFieldRequired,
-      );
-      return;
-    }
-    final event = buildAddFundEvent(
-      initialFunding: widget.initialFunding,
-      source: _source.text,
-      amount: _amount.text,
-      currency: _currency.text,
-      note: _note.text,
-      date: _date.text,
-      fundingType: _selectedFundingType,
-      isRecurring: _isRecurring,
-      frequency: _selectedFrequency,
-      salaryProcessingMode: _salaryProcessingMode,
-      salaryReminderStatus: _salaryReminderStatus,
-    );
-    context.read<AddFundBloc>().add(event);
   }
 }

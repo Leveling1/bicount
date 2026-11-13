@@ -56,6 +56,7 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
       note: data.note,
       amount: data.amount,
       currency: data.currency,
+      walletId: data.walletId,
       referenceCurrencyCode: quote.referenceCurrencyCode,
       convertedAmount: quote.convertedAmount,
       amountCdf: quote.amountCdf,
@@ -88,6 +89,7 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
           salaryReminderStatus: data.salaryReminderStatus,
           createdAt: DateTime.now().toIso8601String(),
         ),
+        walletId: data.walletId,
       );
       return;
     }
@@ -135,6 +137,7 @@ class LocalAddFundDataSourceImpl implements AddFundLocalDataSource {
       note: data.note,
       amount: data.amount,
       currency: data.currency,
+      walletId: data.walletId ?? currentFunding.walletId,
       referenceCurrencyCode: quote.referenceCurrencyCode,
       convertedAmount: quote.convertedAmount,
       amountCdf: quote.amountCdf,

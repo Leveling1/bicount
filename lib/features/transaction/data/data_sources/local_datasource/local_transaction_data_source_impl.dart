@@ -18,6 +18,10 @@ import 'local_transaction_friend_matcher.dart';
 import 'local_transaction_friend_factory.dart';
 import '../../models/transaction.model.dart';
 
+part 'local_transaction_update_helpers.dart';
+part 'local_transaction_update.dart';
+part 'local_transaction_parties.dart';
+
 class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   LocalTransactionDataSourceImpl({
     required CurrencyRepositoryImpl currencyRepository,
@@ -37,49 +41,13 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
   Future<Either<Failure, FriendsModel>> createANewFriend(
     FriendsModel friend, {
     required int transactionType,
-  }) async {
-    final id = const Uuid().v4();
-    final uid = _currentUid;
-    if (uid == null) {
-      return _authenticationFailure();
-    }
-
-    try {
-      final friendAdd = buildTransactionPlaceholderFriend(
-        sid: id,
-        ownerUid: uid,
-        friend: friend,
-        transactionType: transactionType,
-      );
-
-      await Repository().upsert<FriendsModel>(friendAdd, isCreation: true);
-
-      return Right(friendAdd);
-    } catch (_) {
-      return _messageFailure('Unable to save this friend right now.');
-    }
-  }
+  }) => _createFriend(friend, transactionType: transactionType);
 
   @override
   Future<Either<Failure, FriendsModel?>> findMatchingFriend(
     FriendsModel friend, {
     required int transactionType,
-  }) async {
-    try {
-      final localFriends = await Repository().get<FriendsModel>(
-        policy: OfflineReadPolicy.localOnly,
-      );
-      return Right(
-        _friendMatcher.findMatch(
-          localFriends,
-          friend,
-          transactionType: transactionType,
-        ),
-      );
-    } catch (_) {
-      return _messageFailure('Unable to load this friend right now.');
-    }
-  }
+  }) => _findFriend(friend, transactionType: transactionType);
 
   @override
   Future<Either<Failure, void>> saveTransaction(
@@ -93,6 +61,8 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     required String currency,
     required String note,
     required String senderId,
+    String? senderWalletId,
+    String? beneficiaryWalletId,
     required String beneficiaryId,
     required String image,
     String? originId,
@@ -118,6 +88,8 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
         type: type,
         beneficiaryId: beneficiaryId,
         senderId: senderId,
+        senderWalletId: senderWalletId,
+        beneficiaryWalletId: beneficiaryWalletId,
         date: date,
         note: note,
         amount: amount,
@@ -177,87 +149,33 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
     required String currency,
     required String note,
     required String senderId,
+    String? senderWalletId,
+    String? beneficiaryWalletId,
     required String beneficiaryId,
     required String image,
     int? frequency,
     String? originId,
     String? originOccurrenceDate,
     int? generationMode,
-  }) async {
-    final currentUid = _currentUid;
-    final ownerUid = previousTransaction.uid ?? currentUid;
-    if (ownerUid == null) {
-      return _authenticationFailure();
-    }
-
-    try {
-      final currentRecord = await _findStoredTransaction(
-        previousTransaction.tid,
-      );
-      final quote = await _resolveUpdateQuote(
-        currentRecord: currentRecord,
-        previousTransaction: previousTransaction,
-        amount: amount,
-        currency: currency,
-      );
-
-      final transactionModel = TransactionModel(
-        tid: previousTransaction.tid,
-        uid: ownerUid,
-        gtid: previousTransaction.gtid,
-        name: title,
-        type: type,
-        beneficiaryId: beneficiaryId,
-        senderId: senderId,
-        date: date,
-        note: note,
-        amount: amount,
-        currency: currency,
-        referenceCurrencyCode:
-            currentRecord?.referenceCurrencyCode ?? quote.referenceCurrencyCode,
-        convertedAmount: quote.convertedAmount,
-        amountCdf: quote.amountCdf,
-        rateToCdf: quote.rateToCdf,
-        fxRateDate: quote.fxRateDate,
-        fxSnapshotId: quote.fxSnapshotId,
-        image: image,
-        frequency:
-            frequency ??
-            currentRecord?.frequency ??
-            previousTransaction.frequency,
-        category: category,
-        originId:
-            originId ?? currentRecord?.originId ?? previousTransaction.originId,
-        originOccurrenceDate:
-            originOccurrenceDate ??
-            currentRecord?.originOccurrenceDate ??
-            previousTransaction.originOccurrenceDate,
-        recurringTransfertId:
-            TransactionTypes.expenseTypes.contains(type) ||
-                TransactionTypes.incomeTypes.contains(type)
-            ? originId ?? currentRecord?.recurringTransfertId
-            : null,
-        recurringOccurrenceDate:
-            TransactionTypes.expenseTypes.contains(type) ||
-                TransactionTypes.incomeTypes.contains(type)
-            ? originOccurrenceDate ?? currentRecord?.recurringOccurrenceDate
-            : null,
-        generationMode: generationMode ?? currentRecord?.generationMode ?? 0,
-        createdAt:
-            currentRecord?.createdAt ??
-            previousTransaction.createdAt?.toIso8601String() ??
-            DateTime.now().toIso8601String(),
-      );
-
-      await Repository().upsert<TransactionModel>(transactionModel);
-
-      return const Right(null);
-    } on Failure catch (error) {
-      return Left(error);
-    } catch (_) {
-      return _messageFailure('Unable to update this transaction right now.');
-    }
-  }
+  }) => _updateTransaction(
+    previousTransaction,
+    title: title,
+    type: type,
+    date: date,
+    amount: amount,
+    category: category,
+    currency: currency,
+    note: note,
+    senderId: senderId,
+    senderWalletId: senderWalletId,
+    beneficiaryWalletId: beneficiaryWalletId,
+    beneficiaryId: beneficiaryId,
+    image: image,
+    frequency: frequency,
+    originId: originId,
+    originOccurrenceDate: originOccurrenceDate,
+    generationMode: generationMode,
+  );
 
   Left<Failure, T> _authenticationFailure<T>() {
     return Left(AuthenticationFailure(message: 'Authentication failure'));
@@ -265,69 +183,5 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
 
   Left<Failure, T> _messageFailure<T>(String message) {
     return Left(MessageFailure(message: message));
-  }
-
-  Future<TransactionModel?> _findStoredTransaction(String tid) async {
-    if (tid.isEmpty) {
-      return null;
-    }
-
-    final items = await Repository().get<TransactionModel>(
-      policy: OfflineReadPolicy.localOnly,
-      query: Query(where: [Where.exact('tid', tid)]),
-    );
-    return items.isEmpty ? null : items.first;
-  }
-
-  Future<CurrencyQuoteEntity> _resolveUpdateQuote({
-    required TransactionModel? currentRecord,
-    required TransactionEntity previousTransaction,
-    required double amount,
-    required String currency,
-  }) async {
-    final referenceCurrencyCode = currentRecord?.referenceCurrencyCode;
-    MessageFailure? historicalRateFailure;
-
-    for (final rateDate in _resolveHistoricalRateDateCandidates(
-      currentRecord,
-      previousTransaction,
-    )) {
-      try {
-        return await _currencyRepository.resolveHistoricalQuote(
-          amount: amount,
-          originalCurrencyCode: currency,
-          rateDate: rateDate,
-          referenceCurrencyCode: referenceCurrencyCode,
-        );
-      } on MessageFailure catch (error) {
-        historicalRateFailure = error;
-      }
-    }
-
-    if (historicalRateFailure != null) {
-      throw historicalRateFailure;
-    }
-
-    return _currencyRepository.resolveCreationQuote(
-      amount: amount,
-      originalCurrencyCode: currency,
-    );
-  }
-
-  Iterable<String> _resolveHistoricalRateDateCandidates(
-    TransactionModel? currentRecord,
-    TransactionEntity previousTransaction,
-  ) sync* {
-    final fxRateDate = currentRecord?.fxRateDate;
-    if (fxRateDate != null && fxRateDate.isNotEmpty) {
-      yield fxRateDate;
-    }
-
-    final createdAt =
-        currentRecord?.createdAt ??
-        previousTransaction.createdAt?.toIso8601String();
-    if (createdAt != null && createdAt.isNotEmpty && createdAt != fxRateDate) {
-      yield createdAt;
-    }
   }
 }

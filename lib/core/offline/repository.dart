@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:bicount/features/wallet/data/data_sources/local_datasource/wallet_balance_store.dart';
+import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 
 import '../constants/backend_environment.dart';
 import 'offline_codecs.g.dart';
@@ -15,11 +17,17 @@ import 'offline_legacy_import.dart';
 import 'offline_legacy_owner.dart';
 import 'offline_model.dart';
 import 'offline_model_schema.dart';
+import 'offline_wallet_payload.dart';
 import 'offline_sync.dart';
 import 'outbox/offline_operation.dart';
 import 'outbox/offline_outbox.dart';
 
 /// Local database and durable outgoing operations for one signed-in account.
+part 'offline_repository_wallet.dart';
+part 'offline_repository_mutations.dart';
+part 'offline_repository_account_data.dart';
+part 'offline_repository_local_data.dart';
+
 class Repository {
   Repository._() : sqliteProvider = LocalSqliteProvider();
 
@@ -81,6 +89,9 @@ class Repository {
     }
     final db = await _factory.openDatabase(target);
     await ensureOfflineModelSchema(db, allOfflineCodecs);
+    if (BackendEnvironment.isLocalPreproduction) {
+      await installWalletBalances(db, uid);
+    }
     await OfflineOutbox(db).initialize();
     await db.execute(
       'CREATE TABLE IF NOT EXISTS bicount_removed_record_archive '
@@ -139,172 +150,6 @@ class Repository {
     }
   }
 
-  Future<List<T>> localGet<T extends OfflineModel>({Query? query}) async {
-    final codec = codecFor<T>();
-    final clauses = <String>[];
-    final args = <Object?>[];
-    for (final condition in query?.where ?? const <Where>[]) {
-      final column = codec.localColumns[condition.field] ?? condition.field;
-      if (!codec.localColumns.values.contains(column)) {
-        throw ArgumentError.value(condition.field, 'field');
-      }
-      clauses.add('"$column" ${condition.value == null ? 'IS NULL' : '= ?'}');
-      if (condition.value != null) args.add(condition.value);
-    }
-    final rows = await (await database()).query(
-      codec.localTable,
-      where: clauses.isEmpty ? null : clauses.join(' AND '),
-      whereArgs: args,
-    );
-    return rows.map((row) => codec.fromLocal(row)).toList(growable: false);
-  }
-
-  Future<T> upsert<T extends OfflineModel>(
-    T model, {
-    bool isCreation = false,
-  }) async {
-    final codec = codecFor<T>();
-    final local = codec.toLocal(model);
-    final remote = codec.toRemote(model);
-    final id = remote[codec.key]?.toString();
-    if (id == null || id.isEmpty) throw StateError('Missing ${codec.key}');
-    final (uid, db) = await _writableDatabase();
-    final editTime = BackendEnvironment.isConditionalTest
-        ? OfflineConflictClock.instance.estimate()
-        : null;
-    final operation = OfflineOperation(
-      userId: uid,
-      collection: codec.table,
-      recordId: id,
-      action: 'upsert',
-      payload: remote,
-      isCreation: isCreation,
-      editedEarliest: editTime?.earliest,
-      editedLatest: editTime?.latest,
-    );
-    await OfflineOutbox(db).commit(operation, (tx) async {
-      await tx.insert(
-        codec.localTable,
-        local,
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    });
-    _changes.add(T);
-    _sync.schedule();
-    return model;
-  }
-
-  Future<void> delete<T extends OfflineModel>(T model) async {
-    final codec = codecFor<T>();
-    final id = codec.toRemote(model)[codec.key]?.toString();
-    if (id == null || id.isEmpty) throw StateError('Missing ${codec.key}');
-    final (uid, db) = await _writableDatabase();
-    final editTime = BackendEnvironment.isConditionalTest
-        ? OfflineConflictClock.instance.estimate()
-        : null;
-    final operation = OfflineOperation(
-      userId: uid,
-      collection: codec.table,
-      recordId: id,
-      action: 'delete',
-      payload: {codec.key: id},
-      editedEarliest: editTime?.earliest,
-      editedLatest: editTime?.latest,
-    );
-    await OfflineOutbox(db).commit(operation, (tx) async {
-      await tx.delete(
-        codec.localTable,
-        where: '"${codec.localKey}" = ?',
-        whereArgs: [id],
-      );
-    });
-    _changes.add(T);
-    _sync.schedule();
-  }
-
-  Future<void> queueRemoteUpsert({
-    required String table,
-    required String key,
-    required String recordId,
-    required Map<String, Object?> row,
-    bool ignoreDuplicates = false,
-  }) async {
-    if (table.isEmpty ||
-        key.isEmpty ||
-        recordId.isEmpty ||
-        row[key]?.toString() != recordId) {
-      throw ArgumentError('A remote upsert needs a stable row identifier.');
-    }
-    final (uid, db) = await _writableDatabase();
-    await OfflineOutbox(db).commit(
-      OfflineOperation(
-        userId: uid,
-        collection: table,
-        recordId: recordId,
-        action: 'remote_upsert',
-        payload: {
-          'key': key,
-          'row': row,
-          'ignore_duplicates': ignoreDuplicates,
-        },
-      ),
-      (_) async {},
-    );
-    _sync.schedule();
-  }
-
-  Future<void> queueRemoteUpdate({
-    required String table,
-    required String recordId,
-    required Map<String, Object?> filters,
-    required Map<String, Object?> changes,
-  }) async {
-    if (table.isEmpty ||
-        recordId.isEmpty ||
-        filters.isEmpty ||
-        changes.isEmpty) {
-      throw ArgumentError('A remote update needs filters and changes.');
-    }
-    final (uid, db) = await _writableDatabase();
-    await OfflineOutbox(db).commit(
-      OfflineOperation(
-        userId: uid,
-        collection: table,
-        recordId: recordId,
-        action: 'remote_update',
-        payload: {'filters': filters, 'changes': changes},
-      ),
-      (_) async {},
-    );
-    _sync.schedule();
-  }
-
-  Future<void> queueFcmToken({
-    required String userId,
-    required Map<String, Object?> row,
-  }) async {
-    if (userId.isEmpty ||
-        row['user_uid'] != userId ||
-        currentUserId != userId) {
-      throw ArgumentError('An FCM token needs its user identifier.');
-    }
-    final (uid, db) = await _writableDatabase();
-    if (uid != userId) {
-      throw StateError('The account changed before token persistence.');
-    }
-    await OfflineOutbox(db).commit(
-      OfflineOperation(
-        userId: uid,
-        collection: 'fcm_tokens',
-        recordId: userId,
-        action: 'fcm_token',
-        payload: row,
-      ),
-      (_) async {},
-    );
-    _sync.schedule();
-  }
-
   Stream<List<T>> subscribeToRealtime<T extends OfflineModel>({
     Query? query,
   }) async* {
@@ -325,74 +170,4 @@ class Repository {
 
   /// Account files remain isolated and durable across sign-out.
   Future<void> clearLocalSessionData() async => pauseRealtimeBindings();
-
-  Future<void> purgeDeletedAccountData(String uid) async {
-    if (currentUserId == uid) {
-      throw StateError('Sign out before removing deleted account data.');
-    }
-    await _sync.pause();
-    final open = _databases.remove(uid);
-    if (open != null) await (await open).close();
-    final directory = await _factory.getDatabasesPath();
-    final target = path.join(
-      directory,
-      '${BackendEnvironment.isLocalPreproduction ? 'bicount_preprod_' : 'bicount_'}'
-      '${uid.replaceAll('-', '')}.sqlite',
-    );
-    if (!path.isWithin(directory, target)) {
-      throw StateError('Local database path escaped the app directory.');
-    }
-    for (final suffix in const ['', '-wal', '-shm', '-journal']) {
-      final file = File('$target$suffix');
-      if (await file.exists()) await file.delete();
-    }
-    final legacy = path.join(directory, 'my_repository.sqlite');
-    if (!BackendEnvironment.isLocalPreproduction &&
-        await legacyDatabaseBelongsTo(_factory, legacy, uid)) {
-      for (final name in const [
-        'my_repository.sqlite',
-        'brick_offline_queue.sqlite',
-      ]) {
-        final source = path.join(directory, name);
-        for (final suffix in const ['', '-wal', '-shm', '-journal']) {
-          final file = File('$source$suffix');
-          if (await file.exists()) await file.delete();
-        }
-      }
-    }
-  }
-}
-
-class LocalSqliteProvider {
-  Future<T> upsert<T extends OfflineModel>(
-    T model, {
-    Repository? repository,
-    bool queue = true,
-  }) async {
-    final repo = repository ?? Repository();
-    if (queue) return repo.upsert<T>(model);
-    final codec = codecFor<T>();
-    await (await repo.database()).insert(
-      codec.localTable,
-      codec.toLocal(model),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    await repo.notifySubscriptionsWithLocalData<T>();
-    return model;
-  }
-
-  Future<void> delete<T extends OfflineModel>(
-    T model, {
-    Repository? repository,
-  }) async {
-    final repo = repository ?? Repository();
-    final codec = codecFor<T>();
-    final id = codec.toLocal(model)[codec.localKey];
-    await (await repo.database()).delete(
-      codec.localTable,
-      where: '"${codec.localKey}" = ?',
-      whereArgs: [id],
-    );
-    await repo.notifySubscriptionsWithLocalData<T>();
-  }
 }

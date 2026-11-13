@@ -37,6 +37,7 @@ List<TransactionFeedItem> filterTransactionFeed({
     if (selectedIndex == 0) {
       return true;
     }
+    if (item.filterType == TransactionTypes.walletTransferCode) return false;
 
     final isSender = currentUserParticipantIds.contains(
       item.transaction.sender,

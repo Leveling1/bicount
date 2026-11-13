@@ -2041,4 +2041,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get analysisPeriodAllLabel => 'All';
+
+  @override
+  String get walletTitle => 'Wallets';
+
+  @override
+  String get walletPrincipal => 'Main wallet';
+
+  @override
+  String get walletNew => 'New wallet';
+
+  @override
+  String get walletEdit => 'Edit wallet';
+
+  @override
+  String get walletName => 'Wallet name';
+
+  @override
+  String get walletKind => 'Wallet type';
+
+  @override
+  String get walletNetwork => 'Card network';
+
+  @override
+  String get walletBank => 'Bank account';
+
+  @override
+  String get walletCash => 'Cash';
+
+  @override
+  String get walletCard => 'Card';
+
+  @override
+  String get walletMobile => 'Mobile money';
+
+  @override
+  String get walletOther => 'Other';
+
+  @override
+  String get walletColor => 'Color';
+
+  @override
+  String get walletIcon => 'Icon';
+
+  @override
+  String get walletArchive => 'Archive wallet';
+
+  @override
+  String get walletRestore => 'Restore wallet';
+
+  @override
+  String get walletArchived => 'Archived';
+
+  @override
+  String get walletTransfer => 'Transfer between wallets';
+
+  @override
+  String get walletFrom => 'Pay from';
+
+  @override
+  String get walletTo => 'Receive in';
+
+  @override
+  String get walletNoMovements => 'No movements yet';
+
+  @override
+  String get walletError => 'Could not save the wallet change.';
+
+  @override
+  String get walletDifferent => 'Choose two different wallets.';
+
+  @override
+  String get walletAll => 'All wallets';
+
+  @override
+  String get walletReassign => 'Change wallet';
+
+  @override
+  String get walletPicker => 'Wallet';
+
+  @override
+  String get walletBalance => 'Balance';
 }

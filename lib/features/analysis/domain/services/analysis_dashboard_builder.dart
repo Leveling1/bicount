@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/currency/domain/services/currency_amount_service.dart';
@@ -10,6 +11,8 @@ import 'package:bicount/features/analysis/domain/services/analysis_transaction_b
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
 import 'package:bicount/features/recurring_fundings/domain/services/recurring_plan_collection_builder.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
+
+part 'analysis_dashboard_calculation.dart';
 
 class AnalysisDashboardBuilder {
   const AnalysisDashboardBuilder({
@@ -32,7 +35,9 @@ class AnalysisDashboardBuilder {
     CurrencyConfigEntity currencyConfig,
   ) {
     final filteredTransactions = timeSeriesBuilder.filterTransactions(
-      source.transactions,
+      source.transactions
+          .where((row) => row.type != TransactionTypes.walletTransferCode)
+          .toList(),
       period,
     );
     final currentUserParticipantIds = _resolveCurrentUserParticipantIds(source);
@@ -123,13 +128,17 @@ class AnalysisDashboardBuilder {
     );
     final recurringCharges = recurringPlanCollectionBuilder.build(
       recurringTransferts: source.recurringTransferts,
-      transactions: source.transactions,
+      transactions: source.transactions
+          .where((row) => row.type != TransactionTypes.walletTransferCode)
+          .toList(),
       currencyConfig: currencyConfig,
       scope: RecurringPlanScope.charge,
     );
     final recurringIncomes = recurringPlanCollectionBuilder.build(
       recurringTransferts: source.recurringTransferts,
-      transactions: source.transactions,
+      transactions: source.transactions
+          .where((row) => row.type != TransactionTypes.walletTransferCode)
+          .toList(),
       currencyConfig: currencyConfig,
       scope: RecurringPlanScope.income,
     );
@@ -186,32 +195,5 @@ class AnalysisDashboardBuilder {
         nextExpectedDate: recurringIncomes.nextExpectedDate,
       ),
     );
-  }
-
-  Set<String>? _resolveCurrentUserParticipantIds(AnalysisSourceData source) {
-    final currentUserId = source.currentUserId;
-    if (currentUserId == null || currentUserId.isEmpty) {
-      return null;
-    }
-
-    return participantIdentityService.currentUserParticipantIds(
-      currentUserId: currentUserId,
-      friends: source.friends,
-    );
-  }
-
-  double _sumTransactions(
-    List<TransactionModel> transactions,
-    CurrencyConfigEntity currencyConfig,
-    bool Function(TransactionModel transaction) predicate,
-  ) {
-    return transactions
-        .where(predicate)
-        .fold<double>(
-          0,
-          (sum, transaction) =>
-              sum +
-              currencyAmountService.transaction(transaction, currencyConfig),
-        );
   }
 }

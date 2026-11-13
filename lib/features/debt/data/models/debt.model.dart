@@ -7,8 +7,10 @@ class DebtModel extends OfflineModel {
   final String createdBy;
 
   final String lenderId;
+  final String? lenderWalletId;
 
   final String borrowerId;
+  final String? borrowerWalletId;
 
   final String principalTransactionId;
 
@@ -46,7 +48,9 @@ class DebtModel extends OfflineModel {
     String? debtId,
     required this.createdBy,
     required this.lenderId,
+    this.lenderWalletId,
     required this.borrowerId,
+    this.borrowerWalletId,
     required this.principalTransactionId,
     required this.title,
     this.note = '',

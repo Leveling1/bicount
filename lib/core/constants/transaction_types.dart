@@ -18,6 +18,7 @@ class TransactionTypes {
   static const int otherRecurringIncomeCode = 5;
   static const int debtCode = 6;
   static const int othersCode = 7;
+  static const int walletTransferCode = 8;
 
   // ── Legacy type aliases kept for backward migration reading ──
 

@@ -45,7 +45,7 @@ Future<void> showDebtDetailSheet({
         permissionHint: context.l10n.debtPermissionHint,
         invalidAmountMessage: context.l10n.debtInvalidPaymentAmount,
         isLoading: targetId == summary.debt.debtId,
-        onRecordPayment: (amount, currency) async {
+        onRecordPayment: (amount, currency, walletId) async {
           if (sheetContext.mounted) {
             await Navigator.of(sheetContext).maybePop();
           }
@@ -56,6 +56,7 @@ Future<void> showDebtDetailSheet({
                   debtId: summary.debt.debtId ?? '',
                   amount: amount,
                   currency: currency,
+                  walletId: walletId,
                 ),
               ),
             );
@@ -149,6 +150,7 @@ Future<void> _openDebtEditSheet({
               state.targetId == summary.debt.debtId;
           return DebtContractForm(
             debt: summary.debt,
+            isLender: summary.isReceivable,
             principalTransaction: principalTransaction,
             counterpartyName: summary.counterpartyName,
             isLoading: isLoading,

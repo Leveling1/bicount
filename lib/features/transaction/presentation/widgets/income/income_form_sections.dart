@@ -11,6 +11,11 @@ extension _IncomeFormSections on _IncomeFormState {
     return Column(
       children: [
         CustomAmountField(amount: _amount, currency: _currency),
+        WalletPicker(
+          label: context.l10n.walletTo,
+          value: _walletId ?? widget.initialTransaction?.beneficiaryWalletId,
+          onChanged: (id) => _update(() => _walletId = id),
+        ),
         if (canEditAllFields) ...[
           AppDimens.spacerMedium,
           TransferFormPartySection(
@@ -80,7 +85,7 @@ extension _IncomeFormSections on _IncomeFormState {
         ],
         if (canEditAllFields && !_isDebt) ...[
           AppDimens.spacerMedium,
-         SmoothInsert(
+          SmoothInsert(
             visible: !_isDebt,
             child: TransferFormRecurringSection(
               isRecurring: _isRecurring,
@@ -88,7 +93,9 @@ extension _IncomeFormSections on _IncomeFormState {
               recurringTypeId: _recurringTypeId,
               salaryRequiresConfirmation:
                   _recurringTypeId == TransactionTypes.salaryCode
-                  ? AppExecutionMode.requiresConfirmation(_recurringExecutionMode)
+                  ? AppExecutionMode.requiresConfirmation(
+                      _recurringExecutionMode,
+                    )
                   : null,
               salaryReminderEnabled:
                   _recurringTypeId == TransactionTypes.salaryCode
@@ -128,6 +135,33 @@ extension _IncomeFormSections on _IncomeFormState {
           ),
         ],
       ],
+    );
+  }
+
+  Widget _buildForm(BuildContext context) {
+    final friendNames = widget.friends
+        .map((friend) => friend.username)
+        .toList();
+    final splitPreview = _buildPreview();
+
+    return BlocConsumer<TransactionBloc, TransactionState>(
+      listenWhen: (previous, current) =>
+          current is TransactionCreated ||
+          current is TransactionUpdated ||
+          current is TransactionError,
+      listener: _onTransactionStateChanged,
+      builder: (context, state) {
+        return Form(
+          key: _formKey,
+          child: _buildFormBody(
+            context,
+            state: state,
+            friendNames: friendNames,
+            splitPreview: splitPreview,
+            canEditAllFields: canEditAllFields,
+          ),
+        );
+      },
     );
   }
 }

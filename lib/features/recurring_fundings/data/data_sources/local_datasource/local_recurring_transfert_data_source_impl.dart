@@ -15,6 +15,8 @@ import 'package:bicount/features/transaction/data/models/transaction.model.dart'
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+part 'local_recurring_occurrence_confirmation.dart';
+
 class LocalRecurringTransfertDataSourceImpl
     implements RecurringTransfertLocalDataSource {
   LocalRecurringTransfertDataSourceImpl({
@@ -55,7 +57,17 @@ class LocalRecurringTransfertDataSourceImpl
         amount: request.amount,
         currency: request.currency,
         senderId: current.senderId,
+        senderWalletId:
+            (!TransactionTypes.isIncomeType(current.recurringTransfertTypeId)
+                ? request.walletId
+                : null) ??
+            current.senderWalletId,
         beneficiaryId: current.beneficiaryId,
+        beneficiaryWalletId:
+            (TransactionTypes.isIncomeType(current.recurringTransfertTypeId)
+                ? request.walletId
+                : null) ??
+            current.beneficiaryWalletId,
         frequency: request.frequency,
         startDate: normalizedStartDate,
         nextDueDate: normalizedStartDate,
@@ -85,7 +97,9 @@ class LocalRecurringTransfertDataSourceImpl
         amount: recurringTransfert.amount,
         currency: recurringTransfert.currency,
         senderId: recurringTransfert.senderId,
+        senderWalletId: recurringTransfert.senderWalletId,
         beneficiaryId: recurringTransfert.beneficiaryId,
+        beneficiaryWalletId: recurringTransfert.beneficiaryWalletId,
         frequency: recurringTransfert.frequency,
         startDate: recurringTransfert.startDate,
         nextDueDate: recurringTransfert.nextDueDate,
@@ -117,90 +131,15 @@ class LocalRecurringTransfertDataSourceImpl
     SalaryOccurrenceEntity occurrence, {
     required double confirmedAmount,
     required String confirmedCurrency,
+    String? walletId,
     bool switchToAutomatic = false,
   }) async {
-    final currentPlan = await _findRecurringTransfert(
-      occurrence.recurringTransfert.recurringTransfertId ?? '',
-    );
-    if (currentPlan == null) {
-      throw Exception('Recurring plan not found.');
-    }
-
-    final existingTransaction = await _findOccurrenceTransaction(
-      currentPlan.recurringTransfertId ?? '',
-      occurrence.expectedDate,
-    );
-    if (existingTransaction == null) {
-      final quote = await _currencyRepository.resolveCreationQuote(
-        amount: confirmedAmount,
-        originalCurrencyCode: confirmedCurrency,
-      );
-      final transaction = TransactionModel(
-        uid: _currentUid ?? currentPlan.uid,
-        gtid: const Uuid().v4(),
-        name: currentPlan.title,
-        type: currentPlan.recurringTransfertTypeId,
-        beneficiaryId: currentPlan.beneficiaryId,
-        senderId: currentPlan.senderId,
-        date: _scheduleService
-            .mergeDateWithCurrentTime(occurrence.expectedDate)
-            .toIso8601String(),
-        note: currentPlan.note,
-        amount: confirmedAmount,
-        currency: confirmedCurrency,
-        referenceCurrencyCode: quote.referenceCurrencyCode,
-        convertedAmount: quote.convertedAmount,
-        amountCdf: quote.amountCdf,
-        rateToCdf: quote.rateToCdf,
-        fxRateDate: quote.fxRateDate,
-        fxSnapshotId: quote.fxSnapshotId,
-        frequency: Frequency.oneTime,
-        category: Constants.personal,
-        createdAt: DateTime.now().toIso8601String(),
-        originId: currentPlan.recurringTransfertId,
-        originOccurrenceDate: occurrence.expectedDate.toIso8601String(),
-        recurringTransfertId: currentPlan.recurringTransfertId,
-        recurringOccurrenceDate: occurrence.expectedDate.toIso8601String(),
-        generationMode: TransactionTypes.generationManualConfirmation,
-      );
-      await Repository().upsert<TransactionModel>(
-        transaction,
-        isCreation: true,
-      );
-      if (_currentUid != null) {
-        await _offlineFinanceLocalService.applyTransactionEffects(
-          currentUserId: _currentUid!,
-          transaction: transaction,
-        );
-      }
-    }
-
-    await Repository().upsert<RecurringTransfertModel>(
-      RecurringTransfertModel(
-        recurringTransfertId: currentPlan.recurringTransfertId,
-        uid: _currentUid ?? currentPlan.uid,
-        recurringTransfertTypeId: currentPlan.recurringTransfertTypeId,
-        title: currentPlan.title,
-        note: currentPlan.note,
-        amount: currentPlan.amount,
-        currency: currentPlan.currency,
-        senderId: currentPlan.senderId,
-        beneficiaryId: currentPlan.beneficiaryId,
-        frequency: currentPlan.frequency,
-        startDate: currentPlan.startDate,
-        nextDueDate: currentPlan.nextDueDate,
-        endDate: currentPlan.endDate,
-        status: currentPlan.status,
-        executionMode: switchToAutomatic
-            ? AppExecutionMode.backendAutomatic
-            : currentPlan.executionMode,
-        reminderEnabled: switchToAutomatic
-            ? false
-            : currentPlan.reminderEnabled,
-        lastGeneratedAt: currentPlan.lastGeneratedAt,
-        lastConfirmedAt: DateTime.now().toIso8601String(),
-        createdAt: currentPlan.createdAt,
-      ),
+    await _confirmOccurrence(
+      occurrence,
+      confirmedAmount: confirmedAmount,
+      confirmedCurrency: confirmedCurrency,
+      walletId: walletId,
+      switchToAutomatic: switchToAutomatic,
     );
   }
 

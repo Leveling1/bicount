@@ -16,6 +16,7 @@ abstract class RecurringTransfertLocalDataSource {
     SalaryOccurrenceEntity occurrence, {
     required double confirmedAmount,
     required String confirmedCurrency,
+    String? walletId,
     bool switchToAutomatic = false,
   });
 }

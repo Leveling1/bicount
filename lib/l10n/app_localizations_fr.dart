@@ -2041,4 +2041,85 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get analysisPeriodAllLabel => 'Tout';
+
+  @override
+  String get walletTitle => 'Portefeuilles';
+
+  @override
+  String get walletPrincipal => 'Principal';
+
+  @override
+  String get walletNew => 'Nouveau portefeuille';
+
+  @override
+  String get walletEdit => 'Modifier le portefeuille';
+
+  @override
+  String get walletName => 'Nom du portefeuille';
+
+  @override
+  String get walletKind => 'Type de portefeuille';
+
+  @override
+  String get walletNetwork => 'Réseau de la carte';
+
+  @override
+  String get walletBank => 'Compte bancaire';
+
+  @override
+  String get walletCash => 'Espèces';
+
+  @override
+  String get walletCard => 'Carte';
+
+  @override
+  String get walletMobile => 'Mobile money';
+
+  @override
+  String get walletOther => 'Autre';
+
+  @override
+  String get walletColor => 'Couleur';
+
+  @override
+  String get walletIcon => 'Icône';
+
+  @override
+  String get walletArchive => 'Archiver le portefeuille';
+
+  @override
+  String get walletRestore => 'Restaurer le portefeuille';
+
+  @override
+  String get walletArchived => 'Archivé';
+
+  @override
+  String get walletTransfer => 'Transférer entre portefeuilles';
+
+  @override
+  String get walletFrom => 'Payer depuis';
+
+  @override
+  String get walletTo => 'Recevoir dans';
+
+  @override
+  String get walletNoMovements => 'Aucun mouvement pour le moment';
+
+  @override
+  String get walletError => 'Impossible d’enregistrer le changement de portefeuille.';
+
+  @override
+  String get walletDifferent => 'Choisis deux portefeuilles différents.';
+
+  @override
+  String get walletAll => 'Tous les portefeuilles';
+
+  @override
+  String get walletReassign => 'Changer de portefeuille';
+
+  @override
+  String get walletPicker => 'Portefeuille';
+
+  @override
+  String get walletBalance => 'Solde';
 }

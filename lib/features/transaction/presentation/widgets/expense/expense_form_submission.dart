@@ -104,6 +104,7 @@ extension _ExpenseFormSubmission on _ExpenseFormState {
 
     try {
       final request = CreateTransactionRequestEntity(
+        walletId: _walletId,
         name: _name.text.trim(),
         date: resolveTransactionDate(),
         totalAmount: totalAmount,

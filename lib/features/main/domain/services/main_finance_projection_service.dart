@@ -10,6 +10,10 @@ import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 
+part 'main_friend_aggregate.dart';
+
+part 'main_friend_projection.dart';
+
 class MainFinanceProjectionService {
   const MainFinanceProjectionService({
     this.currencyAmountService = const CurrencyAmountService(),
@@ -28,6 +32,7 @@ class MainFinanceProjectionService {
     required List<RecurringTransfertModel> recurringTransferts,
     required int connectionState,
     required CurrencyConfigEntity currencyConfig,
+    Map<String, double>? walletTotals,
   }) {
     final relevantTransactions = participantIdentityService
         .filterTransactionsForCurrentUser(
@@ -44,6 +49,7 @@ class MainFinanceProjectionService {
         relevantTransactions,
         currencyConfig,
         currentUserParticipantIds,
+        walletTotals,
       ),
       connectionState: connectionState,
       referenceCurrencyCode: currencyConfig.referenceCurrencyCode,
@@ -64,19 +70,21 @@ class MainFinanceProjectionService {
     List<TransactionModel> transactions,
     CurrencyConfigEntity currencyConfig,
     Set<String> currentUserParticipantIds,
+    Map<String, double>? walletTotals,
   ) {
     // Net native (unconverted) amounts per currency first, then convert each
     // currency's net total exactly once. Converting every transaction
     // individually (each potentially using a different historical/cached FX
     // rate) before summing can leave a false non-zero residue even when the
     // underlying foreign-currency flows cancel out exactly.
-    final balanceByCurrency = <String, double>{};
+    final balanceByCurrency = walletTotals ?? <String, double>{};
     final incomesByCurrency = <String, double>{};
     final expensesByCurrency = <String, double>{};
     final personalIncomeByCurrency = <String, double>{};
     final companyIncomeByCurrency = <String, double>{};
 
     for (final transaction in transactions) {
+      if (transaction.type == TransactionTypes.walletTransferCode) continue;
       final currencyCode = CurrencyConfigEntity.normalizeCode(
         transaction.currency,
       );
@@ -88,7 +96,9 @@ class MainFinanceProjectionService {
 
       if (currentUserParticipantIds.contains(transaction.senderId) &&
           (!selfMovement || !TransactionTypes.isIncomeType(transaction.type))) {
-        _addNative(balanceByCurrency, currencyCode, -nativeAmount);
+        if (walletTotals == null) {
+          _addNative(balanceByCurrency, currencyCode, -nativeAmount);
+        }
         _addNative(expensesByCurrency, currencyCode, nativeAmount);
         if (category == Constants.personal) {
           _addNative(personalIncomeByCurrency, currencyCode, -nativeAmount);
@@ -100,7 +110,9 @@ class MainFinanceProjectionService {
       if (currentUserParticipantIds.contains(transaction.beneficiaryId) &&
           (!selfMovement ||
               !TransactionTypes.isExpenseType(transaction.type))) {
-        _addNative(balanceByCurrency, currencyCode, nativeAmount);
+        if (walletTotals == null) {
+          _addNative(balanceByCurrency, currencyCode, nativeAmount);
+        }
         _addNative(incomesByCurrency, currencyCode, nativeAmount);
         if (category == Constants.personal) {
           _addNative(personalIncomeByCurrency, currencyCode, nativeAmount);
@@ -152,114 +164,5 @@ class MainFinanceProjectionService {
       );
     }
     return total;
-  }
-
-  List<FriendsModel> _deriveFriends({
-    required Set<String> currentUserParticipantIds,
-    required List<FriendsModel> friends,
-    required List<TransactionModel> transactions,
-    required CurrencyConfigEntity currencyConfig,
-  }) {
-    final aggregatesById = <String, _FriendAggregate>{};
-
-    for (final friend in friends) {
-      final aggregate = _FriendAggregate(friend);
-      aggregatesById[friend.sid] = aggregate;
-      final linkedUid = friend.uid;
-      if (linkedUid != null && linkedUid.isNotEmpty) {
-        aggregatesById[linkedUid] = aggregate;
-      }
-    }
-
-    for (final transaction in transactions) {
-      final category = transaction.category ?? Constants.personal;
-      final currencyCode = CurrencyConfigEntity.normalizeCode(
-        transaction.currency,
-      );
-
-      if (!currentUserParticipantIds.contains(transaction.senderId)) {
-        final sender = aggregatesById[transaction.senderId];
-        sender?.apply(
-          nativeAmount: transaction.amount,
-          currencyCode: currencyCode,
-          category: category,
-          isSender: true,
-        );
-      }
-
-      if (!currentUserParticipantIds.contains(transaction.beneficiaryId)) {
-        final beneficiary = aggregatesById[transaction.beneficiaryId];
-        beneficiary?.apply(
-          nativeAmount: transaction.amount,
-          currencyCode: currencyCode,
-          category: category,
-          isSender: false,
-        );
-      }
-    }
-
-    return friends
-        .map(
-          (friend) => aggregatesById[friend.sid]!.toModel(this, currencyConfig),
-        )
-        .toList();
-  }
-}
-
-class _FriendAggregate {
-  _FriendAggregate(this._friend);
-
-  final FriendsModel _friend;
-  final Map<String, double> _giveByCurrency = {};
-  final Map<String, double> _receiveByCurrency = {};
-  final Map<String, double> _personalIncomeByCurrency = {};
-  final Map<String, double> _companyIncomeByCurrency = {};
-
-  void apply({
-    required double nativeAmount,
-    required String currencyCode,
-    required int category,
-    required bool isSender,
-  }) {
-    final directionalMap = isSender ? _giveByCurrency : _receiveByCurrency;
-    directionalMap[currencyCode] =
-        (directionalMap[currencyCode] ?? 0) + nativeAmount;
-
-    final signedAmount = isSender ? -nativeAmount : nativeAmount;
-    if (category == Constants.personal) {
-      _personalIncomeByCurrency[currencyCode] =
-          (_personalIncomeByCurrency[currencyCode] ?? 0) + signedAmount;
-    } else if (category == Constants.company) {
-      _companyIncomeByCurrency[currencyCode] =
-          (_companyIncomeByCurrency[currencyCode] ?? 0) + signedAmount;
-    }
-  }
-
-  FriendsModel toModel(
-    MainFinanceProjectionService service,
-    CurrencyConfigEntity currencyConfig,
-  ) {
-    return FriendsModel(
-      sid: _friend.sid,
-      uid: _friend.uid,
-      fid: _friend.fid,
-      image: _friend.image,
-      username: _friend.username,
-      email: _friend.email,
-      give: service._convertNetByCurrency(_giveByCurrency, currencyConfig),
-      receive: service._convertNetByCurrency(
-        _receiveByCurrency,
-        currencyConfig,
-      ),
-      relationType: _friend.relationType,
-      personalIncome: service._convertNetByCurrency(
-        _personalIncomeByCurrency,
-        currencyConfig,
-      ),
-      companyIncome: service._convertNetByCurrency(
-        _companyIncomeByCurrency,
-        currencyConfig,
-      ),
-    );
   }
 }

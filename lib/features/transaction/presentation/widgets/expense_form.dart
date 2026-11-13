@@ -1,3 +1,4 @@
+import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
@@ -62,6 +63,7 @@ class _ExpenseFormState extends State<ExpenseForm>
   final TextEditingController _name = TextEditingController();
   final TextEditingController _date = TextEditingController();
   final TextEditingController _amount = TextEditingController();
+  String? _walletId;
   final TextEditingController _currency = TextEditingController();
   final TextEditingController _beneficiary = TextEditingController();
   final TextEditingController _debtDueDate = TextEditingController();
@@ -150,32 +152,7 @@ class _ExpenseFormState extends State<ExpenseForm>
   }
 
   @override
-  Widget build(BuildContext context) {
-    final friendNames = widget.friends
-        .map((friend) => friend.username)
-        .toList();
-    final splitPreview = _buildPreview();
-
-    return BlocConsumer<TransactionBloc, TransactionState>(
-      listenWhen: (previous, current) =>
-          current is TransactionCreated ||
-          current is TransactionUpdated ||
-          current is TransactionError,
-      listener: _onTransactionStateChanged,
-      builder: (context, state) {
-        return Form(
-          key: _formKey,
-          child: _buildFormBody(
-            context,
-            state: state,
-            friendNames: friendNames,
-            splitPreview: splitPreview,
-            canEditAllFields: canEditAllFields,
-          ),
-        );
-      },
-    );
-  }
+  Widget build(BuildContext context) => _buildForm(context);
 
   void _update(VoidCallback callback) {
     if (!mounted) return;

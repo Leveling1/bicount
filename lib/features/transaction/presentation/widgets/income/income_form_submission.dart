@@ -86,6 +86,7 @@ extension _IncomeFormSubmission on _IncomeFormState {
       }
 
       final request = CreateTransactionRequestEntity(
+        walletId: _walletId,
         name: _name.text.trim(),
         date: resolveTransactionDate(),
         totalAmount: totalAmount,

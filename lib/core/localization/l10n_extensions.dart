@@ -10,49 +10,10 @@ import 'package:bicount/features/transaction/domain/entities/create_transaction_
 import 'package:flutter/material.dart';
 import 'package:bicount/l10n/app_localizations.dart';
 
+part 'l10n_analysis_labels.dart';
+
 extension L10nBuildContextX on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this)!;
-
-  String analysisPeriodLabel(AnalysisPeriod period) {
-    switch (period) {
-      case AnalysisPeriod.week7:
-        return l10n.analysisPeriod7DLabel;
-      case AnalysisPeriod.month30:
-        return l10n.analysisPeriod30DLabel;
-      case AnalysisPeriod.quarter90:
-        return l10n.analysisPeriod90DLabel;
-      case AnalysisPeriod.all:
-        return l10n.analysisPeriodAllLabel;
-    }
-  }
-
-  String analysisBreakdownLabel(String label) {
-    switch (label) {
-      case 'AddFunds':
-        return l10n.transactionTypeAddFund;
-      case 'ReceivedTransfers':
-        return l10n.transactionTypeIncome;
-      case 'Income':
-        return l10n.analysisIncome;
-      case 'Salary':
-        return l10n.transactionTypeSalary;
-      case 'Expense':
-      case 'Expenses':
-        return l10n.analysisBreakdownExpenses;
-      case 'Subscription':
-      case 'Subscriptions':
-        return l10n.analysisBreakdownSubscriptions;
-      case 'Debt':
-        return l10n.analysisBreakdownDebt;
-      case 'Repayment':
-      case 'Repayments':
-        return l10n.analysisBreakdownRepayments;
-      case 'Other':
-        return l10n.analysisBreakdownOther;
-      default:
-        return label;
-    }
-  }
 
   String transactionTypeLabel(int type) {
     switch (type) {
@@ -66,6 +27,8 @@ extension L10nBuildContextX on BuildContext {
         return l10n.transactionTypeSalary;
       case TransactionTypes.debtCode:
         return l10n.transactionTypeDebt;
+      case TransactionTypes.walletTransferCode:
+        return l10n.walletTransfer;
       default:
         return l10n.transactionTypeOther;
     }

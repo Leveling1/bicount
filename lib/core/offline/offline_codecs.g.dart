@@ -12,6 +12,8 @@ import 'package:bicount/features/project/data/models/project.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
+import 'package:bicount/features/wallet/data/models/wallet_model.dart';
+import '../constants/backend_environment.dart';
 
 class OfflineCodec<T> {
   const OfflineCodec({
@@ -502,7 +504,11 @@ final debtModelCodec = OfflineCodec<DebtModel>(
     'debtId': 'debt_id',
     'createdBy': 'created_by',
     'lenderId': 'lender_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'lenderWalletId': 'lender_wallet_id',
     'borrowerId': 'borrower_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'borrowerWalletId': 'borrower_wallet_id',
     'principalTransactionId': 'principal_transaction_id',
     'title': 'title',
     'note': 'note',
@@ -524,7 +530,11 @@ final debtModelCodec = OfflineCodec<DebtModel>(
     'debtId': 'debt_id',
     'createdBy': 'created_by',
     'lenderId': 'lender_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'lenderWalletId': 'lender_wallet_id',
     'borrowerId': 'borrower_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'borrowerWalletId': 'borrower_wallet_id',
     'principalTransactionId': 'principal_transaction_id',
     'title': 'title',
     'note': 'note',
@@ -546,7 +556,9 @@ final debtModelCodec = OfflineCodec<DebtModel>(
     debtId: (r['debt_id'] as String?),
     createdBy: (r['created_by'] as String? ?? ''),
     lenderId: (r['lender_id'] as String? ?? ''),
+    lenderWalletId: r['lender_wallet_id'] as String?,
     borrowerId: (r['borrower_id'] as String? ?? ''),
+    borrowerWalletId: r['borrower_wallet_id'] as String?,
     principalTransactionId: (r['principal_transaction_id'] as String? ?? ''),
     title: (r['title'] as String? ?? ''),
     note: (r['note'] as String? ?? ''),
@@ -570,7 +582,9 @@ final debtModelCodec = OfflineCodec<DebtModel>(
     debtId: (r['debt_id'] as String?),
     createdBy: (r['created_by'] as String? ?? ''),
     lenderId: (r['lender_id'] as String? ?? ''),
+    lenderWalletId: r['lender_wallet_id'] as String?,
     borrowerId: (r['borrower_id'] as String? ?? ''),
+    borrowerWalletId: r['borrower_wallet_id'] as String?,
     principalTransactionId: (r['principal_transaction_id'] as String? ?? ''),
     title: (r['title'] as String? ?? ''),
     note: (r['note'] as String? ?? ''),
@@ -594,7 +608,11 @@ final debtModelCodec = OfflineCodec<DebtModel>(
     'debt_id': m.debtId,
     'created_by': m.createdBy,
     'lender_id': m.lenderId,
+    if (BackendEnvironment.isLocalPreproduction)
+      'lender_wallet_id': m.lenderWalletId,
     'borrower_id': m.borrowerId,
+    if (BackendEnvironment.isLocalPreproduction)
+      'borrower_wallet_id': m.borrowerWalletId,
     'principal_transaction_id': m.principalTransactionId,
     'title': m.title,
     'note': m.note,
@@ -616,7 +634,11 @@ final debtModelCodec = OfflineCodec<DebtModel>(
     'debt_id': m.debtId,
     'created_by': m.createdBy,
     'lender_id': m.lenderId,
+    if (BackendEnvironment.isLocalPreproduction && m.lenderWalletId != null)
+      'lender_wallet_id': m.lenderWalletId,
     'borrower_id': m.borrowerId,
+    if (BackendEnvironment.isLocalPreproduction && m.borrowerWalletId != null)
+      'borrower_wallet_id': m.borrowerWalletId,
     'principal_transaction_id': m.principalTransactionId,
     'title': m.title,
     'note': m.note,
@@ -861,7 +883,11 @@ final recurringTransfertModelCodec = OfflineCodec<RecurringTransfertModel>(
     'amount': 'amount',
     'currency': 'currency',
     'senderId': 'sender_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'senderWalletId': 'sender_wallet_id',
     'beneficiaryId': 'beneficiary_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'beneficiaryWalletId': 'beneficiary_wallet_id',
     'frequency': 'frequency',
     'startDate': 'start_date',
     'nextDueDate': 'next_due_date',
@@ -882,7 +908,11 @@ final recurringTransfertModelCodec = OfflineCodec<RecurringTransfertModel>(
     'amount': 'amount',
     'currency': 'currency',
     'senderId': 'sender_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'senderWalletId': 'sender_wallet_id',
     'beneficiaryId': 'beneficiary_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'beneficiaryWalletId': 'beneficiary_wallet_id',
     'frequency': 'frequency',
     'startDate': 'start_date',
     'nextDueDate': 'next_due_date',
@@ -903,7 +933,9 @@ final recurringTransfertModelCodec = OfflineCodec<RecurringTransfertModel>(
     amount: ((r['amount'] as num?)?.toDouble() ?? 0.0),
     currency: (r['currency'] as String? ?? ''),
     senderId: (r['sender_id'] as String? ?? ''),
+    senderWalletId: r['sender_wallet_id'] as String?,
     beneficiaryId: (r['beneficiary_id'] as String? ?? ''),
+    beneficiaryWalletId: r['beneficiary_wallet_id'] as String?,
     frequency: ((r['frequency'] as num?)?.toInt() ?? 0),
     startDate: (r['start_date'] as String? ?? ''),
     nextDueDate: (r['next_due_date'] as String? ?? ''),
@@ -925,7 +957,9 @@ final recurringTransfertModelCodec = OfflineCodec<RecurringTransfertModel>(
     amount: ((r['amount'] as num?)?.toDouble() ?? 0.0),
     currency: (r['currency'] as String? ?? ''),
     senderId: (r['sender_id'] as String? ?? ''),
+    senderWalletId: r['sender_wallet_id'] as String?,
     beneficiaryId: (r['beneficiary_id'] as String? ?? ''),
+    beneficiaryWalletId: r['beneficiary_wallet_id'] as String?,
     frequency: ((r['frequency'] as num?)?.toInt() ?? 0),
     startDate: (r['start_date'] as String? ?? ''),
     nextDueDate: (r['next_due_date'] as String? ?? ''),
@@ -947,7 +981,11 @@ final recurringTransfertModelCodec = OfflineCodec<RecurringTransfertModel>(
     'amount': m.amount,
     'currency': m.currency,
     'sender_id': m.senderId,
+    if (BackendEnvironment.isLocalPreproduction)
+      'sender_wallet_id': m.senderWalletId,
     'beneficiary_id': m.beneficiaryId,
+    if (BackendEnvironment.isLocalPreproduction)
+      'beneficiary_wallet_id': m.beneficiaryWalletId,
     'frequency': m.frequency,
     'start_date': m.startDate,
     'next_due_date': m.nextDueDate,
@@ -968,7 +1006,12 @@ final recurringTransfertModelCodec = OfflineCodec<RecurringTransfertModel>(
     'amount': m.amount,
     'currency': m.currency,
     'sender_id': m.senderId,
+    if (BackendEnvironment.isLocalPreproduction && m.senderWalletId != null)
+      'sender_wallet_id': m.senderWalletId,
     'beneficiary_id': m.beneficiaryId,
+    if (BackendEnvironment.isLocalPreproduction &&
+        m.beneficiaryWalletId != null)
+      'beneficiary_wallet_id': m.beneficiaryWalletId,
     'frequency': m.frequency,
     'start_date': m.startDate,
     'next_due_date': m.nextDueDate,
@@ -1122,7 +1165,11 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'name': 'name',
     'type': 'type',
     'beneficiaryId': 'beneficiary_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'beneficiaryWalletId': 'beneficiary_wallet_id',
     'senderId': 'sender_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'senderWalletId': 'sender_wallet_id',
     'date': 'date',
     'note': 'note',
     'amount': 'amount',
@@ -1150,7 +1197,11 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'name': 'name',
     'type': 'type',
     'beneficiaryId': 'beneficiary_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'beneficiaryWalletId': 'beneficiary_wallet_id',
     'senderId': 'sender_id',
+    if (BackendEnvironment.isLocalPreproduction)
+      'senderWalletId': 'sender_wallet_id',
     'date': 'date',
     'note': 'note',
     'amount': 'amount',
@@ -1178,7 +1229,9 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     name: (r['name'] as String? ?? ''),
     type: ((r['type'] as num?)?.toInt() ?? 0),
     beneficiaryId: (r['beneficiary_id'] as String? ?? ''),
+    beneficiaryWalletId: r['beneficiary_wallet_id'] as String?,
     senderId: (r['sender_id'] as String? ?? ''),
+    senderWalletId: r['sender_wallet_id'] as String?,
     date: (r['date'] as String? ?? ''),
     note: (r['note'] as String? ?? ''),
     amount: ((r['amount'] as num?)?.toDouble() ?? 0.0),
@@ -1206,7 +1259,9 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     name: (r['name'] as String? ?? ''),
     type: ((r['type'] as num?)?.toInt() ?? 0),
     beneficiaryId: (r['beneficiary_id'] as String? ?? ''),
+    beneficiaryWalletId: r['beneficiary_wallet_id'] as String?,
     senderId: (r['sender_id'] as String? ?? ''),
+    senderWalletId: r['sender_wallet_id'] as String?,
     date: (r['date'] as String? ?? ''),
     note: (r['note'] as String? ?? ''),
     amount: ((r['amount'] as num?)?.toDouble() ?? 0.0),
@@ -1234,7 +1289,11 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'name': m.name,
     'type': m.type,
     'beneficiary_id': m.beneficiaryId,
+    if (BackendEnvironment.isLocalPreproduction)
+      'beneficiary_wallet_id': m.beneficiaryWalletId,
     'sender_id': m.senderId,
+    if (BackendEnvironment.isLocalPreproduction)
+      'sender_wallet_id': m.senderWalletId,
     'date': m.date,
     'note': m.note,
     'amount': m.amount,
@@ -1262,7 +1321,12 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'name': m.name,
     'type': m.type,
     'beneficiary_id': m.beneficiaryId,
+    if (BackendEnvironment.isLocalPreproduction &&
+        m.beneficiaryWalletId != null)
+      'beneficiary_wallet_id': m.beneficiaryWalletId,
     'sender_id': m.senderId,
+    if (BackendEnvironment.isLocalPreproduction && m.senderWalletId != null)
+      'sender_wallet_id': m.senderWalletId,
     'date': m.date,
     'note': m.note,
     'amount': m.amount,
@@ -1294,7 +1358,32 @@ OfflineCodec<T> codecFor<T>() {
   return codec as OfflineCodec<T>;
 }
 
+const _walletColumns = {
+  'wallet_id': 'wallet_id',
+  'owner_uid': 'owner_uid',
+  'name': 'name',
+  'kind': 'kind',
+  'card_network': 'card_network',
+  'icon': 'icon',
+  'color': 'color',
+  'is_default': 'is_default',
+  'created_at': 'created_at',
+  'archived_at': 'archived_at',
+};
+
+final walletModelCodec = OfflineCodec<WalletModel>(
+  table: 'wallets',
+  key: 'wallet_id',
+  columns: _walletColumns,
+  localColumns: _walletColumns,
+  fromLocal: WalletModel.fromRow,
+  fromRemote: WalletModel.fromRow,
+  toLocal: (wallet) => wallet.toRow(local: true),
+  toRemote: (wallet) => wallet.toRow(),
+);
+
 final List<OfflineCodec<dynamic>> allOfflineCodecs = [
+  if (BackendEnvironment.isLocalPreproduction) walletModelCodec,
   memojiModelCodec,
   userModelCodec,
   companyModelCodec,
