@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bicount/features/currency/data/data_sources/local_datasource/currency_local_datasource.dart';
 import 'package:bicount/features/currency/data/data_sources/remote_datasource/currency_remote_datasource.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
@@ -40,6 +42,7 @@ class _FakeCurrencyLocalDataSource implements CurrencyLocalDataSource {
 }
 
 class _FakeCurrencyRemoteDataSource implements CurrencyRemoteDataSource {
+  Stream<List<AppCurrencyEntity>> currencyEvents = const Stream.empty();
   List<String> latestCodes = const [];
   List<String> historyCodes = const [];
   List<String> historyDates = const [];
@@ -93,7 +96,7 @@ class _FakeCurrencyRemoteDataSource implements CurrencyRemoteDataSource {
   }
 
   @override
-  Stream<List<AppCurrencyEntity>> watchCurrencies() => const Stream.empty();
+  Stream<List<AppCurrencyEntity>> watchCurrencies() => currencyEvents;
 }
 
 class _FakeCurrencyRecordHistoryService extends CurrencyRecordHistoryService {
@@ -113,11 +116,13 @@ class _FakeCurrencyUserPreferenceService extends CurrencyUserPreferenceService {
   _FakeCurrencyUserPreferenceService()
     : super(client: Supabase.instance.client);
 
+  Stream<String?> preferenceEvents = const Stream.empty();
+
   @override
   Future<String?> readCurrentUserReferenceCurrency() async => null;
 
   @override
-  Stream<String?> watchCurrentUserReferenceCurrency() => const Stream.empty();
+  Stream<String?> watchCurrentUserReferenceCurrency() => preferenceEvents;
 
   @override
   Future<void> persistCurrentUserReferenceCurrency(String currencyCode) async {}
@@ -137,6 +142,34 @@ void main() {
       );
     }
   });
+
+  test(
+    'currency streams handle connection errors and keep later events',
+    () async {
+      final currencies = StreamController<List<AppCurrencyEntity>>.broadcast();
+      final preferences = StreamController<String?>.broadcast();
+      final remote = _FakeCurrencyRemoteDataSource()
+        ..currencyEvents = currencies.stream;
+      final preference = _FakeCurrencyUserPreferenceService()
+        ..preferenceEvents = preferences.stream;
+      final repository = CurrencyRepositoryImpl(
+        localDataSource: _FakeCurrencyLocalDataSource(),
+        remoteDataSource: remote,
+        recordHistoryService: _FakeCurrencyRecordHistoryService(),
+        userPreferenceService: preference,
+      );
+      await repository.hydrate();
+      currencies.addError(StateError('connection lost'));
+      preferences.addError(StateError('connection lost'));
+      currencies.add(AppCurrencyEntity.fallbackCurrencies);
+      preferences.add('USD');
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(repository.currentConfig.referenceCurrencyCode, 'USD');
+      await repository.dispose();
+      await currencies.close();
+      await preferences.close();
+    },
+  );
 
   test(
     'ensureReferenceHistory loads recurring source currencies with the target history',

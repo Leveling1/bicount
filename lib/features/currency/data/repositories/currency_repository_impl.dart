@@ -73,6 +73,9 @@ class CurrencyRepositoryImpl {
       (currencies) {
         unawaited(_safeOnRemoteCurrenciesChanged(currencies));
       },
+      onError: (Object error, StackTrace stackTrace) {
+        debugPrint('Currency catalog realtime unavailable: $error');
+      },
     );
     await _safeRebindUserPreferenceStream();
 
@@ -85,9 +88,7 @@ class CurrencyRepositoryImpl {
       // never recorded here left that currency without any rate — and every
       // total involving it came out wrong.
       await _refreshLatestSnapshots(
-        currentConfig.currencies
-            .map((currency) => currency.code)
-            .toSet(),
+        currentConfig.currencies.map((currency) => currency.code).toSet(),
       );
 
       await ensureReferenceHistory(
@@ -270,9 +271,7 @@ class CurrencyRepositoryImpl {
     // Always trigger a background refresh regardless of cache state.
     unawaited(
       _remoteDataSource
-          .fetchLatestSnapshotsForCodes(
-            normalizedCodes.toList(growable: false),
-          )
+          .fetchLatestSnapshotsForCodes(normalizedCodes.toList(growable: false))
           .then(_mergeSnapshots)
           .catchError((e) {
             if (e is! Exception || !e.toString().contains('SocketException')) {
@@ -290,9 +289,7 @@ class CurrencyRepositoryImpl {
     // so we don't block the user for too long.
     try {
       final remoteSnapshots = await _remoteDataSource
-          .fetchLatestSnapshotsForCodes(
-            normalizedCodes.toList(growable: false),
-          )
+          .fetchLatestSnapshotsForCodes(normalizedCodes.toList(growable: false))
           .timeout(const Duration(seconds: 3));
       await _mergeSnapshots(remoteSnapshots);
       return remoteSnapshots;
@@ -435,9 +432,14 @@ class CurrencyRepositoryImpl {
 
     _userPreferenceSubscription = _userPreferenceService
         .watchCurrentUserReferenceCurrency()
-        .listen((currencyCode) {
-          unawaited(_safeOnUserReferenceCurrencyChanged(currencyCode));
-        });
+        .listen(
+          (currencyCode) {
+            unawaited(_safeOnUserReferenceCurrencyChanged(currencyCode));
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            debugPrint('Currency preference realtime unavailable: $error');
+          },
+        );
   }
 
   Future<void> _safeRebindUserPreferenceStream() async {

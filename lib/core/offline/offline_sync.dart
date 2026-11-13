@@ -8,7 +8,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_config.dart';
 import 'offline_codecs.g.dart';
+import 'offline_conflict_clock.dart';
 import 'offline_conditional_delivery.dart';
+import 'offline_conditional_creation.dart';
 import 'offline_fresh_snapshot.dart';
 import 'offline_legacy_finance_migration.dart';
 import 'offline_legacy_acknowledgement.dart';
@@ -37,6 +39,8 @@ class OfflineSync {
   String? _runningUserId;
   bool _rerunRequested = false;
   bool _journalInUse = false;
+  DateTime? _lastClockSample;
+  bool _samplingClock = false;
   static const _conditionalTestEnabled = BackendEnvironment.isConditionalTest;
 
   static const _journalTables = {
@@ -85,6 +89,7 @@ class OfflineSync {
   Future<void> _run() async {
     final uid = repository.currentUserId;
     if (uid == null) return;
+    if (_conditionalTestEnabled) unawaited(_sampleConflictClock(uid));
     try {
       final db = await repository.database();
       if (repository.legacyMigrationPending) return;
@@ -152,6 +157,33 @@ class OfflineSync {
     }
   }
 
+  Future<void> _sampleConflictClock(String uid) async {
+    final now = DateTime.now().toUtc();
+    if (_samplingClock ||
+        (_lastClockSample != null &&
+            now.difference(_lastClockSample!).abs() <
+                const Duration(minutes: 5))) {
+      return;
+    }
+    _samplingClock = true;
+    final clock = OfflineConflictClock.instance;
+    final started = clock.beginSample();
+    try {
+      final result = await _client
+          .rpc('bicount_server_clock')
+          .timeout(const Duration(seconds: 5));
+      if (repository.currentUserId != uid || result is! String) return;
+      final server = DateTime.tryParse(result);
+      if (server == null) return;
+      clock.completeSample(started, server);
+      _lastClockSample = DateTime.now().toUtc();
+    } catch (_) {
+      // Unknown clock means conflicts remain queued, never an assumed winner.
+    } finally {
+      _samplingClock = false;
+    }
+  }
+
   bool _isEagerCollection(OfflineCodec<dynamic> codec) {
     if (codec.table == 'memoji') return false;
     if (AppConfig.exposeCompanySurface) return true;
@@ -179,11 +211,29 @@ class OfflineSync {
           if (_conditionalTestEnabled &&
               _journalTables.contains(operation.collection) &&
               (operation.action == 'upsert' || operation.action == 'delete')) {
+            if (operation.isCreation && operation.action == 'upsert') {
+              final delivered = await deliverConditionalCreation(
+                db: db,
+                client: _client,
+                operation: operation,
+                currentUserId: () => repository.currentUserId,
+              );
+              if (!delivered) {
+                await outbox.defer(
+                  uid,
+                  operation.id,
+                  StateError('Creation requires reconciliation'),
+                  attempts: operation.attempts + 1,
+                );
+              }
+              continue;
+            }
             await deliverConditionalOperation(
               db: db,
               client: _client,
               operation: operation,
               currentUserId: () => repository.currentUserId,
+              notify: repository.notifyType,
             );
             continue;
           } else if (operation.action == 'legacy_http') {

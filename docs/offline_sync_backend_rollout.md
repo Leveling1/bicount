@@ -25,6 +25,9 @@ transaction de production n'a été copié. Le déclencheur local
 externes. Les Edge Functions, objets Storage, tâches cron, données FX et
 configuration Auth de production ne sont pas reproduits. Vector et Logflare
 sont exclus du démarrage local ; leur collecte de logs n'est pas disponible.
+Pour les essais de change, `supabase/tests/preprod_fx_seed.sql` ajoute quatre
+taux fictifs et non officiels exclusivement à la base locale ; ces valeurs ne
+doivent jamais être utilisées en production ni pour des calculs réels.
 Les cinq tables suivies, `currencies` et `friend_invites` ont été ajoutées à la
 publication Realtime locale. Le
 test `python supabase/tests/preprod_api_smoke.py` crée un compte fictif local,
@@ -121,10 +124,9 @@ snapshot. Aucun effacement automatique n'est programmé à cette étape.
 5. Le lecteur Flutter est présent derrière `BICOUNT_SYNC_JOURNAL=true`, désactivé
    par défaut. Valider ses parcours sur appareil avant toute activation générale.
 
-Le journal ne protège pas contre deux modifications concurrentes d'une même
-ligne : les écritures Flutter restent inconditionnelles. Une vérification
-atomique de version et une récupération des conflits restent à concevoir et
-tester, y compris face aux anciennes versions, avant une mise en production.
+Les builds habituels utilisent encore des écritures inconditionnelles et ne
+protègent pas les modifications concurrentes. Le protocole ci-dessous est
+expérimental et limité à la préproduction locale.
 La migration locale supplémentaire `20261107155506_offline_conflict_clock.sql`
 prépare une horloge privée par ligne et conserve un marqueur après suppression.
 Elle est installée uniquement en préproduction. Elle observe l'heure à laquelle
@@ -157,15 +159,64 @@ La boucle Flutter peut l'utiliser uniquement avec le paramètre de compilation
 expérimental `BICOUNT_EXPERIMENTAL_CONDITIONAL=true`, désactivé par défaut.
 Le démarrage refuse ce paramètre sans le mode de préproduction locale.
 Dans ce mode, les opérations sans référence distante et les conflits restent
-en attente, sans repli vers une écriture inconditionnelle. Les créations ne
-sont donc pas encore synchronisées dans ce mode. Ce n'est pas une solution de
+en attente, sans repli vers une écriture inconditionnelle. Une création dont
+la provenance est connue peut être envoyée si le journal est actif ; la
+tentative exacte et le repère du journal sont conservés avant l'envoi. Le
+client expérimental utilise la fonction de reçu préparée pour rejouer la même
+création sans doublon. Sans reçu, ou si la ligne n'est plus lisible ou ne
+correspond pas au contenu initial, la modification reste en attente.
+Le marqueur de référence précède l'insertion, ce qui peut conduire à un
+conflit conservateur sur une modification effectuée pendant l'envoi. Ce n'est pas une solution de
 conflit complète ni une protection active dans les builds habituels. Les tests
 API locaux vérifient notamment que deux écritures concurrentes sur la même
 base ne peuvent pas toutes les deux être appliquées. Les conflits conservent
 localement l'opération, la référence et la ligne distante quand elle est visible.
 Une écriture confirmée met à jour la référence sans retirer une opération plus
-récente créée pendant son envoi. L'heure réelle d'édition, la résolution
-automatique et la reprise des créations restent à implémenter.
+récente créée pendant son envoi. La migration locale
+`20261112190801_offline_conflict_event_time.sql` ajoute un temps et une
+empreinte aux nouveaux événements du journal. Dans le mode expérimental, le
+client calibre une horloge de session auprès du serveur, enregistre une plage
+temporelle avec chaque opération, puis choisit la version la plus récente si les
+plages ne se chevauchent pas. La version écartée est conservée localement et
+une écriture distante utilise une vérification conditionnelle. Sans horloge
+calibrée, événement exploitable ou ordre clair, l'opération reste en attente.
+Les suppressions distantes et les anciennes opérations sans référence temporelle
+restent également en attente si leur résultat est ambigu. Un client V1 qui
+envoie tardivement une modification hors ligne n'indique pas au serveur son
+heure réelle d'édition : son heure d'arrivée peut être prise pour celle-ci.
+Les changements d'horloge non détectés, une panne silencieuse de capture et
+l'inaccessibilité des archives locales empêchent toute garantie absolue.
+Une suppression distante confirmée plus récente peut être appliquée en
+conservant la modification locale dans l'archive. Si une modification locale
+est postérieure à une suppression distante, elle reste en attente : la
+recréation conditionnelle de la ligne n'est pas encore implémentée.
+
+Pour les essais Android locaux, choisir dans VS Code la configuration
+`Bicount - Préproduction conflits expérimentale (Android)`. Le journal est
+activé pour tous les comptes de la préproduction locale. Attendre la première
+synchronisation en ligne avant de couper l'accès au conteneur
+`supabase_kong_preprod`, afin d'établir les références et une mesure d'horloge.
+Les opérations préexistantes sans référence temporelle fiable peuvent rester
+en attente ; les archives sont locales et ne constituent pas une sauvegarde
+serveur. Cette configuration ne doit pas être considérée comme prête pour une
+diffusion en production.
+La migration expérimentale `20261111100542_offline_creation_receipt.sql`
+prépare un reçu enregistré avec l'insertion, dont l'accès est limité à son
+auteur ; l'insertion métier reste soumise aux droits RLS de l'appelant. Testée
+avec des comptes fictifs, elle est installée uniquement dans la préproduction
+locale ; son client Flutter est raccordé uniquement au mode expérimental.
+Des essais SQL et HTTP locaux couvrent une réponse perdue, des envois
+concurrents, le rejet d'un contenu modifié, les droits RLS et l'absence de
+recréation après suppression. La compatibilité complète reste à vérifier avant
+toute utilisation.
+Les trois nouvelles migrations expérimentales exigent le paramètre de session
+`bicount.local_preprod = 'allow'` avant exécution ; sans lui, elles échouent
+avant leurs modifications. Ce verrou réduit le risque d'application accidentelle
+mais ne remplace pas une vérification de l'environnement ciblé.
+Le reçu public ne renvoie pas la ligne initiale enregistrée en privé : il ne
+doit pas contourner une éventuelle perte d'accès à la donnée métier. La reprise
+d'une réponse perdue récupère et vérifie la ligne via RLS ; elle reste en
+attente si elle ne correspond pas au contenu initial ou n'est plus accessible.
 Les identifiants historiques non rapprochables et les opérations associées
 restent également en attente, comme décrit dans `OFFLINE_FIRST_V2.md`.
 

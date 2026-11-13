@@ -46,6 +46,20 @@ Future<void> ensureOfflineArchiveSchema(Database db) async {
     'payload TEXT NOT NULL, operation_created_at TEXT NOT NULL, '
     'attempted_at TEXT NOT NULL, PRIMARY KEY (user_id, operation_id))',
   );
+  final attemptColumns = await db.rawQuery(
+    'PRAGMA table_info(bicount_creation_attempts)',
+  );
+  for (final name in [
+    'journal_sequence',
+    'journal_generation',
+    'receipt_protocol',
+  ]) {
+    if (!attemptColumns.any((column) => column['name'] == name)) {
+      await db.execute(
+        'ALTER TABLE bicount_creation_attempts ADD COLUMN $name INTEGER',
+      );
+    }
+  }
   for (final table in [
     'bicount_guarded_operation_archive',
     'bicount_sync_conflict_archive',

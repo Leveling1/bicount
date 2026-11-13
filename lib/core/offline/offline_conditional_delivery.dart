@@ -4,6 +4,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'offline_conditional_acknowledgement.dart';
 import 'offline_conditional_mutation.dart';
 import 'offline_conflict_archive.dart';
+import 'offline_identical_remote.dart';
+import 'offline_timed_conflict.dart';
 import 'outbox/offline_operation.dart';
 import 'outbox/offline_outbox.dart';
 
@@ -13,6 +15,7 @@ Future<void> deliverConditionalOperation({
   required SupabaseClient client,
   required OfflineOperation operation,
   required String? Function() currentUserId,
+  void Function(Type)? notify,
 }) async {
   final outcome = await sendConditionalMutation(
     db: db,
@@ -28,6 +31,28 @@ Future<void> deliverConditionalOperation({
       journalSequence: outcome.journalSequence!,
       journalGeneration: outcome.journalGeneration!,
     );
+    return;
+  }
+  if (outcome.result == ConditionalMutationResult.unavailable &&
+      notify != null &&
+      await acknowledgeIdenticalRemote(
+        db: db,
+        client: client,
+        operation: operation,
+        currentUserId: currentUserId,
+        notify: notify,
+      )) {
+    return;
+  }
+  if (outcome.result == ConditionalMutationResult.conflict &&
+      notify != null &&
+      await resolveTimedConflict(
+        db: db,
+        client: client,
+        operation: operation,
+        currentUserId: currentUserId,
+        notify: notify,
+      )) {
     return;
   }
   await archiveConditionalConflict(

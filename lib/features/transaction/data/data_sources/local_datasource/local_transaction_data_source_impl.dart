@@ -159,6 +159,8 @@ class LocalTransactionDataSourceImpl implements TransactionLocalDataSource {
       );
 
       return const Right(null);
+    } on Failure catch (error) {
+      return Left(error);
     } catch (_) {
       return _messageFailure('The transaction could not be saved.');
     }

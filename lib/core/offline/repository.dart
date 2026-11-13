@@ -8,11 +8,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/backend_environment.dart';
 import 'offline_codecs.g.dart';
+import 'offline_conflict_clock.dart';
 import 'offline_legacy_copy.dart';
 import 'offline_legacy_finance_migration.dart';
 import 'offline_legacy_import.dart';
 import 'offline_legacy_owner.dart';
 import 'offline_model.dart';
+import 'offline_model_schema.dart';
 import 'offline_sync.dart';
 import 'outbox/offline_operation.dart';
 import 'outbox/offline_outbox.dart';
@@ -78,28 +80,7 @@ class Repository {
       await copyLegacyDatabaseForSameUser(_factory, uid, directory, target);
     }
     final db = await _factory.openDatabase(target);
-    for (final codec in allOfflineCodecs) {
-      final columns = codec.localColumns.values.toSet();
-      final definitions = columns.map((name) => '"$name"').join(', ');
-      await db.execute(
-        'CREATE TABLE IF NOT EXISTS "${codec.localTable}" '
-        '(_local_id INTEGER PRIMARY KEY AUTOINCREMENT, $definitions)',
-      );
-      final existing = await db.rawQuery(
-        'PRAGMA table_info("${codec.localTable}")',
-      );
-      final names = existing.map((row) => row['name']).toSet();
-      for (final column in columns.where((column) => !names.contains(column))) {
-        await db.execute(
-          'ALTER TABLE "${codec.localTable}" ADD COLUMN "$column"',
-        );
-      }
-      await db.execute(
-        'CREATE UNIQUE INDEX IF NOT EXISTS '
-        '"bicount_${codec.localTable}_${codec.localKey}" '
-        'ON "${codec.localTable}"("${codec.localKey}")',
-      );
-    }
+    await ensureOfflineModelSchema(db, allOfflineCodecs);
     await OfflineOutbox(db).initialize();
     await db.execute(
       'CREATE TABLE IF NOT EXISTS bicount_removed_record_archive '
@@ -188,6 +169,9 @@ class Repository {
     final id = remote[codec.key]?.toString();
     if (id == null || id.isEmpty) throw StateError('Missing ${codec.key}');
     final (uid, db) = await _writableDatabase();
+    final editTime = BackendEnvironment.isConditionalTest
+        ? OfflineConflictClock.instance.estimate()
+        : null;
     final operation = OfflineOperation(
       userId: uid,
       collection: codec.table,
@@ -195,6 +179,8 @@ class Repository {
       action: 'upsert',
       payload: remote,
       isCreation: isCreation,
+      editedEarliest: editTime?.earliest,
+      editedLatest: editTime?.latest,
     );
     await OfflineOutbox(db).commit(operation, (tx) async {
       await tx.insert(
@@ -213,12 +199,17 @@ class Repository {
     final id = codec.toRemote(model)[codec.key]?.toString();
     if (id == null || id.isEmpty) throw StateError('Missing ${codec.key}');
     final (uid, db) = await _writableDatabase();
+    final editTime = BackendEnvironment.isConditionalTest
+        ? OfflineConflictClock.instance.estimate()
+        : null;
     final operation = OfflineOperation(
       userId: uid,
       collection: codec.table,
       recordId: id,
       action: 'delete',
       payload: {codec.key: id},
+      editedEarliest: editTime?.earliest,
+      editedLatest: editTime?.latest,
     );
     await OfflineOutbox(db).commit(operation, (tx) async {
       await tx.delete(

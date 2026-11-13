@@ -37,6 +37,8 @@ class OfflineOutbox {
       'last_error': 'TEXT',
       'is_creation': 'INTEGER NOT NULL DEFAULT 0',
       'creation_operation_id': 'TEXT',
+      'edited_earliest': 'TEXT',
+      'edited_latest': 'TEXT',
     }.entries) {
       if (!names.contains(definition.key)) {
         await database.execute(
@@ -48,6 +50,10 @@ class OfflineOutbox {
     await database.execute(
       'CREATE INDEX IF NOT EXISTS bicount_outbox_user_sequence '
       'ON $_table(user_id, sequence)',
+    );
+    await database.execute(
+      'CREATE INDEX IF NOT EXISTS bicount_outbox_record '
+      'ON $_table(user_id, collection, record_id)',
     );
     await ensureOfflineArchiveSchema(database);
     await database.transaction((tx) async {

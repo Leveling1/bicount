@@ -66,6 +66,13 @@ overwrite or remove a newer change made on another device, including an old
 client. The journal only detects incoming changes and does not prevent that
 race. A server-side atomic version check and a safe conflict recovery policy
 are still required before the new offline implementation is release-ready.
+The local-preproduction-only `BICOUNT_EXPERIMENTAL_CONDITIONAL` mode uses an
+atomic server check for five journal tables and may resolve an observed conflict
+when calibrated time ranges establish an order. It archives the losing version
+locally. Missing baselines, uncertain clocks and an edit newer than a remote
+deletion can remain queued; archives are not a server backup. Old installed
+clients do not transmit their actual offline edit time, so their delayed writes
+cannot always be ordered correctly. This mode is not enabled in production.
 Deletes are queued with the stable UUID and are idempotent. Remote
 deletes remove cached rows through realtime when the ID is present, or through
 the next full reconciliation. A snapshot verifies missing IDs individually
