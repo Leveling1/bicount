@@ -94,6 +94,50 @@ void main() {
     );
   });
 
+  test('delete sends the nullable patch required by the server', () async {
+    final db = await databaseFactoryFfi.openDatabase(inMemoryDatabasePath);
+    addTearDown(db.close);
+    await OfflineOutbox(db).initialize();
+    await db.insert('bicount_remote_baseline', {
+      'user_id': 'u',
+      'collection': 'transactions',
+      'record_id': 'id',
+      'remote_payload': jsonEncode({'tid': 'id', 'amount': 10}),
+      'journal_sequence': 2,
+      'journal_generation': 1,
+    });
+    final client = SupabaseClient(
+      'http://localhost',
+      'key',
+      httpClient: MockClient((request) async {
+        final body = jsonDecode(request.body) as Map;
+        expect(body['p_action'], 'delete');
+        expect(body.containsKey('p_patch'), isTrue);
+        expect(body['p_patch'], isNull);
+        return http.Response(
+          '{"status":"applied","row":{"tid":"id"},"journal_sequence":3,"journal_generation":1}',
+          200,
+          headers: {'content-type': 'application/json'},
+          request: request,
+        );
+      }),
+    );
+    addTearDown(client.dispose);
+    final response = await sendConditionalMutation(
+      db: db,
+      client: client,
+      operation: OfflineOperation(
+        userId: 'u',
+        collection: 'transactions',
+        recordId: 'id',
+        action: 'delete',
+        payload: {'tid': 'id'},
+      ),
+      currentUserId: () => 'u',
+    );
+    expect(response.result, ConditionalMutationResult.applied);
+  });
+
   test('accepted update returns the confirmed server row', () async {
     final db = await databaseFactoryFfi.openDatabase(inMemoryDatabasePath);
     addTearDown(db.close);

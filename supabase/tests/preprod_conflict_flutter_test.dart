@@ -19,11 +19,14 @@ void main() {
   final remoteTid = Platform.environment['BICOUNT_PREPROD_TEST_REMOTE_WIN_TID'];
   final localTid = Platform.environment['BICOUNT_PREPROD_TEST_LOCAL_WIN_TID'];
   final deletedTid = Platform.environment['BICOUNT_PREPROD_TEST_DELETED_TID'];
+  final localDeleteTid =
+      Platform.environment['BICOUNT_PREPROD_TEST_LOCAL_DELETE_TID'];
 
   Future<void> runCase({
     required String tid,
     required bool remoteWins,
     bool remoteDelete = false,
+    bool localDelete = false,
   }) async {
     if (key == null || token == null || uid == null)
       throw StateError('Missing local test credentials');
@@ -97,16 +100,18 @@ void main() {
         userId: uid,
         collection: 'transactions',
         recordId: tid,
-        action: 'upsert',
+        action: localDelete ? 'delete' : 'upsert',
         payload: {'tid': tid, 'amount': 15},
         editedEarliest: edit.earliest,
         editedLatest: edit.latest,
       ),
       (tx) async {
-        await tx.insert(
-          codec.localTable,
-          codec.encodeLocal(codec.decodeRemote({...baseline, 'amount': 15})),
-        );
+        if (!localDelete) {
+          await tx.insert(
+            codec.localTable,
+            codec.encodeLocal(codec.decodeRemote({...baseline, 'amount': 15})),
+          );
+        }
       },
     );
     final op = (await outbox.pending(uid)).single;
@@ -122,13 +127,13 @@ void main() {
         .from('transactions')
         .select('amount')
         .eq('tid', tid);
-    if (remoteDelete) {
+    if (remoteDelete || localDelete) {
       expect(server, isEmpty);
     } else {
       expect(server.single['amount'], remoteWins ? 20 : 15);
     }
     expect(await db.query('bicount_sync_conflict_archive'), hasLength(1));
-    if (remoteDelete) {
+    if (remoteDelete || localDelete) {
       expect(await db.query(codec.localTable), isEmpty);
     } else if (remoteWins)
       expect((await db.query(codec.localTable)).single['amount'], 20);
@@ -145,5 +150,9 @@ void main() {
   test('newer remote deletion wins and archives the offline edit', () async {
     if (deletedTid == null) throw StateError('Missing local test id');
     await runCase(tid: deletedTid, remoteWins: true, remoteDelete: true);
+  });
+  test('newer offline deletion wins over a remote edit', () async {
+    if (localDeleteTid == null) throw StateError('Missing local test id');
+    await runCase(tid: localDeleteTid, remoteWins: false, localDelete: true);
   });
 }

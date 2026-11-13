@@ -72,7 +72,7 @@ Future<ConditionalMutationReply> sendConditionalMutation({
           'p_expected': baseline,
           'p_seen_sequence': sequence,
           'p_generation': generation,
-          if (operation.action == 'upsert') 'p_patch': operation.payload,
+          'p_patch': operation.action == 'upsert' ? operation.payload : null,
         },
       )
       .timeout(const Duration(seconds: 8));

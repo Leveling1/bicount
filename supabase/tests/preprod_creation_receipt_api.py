@@ -24,6 +24,7 @@ def main():
     remote_win_tid = str(uuid4())
     local_win_tid = str(uuid4())
     deleted_tid = str(uuid4())
+    local_delete_tid = str(uuid4())
     pilot_enabled = False
     try:
         signup = request('POST', '/auth/v1/signup', anon, data={
@@ -78,6 +79,7 @@ def main():
                          'BICOUNT_PREPROD_TEST_REMOTE_WIN_TID': remote_win_tid,
                          'BICOUNT_PREPROD_TEST_LOCAL_WIN_TID': local_win_tid})
         test_env['BICOUNT_PREPROD_TEST_DELETED_TID'] = deleted_tid
+        test_env['BICOUNT_PREPROD_TEST_LOCAL_DELETE_TID'] = local_delete_tid
         subprocess.run(['flutter', 'test', '--no-pub',
                         'supabase/tests/preprod_creation_flutter_test.dart',
                         'supabase/tests/preprod_conflict_flutter_test.dart'],
@@ -95,13 +97,14 @@ def main():
             local_sql(f"DELETE FROM public.transactions WHERE tid = '{lost_tid}'::uuid AND uid = '{user_id}'::uuid")
             local_sql(f"DELETE FROM public.transactions WHERE tid IN ('{remote_win_tid}'::uuid, '{local_win_tid}'::uuid) AND uid = '{user_id}'::uuid")
             local_sql(f"DELETE FROM public.transactions WHERE tid = '{deleted_tid}'::uuid AND uid = '{user_id}'::uuid")
+            local_sql(f"DELETE FROM public.transactions WHERE tid = '{local_delete_tid}'::uuid AND uid = '{user_id}'::uuid")
             local_sql(f"DELETE FROM bicount_sync.creation_receipts WHERE user_uid = '{user_id}'::uuid AND creation_id = '{creation_id}'::uuid")
             local_sql(f"DELETE FROM bicount_sync.creation_receipts WHERE user_uid = '{user_id}'::uuid AND record_id = '{flutter_tid}'::uuid")
             local_sql(f"DELETE FROM bicount_sync.creation_receipts WHERE user_uid = '{user_id}'::uuid AND record_id = '{lost_tid}'::uuid")
             request('DELETE', f'/auth/v1/admin/users/{user_id}', service, service)
             local_sql(f"DELETE FROM public.bicount_sync_events WHERE user_uid = '{user_id}'::uuid")
             local_sql(f"DELETE FROM public.bicount_sync_clock WHERE user_uid = '{user_id}'::uuid")
-            local_sql(f"DELETE FROM bicount_sync.record_clock WHERE (table_name = 'users' AND record_id = '{user_id}'::uuid) OR (table_name = 'transactions' AND record_id IN ('{transaction_id}'::uuid, '{remote_win_tid}'::uuid, '{local_win_tid}'::uuid, '{deleted_tid}'::uuid, '{flutter_tid}'::uuid, '{lost_tid}'::uuid))")
+            local_sql(f"DELETE FROM bicount_sync.record_clock WHERE (table_name = 'users' AND record_id = '{user_id}'::uuid) OR (table_name = 'transactions' AND record_id IN ('{transaction_id}'::uuid, '{remote_win_tid}'::uuid, '{local_win_tid}'::uuid, '{deleted_tid}'::uuid, '{local_delete_tid}'::uuid, '{flutter_tid}'::uuid, '{lost_tid}'::uuid))")
 
 
 if __name__ == '__main__':
