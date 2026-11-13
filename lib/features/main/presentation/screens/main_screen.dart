@@ -18,6 +18,7 @@ import 'package:bicount/features/main/presentation/helpers/main_screen_helpers.d
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_app_bar.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_body.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/main_shell_fab.dart';
+import 'package:bicount/features/main/presentation/widgets/main_loading_skeleton.dart';
 import 'package:bicount/features/profile/presentation/screens/profile_screen.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_handler.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
@@ -158,7 +159,12 @@ class _MainScreenState extends State<MainScreen> {
             onTransactionFilterTap: _onItemTappedTransaction,
             pageController: pageController,
             onPageChanged: (index) => setState(() => _selectedIndex = index),
-            screens: _buildScreens(preparedData),
+            screens: state is MainLoaded
+                ? _buildScreens(preparedData)
+                : List.generate(
+                    4,
+                    (index) => MainLoadingSkeleton(index: index),
+                  ),
           ),
           bottomNavigationBar: CustomBottomNavigationBar(
             selectedIndex: _selectedIndex,
@@ -200,10 +206,7 @@ class _MainScreenState extends State<MainScreen> {
         ? currentUri.queryParameters['tid']
         : null;
     return [
-      HomeScreen(
-        onCardTap: _goToPage,
-        data: data,
-      ),
+      HomeScreen(onCardTap: _goToPage, data: data),
       const AnalysisScreen(),
       TransactionScreen(
         data: data,
@@ -362,11 +365,7 @@ class _MainScreenState extends State<MainScreen> {
           if (!mounted) {
             return;
           }
-          openTransactionSheet(
-            context,
-            data,
-            showTypeSelector: false,
-          );
+          openTransactionSheet(context, data, showTypeSelector: false);
         });
         return;
       case BicountHomeWidgetActionType.openTransaction:
@@ -454,6 +453,4 @@ class _MainScreenState extends State<MainScreen> {
       child: AccountFundingHandler(),
     );
   }
-
-  
 }
