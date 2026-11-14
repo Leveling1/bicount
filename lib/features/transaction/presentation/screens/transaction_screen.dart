@@ -10,10 +10,11 @@ import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/presentation/helpers/transaction_feed_builder.dart';
 import 'package:bicount/features/transaction/presentation/helpers/transaction_feed_details.dart';
 import 'package:bicount/features/transaction/presentation/models/transaction_feed_item.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transaction_empty_results_sliver.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_feed_list.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart' show SliverConstraints;
+import 'package:flutter/rendering.dart' show RenderSliver, SliverConstraints;
 import 'package:go_router/go_router.dart';
 
 part 'transaction_screen_scroll.dart';
@@ -41,6 +42,8 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
+  final _feedScrollController = ScrollController();
+  final _walletHeaderKey = GlobalKey();
   String? _openedFocusTransactionId;
   String? _walletId;
 
@@ -48,6 +51,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   void initState() {
     super.initState();
     widget.searchController.addListener(_onSearchChanged);
+    if (widget.showSearchBar) _revealSearchResults();
   }
 
   @override
@@ -65,6 +69,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
           widget.searchController.clear();
         }
       });
+    } else if (!oldWidget.showSearchBar && widget.showSearchBar) {
+      _revealSearchResults();
     }
 
     // When focusTransactionId changes (e.g., URL cleared after a sheet opened,
@@ -78,6 +84,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   @override
   void dispose() {
     widget.searchController.removeListener(_onSearchChanged);
+    _feedScrollController.dispose();
     super.dispose();
   }
 

@@ -1,10 +1,54 @@
 import 'package:bicount/core/widgets/container_body.dart';
+import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/home_wallet_transition.dart';
 import 'package:bicount/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets(
+    'the bottom bar releases its space while the keyboard is visible',
+    (tester) async {
+      const bodyKey = Key('transaction body');
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: HomeWalletTransition(
+            hasSharedContainer: true,
+            enabled: false,
+            selectedIndex: 2,
+            onSelectTab: (_) {},
+            onSelectCoveredTab: (_) {},
+            builder: (_) => const Scaffold(body: SizedBox.expand(key: bodyKey)),
+          ),
+        ),
+      );
+
+      final navigation = find.byType(CustomBottomNavigationBar);
+      final body = find.byKey(bodyKey);
+      final originalBottom = tester.getBottomLeft(body).dy;
+      expect(navigation, findsOneWidget);
+
+      const keyboardHeight = 300.0;
+      tester.view.viewInsets = FakeViewPadding(
+        bottom: keyboardHeight * tester.view.devicePixelRatio,
+      );
+      await tester.pumpAndSettle();
+      expect(navigation, findsNothing);
+      final keyboardTop =
+          tester.view.physicalSize.height / tester.view.devicePixelRatio -
+          keyboardHeight;
+      expect(keyboardTop - tester.getBottomLeft(body).dy, 4);
+
+      tester.view.resetViewInsets();
+      await tester.pumpAndSettle();
+      expect(navigation, findsOneWidget);
+      expect(tester.getBottomLeft(body).dy, originalBottom);
+    },
+  );
+
   testWidgets(
     'an adjacent tab keeps the active PageView while selection changes',
     (tester) async {

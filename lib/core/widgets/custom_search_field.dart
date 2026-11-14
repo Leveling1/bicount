@@ -4,15 +4,17 @@ import 'package:flutter/material.dart';
 class CustomSearchField extends StatefulWidget {
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
+  final bool autofocus;
 
   const CustomSearchField({
     super.key,
     required this.controller,
     this.onChanged,
+    this.autofocus = false,
   });
 
   @override
-  _CustomSearchFieldState createState() => _CustomSearchFieldState();
+  State<CustomSearchField> createState() => _CustomSearchFieldState();
 }
 
 class _CustomSearchFieldState extends State<CustomSearchField> {
@@ -39,6 +41,7 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
       height: 50,
       child: TextFormField(
         controller: widget.controller,
+        autofocus: widget.autofocus,
         textAlign: TextAlign.start,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.next,

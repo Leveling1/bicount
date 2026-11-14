@@ -99,6 +99,7 @@ extension _HomeWalletSceneLayout on _HomeWalletTransitionState {
     );
     if (!widget.hasSharedContainer) return scene;
     final theme = Theme.of(context);
+    final keyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
     return ColoredBox(
       color:
           theme.bottomNavigationBarTheme.backgroundColor ??
@@ -112,10 +113,11 @@ extension _HomeWalletSceneLayout on _HomeWalletTransitionState {
               child: ContainerBody(protectTopInset: false, child: scene),
             ),
           ),
-          CustomBottomNavigationBar(
-            selectedIndex: widget.selectedIndex,
-            onTap: _selectTab,
-          ),
+          if (!keyboardVisible)
+            CustomBottomNavigationBar(
+              selectedIndex: widget.selectedIndex,
+              onTap: _selectTab,
+            ),
         ],
       ),
     );

@@ -42,6 +42,7 @@ class MainShellBody extends StatelessWidget {
                     ),
                     child: CustomSearchField(
                       controller: searchController,
+                      autofocus: true,
                       onChanged: (_) {},
                     ),
                   ),
