@@ -2,23 +2,8 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/data/repositories/wallet_repository_impl.dart';
-import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
+import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:flutter/material.dart';
-
-const walletIcons = [
-  Icons.account_balance_wallet_outlined,
-  Icons.account_balance_outlined,
-  Icons.payments_outlined,
-  Icons.credit_card_outlined,
-  Icons.phone_android,
-];
-const walletColors = [
-  Colors.blueGrey,
-  Colors.blue,
-  Colors.teal,
-  Colors.deepPurple,
-  Colors.orange,
-];
 
 class WalletEditor extends StatefulWidget {
   const WalletEditor({super.key, this.wallet});

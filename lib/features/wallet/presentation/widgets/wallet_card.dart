@@ -5,8 +5,8 @@ import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/data/repositories/wallet_repository_impl.dart';
 import 'package:bicount/features/wallet/domain/repositories/wallet_repository.dart';
-import 'package:bicount/features/wallet/presentation/widgets/wallet_card_stack.dart';
-import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
+import 'package:bicount/core/widgets/wallet/wallet_card_stack.dart';
+import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:flutter/material.dart';
 
 class WalletCard extends StatefulWidget {

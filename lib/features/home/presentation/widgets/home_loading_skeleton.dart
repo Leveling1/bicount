@@ -1,6 +1,10 @@
+import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_skeleton.dart';
 import 'package:flutter/material.dart';
+
+part 'home_balance_skeleton.dart';
+part 'home_transaction_skeleton.dart';
 
 class HomeLoadingSkeleton extends StatelessWidget {
   const HomeLoadingSkeleton({super.key});
@@ -55,14 +59,30 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
         ),
       );
     }
+    if (BackendEnvironment.isLocalPreproduction) {
+      return LayoutBuilder(
+        builder: (context, constraints) => Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimens.paddingMedium,
+            vertical: AppDimens.paddingSmall,
+          ),
+          child: FittedBox(
+            alignment: AlignmentDirectional.centerStart,
+            fit: BoxFit.scaleDown,
+            child: SizedBox(
+              width: constraints.maxWidth - 2 * AppDimens.paddingMedium,
+              child: const _HomeBalanceSkeleton(),
+            ),
+          ),
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
       child: Column(
         children: [
           const SizedBox(height: AppDimens.paddingExtraLarge),
-          const BicountSkeletonBox(width: 96, height: 18),
-          const SizedBox(height: AppDimens.paddingSmall),
-          const BicountSkeletonBox(width: 248, height: 36),
+          const _HomeBalanceSkeleton(),
           const Spacer(),
           Row(
             children: const [
@@ -144,48 +164,5 @@ class _SectionTitle extends StatelessWidget {
       BicountSkeletonBox(width: 140, height: 22),
       BicountSkeletonBox(width: 72, height: 18),
     ],
-  );
-}
-
-class _Transactions extends StatelessWidget {
-  const _Transactions();
-  @override
-  Widget build(BuildContext context) => Column(
-    children: List.generate(
-      5,
-      (_) => const Padding(
-        padding: EdgeInsets.only(bottom: AppDimens.spacingSmall),
-        child: SizedBox(
-          height: 76,
-          child: Row(
-            children: [
-              BicountSkeletonCircle(size: 40),
-              SizedBox(width: AppDimens.marginMedium),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    BicountSkeletonBox(width: 130, height: 17),
-                    SizedBox(height: 7),
-                    BicountSkeletonBox(width: 68, height: 14),
-                  ],
-                ),
-              ),
-              SizedBox(width: AppDimens.marginSmall),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  BicountSkeletonBox(width: 100, height: 17),
-                  SizedBox(height: 7),
-                  BicountSkeletonBox(width: 58, height: 14),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
   );
 }

@@ -40,9 +40,7 @@ class TransactionFilterChips extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? Theme.of(
-                          context,
-                        ).bottomNavigationBarTheme.backgroundColor
+                      ? Theme.of(context).chipTheme.selectedColor
                       : Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(
                     AppDimens.borderRadiusMediumLarge,
@@ -52,9 +50,7 @@ class TransactionFilterChips extends StatelessWidget {
                   context.transactionFilterLabel(index),
                   style: TextStyle(
                     color: isSelected
-                        ? Theme.of(
-                            context,
-                          ).bottomNavigationBarTheme.selectedItemColor
+                        ? Theme.of(context).chipTheme.secondaryLabelStyle?.color
                         : Colors.grey[700],
                     fontWeight: FontWeight.w500,
                   ),

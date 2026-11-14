@@ -1682,3 +1682,7 @@ Carried forward deliberately, not oversights:
   entries. A transfer is one transaction with two wallet pointers.
 - Local preproduction is the only enabled environment for the wallet schema,
   UI, and automatic occurrences. See `docs/backend_followup_actions.md`.
+- Home, Transactions, and the Wallets overview share the card face in
+  `lib/core/widgets/wallet/`. Home and Wallets share the standard bottom
+  navigation with Home selected. Tap the card preview or swipe the Home screen
+  to open Wallets. Gesture progress drives the card positions.

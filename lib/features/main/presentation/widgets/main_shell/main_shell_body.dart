@@ -14,6 +14,7 @@ class MainShellBody extends StatelessWidget {
     required this.pageController,
     required this.onPageChanged,
     required this.screens,
+    this.lockHorizontalPaging = false,
   });
 
   final int selectedIndex;
@@ -22,6 +23,7 @@ class MainShellBody extends StatelessWidget {
   final PageController pageController;
   final ValueChanged<int> onPageChanged;
   final List<Widget> screens;
+  final bool lockHorizontalPaging;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,9 @@ class MainShellBody extends StatelessWidget {
           Expanded(
             child: PageView(
               controller: pageController,
+              physics: lockHorizontalPaging
+                  ? const NeverScrollableScrollPhysics()
+                  : null,
               onPageChanged: onPageChanged,
               children: screens,
             ),

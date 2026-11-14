@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
@@ -107,11 +108,6 @@ class WalletDropdown extends StatelessWidget {
     );
   }
 }
-
-String walletLabel(BuildContext context, WalletModel wallet) =>
-    wallet.isDefault && wallet.name == 'Principal'
-    ? context.l10n.walletPrincipal
-    : wallet.name;
 
 @Preview(name: 'Wallet picker', size: Size(360, 90))
 Widget walletPickerPreview() => MaterialApp(

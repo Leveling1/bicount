@@ -6,10 +6,13 @@ import 'package:bicount/features/home/presentation/widgets/home_summary_card.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+part 'home_collapsed_header.dart';
+
 class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   HomeSliverHeaderDelegate({
     required this.balance,
     required this.referenceCurrencyCode,
+    this.onOpenWallets,
     required this.monthlyInflow,
     required this.monthlyOutflow,
     required this.incomeColor,
@@ -20,6 +23,7 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   final double balance;
   final String referenceCurrencyCode;
+  final VoidCallback? onOpenWallets;
   final double monthlyInflow;
   final double monthlyOutflow;
   final Color incomeColor;
@@ -70,6 +74,7 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                   key: const ValueKey('home-expanded'),
                   balance: balance,
                   referenceCurrencyCode: referenceCurrencyCode,
+                  onOpenWallets: onOpenWallets,
                   monthlyInflow: monthlyInflow,
                   monthlyOutflow: monthlyOutflow,
                   incomeColor: incomeColor,
@@ -86,6 +91,7 @@ class HomeSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant HomeSliverHeaderDelegate oldDelegate) {
     return balance != oldDelegate.balance ||
         referenceCurrencyCode != oldDelegate.referenceCurrencyCode ||
+        onOpenWallets != oldDelegate.onOpenWallets ||
         monthlyInflow != oldDelegate.monthlyInflow ||
         monthlyOutflow != oldDelegate.monthlyOutflow ||
         incomeColor != oldDelegate.incomeColor ||
@@ -100,6 +106,7 @@ class _ExpandedHomeHeader extends StatelessWidget {
     super.key,
     required this.balance,
     required this.referenceCurrencyCode,
+    required this.onOpenWallets,
     required this.monthlyInflow,
     required this.monthlyOutflow,
     required this.incomeColor,
@@ -110,6 +117,7 @@ class _ExpandedHomeHeader extends StatelessWidget {
 
   final double balance;
   final String referenceCurrencyCode;
+  final VoidCallback? onOpenWallets;
   final double monthlyInflow;
   final double monthlyOutflow;
   final Color incomeColor;
@@ -130,6 +138,7 @@ class _ExpandedHomeHeader extends StatelessWidget {
               child: HomeSummaryCard(
                 balance: balance,
                 referenceCurrencyCode: referenceCurrencyCode,
+                onOpenWallets: onOpenWallets,
                 monthlyInflow: monthlyInflow,
                 monthlyOutflow: monthlyOutflow,
                 incomeColor: incomeColor,
@@ -141,73 +150,6 @@ class _ExpandedHomeHeader extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _CollapsedHomeHeader extends StatelessWidget {
-  const _CollapsedHomeHeader({
-    super.key,
-    required this.balanceText,
-    required this.amountStyle,
-  });
-
-  final String balanceText;
-  final TextStyle amountStyle;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(AppDimens.borderRadiusLarge),
-          bottomRight: Radius.circular(AppDimens.borderRadiusLarge),
-        ),
-      ),
-      child: Center(
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              padding: const EdgeInsets.all(8.0),
-              margin: const EdgeInsets.only(left: AppDimens.marginMedium),
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                borderRadius: BorderRadius.circular(
-                  AppDimens.borderRadiusMedium,
-                ),
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  IconLinks.wallet,
-                  width: AppDimens.iconSizeMedium,
-                  height: AppDimens.iconSizeMedium,
-                  colorFilter: ColorFilter.mode(
-                    theme.textTheme.titleMedium!.color!,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: AppDimens.marginMedium),
-            Expanded(
-              child: Text(
-                context.l10n.homeBalance,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.titleSmall,
-              ),
-            ),
-            const SizedBox(width: AppDimens.marginSmall),
-            Text(balanceText, style: amountStyle),
-            const SizedBox(width: AppDimens.marginMedium),
-          ],
-        ),
-      ),
     );
   }
 }

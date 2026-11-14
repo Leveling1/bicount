@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
-import 'package:bicount/features/wallet/presentation/widgets/wallet_card_face.dart';
+import 'package:bicount/core/widgets/wallet/wallet_card_face.dart';
 import 'package:flutter/material.dart';
 
 class WalletCardStack extends StatefulWidget {
@@ -65,10 +65,10 @@ class _WalletCardStackState extends State<WalletCardStack> {
       builder: (context, constraints) {
         final maxWidth = math.min(
           390.0,
-          MediaQuery.sizeOf(context).height * .30 * 1.59,
+          MediaQuery.sizeOf(context).height * .30 * WalletCardFace.aspectRatio,
         );
         final width = math.min(constraints.maxWidth, maxWidth);
-        final height = width / 1.59;
+        final height = width / WalletCardFace.aspectRatio;
         return SizedBox(
           width: width,
           height: height + layers * _depth,

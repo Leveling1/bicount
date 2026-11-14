@@ -1,7 +1,5 @@
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
-import 'package:bicount/core/localization/l10n_extensions.dart';
-import 'package:bicount/features/wallet/presentation/screens/wallet_screen.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
@@ -23,11 +21,17 @@ import '../bloc/home_bloc.dart';
 typedef CardTapCallback = void Function(int index);
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key, this.onCardTap, required this.data});
+  const HomeScreen({
+    super.key,
+    this.onCardTap,
+    required this.data,
+    this.onOpenWallets,
+  });
 
   static const _monthlyFlowService = HomeMonthlyFlowService();
   final CardTapCallback? onCardTap;
   final MainEntity data;
+  final VoidCallback? onOpenWallets;
 
   @override
   Widget build(BuildContext context) {
@@ -60,79 +64,78 @@ class HomeScreen extends StatelessWidget {
 
         return SizedBox(
           height: height - AppDimens.bottomBarHeight,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDimens.paddingMedium,
-            ),
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: HomeSliverHeaderDelegate(
-                    balance: data.user.balance ?? 0.0,
-                    referenceCurrencyCode: data.referenceCurrencyCode,
-                    monthlyInflow: monthlyFlow.inflowWithCarryover,
-                    monthlyOutflow: monthlyFlow.currentMonthOutflow,
-                    // A negative inflow means the month opened on an
-                    // overdraft carried over from before; showing it green
-                    // would read as money coming in.
-                    incomeColor: monthlyFlow.inflowWithCarryover < 0
-                        ? expenseColor
-                        : incomeColor,
-                    expenseColor: expenseColor,
-                    onMonthlyInflowTap: () => onCardTap?.call(2),
-                    onMonthlyOutflowTap: () => onCardTap?.call(1),
-                  ),
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: HomeSliverHeaderDelegate(
+                  balance: data.user.balance ?? 0.0,
+                  referenceCurrencyCode: data.referenceCurrencyCode,
+                  onOpenWallets: BackendEnvironment.isLocalPreproduction
+                      ? onOpenWallets
+                      : null,
+                  monthlyInflow: monthlyFlow.inflowWithCarryover,
+                  monthlyOutflow: monthlyFlow.currentMonthOutflow,
+                  // A negative inflow means the month opened on an
+                  // overdraft carried over from before; showing it green
+                  // would read as money coming in.
+                  incomeColor: monthlyFlow.inflowWithCarryover < 0
+                      ? expenseColor
+                      : incomeColor,
+                  expenseColor: expenseColor,
+                  onMonthlyInflowTap: () => onCardTap?.call(2),
+                  onMonthlyOutflowTap: () => onCardTap?.call(1),
                 ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppDimens.spacingMedium),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimens.paddingMedium,
                 ),
-                if (BackendEnvironment.isLocalPreproduction)
-                  SliverToBoxAdapter(
-                    child: OutlinedButton.icon(
-                      icon: const Icon(Icons.account_balance_wallet_outlined),
-                      label: Text(context.l10n.walletTitle),
-                      onPressed: () => openWallets(context),
+                sliver: SliverMainAxisGroup(
+                  slivers: [
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: AppDimens.spacingMedium),
                     ),
-                  ),
-                if (showRecurringStatusCard)
-                  SliverToBoxAdapter(
-                    child: BicountReveal(
-                      delay: const Duration(milliseconds: 150),
-                      child: HomeRecurringFundingsStatusCard(
+                    if (showRecurringStatusCard)
+                      SliverToBoxAdapter(
+                        child: BicountReveal(
+                          delay: const Duration(milliseconds: 150),
+                          child: HomeRecurringFundingsStatusCard(
+                            data: data,
+                            onTap: () => context.push('/recurring-fundings'),
+                          ),
+                        ),
+                      ),
+                    if (showRecurringStatusCard) ...[
+                      const SliverToBoxAdapter(
+                        child: SizedBox(height: AppDimens.spacingMedium),
+                      ),
+                    ],
+                    if (data.transactions.isNotEmpty) ...[
+                      SliverToBoxAdapter(
+                        child: BicountReveal(
+                          delay: const Duration(milliseconds: 180),
+                          child: TransactionButton(data: data),
+                        ),
+                      ),
+                    ],
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: AppDimens.spacingMedium),
+                    ),
+                    SliverToBoxAdapter(
+                      child: HomeRecentActivitySection(
                         data: data,
-                        onTap: () => context.push('/recurring-fundings'),
+                        onShowMore: () => onCardTap?.call(2),
                       ),
                     ),
-                  ),
-                if (showRecurringStatusCard) ...[
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: AppDimens.spacingMedium),
-                  ),
-                ],
-                if (data.transactions.isNotEmpty) ...[
-                  SliverToBoxAdapter(
-                    child: BicountReveal(
-                      delay: const Duration(milliseconds: 180),
-                      child: TransactionButton(data: data),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: AppDimens.paddingExtraLarge),
                     ),
-                  ),
-                ],
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppDimens.spacingMedium),
+                  ],
                 ),
-                SliverToBoxAdapter(
-                  child: HomeRecentActivitySection(
-                    data: data,
-                    onShowMore: () => onCardTap?.call(2),
-                  ),
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppDimens.paddingExtraLarge),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

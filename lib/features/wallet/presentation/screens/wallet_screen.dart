@@ -1,32 +1,15 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
-import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:bicount/features/wallet/presentation/screens/wallet_history.dart';
 import 'package:bicount/features/wallet/domain/repositories/wallet_repository.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
-import 'package:bicount/features/wallet/data/repositories/wallet_repository_impl.dart';
 import 'package:bicount/features/wallet/presentation/bloc/wallet_bloc.dart';
 import 'package:bicount/features/wallet/presentation/widgets/wallet_editor.dart';
-import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
+import 'package:bicount/features/wallet/presentation/widgets/wallet_overview_card.dart';
+import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:bicount/features/wallet/presentation/widgets/wallet_transfer_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-void openWallets(BuildContext context) {
-  final bloc = context.read<MainBloc>();
-  Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (_) => BlocProvider.value(
-        value: bloc,
-        child: BlocProvider(
-          create: (_) =>
-              WalletBloc(WalletRepositoryImpl())..add(const WatchWallets()),
-          child: const WalletScreen(),
-        ),
-      ),
-    ),
-  );
-}
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -60,21 +43,53 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final theme = Theme.of(context);
     return BlocListener<MainBloc, MainState>(
       listener: (_, state) =>
           setState(() => _balances = _repository.balances()),
       child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
-          title: Text(l10n.walletTitle),
+          automaticallyImplyLeading: false,
+          centerTitle: false,
+          titleSpacing: 28,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
+          title: Text(l10n.walletTitle, style: theme.textTheme.titleMedium),
           actions: [
-            IconButton(
-              tooltip: l10n.walletNew,
-              icon: const Icon(Icons.add),
+            BlocBuilder<WalletBloc, WalletState>(
+              builder: (context, state) {
+                final active = state.wallets
+                    .where((wallet) => wallet.archivedAt == null)
+                    .toList();
+                if (active.length < 2) return const SizedBox.shrink();
+                return IconButton(
+                  tooltip: l10n.walletTransfer,
+                  icon: const Icon(Icons.swap_horiz, size: 20),
+                  onPressed: () => showDialog<void>(
+                    context: context,
+                    builder: (_) => WalletTransferForm(wallets: active),
+                  ),
+                );
+              },
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: theme.colorScheme.onSurface,
+                foregroundColor: theme.colorScheme.surface,
+                minimumSize: const Size(0, 36),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                textStyle: theme.textTheme.labelMedium,
+              ),
               onPressed: () => showDialog<void>(
                 context: context,
                 builder: (_) => const WalletEditor(),
               ),
+              child: Text(l10n.walletNew),
             ),
+            const SizedBox(width: 24),
           ],
         ),
         body: BlocBuilder<WalletBloc, WalletState>(
@@ -88,56 +103,27 @@ class _WalletScreenState extends State<WalletScreen> {
               builder: (context, balanceSnapshot) {
                 final balances = balanceSnapshot.data ?? const [];
                 return ListView(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(28, 6, 28, 88),
                   children: [
-                    if (active.length > 1)
-                      OutlinedButton.icon(
-                        icon: const Icon(Icons.swap_horiz),
-                        label: Text(l10n.walletTransfer),
-                        onPressed: () => showDialog<void>(
-                          context: context,
-                          builder: (_) => WalletTransferForm(wallets: active),
-                        ),
-                      ),
-                    for (final wallet in wallets)
-                      Card(
-                        child: ListTile(
-                          leading: Icon(
-                            walletIcons[wallet.icon],
-                            color: walletColors[wallet.color],
-                          ),
-                          title: Text(walletLabel(context, wallet)),
-                          subtitle: Text(
-                            [
-                              if (wallet.archivedAt != null)
-                                l10n.walletArchived,
-                              if (wallet.cardNetwork == WalletCardNetwork.visa)
-                                'Visa',
-                              if (wallet.cardNetwork ==
-                                  WalletCardNetwork.mastercard)
-                                'Mastercard',
-                              for (final balance in balances.where(
-                                (row) => row.walletId == wallet.id,
-                              ))
-                                NumberFormatUtils.formatCurrency(
-                                  balance.minor / walletAmountScale,
-                                  currencyCode: balance.currency,
+                    for (final wallet in [
+                      ...active,
+                      ...wallets.where((wallet) => wallet.archivedAt != null),
+                    ])
+                      Padding(
+                        key: ValueKey(wallet.id),
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: WalletOverviewCard(
+                          wallet: wallet,
+                          balances: balances
+                              .where((row) => row.walletId == wallet.id)
+                              .toList(),
+                          onEdit: wallet.isDefault && wallet.createdAt.isEmpty
+                              ? null
+                              : () => showDialog<void>(
+                                  context: context,
+                                  builder: (_) => WalletEditor(wallet: wallet),
                                 ),
-                            ].join(' · '),
-                          ),
-                          trailing: IconButton(
-                            tooltip: l10n.walletEdit,
-                            icon: const Icon(Icons.edit_outlined),
-                            onPressed:
-                                wallet.isDefault && wallet.createdAt.isEmpty
-                                ? null
-                                : () => showDialog<void>(
-                                    context: context,
-                                    builder: (_) =>
-                                        WalletEditor(wallet: wallet),
-                                  ),
-                          ),
-                          onTap: () => _showHistory(wallet),
+                          onHistory: () => _showHistory(wallet),
                         ),
                       ),
                   ],
