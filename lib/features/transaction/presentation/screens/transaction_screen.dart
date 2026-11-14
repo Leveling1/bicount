@@ -1,18 +1,22 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/features/wallet/domain/services/wallet_attribution.dart';
-import 'package:bicount/features/wallet/presentation/widgets/wallet_filter.dart';
+import 'package:bicount/features/wallet/presentation/widgets/wallet_card.dart';
 import 'package:bicount/core/services/open_transaction_sheet.dart';
-import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
 import 'package:bicount/core/widgets/empty_state_card.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/presentation/helpers/transaction_feed_builder.dart';
 import 'package:bicount/features/transaction/presentation/helpers/transaction_feed_details.dart';
 import 'package:bicount/features/transaction/presentation/models/transaction_feed_item.dart';
-import 'package:bicount/features/transaction/presentation/widgets/transaction_feed_tile.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transaction_feed_list.dart';
+import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show SliverConstraints;
 import 'package:go_router/go_router.dart';
+
+part 'transaction_screen_scroll.dart';
 
 class TransactionScreen extends StatefulWidget {
   const TransactionScreen({
@@ -21,6 +25,7 @@ class TransactionScreen extends StatefulWidget {
     this.showSearchBar = false,
     required this.searchController,
     required this.selectedIndexTransaction,
+    required this.onTransactionFilterTap,
     this.focusTransactionId,
   });
 
@@ -28,6 +33,7 @@ class TransactionScreen extends StatefulWidget {
   final bool showSearchBar;
   final TextEditingController searchController;
   final int selectedIndexTransaction;
+  final ValueChanged<int> onTransactionFilterTap;
   final String? focusTransactionId;
 
   @override
@@ -74,6 +80,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
     widget.searchController.removeListener(_onSearchChanged);
     super.dispose();
   }
+
+  void _selectWallet(String? id) => setState(() => _walletId = id);
 
   void _onSearchChanged() {
     if (mounted) {
@@ -135,64 +143,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
     );
     final grouped = groupTransactionFeedByDate(context, filteredFeed);
 
-    if (feed.isEmpty) {
-      return BicountReveal(
-        child: Center(
-          child: EmptyTransactionStateCard(
-            onPressed: () => openTransactionSheet(context, widget.data),
-          ),
-        ),
-      );
-    }
-
-    return Column(
-      children: [
-        if (BackendEnvironment.isLocalPreproduction)
-          WalletFilter(
-            walletId: _walletId,
-            onChanged: (id) => setState(() => _walletId = id),
-          ),
-        filteredFeed.isNotEmpty
-            ? Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimens.paddingMedium,
-                  ),
-                  child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(
-                      context,
-                    ).copyWith(scrollbars: false),
-                    child: ListView(
-                      padding: EdgeInsets.only(top: 15, bottom: 50),
-                      children: grouped.entries.map((entry) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              entry.key,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            AppDimens.spacerSmall,
-                            ...entry.value.map(
-                              (item) => TransactionFeedTile(
-                                item: item,
-                                data: widget.data,
-                              ),
-                            ),
-                            AppDimens.spacerMedium,
-                          ],
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              )
-            : Expanded(
-                child: Center(
-                  child: Text(context.l10n.transactionNoTransactionsFound),
-                ),
-              ),
-      ],
+    return _buildScrollView(
+      context,
+      hasTransactions: feed.isNotEmpty,
+      groups: grouped,
     );
   }
 }

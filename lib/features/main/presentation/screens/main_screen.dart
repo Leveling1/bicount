@@ -155,8 +155,6 @@ class _MainScreenState extends State<MainScreen> {
             selectedIndex: _selectedIndex,
             showSearchBar: showSearchBar,
             searchController: searchTransaction,
-            selectedTransactionIndex: _selectedIndexTransaction,
-            onTransactionFilterTap: _onItemTappedTransaction,
             pageController: pageController,
             onPageChanged: (index) => setState(() => _selectedIndex = index),
             screens: state is MainLoaded
@@ -213,6 +211,7 @@ class _MainScreenState extends State<MainScreen> {
         showSearchBar: showSearchBar,
         searchController: searchTransaction,
         selectedIndexTransaction: _selectedIndexTransaction,
+        onTransactionFilterTap: _onItemTappedTransaction,
         focusTransactionId: focusTransactionId,
       ),
       ProfileScreen(data: data),

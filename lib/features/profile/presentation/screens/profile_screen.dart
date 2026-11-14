@@ -59,26 +59,7 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         ),
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppDimens.paddingMedium,
-          ),
-          sliver: SliverToBoxAdapter(
-            child: BicountReveal(
-              delay: const Duration(milliseconds: 80),
-              child: ProfileAmountCardsRow(
-                leftTitle: context.l10n.profileIncome,
-                leftIcon: IconLinks.income,
-                leftValue: data.user.incomes ?? 0,
-                leftColor: incomeColor,
-                rightTitle: context.l10n.profileExpense,
-                rightIcon: IconLinks.expense,
-                rightValue: data.user.expenses ?? 0,
-                rightColor: expenseColor,
-              ),
-            ),
-          ),
-        ),
+        
         SliverPadding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppDimens.paddingMedium,

@@ -14,6 +14,11 @@ class AppTheme {
     iconTheme: const IconThemeData(color: AppColors.inactiveColorLight),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AppColors.surfaceColorLight,
+      selectedItemColor: AppColors.surfaceColorDark,
+      selectedIconTheme: IconThemeData(
+        color: AppColors.surfaceColorDark,
+        size: 24,
+      ),
     ),
 
     /// Card theme light
@@ -456,11 +461,13 @@ class AppTheme {
     /// Chip theme light
     chipTheme: ChipThemeData(
       backgroundColor: AppColors.cardColorLight,
-      selectedColor: AppColors.primaryColorLight,
+      selectedColor: AppColors.surfaceColorLight,
       disabledColor: AppColors.cardColorLight,
+      secondaryLabelStyle: const TextStyle(color: AppColors.textColorDark),
+      checkmarkColor: AppColors.textColorDark,
       color: WidgetStateColor.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return AppColors.primaryColorLight; // Couleur sélectionné
+          return AppColors.surfaceColorLight; // Couleur sélectionné
         }
         return AppColors.cardColorLight; // Couleur non sélectionné
       }),
@@ -508,7 +515,12 @@ class AppTheme {
     scaffoldBackgroundColor: AppColors.backgroundColorDark,
     iconTheme: const IconThemeData(color: AppColors.inactiveColorDark),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: Colors.black, //AppColors.backgroundColorDark,
+      backgroundColor: Colors.black,
+      selectedItemColor: AppColors.surfaceColorDark,
+      selectedIconTheme: IconThemeData(
+        color: AppColors.surfaceColorDark,
+        size: 24,
+      ),
     ),
 
     /// Card theme dark
@@ -947,11 +959,13 @@ class AppTheme {
     /// Chip theme dark
     chipTheme: ChipThemeData(
       backgroundColor: AppColors.cardColorDark,
-      selectedColor: AppColors.primaryColorDark,
+      selectedColor: AppColors.surfaceColorDark,
       disabledColor: AppColors.cardColorDark,
+      secondaryLabelStyle: const TextStyle(color: AppColors.textColorLight),
+      checkmarkColor: AppColors.textColorLight,
       color: WidgetStateColor.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return AppColors.primaryColorDark; // Couleur sélectionné
+          return AppColors.surfaceColorDark; // Couleur sélectionné
         }
         return AppColors.cardColorDark; // Couleur non sélectionné
       }),

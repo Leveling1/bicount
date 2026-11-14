@@ -29,7 +29,9 @@ class TransactionFilterChips extends StatelessWidget {
               right: isLast ? AppDimens.paddingMedium : 8.0,
             ),
             child: InkWell(
-              borderRadius: BorderRadius.circular(AppDimens.borderRadiusMediumLarge),
+              borderRadius: BorderRadius.circular(
+                AppDimens.borderRadiusMediumLarge,
+              ),
               onTap: () => onTap(index),
               child: Container(
                 padding: const EdgeInsets.symmetric(
@@ -38,14 +40,22 @@ class TransactionFilterChips extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? Theme.of(context).primaryColor
+                      ? Theme.of(
+                          context,
+                        ).bottomNavigationBarTheme.backgroundColor
                       : Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(AppDimens.borderRadiusMediumLarge),
+                  borderRadius: BorderRadius.circular(
+                    AppDimens.borderRadiusMediumLarge,
+                  ),
                 ),
                 child: Text(
                   context.transactionFilterLabel(index),
                   style: TextStyle(
-                    color: isSelected ? Colors.black : Colors.grey[700],
+                    color: isSelected
+                        ? Theme.of(
+                            context,
+                          ).bottomNavigationBarTheme.selectedItemColor
+                        : Colors.grey[700],
                     fontWeight: FontWeight.w500,
                   ),
                 ),

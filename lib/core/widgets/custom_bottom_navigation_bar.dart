@@ -30,12 +30,16 @@ class CustomBottomNavigationBar extends StatelessWidget {
       context.l10n.navProfile,
     ];
 
+    final theme = Theme.of(context);
+    final activeColor = theme.bottomNavigationBarTheme.selectedItemColor;
+    final inactiveColor = AppColors.inactiveColorDark.withValues(alpha: 0.6);
+
     return Theme(
-      data: Theme.of(context).copyWith(splashColor: Colors.transparent),
+      data: theme.copyWith(splashColor: Colors.transparent),
       child: Container(
         //height: AppDimens.bottomBarHeight,
         decoration: BoxDecoration(
-          color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+          color: theme.bottomNavigationBarTheme.backgroundColor,
         ),
         padding: const EdgeInsets.symmetric(vertical: AppDimens.paddingSmall),
         child: ClipRRect(
@@ -43,24 +47,28 @@ class CustomBottomNavigationBar extends StatelessWidget {
             backgroundColor: Colors.transparent,
             elevation: 0,
             type: BottomNavigationBarType.fixed,
-            selectedItemColor: AppColors.primaryColorDark,
-            unselectedItemColor: AppColors.inactiveColorDark,
+            selectedItemColor: activeColor,
+            unselectedItemColor: inactiveColor,
+            selectedIconTheme: IconThemeData(color: activeColor, size: 24),
+            unselectedIconTheme: IconThemeData(color: inactiveColor, size: 20),
             currentIndex: selectedIndex,
             onTap: onTap,
             items: List.generate(icons.length, (index) {
-              final size = selectedIndex == index ? 24.0 : 20.0;
               return BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  icons[index],
-                  semanticsLabel: titles[index],
-                  width: size,
-                  height: size,
-                  colorFilter: ColorFilter.mode(
-                    selectedIndex == index
-                        ? Theme.of(context).colorScheme.secondary
-                        : AppColors.inactiveColorDark,
-                    BlendMode.srcIn,
-                  ),
+                icon: Builder(
+                  builder: (context) {
+                    final iconTheme = IconTheme.of(context);
+                    return SvgPicture.asset(
+                      icons[index],
+                      semanticsLabel: titles[index],
+                      width: iconTheme.size,
+                      height: iconTheme.size,
+                      colorFilter: ColorFilter.mode(
+                        iconTheme.color ?? inactiveColor,
+                        BlendMode.srcIn,
+                      ),
+                    );
+                  },
                 ),
                 label: titles[index],
               );
