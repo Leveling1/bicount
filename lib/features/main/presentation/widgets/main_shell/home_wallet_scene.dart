@@ -85,18 +85,27 @@ extension _HomeWalletSceneLayout on _HomeWalletTransitionState {
       geometry: _geometry,
       home: widget.builder(() => _go(true)),
     );
-    if (!widget.enabled) return scene;
-    return Column(
-      children: [
-        Expanded(
-          child: MediaQuery.removePadding(
-            context: context,
-            removeBottom: true,
-            child: scene,
+    if (!widget.hasSharedContainer) return scene;
+    final theme = Theme.of(context);
+    return ColoredBox(
+      color:
+          theme.bottomNavigationBarTheme.backgroundColor ??
+          theme.colorScheme.surface,
+      child: Column(
+        children: [
+          Expanded(
+            child: MediaQuery.removePadding(
+              context: context,
+              removeBottom: true,
+              child: ContainerBody(protectTopInset: false, child: scene),
+            ),
           ),
-        ),
-        CustomBottomNavigationBar(selectedIndex: 0, onTap: _selectTab),
-      ],
+          CustomBottomNavigationBar(
+            selectedIndex: widget.selectedIndex,
+            onTap: _selectTab,
+          ),
+        ],
+      ),
     );
   }
 

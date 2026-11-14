@@ -33,17 +33,18 @@ extension _MainScreenLayout on _MainScreenState {
           data: preparedData,
         );
 
+        const hasSharedContainer = BackendEnvironment.isLocalPreproduction;
         final enableWalletSwipe =
-            BackendEnvironment.isLocalPreproduction &&
-            _selectedIndex == 0 &&
-            state is MainLoaded;
+            hasSharedContainer && _selectedIndex == 0 && state is MainLoaded;
         final shell = HomeWalletTransition(
           enabled: enableWalletSwipe,
+          hasSharedContainer: hasSharedContainer,
+          selectedIndex: _selectedIndex,
           onSelectTab: _onItemTapped,
           builder: (openWallets) => Scaffold(
-            backgroundColor: Theme.of(
-              context,
-            ).bottomNavigationBarTheme.backgroundColor,
+            backgroundColor: hasSharedContainer
+                ? Theme.of(context).scaffoldBackgroundColor
+                : Theme.of(context).bottomNavigationBarTheme.backgroundColor,
             appBar: MainShellAppBar(
               connectionState: preparedData.connectionState,
               title: titles[_selectedIndex],
@@ -61,6 +62,7 @@ extension _MainScreenLayout on _MainScreenState {
               searchController: searchTransaction,
               pageController: pageController,
               lockHorizontalPaging: enableWalletSwipe,
+              hasSharedContainer: hasSharedContainer,
               onPageChanged: _onPageChanged,
               screens: state is MainLoaded
                   ? _buildScreens(preparedData, openWallets)
@@ -69,7 +71,7 @@ extension _MainScreenLayout on _MainScreenState {
                       (index) => MainLoadingSkeleton(index: index),
                     ),
             ),
-            bottomNavigationBar: enableWalletSwipe
+            bottomNavigationBar: hasSharedContainer
                 ? null
                 : CustomBottomNavigationBar(
                     selectedIndex: _selectedIndex,

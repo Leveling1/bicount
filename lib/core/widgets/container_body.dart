@@ -3,11 +3,18 @@ import 'package:bicount/core/themes/app_dimens.dart';
 
 class ContainerBody extends StatelessWidget {
   final Widget child;
-  const ContainerBody({super.key, required this.child});
+  final bool protectTopInset;
+
+  const ContainerBody({
+    super.key,
+    required this.child,
+    this.protectTopInset = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: protectTopInset,
       child: Container(
         margin: EdgeInsets.only(bottom: AppDimens.marginExtraSmall),
         decoration: BoxDecoration(

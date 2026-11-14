@@ -15,6 +15,7 @@ class MainShellBody extends StatelessWidget {
     required this.onPageChanged,
     required this.screens,
     this.lockHorizontalPaging = false,
+    this.hasSharedContainer = false,
   });
 
   final int selectedIndex;
@@ -24,41 +25,41 @@ class MainShellBody extends StatelessWidget {
   final ValueChanged<int> onPageChanged;
   final List<Widget> screens;
   final bool lockHorizontalPaging;
+  final bool hasSharedContainer;
 
   @override
   Widget build(BuildContext context) {
-    return ContainerBody(
-      child: Column(
-        children: [
-          AppBarAnimation(
-            child: selectedIndex == 2
-                ? SmoothInsert(
-                    visible: showSearchBar,
-                    verticalMargin: AppDimens.paddingSmall,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppDimens.paddingMedium,
-                      ),
-                      child: CustomSearchField(
-                        controller: searchController,
-                        onChanged: (_) {},
-                      ),
+    final content = Column(
+      children: [
+        AppBarAnimation(
+          child: selectedIndex == 2
+              ? SmoothInsert(
+                  visible: showSearchBar,
+                  verticalMargin: AppDimens.paddingSmall,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimens.paddingMedium,
                     ),
-                  )
-                : const SizedBox.shrink(),
+                    child: CustomSearchField(
+                      controller: searchController,
+                      onChanged: (_) {},
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+        Expanded(
+          child: PageView(
+            controller: pageController,
+            physics: lockHorizontalPaging
+                ? const NeverScrollableScrollPhysics()
+                : null,
+            onPageChanged: onPageChanged,
+            children: screens,
           ),
-          Expanded(
-            child: PageView(
-              controller: pageController,
-              physics: lockHorizontalPaging
-                  ? const NeverScrollableScrollPhysics()
-                  : null,
-              onPageChanged: onPageChanged,
-              children: screens,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
+    return hasSharedContainer ? content : ContainerBody(child: content);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/core/widgets/wallet/wallet_card_flight.dart';
 import 'package:bicount/features/home/presentation/widgets/home_wallet_preview.dart';
@@ -8,6 +9,7 @@ import 'package:bicount/features/main/presentation/widgets/main_shell/home_walle
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/domain/repositories/wallet_repository.dart';
 import 'package:bicount/features/wallet/presentation/bloc/wallet_bloc.dart';
+import 'package:bicount/features/wallet/presentation/screens/wallet_screen.dart';
 import 'package:bicount/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,6 +40,8 @@ void main() {
             ],
             child: HomeWalletTransition(
               enabled: true,
+              hasSharedContainer: true,
+              selectedIndex: 0,
               onSelectTab: (_) {},
               builder: (openWallets) => Scaffold(
                 body: Stack(
@@ -66,6 +70,16 @@ void main() {
       expect(find.byType(CustomBottomNavigationBar), findsOneWidget);
       expect(find.text('Profile'), findsOneWidget);
       expect(find.text('Analysis'), findsOneWidget);
+      final container = find.byType(ContainerBody);
+      expect(container, findsOneWidget);
+      final sharedClip = find
+          .descendant(of: container, matching: find.byType(ClipRRect))
+          .first;
+      final clipBounds = tester.getRect(sharedClip);
+      expect(
+        tester.widget<ClipRRect>(sharedClip).borderRadius,
+        const BorderRadius.vertical(bottom: Radius.circular(50)),
+      );
 
       await tester.tapAt(const Offset(150, 480));
       await tester.pumpAndSettle();
@@ -85,6 +99,11 @@ void main() {
         find.byType(HomeWalletCards),
       );
       expect(flight.progress, inExclusiveRange(0, 1));
+      expect(tester.getRect(sharedClip), clipBounds);
+      expect(
+        find.descendant(of: container, matching: find.byType(WalletScreen)),
+        findsOneWidget,
+      );
       expect(flight.paths, hasLength(3));
       expect(flight.paths.first.preview, origin);
       final endpointContext = geometry
@@ -103,6 +122,7 @@ void main() {
       await drag.up();
       await tester.pumpAndSettle();
       expect(find.byType(HomeWalletCards), findsNothing);
+      expect(tester.getRect(sharedClip), clipBounds);
       expect(find.text('New wallet').hitTestable(), findsOneWidget);
       final navigation = find.byType(CustomBottomNavigationBar);
       expect(

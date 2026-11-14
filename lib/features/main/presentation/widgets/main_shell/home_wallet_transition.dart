@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:bicount/core/widgets/container_body.dart';
 import 'package:bicount/core/widgets/wallet/wallet_card_flight.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/home_wallet_cards.dart';
@@ -14,11 +15,15 @@ class HomeWalletTransition extends StatefulWidget {
   const HomeWalletTransition({
     super.key,
     required this.enabled,
+    required this.hasSharedContainer,
+    required this.selectedIndex,
     required this.onSelectTab,
     required this.builder,
   });
 
   final bool enabled;
+  final bool hasSharedContainer;
+  final int selectedIndex;
   final ValueChanged<int> onSelectTab;
   final Widget Function(VoidCallback openWallets) builder;
 

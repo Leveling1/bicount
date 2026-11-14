@@ -1685,4 +1685,5 @@ Carried forward deliberately, not oversights:
 - Home, Transactions, and the Wallets overview share the card face in
   `lib/core/widgets/wallet/`. Home and Wallets share the standard bottom
   navigation with Home selected. Tap the card preview or swipe the Home screen
-  to open Wallets. Gesture progress drives the card positions.
+  to open Wallets. Gesture progress drives the card positions inside one
+  stationary `ContainerBody`.
