@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+part 'home_wallet_transition_fixtures.dart';
+
 void main() {
   const home = Key('home body');
   const preview = Key('wallet preview');
@@ -26,6 +28,8 @@ void main() {
       tester.view.physicalSize = const Size(410, 860);
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
+      final selectedTab = ValueNotifier(0);
+      addTearDown(selectedTab.dispose);
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -38,27 +42,36 @@ void main() {
                     WalletBloc(_WalletRepository())..add(const WatchWallets()),
               ),
             ],
-            child: HomeWalletTransition(
-              enabled: true,
-              hasSharedContainer: true,
-              selectedIndex: 0,
-              onSelectTab: (_) {},
-              builder: (openWallets) => Scaffold(
-                body: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    const Center(key: home, child: Text('Dashboard')),
-                    Positioned(
-                      top: 130,
-                      right: 0,
-                      width: HomeWalletPreview.width,
-                      height: 170,
-                      child: HomeWalletPreview(
-                        key: preview,
-                        onOpen: openWallets,
+            child: ValueListenableBuilder(
+              valueListenable: selectedTab,
+              builder: (context, index, _) => HomeWalletTransition(
+                enabled: index == 0,
+                hasSharedContainer: true,
+                selectedIndex: index,
+                onSelectTab: (_) {},
+                onSelectCoveredTab: (tab) => selectedTab.value = tab,
+                builder: (openWallets) => Scaffold(
+                  body: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Center(
+                        key: home,
+                        child: Text(
+                          index == 0 ? 'Dashboard' : 'Analysis content',
+                        ),
                       ),
-                    ),
-                  ],
+                      Positioned(
+                        top: 130,
+                        right: 0,
+                        width: HomeWalletPreview.width,
+                        height: 170,
+                        child: HomeWalletPreview(
+                          key: preview,
+                          onOpen: openWallets,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -148,45 +161,19 @@ void main() {
       await tester.tap(find.text('Home'));
       await tester.pumpAndSettle();
       expect(find.text('New wallet'), findsNothing);
+      await tester.tap(find.byKey(preview));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Analysis'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 80));
+      expect(selectedTab.value, 1);
+      expect(find.text('Analysis content'), findsOneWidget);
+      expect(find.text('Dashboard'), findsNothing);
+      expect(find.byType(WalletScreen), findsOneWidget);
+      expect(find.byType(HomeWalletCards), findsNothing);
+      await tester.pumpAndSettle();
+      expect(find.byType(WalletScreen), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
-}
-
-class _MainRepository implements MainRepository {
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
-}
-
-class _WalletRepository implements WalletRepository {
-  @override
-  Stream<List<WalletModel>> watch() => Stream.value(const [
-    WalletModel(
-      id: 'main',
-      ownerUid: 'user',
-      name: 'Principal',
-      createdAt: '-',
-      isDefault: true,
-    ),
-    WalletModel(
-      id: 'bank',
-      ownerUid: 'user',
-      name: 'Bank',
-      createdAt: '-',
-      color: 2,
-    ),
-    WalletModel(
-      id: 'cash',
-      ownerUid: 'user',
-      name: 'Cash',
-      createdAt: '-',
-      color: 4,
-    ),
-  ]);
-
-  @override
-  Future<List<WalletBalance>> balances() async => [];
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

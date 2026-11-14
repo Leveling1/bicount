@@ -160,11 +160,11 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index, {bool animate = true}) {
     final distance = (_selectedIndex - index).abs();
     const duration = Duration(milliseconds: 380);
 
-    if (distance == 1) {
+    if (animate && distance == 1) {
       pageController.animateToPage(
         index,
         duration: duration,

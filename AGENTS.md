@@ -1686,4 +1686,5 @@ Carried forward deliberately, not oversights:
   `lib/core/widgets/wallet/`. Home and Wallets share the standard bottom
   navigation with Home selected. Tap the card preview or swipe the Home screen
   to open Wallets. Gesture progress drives the card positions inside one
-  stationary `ContainerBody`.
+  stationary `ContainerBody`. From Wallets, selecting another main tab slides
+  directly to that tab inside the same container.

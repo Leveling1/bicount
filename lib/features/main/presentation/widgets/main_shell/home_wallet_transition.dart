@@ -18,6 +18,7 @@ class HomeWalletTransition extends StatefulWidget {
     required this.hasSharedContainer,
     required this.selectedIndex,
     required this.onSelectTab,
+    required this.onSelectCoveredTab,
     required this.builder,
   });
 
@@ -25,6 +26,7 @@ class HomeWalletTransition extends StatefulWidget {
   final bool hasSharedContainer;
   final int selectedIndex;
   final ValueChanged<int> onSelectTab;
+  final ValueChanged<int> onSelectCoveredTab;
   final Widget Function(VoidCallback openWallets) builder;
 
   @override
@@ -43,18 +45,22 @@ class _HomeWalletTransitionState extends State<HomeWalletTransition>
   bool _ready = false;
   bool _measuring = false;
   double _position = 0;
-  int? _nextTab;
+  int? _directTab;
+
+  void _updateScene(VoidCallback update) => setState(update);
 
   @override
   void didUpdateWidget(HomeWalletTransition oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!widget.enabled && oldWidget.enabled && _showWallet) {
+    if (!widget.enabled &&
+        oldWidget.enabled &&
+        _showWallet &&
+        _directTab == null) {
       _animation.stop();
       _animation.value = 0;
       _paths = [];
       _movingIds = const {};
       _showWallet = _open = _dragging = _ready = _measuring = false;
-      _nextTab = null;
     }
   }
 
@@ -77,7 +83,7 @@ class _HomeWalletTransitionState extends State<HomeWalletTransition>
       _measuring = true;
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_showWallet) return;
+      if (!mounted || !_measuring) return;
       _paths = _measurePaths();
       setState(() {
         _movingIds = _paths.map((path) => path.wallet.id).toSet();
@@ -129,24 +135,12 @@ class _HomeWalletTransitionState extends State<HomeWalletTransition>
       _paths = [];
       _ready = false;
     });
-    final tab = _nextTab;
-    _nextTab = null;
-    if (tab != null && !_open) widget.onSelectTab(tab);
-  }
-
-  void _selectTab(int tab) {
-    if (!_showWallet) {
-      widget.onSelectTab(tab);
-    } else {
-      _nextTab = tab;
-      _go(false);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     final forward = Directionality.of(context) == TextDirection.ltr ? -1 : 1;
-    final enabled = widget.enabled;
+    final enabled = widget.enabled && _directTab == null;
     final moving =
         _showWallet && (_measuring || _ready || _animation.value != 1);
     return WalletCardFlight(
@@ -155,7 +149,7 @@ class _HomeWalletTransitionState extends State<HomeWalletTransition>
       child: PopScope(
         canPop: !_showWallet,
         onPopInvokedWithResult: (didPop, _) {
-          if (!didPop && _showWallet) _go(false);
+          if (!didPop && _showWallet && _directTab == null) _go(false);
         },
         child: LayoutBuilder(
           builder: (context, constraints) {

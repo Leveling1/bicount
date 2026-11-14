@@ -41,6 +41,7 @@ extension _MainScreenLayout on _MainScreenState {
           hasSharedContainer: hasSharedContainer,
           selectedIndex: _selectedIndex,
           onSelectTab: _onItemTapped,
+          onSelectCoveredTab: (index) => _onItemTapped(index, animate: false),
           builder: (openWallets) => Scaffold(
             backgroundColor: hasSharedContainer
                 ? Theme.of(context).scaffoldBackgroundColor

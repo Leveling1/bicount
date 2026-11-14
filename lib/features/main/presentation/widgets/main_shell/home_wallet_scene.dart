@@ -7,6 +7,7 @@ class _HomeWalletScene extends StatelessWidget {
     required this.moving,
     required this.ready,
     required this.showWallet,
+    required this.direct,
     required this.paths,
     required this.geometry,
     required this.home,
@@ -17,13 +18,15 @@ class _HomeWalletScene extends StatelessWidget {
   final bool moving;
   final bool ready;
   final bool showWallet;
+  final bool direct;
   final List<HomeWalletCardPath> paths;
   final WalletCardFlightGeometry geometry;
   final Widget home;
 
   @override
   Widget build(BuildContext context) {
-    final walletActive = showWallet && !moving;
+    final walletActive = showWallet && !moving && !direct;
+    final slide = CurveTween(curve: const Interval(0, .76));
     final wallet = showWallet
         ? SizedBox.expand(key: geometry.listPage, child: const WalletScreen())
         : null;
@@ -39,10 +42,15 @@ class _HomeWalletScene extends StatelessWidget {
                 child: SlideTransition(
                   position:
                       Tween(
-                            begin: Offset(-forward.toDouble(), 0),
+                            begin: Offset(
+                              (direct ? forward : -forward).toDouble(),
+                              0,
+                            ),
                             end: Offset.zero,
                           )
-                          .chain(CurveTween(curve: const Interval(0, .76)))
+                          .chain(
+                            direct ? CurveTween(curve: Curves.linear) : slide,
+                          )
                           .animate(animation),
                   child: wallet,
                 ),
@@ -50,8 +58,11 @@ class _HomeWalletScene extends StatelessWidget {
             ),
           SlideTransition(
             position:
-                Tween(begin: Offset.zero, end: Offset(forward.toDouble(), 0))
-                    .chain(CurveTween(curve: const Interval(0, .76)))
+                Tween(
+                      begin: Offset.zero,
+                      end: Offset((direct ? -forward : forward).toDouble(), 0),
+                    )
+                    .chain(direct ? CurveTween(curve: Curves.linear) : slide)
                     .animate(animation),
             child: ExcludeSemantics(
               excluding: showWallet,
@@ -81,6 +92,7 @@ extension _HomeWalletSceneLayout on _HomeWalletTransitionState {
       moving: moving,
       ready: _ready,
       showWallet: _showWallet,
+      direct: _directTab != null,
       paths: _paths,
       geometry: _geometry,
       home: widget.builder(() => _go(true)),
@@ -107,6 +119,45 @@ extension _HomeWalletSceneLayout on _HomeWalletTransitionState {
         ],
       ),
     );
+  }
+
+  Future<void> _selectTab(int tab) async {
+    if (_directTab != null) return;
+    if (!_showWallet) {
+      widget.onSelectTab(tab);
+      return;
+    }
+    if (tab == 0) {
+      _go(false);
+      return;
+    }
+
+    _updateScene(() {
+      _directTab = tab;
+      _animation.value = 1;
+      _paths = [];
+      _movingIds = const {};
+      _dragging = _ready = _measuring = false;
+    });
+    widget.onSelectCoveredTab(tab);
+    try {
+      await _animation
+          .animateTo(
+            0,
+            duration: MediaQuery.disableAnimationsOf(context)
+                ? Duration.zero
+                : const Duration(milliseconds: 380),
+            curve: Curves.easeOutCubic,
+          )
+          .orCancel;
+    } on TickerCanceled {
+      return;
+    }
+    if (!mounted) return;
+    _updateScene(() {
+      _directTab = null;
+      _showWallet = _open = false;
+    });
   }
 
   List<HomeWalletCardPath> _measurePaths() {

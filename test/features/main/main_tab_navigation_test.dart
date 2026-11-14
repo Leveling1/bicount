@@ -20,6 +20,7 @@ void main() {
               hasSharedContainer: true,
               enabled: index == 0,
               selectedIndex: index,
+              onSelectCoveredTab: (_) {},
               onSelectTab: (target) {
                 controller.animateToPage(
                   target,
