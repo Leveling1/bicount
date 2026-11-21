@@ -67,26 +67,23 @@ class HomeScreen extends StatelessWidget {
           child: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: HomeSliverHeaderDelegate(
-                  balance: data.user.balance ?? 0.0,
-                  referenceCurrencyCode: data.referenceCurrencyCode,
-                  onOpenWallets: BackendEnvironment.isLocalPreproduction
-                      ? onOpenWallets
-                      : null,
-                  monthlyInflow: monthlyFlow.inflowWithCarryover,
-                  monthlyOutflow: monthlyFlow.currentMonthOutflow,
-                  // A negative inflow means the month opened on an
-                  // overdraft carried over from before; showing it green
-                  // would read as money coming in.
-                  incomeColor: monthlyFlow.inflowWithCarryover < 0
-                      ? expenseColor
-                      : incomeColor,
-                  expenseColor: expenseColor,
-                  onMonthlyInflowTap: () => onCardTap?.call(2),
-                  onMonthlyOutflowTap: () => onCardTap?.call(1),
-                ),
+              HomeSliverHeader(
+                balance: data.user.balance ?? 0.0,
+                referenceCurrencyCode: data.referenceCurrencyCode,
+                onOpenWallets: BackendEnvironment.isLocalPreproduction
+                    ? onOpenWallets
+                    : null,
+                monthlyInflow: monthlyFlow.inflowWithCarryover,
+                monthlyOutflow: monthlyFlow.currentMonthOutflow,
+                // A negative inflow means the month opened on an
+                // overdraft carried over from before; showing it green
+                // would read as money coming in.
+                incomeColor: monthlyFlow.inflowWithCarryover < 0
+                    ? expenseColor
+                    : incomeColor,
+                expenseColor: expenseColor,
+                onMonthlyInflowTap: () => onCardTap?.call(2),
+                onMonthlyOutflowTap: () => onCardTap?.call(1),
               ),
               SliverPadding(
                 padding: const EdgeInsets.symmetric(

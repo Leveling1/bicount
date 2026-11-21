@@ -691,18 +691,8 @@
   "salaryPaymentConfirmedSuccess": "Recurring payment confirmed successfully.",
   "salaryAutomaticModeEnabledSuccess": "Recurring tracking switched back to automatic mode.",
   "salaryHomeCardTitle": "Salary Management",
-  "salaryHomeCardAttention": "Pending amount: {amount}",
-  "@salaryHomeCardAttention": {
-    "placeholders": {
-      "amount": {}
-    }
-  },
-  "salaryHomeCardNext": "Next deposit scheduled for {date}",
-  "@salaryHomeCardNext": {
-    "placeholders": {
-      "date": {}
-    }
-  },
+  "salaryHomeCardAttention": "Pending amount",
+  "salaryHomeCardNext": "Next deposit scheduled",
   "salaryHomeCardCount": "{count} payments need attention",
   "@salaryHomeCardCount": {
     "placeholders": {

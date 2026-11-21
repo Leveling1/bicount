@@ -34,63 +34,87 @@ class HomeSalaryStatusCard extends StatelessWidget {
     final accentColor = dashboard.hasAttention
         ? Theme.of(context).extension<OtherTheme>()!.expense!
         : Theme.of(context).textTheme.bodySmall?.color;
+    final expectedDate = dashboard.hasAttention
+        ? dashboard.attentionOccurrences.first.expectedDate
+        : dashboard.nextExpectedDate;
 
     return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
-      ),
+      decoration: BoxDecoration(color: Colors.transparent),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: onTap,
+          hoverColor: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          splashColor: Colors.transparent,
+          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+          onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.all(AppDimens.paddingMedium),
+            padding: AppDimens.paddingSmallCard,
             child: Row(
               children: [
-                Expanded(
-                  flex: 1,
-                  child: Icon(
-                    Icons.arrow_forward_outlined,
-                    color: accentColor,
-                    size: 30,
+                // Avatar
+                CircleAvatar(
+                  backgroundColor: Theme.of(context).cardColor,
+                  radius: 20,
+                  child: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: Icon(
+                      Icons.arrow_forward_outlined,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                   ),
                 ),
+                AppDimens.spacerWidthMediumSmall,
+
+                // Name and date
                 Expanded(
-                  flex: 4,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         context.l10n.salaryHomeCardTitle,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: Theme.of(context).textTheme.titleLarge?.color,
-                        ),
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       Text(
-                        dashboard.hasAttention
-                            ? context.l10n.salaryHomeCardAttention(
-                                NumberFormatUtils.compactCurrency(
-                                  dashboard.totalOutstandingAmount,
-                                  currencyCode: data.referenceCurrencyCode,
-                                ),
-                              )
-                            : context.l10n.salaryHomeCardNext(
-                                dashboard.nextExpectedDate == null
-                                    ? '-'
-                                    : formatDateWithoutYear(
-                                        dashboard.nextExpectedDate!,
-                                      ),
-                              ),
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: accentColor),
+                        expectedDate == null
+                            ? '-'
+                            : formatDateWithoutYear(expectedDate),
+                        style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontSize: 13,
+                        ),
                       ),
                     ],
                   ),
+                ),
+
+                // Amount
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      dashboard.hasAttention
+                          ? NumberFormatUtils.compactCurrency(
+                              dashboard.totalOutstandingAmount,
+                              currencyCode: data.referenceCurrencyCode,
+                            )
+                          : dashboard.nextExpectedDate == null
+                          ? '-'
+                          : formatDateWithoutYear(dashboard.nextExpectedDate!),
+                      style: TextStyle(
+                        color: accentColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      dashboard.hasAttention
+                          ? context.l10n.salaryHomeCardAttention
+                          : context.l10n.salaryHomeCardNext,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
                 ),
               ],
             ),

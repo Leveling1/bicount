@@ -3417,13 +3417,13 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Pending amount: {amount}'**
-  String salaryHomeCardAttention(Object amount);
+  String get salaryHomeCardAttention;
 
   /// No description provided for @salaryHomeCardNext.
   ///
   /// In en, this message translates to:
   /// **'Next deposit scheduled for {date}'**
-  String salaryHomeCardNext(Object date);
+  String get salaryHomeCardNext;
 
   /// No description provided for @salaryHomeCardCount.
   ///

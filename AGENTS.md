@@ -886,6 +886,13 @@ Current visible motion touchpoints:
 
 - shell tab selection in `custom_bottom_navigation_bar.dart`
 - Home screen section reveals
+- Home header crossfades with scroll progress while keeping its expanded content
+  at a fixed size.
+- The Home header measures its content at the available width and text scale.
+  Its expanded content has no bottom padding, leaving the screen's 16 dp gap
+  before the salary card.
+- The Home loading header uses the same sliver layout, with its wallet
+  placeholder aligned to the screen edge.
 - Analysis screen staged reveals
 - Profile and friends flow staged reveals
 

@@ -39,48 +39,48 @@ class DetailFriendTransactionSection extends StatelessWidget {
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: AppDimens.marginSmall),
-        DetailsCard(
-          isMargin: false,
-          isPadding: false,
-          child: detail.transactions.isEmpty
-              ? Padding(
+        detail.transactions.isEmpty
+            ? DetailsCard(
+                isMargin: false,
+                isPadding: false,
+                child: Padding(
                   padding: const EdgeInsets.all(AppDimens.paddingMedium),
                   child: Text(
                     context.l10n.friendTransactionsEmpty,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
-                )
-              : ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: detail.transactions.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    final entity = TransactionEntity.fromTransaction(
-                      detail.transactions[index],
-                    );
-                    return TransactionCard(
-                      transaction: entity,
-                      onTap: () {
-                        showCustomBottomSheet(
-                          context: context,
-                          minHeight: 0.95,
-                          color: null,
-                          child: DetailTransactionScreen(
-                            key: ValueKey(entity.tid),
-                            transaction: TransactionDetailArgs(
-                              user: user,
-                              transactionDetail: entity,
-                              friends: friends,
-                              debts: debts,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
                 ),
-        ),
+              )
+            : ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: detail.transactions.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final entity = TransactionEntity.fromTransaction(
+                    detail.transactions[index],
+                  );
+                  return TransactionCard(
+                    transaction: entity,
+                    onTap: () {
+                      showCustomBottomSheet(
+                        context: context,
+                        minHeight: 0.95,
+                        color: null,
+                        child: DetailTransactionScreen(
+                          key: ValueKey(entity.tid),
+                          transaction: TransactionDetailArgs(
+                            user: user,
+                            transactionDetail: entity,
+                            friends: friends,
+                            debts: debts,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
       ],
     );
   }

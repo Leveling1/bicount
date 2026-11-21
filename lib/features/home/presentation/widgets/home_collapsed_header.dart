@@ -2,7 +2,6 @@ part of 'home_sliver_header.dart';
 
 class _CollapsedHomeHeader extends StatelessWidget {
   const _CollapsedHomeHeader({
-    super.key,
     required this.balanceText,
     required this.amountStyle,
   });
@@ -17,12 +16,12 @@ class _CollapsedHomeHeader extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(AppDimens.borderRadiusLarge),
-          bottomRight: Radius.circular(AppDimens.borderRadiusLarge),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(AppDimens.borderRadiusLarge),
         ),
       ),
       child: Center(
+        heightFactor: 1,
         child: Row(
           children: [
             Container(

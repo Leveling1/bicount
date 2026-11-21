@@ -691,18 +691,8 @@
   "salaryPaymentConfirmedSuccess": "Paiement récurrent confirmé avec succès.",
   "salaryAutomaticModeEnabledSuccess": "Le suivi récurrent est repassé en mode automatique.",
   "salaryHomeCardTitle": "Gestion des salaires",
-  "salaryHomeCardAttention": "Montant en attente : {amount}",
-  "@salaryHomeCardAttention": {
-    "placeholders": {
-      "amount": {}
-    }
-  },
-  "salaryHomeCardNext": "Prochain versement le {date}",
-  "@salaryHomeCardNext": {
-    "placeholders": {
-      "date": {}
-    }
-  },
+  "salaryHomeCardAttention": "Montant en attente",
+  "salaryHomeCardNext": "Prochain versement",
   "salaryHomeCardCount": "{count} paiements demandent votre attention",
   "@salaryHomeCardCount": {
     "placeholders": {

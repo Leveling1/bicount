@@ -112,9 +112,7 @@ class HomeSummaryCard extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppDimens.paddingExtraLarge,
-      ),
+      padding: const EdgeInsets.only(top: AppDimens.paddingExtraLarge),
       child: Stack(
         children: [
           Padding(

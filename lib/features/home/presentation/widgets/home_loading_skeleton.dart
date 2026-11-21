@@ -1,6 +1,9 @@
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_skeleton.dart';
+import 'package:bicount/core/widgets/wallet/wallet_card_face.dart';
+import 'package:bicount/features/home/presentation/widgets/home_header_sliver_layout.dart';
+import 'package:bicount/features/home/presentation/widgets/home_wallet_preview.dart';
 import 'package:flutter/material.dart';
 
 part 'home_balance_skeleton.dart';
@@ -12,7 +15,7 @@ class HomeLoadingSkeleton extends StatelessWidget {
   Widget build(BuildContext context) => CustomScrollView(
     physics: const BouncingScrollPhysics(),
     slivers: [
-      SliverPersistentHeader(pinned: true, delegate: _HeaderDelegate()),
+      const _HomeLoadingHeader(),
       SliverPadding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppDimens.paddingMedium,
@@ -20,7 +23,7 @@ class HomeLoadingSkeleton extends StatelessWidget {
         sliver: SliverList.list(
           children: const [
             SizedBox(height: AppDimens.spacingMedium),
-            _QuickActions(),
+            _QuickActions(key: ValueKey('home-loading-actions')),
             SizedBox(height: AppDimens.spacingMedium),
             _SectionTitle(),
             SizedBox(height: AppDimens.spacingSmall),
@@ -32,62 +35,35 @@ class HomeLoadingSkeleton extends StatelessWidget {
   );
 }
 
-class _HeaderDelegate extends SliverPersistentHeaderDelegate {
-  @override
-  double get minExtent => 84;
-  @override
-  double get maxExtent => 290;
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    final progress = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
-    if (progress >= 0.58) {
-      return Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        alignment: Alignment.center,
-        child: const Row(
-          children: [
-            SizedBox(width: AppDimens.marginMedium),
-            BicountSkeletonBox(width: 40, height: 40),
-            SizedBox(width: AppDimens.marginMedium),
-            Expanded(child: BicountSkeletonBox(height: 20)),
-            SizedBox(width: AppDimens.marginMedium),
-          ],
-        ),
-      );
-    }
-    const hasWalletPreview = BackendEnvironment.isLocalPreproduction;
-    // The pinned sliver reserves the full header height during layout.
-    return SizedBox.expand(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppDimens.paddingMedium,
-          vertical: hasWalletPreview ? AppDimens.paddingSmall : 0,
-        ),
-        child: LayoutBuilder(
-          builder: (context, constraints) => FittedBox(
-            alignment: hasWalletPreview
-                ? AlignmentDirectional.centerStart
-                : Alignment.topCenter,
-            fit: BoxFit.scaleDown,
-            child: SizedBox(
-              width: constraints.maxWidth,
-              height: hasWalletPreview ? null : maxExtent,
-              child: hasWalletPreview
-                  ? const _HomeBalanceSkeleton()
-                  : const _StandardBalanceSkeleton(),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+class _HomeLoadingHeader extends StatelessWidget {
+  const _HomeLoadingHeader();
 
   @override
-  bool shouldRebuild(covariant _HeaderDelegate oldDelegate) => false;
+  Widget build(BuildContext context) => HomeHeaderSliverLayout(
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    expanded: BackendEnvironment.isLocalPreproduction
+        ? const Padding(
+            padding: EdgeInsets.only(top: AppDimens.paddingExtraLarge),
+            child: _HomeBalanceSkeleton(),
+          )
+        : const Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
+            child: _StandardBalanceSkeleton(),
+          ),
+    collapsed: const Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppDimens.paddingMedium,
+        vertical: 22,
+      ),
+      child: Row(
+        children: [
+          BicountSkeletonBox(width: 40, height: 40),
+          SizedBox(width: AppDimens.marginMedium),
+          Expanded(child: BicountSkeletonBox(height: 20)),
+        ],
+      ),
+    ),
+  );
 }
 
 class _StandardBalanceSkeleton extends StatelessWidget {
@@ -98,7 +74,7 @@ class _StandardBalanceSkeleton extends StatelessWidget {
     children: [
       SizedBox(height: AppDimens.paddingExtraLarge),
       _HomeBalanceSkeleton(),
-      Spacer(),
+      SizedBox(height: AppDimens.spacingMedium),
       Row(
         children: [
           Expanded(child: _SummaryCard()),
@@ -134,7 +110,7 @@ class _SummaryCard extends StatelessWidget {
 }
 
 class _QuickActions extends StatelessWidget {
-  const _QuickActions();
+  const _QuickActions({super.key});
   @override
   Widget build(BuildContext context) => Row(
     children: [

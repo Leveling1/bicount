@@ -1738,14 +1738,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get salaryHomeCardTitle => 'Salary Management';
 
   @override
-  String salaryHomeCardAttention(Object amount) {
-    return 'Pending amount: $amount';
-  }
+  String get salaryHomeCardAttention => 'Pending amount';
 
   @override
-  String salaryHomeCardNext(Object date) {
-    return 'Next deposit scheduled for $date';
-  }
+  String get salaryHomeCardNext => 'Next deposit scheduled';
 
   @override
   String salaryHomeCardCount(Object count) {
