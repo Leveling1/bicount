@@ -117,7 +117,6 @@ class TransactionDetailContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ..._heading(context, direction, data, iconSize),
-                TransactionWalletDetails(transaction: data),
                 Text(
                   FormatedText().capitalizeFirstLetter(data.name),
                   style: Theme.of(context).textTheme.headlineLarge,

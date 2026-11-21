@@ -1,4 +1,5 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:bicount/features/wallet/presentation/screens/wallet_history.dart';
 import 'package:bicount/features/wallet/domain/repositories/wallet_repository.dart';
@@ -21,6 +22,13 @@ class WalletScreen extends StatefulWidget {
 class _WalletScreenState extends State<WalletScreen> {
   late final _repository = context.read<WalletBloc>().repository;
   late Future<List<WalletBalance>> _balances = _repository.balances();
+
+  Future<void> _showEditor([WalletModel? wallet]) =>
+      showCustomBottomSheet<void>(
+        context: context,
+        minHeight: 0.95,
+        child: WalletEditor(wallet: wallet),
+      );
 
   void _showHistory(WalletModel wallet) {
     final bloc = context.read<MainBloc>();
@@ -83,10 +91,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 textStyle: theme.textTheme.labelMedium,
               ),
-              onPressed: () => showDialog<void>(
-                context: context,
-                builder: (_) => const WalletEditor(),
-              ),
+              onPressed: _showEditor,
               child: Text(l10n.walletNew),
             ),
             const SizedBox(width: 24),
@@ -119,10 +124,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               .toList(),
                           onEdit: wallet.isDefault && wallet.createdAt.isEmpty
                               ? null
-                              : () => showDialog<void>(
-                                  context: context,
-                                  builder: (_) => WalletEditor(wallet: wallet),
-                                ),
+                              : () => _showEditor(wallet),
                           onHistory: () => _showHistory(wallet),
                         ),
                       ),

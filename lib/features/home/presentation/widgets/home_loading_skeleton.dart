@@ -59,45 +59,55 @@ class _HeaderDelegate extends SliverPersistentHeaderDelegate {
         ),
       );
     }
-    if (BackendEnvironment.isLocalPreproduction) {
-      return LayoutBuilder(
-        builder: (context, constraints) => Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppDimens.paddingMedium,
-            vertical: AppDimens.paddingSmall,
-          ),
-          child: FittedBox(
-            alignment: AlignmentDirectional.centerStart,
+    const hasWalletPreview = BackendEnvironment.isLocalPreproduction;
+    // The pinned sliver reserves the full header height during layout.
+    return SizedBox.expand(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimens.paddingMedium,
+          vertical: hasWalletPreview ? AppDimens.paddingSmall : 0,
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) => FittedBox(
+            alignment: hasWalletPreview
+                ? AlignmentDirectional.centerStart
+                : Alignment.topCenter,
             fit: BoxFit.scaleDown,
             child: SizedBox(
-              width: constraints.maxWidth - 2 * AppDimens.paddingMedium,
-              child: const _HomeBalanceSkeleton(),
+              width: constraints.maxWidth,
+              height: hasWalletPreview ? null : maxExtent,
+              child: hasWalletPreview
+                  ? const _HomeBalanceSkeleton()
+                  : const _StandardBalanceSkeleton(),
             ),
           ),
         ),
-      );
-    }
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
-      child: Column(
-        children: [
-          const SizedBox(height: AppDimens.paddingExtraLarge),
-          const _HomeBalanceSkeleton(),
-          const Spacer(),
-          Row(
-            children: const [
-              Expanded(child: _SummaryCard()),
-              SizedBox(width: AppDimens.marginMedium),
-              Expanded(child: _SummaryCard()),
-            ],
-          ),
-        ],
       ),
     );
   }
 
   @override
   bool shouldRebuild(covariant _HeaderDelegate oldDelegate) => false;
+}
+
+class _StandardBalanceSkeleton extends StatelessWidget {
+  const _StandardBalanceSkeleton();
+
+  @override
+  Widget build(BuildContext context) => const Column(
+    children: [
+      SizedBox(height: AppDimens.paddingExtraLarge),
+      _HomeBalanceSkeleton(),
+      Spacer(),
+      Row(
+        children: [
+          Expanded(child: _SummaryCard()),
+          SizedBox(width: AppDimens.marginMedium),
+          Expanded(child: _SummaryCard()),
+        ],
+      ),
+    ],
+  );
 }
 
 class _SummaryCard extends StatelessWidget {

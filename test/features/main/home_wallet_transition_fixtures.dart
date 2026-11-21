@@ -37,3 +37,52 @@ class _WalletRepository implements WalletRepository {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
+
+Future<void> _verifyWalletEditorSheets(WidgetTester tester) async {
+  await tester.tap(find.text('New wallet').hitTestable());
+  await tester.pumpAndSettle();
+  expect(find.byType(BottomSheet), findsOneWidget);
+  expect(find.byType(AlertDialog), findsNothing);
+  final save = find.text('Save');
+  await tester.ensureVisible(save);
+  await tester.tap(save);
+  await tester.pumpAndSettle();
+  expect(
+    find.text(
+      AppLocalizations.of(tester.element(save))!.validationFieldRequired,
+    ),
+    findsOneWidget,
+  );
+  final cancel = find.text('Cancel');
+  await tester.ensureVisible(cancel);
+  await tester.tap(cancel);
+  await tester.pumpAndSettle();
+  expect(find.byType(BottomSheet), findsNothing);
+
+  final edit = find.descendant(
+    of: find.byKey(const ValueKey('bank')),
+    matching: find.byTooltip('Edit wallet'),
+  );
+  await tester.ensureVisible(edit);
+  await tester.tap(edit);
+  await tester.pumpAndSettle();
+  final sheet = find.byType(BottomSheet);
+  expect(sheet, findsOneWidget);
+  expect(find.byType(AlertDialog), findsNothing);
+  expect(
+    find.descendant(of: sheet, matching: find.text('Edit wallet')),
+    findsOneWidget,
+  );
+  expect(
+    find.descendant(of: sheet, matching: find.text('Bank')),
+    findsOneWidget,
+  );
+  expect(
+    find.descendant(of: sheet, matching: find.text('Archive wallet')),
+    findsOneWidget,
+  );
+  await tester.ensureVisible(cancel);
+  await tester.tap(cancel);
+  await tester.pumpAndSettle();
+  expect(sheet, findsNothing);
+}

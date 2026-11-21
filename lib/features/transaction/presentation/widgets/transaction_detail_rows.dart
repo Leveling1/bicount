@@ -43,6 +43,7 @@ extension on TransactionDetailContent {
     DetailsCard(
       child: Column(
         children: [
+          TransactionWalletDetails(transaction: data),
           TransactionDetailRow(
             title: context.l10n.commonFrequency,
             content: context.frequencyLabel(data.frequency ?? 0),

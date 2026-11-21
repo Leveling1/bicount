@@ -137,6 +137,9 @@ void main() {
       expect(find.byType(HomeWalletCards), findsNothing);
       expect(tester.getRect(sharedClip), clipBounds);
       expect(find.text('New wallet').hitTestable(), findsOneWidget);
+
+      await _verifyWalletEditorSheets(tester);
+
       final navigation = find.byType(CustomBottomNavigationBar);
       expect(
         tester.widget<CustomBottomNavigationBar>(navigation).selectedIndex,

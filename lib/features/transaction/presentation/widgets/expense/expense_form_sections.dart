@@ -11,11 +11,15 @@ extension _ExpenseFormSections on _ExpenseFormState {
     return Column(
       children: [
         CustomAmountField(amount: _amount, currency: _currency),
-        WalletPicker(
-          label: context.l10n.walletFrom,
-          value: _walletId ?? widget.initialTransaction?.senderWalletId,
-          onChanged: (id) => _update(() => _walletId = id),
-        ),
+        if (BackendEnvironment.isLocalPreproduction) ...[
+          AppDimens.spacerMedium,
+          WalletPicker(
+            label: context.l10n.walletFrom,
+            useSharedMenu: true,
+            value: _walletId ?? widget.initialTransaction?.senderWalletId,
+            onChanged: (id) => _update(() => _walletId = id),
+          ),
+        ],
         if (canEditAllFields) ...[
           AppDimens.spacerMedium,
           TransferFormBeneficiariesSection(
