@@ -53,9 +53,7 @@ Future<void> _verifyWalletEditorSheets(WidgetTester tester) async {
     ),
     findsOneWidget,
   );
-  final cancel = find.text('Cancel');
-  await tester.ensureVisible(cancel);
-  await tester.tap(cancel);
+  await tester.binding.handlePopRoute();
   await tester.pumpAndSettle();
   expect(find.byType(BottomSheet), findsNothing);
 
@@ -81,8 +79,7 @@ Future<void> _verifyWalletEditorSheets(WidgetTester tester) async {
     find.descendant(of: sheet, matching: find.text('Archive wallet')),
     findsOneWidget,
   );
-  await tester.ensureVisible(cancel);
-  await tester.tap(cancel);
+  await tester.binding.handlePopRoute();
   await tester.pumpAndSettle();
   expect(sheet, findsNothing);
 }

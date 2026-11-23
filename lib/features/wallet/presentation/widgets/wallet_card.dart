@@ -3,13 +3,15 @@ import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
-import 'package:bicount/features/wallet/data/repositories/wallet_repository_impl.dart';
+import 'package:bicount/features/wallet/presentation/bloc/wallet_bloc.dart';
+import 'package:bicount/features/wallet/presentation/widgets/wallet_balance_text.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bicount/features/wallet/domain/repositories/wallet_repository.dart';
 import 'package:bicount/core/widgets/wallet/wallet_card_stack.dart';
 import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:flutter/material.dart';
 
-class WalletCard extends StatefulWidget {
+class WalletCard extends StatelessWidget {
   const WalletCard({
     super.key,
     required this.data,
@@ -22,35 +24,14 @@ class WalletCard extends StatefulWidget {
   final ValueChanged<String?> onChanged;
 
   @override
-  State<WalletCard> createState() => _WalletCardState();
-}
-
-class _WalletCardState extends State<WalletCard> {
-  final _repository = WalletRepositoryImpl();
-  late final _wallets = _repository.watch();
-  late Future<List<WalletBalance>> _balances = _repository.balances();
-
-  @override
-  void didUpdateWidget(WalletCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.data.transactions != oldWidget.data.transactions ||
-        widget.data.friends != oldWidget.data.friends) {
-      _balances = _repository.balances();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<WalletModel>>(
-      stream: _wallets,
-      builder: (context, snapshot) {
-        final wallets = <WalletModel?>[null, ...?snapshot.data];
-        final index = wallets.indexWhere(
-          (wallet) => wallet?.id == widget.walletId,
-        );
+    return BlocBuilder<WalletBloc, WalletState>(
+      builder: (context, state) {
+        final wallets = <WalletModel?>[null, ...state.wallets];
+        final index = wallets.indexWhere((wallet) => wallet?.id == walletId);
         final selectedIndex = index < 0 ? 0 : index;
         final wallet = wallets[selectedIndex];
-        void select(int index) => widget.onChanged(wallets[index]?.id);
+        void select(int index) => onChanged(wallets[index]?.id);
 
         return Padding(
           padding: const EdgeInsets.symmetric(
@@ -63,6 +44,8 @@ class _WalletCardState extends State<WalletCard> {
                 wallets: wallets,
                 selectedIndex: selectedIndex,
                 onChanged: select,
+                balanceBuilder: (wallet) =>
+                    WalletBalanceText(walletId: wallet?.id),
               ),
               Row(
                 children: [
@@ -136,18 +119,20 @@ class _WalletCardState extends State<WalletCard> {
               Align(
                 alignment: AlignmentDirectional.centerStart,
                 child: wallet == null
-                    ? Text(
-                        NumberFormatUtils.formatCurrency(
-                          widget.data.user.balance ?? 0,
-                          currencyCode: widget.data.referenceCurrencyCode,
-                        ),
+                    ? DefaultTextStyle.merge(
                         style: Theme.of(context).textTheme.bodySmall,
+                        child: const WalletBalanceText(),
                       )
-                    : FutureBuilder<List<WalletBalance>>(
-                        future: _balances,
-                        builder: (context, snapshot) {
-                          final amounts =
-                              (snapshot.data ?? const <WalletBalance>[])
+                    : Text(
+                        state.balances == null
+                            ? '—'
+                            : state.balances!
+                                  .where(
+                                    (balance) => balance.walletId == wallet.id,
+                                  )
+                                  .isEmpty
+                            ? context.l10n.walletNoMovements
+                            : state.balances!
                                   .where(
                                     (balance) => balance.walletId == wallet.id,
                                   )
@@ -158,16 +143,10 @@ class _WalletCardState extends State<WalletCard> {
                                           currencyCode: balance.currency,
                                         ),
                                   )
-                                  .join(' · ');
-                          return Text(
-                            amounts.isEmpty && snapshot.hasData
-                                ? context.l10n.walletNoMovements
-                                : amounts,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          );
-                        },
+                                  .join(' · '),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
               ),
             ],

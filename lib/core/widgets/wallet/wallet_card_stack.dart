@@ -10,11 +10,13 @@ class WalletCardStack extends StatefulWidget {
     required this.wallets,
     required this.selectedIndex,
     required this.onChanged,
+    this.balanceBuilder,
   });
 
   final List<WalletModel?> wallets;
   final int selectedIndex;
   final ValueChanged<int> onChanged;
+  final Widget Function(WalletModel?)? balanceBuilder;
 
   @override
   State<WalletCardStack> createState() => _WalletCardStackState();
@@ -167,6 +169,7 @@ class _WalletCardStackState extends State<WalletCardStack> {
       width: double.infinity,
       child: WalletCardFace(
         wallet: widget.wallets[index],
+        balance: widget.balanceBuilder?.call(widget.wallets[index]),
         showDetails: foreground,
       ),
     );

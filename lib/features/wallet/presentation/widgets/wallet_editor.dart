@@ -2,10 +2,10 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/core/widgets/custom_dropdown_menu.dart';
-import 'package:bicount/core/widgets/custom_form_text_field.dart';
 import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/data/repositories/wallet_repository_impl.dart';
+import 'package:bicount/features/wallet/presentation/widgets/wallet_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -26,7 +26,7 @@ class _WalletEditorState extends State<WalletEditor> {
   );
   late final _name = TextEditingController(
     text: widget.wallet == null ? '' : walletLabel(context, widget.wallet!),
-  );
+  )..addListener(_limitName);
   late var _kind = widget.wallet?.kind ?? WalletKind.other;
   late var _network = widget.wallet?.cardNetwork;
   late var _icon = widget.wallet?.icon ?? 0;
@@ -36,6 +36,7 @@ class _WalletEditorState extends State<WalletEditor> {
 
   @override
   void dispose() {
+    _name.removeListener(_limitName);
     _name.dispose();
     super.dispose();
   }
@@ -65,7 +66,7 @@ class _WalletEditorState extends State<WalletEditor> {
     }
   }
 
-  void _limitName(String _) {
+  void _limitName() {
     final value = _name.value;
     if (value.composing.isCollapsed && value.text.characters.length > 60) {
       _name.value = _nameLengthLimit.formatEditUpdate(
@@ -73,10 +74,6 @@ class _WalletEditorState extends State<WalletEditor> {
         value,
       );
     }
-  }
-
-  void _cancel() {
-    if (!_saving) Navigator.pop(context);
   }
 
   @override
@@ -96,10 +93,9 @@ class _WalletEditorState extends State<WalletEditor> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppDimens.spacingMedium,
         children: [
-          CustomFormTextField(
+          WalletFormField(
+            label: l10n.walletName,
             controller: _name,
-            hintText: l10n.walletName,
-            onChanged: _limitName,
             validator: (name) => name == null || name.trim().isEmpty
                 ? l10n.validationFieldRequired
                 : null,
@@ -156,16 +152,11 @@ class _WalletEditorState extends State<WalletEditor> {
       spacing: AppDimens.spacingMedium,
       children: [
         Text(
-          wallet == null ? l10n.walletNew : l10n.walletEdit,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+            wallet == null ? l10n.walletNew : l10n.walletEdit,
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
         fields,
         CustomButton(text: l10n.commonSave, loading: _saving, onPressed: _save),
-        CustomOutlinedButton(
-          text: l10n.commonCancel,
-          loading: false,
-          onPressed: _cancel,
-        ),
         if (wallet != null && !wallet.isDefault)
           TextButton(
             onPressed: _saving

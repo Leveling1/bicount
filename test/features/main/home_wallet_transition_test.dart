@@ -45,6 +45,7 @@ void main() {
             child: ValueListenableBuilder(
               valueListenable: selectedTab,
               builder: (context, index, _) => HomeWalletTransition(
+                onOpenWalletTransactions: (_) {},
                 enabled: index == 0,
                 hasSharedContainer: true,
                 selectedIndex: index,

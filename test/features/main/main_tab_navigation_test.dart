@@ -16,6 +16,7 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: HomeWalletTransition(
+            onOpenWalletTransactions: (_) {},
             hasSharedContainer: true,
             enabled: false,
             selectedIndex: 2,
@@ -61,6 +62,7 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           home: StatefulBuilder(
             builder: (context, setState) => HomeWalletTransition(
+              onOpenWalletTransactions: (_) {},
               hasSharedContainer: true,
               enabled: index == 0,
               selectedIndex: index,

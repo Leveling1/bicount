@@ -49,6 +49,7 @@ class _MainScreenState extends State<MainScreen> {
   bool showSearchBar = false;
   late int _selectedIndex;
   int _selectedIndexTransaction = 0;
+  String? _transactionWalletId;
   String? _lastHandledWidgetActionToken;
 
   @override
@@ -111,6 +112,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) => _buildShell(context);
+
+  void _updateShell(VoidCallback update) => setState(update);
 
   void _toggleSearch() => setState(() => showSearchBar = !showSearchBar);
 

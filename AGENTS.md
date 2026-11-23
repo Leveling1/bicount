@@ -1687,6 +1687,10 @@ Carried forward deliberately, not oversights:
 - SQLite projects every recognized transaction side into one balance per
   wallet and original currency. Friend-link changes refresh affected ledger
   entries. A transfer is one transaction with two wallet pointers.
+- Wallet cards show their total in the account's reference currency. WalletBloc
+  shares native balances across cards and refreshes them with finance changes;
+  currency changes recalculate the display. Missing FX rates show an unavailable
+  total rather than mixing currencies. The All wallets card includes all wallets.
 - Local preproduction is the only enabled environment for the wallet schema,
   UI, and automatic occurrences. See `docs/backend_followup_actions.md`.
 - Home, Transactions, and the Wallets overview share the card face in
@@ -1695,3 +1699,6 @@ Carried forward deliberately, not oversights:
   to open Wallets. Gesture progress drives the card positions inside one
   stationary `ContainerBody`. From Wallets, selecting another main tab slides
   directly to that tab inside the same container.
+- A wallet's transaction action opens the main Transaction tab with that wallet
+  selected, All types active, and any old search cleared. Use the transaction SVG;
+  there is no separate wallet-history page.

@@ -1,7 +1,6 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
-import 'package:bicount/features/wallet/domain/services/wallet_attribution.dart';
 import 'package:bicount/features/wallet/presentation/widgets/wallet_card.dart';
 import 'package:bicount/core/services/open_transaction_sheet.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
@@ -28,6 +27,8 @@ class TransactionScreen extends StatefulWidget {
     required this.selectedIndexTransaction,
     required this.onTransactionFilterTap,
     this.focusTransactionId,
+    this.walletId,
+    this.onWalletChanged,
   });
 
   final MainEntity data;
@@ -36,6 +37,8 @@ class TransactionScreen extends StatefulWidget {
   final int selectedIndexTransaction;
   final ValueChanged<int> onTransactionFilterTap;
   final String? focusTransactionId;
+  final String? walletId;
+  final ValueChanged<String?>? onWalletChanged;
 
   @override
   State<TransactionScreen> createState() => _TransactionScreenState();
@@ -50,6 +53,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   @override
   void initState() {
     super.initState();
+    _walletId = widget.walletId;
     widget.searchController.addListener(_onSearchChanged);
     if (widget.showSearchBar) _revealSearchResults();
   }
@@ -57,6 +61,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
   @override
   void didUpdateWidget(covariant TransactionScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.walletId != widget.walletId) {
+      _walletId = widget.walletId;
+    }
 
     if (oldWidget.searchController != widget.searchController) {
       oldWidget.searchController.removeListener(_onSearchChanged);
@@ -88,7 +96,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
     super.dispose();
   }
 
-  void _selectWallet(String? id) => setState(() => _walletId = id);
+  void _selectWallet(String? id) {
+    setState(() => _walletId = id);
+    widget.onWalletChanged?.call(id);
+  }
 
   void _onSearchChanged() {
     if (mounted) {
@@ -135,16 +146,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
     _maybeOpenFocusedTransaction(feed);
     final filteredFeed = filterTransactionFeed(
       data: widget.data,
-      source: _walletId == null
-          ? feed
-          : feed
-                .where(
-                  (item) => walletSides(
-                    widget.data,
-                    item.transaction,
-                  ).any((side) => side.id == _walletId),
-                )
-                .toList(),
+      source: feed,
+      walletId: _walletId,
       query: widget.showSearchBar ? widget.searchController.text : '',
       selectedIndex: widget.selectedIndexTransaction,
     );

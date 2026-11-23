@@ -1,10 +1,12 @@
+import 'package:bicount/core/constants/icon_links.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
-import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/wallet/wallet_card_face.dart';
 import 'package:bicount/core/widgets/wallet/wallet_card_flight.dart';
 import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/domain/repositories/wallet_repository.dart';
+import 'package:bicount/features/wallet/presentation/widgets/wallet_balance_text.dart';
 import 'package:flutter/material.dart';
 
 class WalletOverviewCard extends StatelessWidget {
@@ -12,13 +14,13 @@ class WalletOverviewCard extends StatelessWidget {
     super.key,
     required this.wallet,
     required this.balances,
-    required this.onHistory,
+    required this.onTransactions,
     required this.onEdit,
   });
 
   final WalletModel wallet;
   final List<WalletBalance> balances;
-  final VoidCallback onHistory;
+  final VoidCallback onTransactions;
   final VoidCallback? onEdit;
 
   static const double aspectRatio = 1.84;
@@ -47,8 +49,9 @@ class WalletOverviewCard extends StatelessWidget {
                       ? null
                       : WalletCardFace(
                           wallet: wallet,
+                          balance: WalletBalanceText(walletId: wallet.id),
                           showDetails: true,
-                          onTap: onHistory,
+                          onTap: onTransactions,
                         ),
                 ),
               ),
@@ -59,7 +62,7 @@ class WalletOverviewCard extends StatelessWidget {
                 bottom: 0,
                 child: WalletOverviewActions(
                   wallet: wallet,
-                  onHistory: onHistory,
+                  onTransactions: onTransactions,
                   onEdit: onEdit,
                 ),
               ),
@@ -83,14 +86,6 @@ class WalletOverviewCard extends StatelessWidget {
                     l10n.walletNoMovements,
                     style: theme.textTheme.labelMedium,
                   ),
-                for (final balance in balances)
-                  Text(
-                    NumberFormatUtils.formatCurrency(
-                      balance.minor / walletAmountScale,
-                      currencyCode: balance.currency,
-                    ),
-                    style: theme.textTheme.titleMedium,
-                  ),
               ],
             ),
           ),
@@ -104,13 +99,13 @@ class WalletOverviewActions extends StatelessWidget {
   const WalletOverviewActions({
     super.key,
     required this.wallet,
-    this.onHistory,
+    this.onTransactions,
     this.onEdit,
     this.decorative = false,
   });
 
   final WalletModel wallet;
-  final VoidCallback? onHistory;
+  final VoidCallback? onTransactions;
   final VoidCallback? onEdit;
   final bool decorative;
 
@@ -124,15 +119,24 @@ class WalletOverviewActions extends StatelessWidget {
         _WalletCardAction(
           tint: tint,
           label: l10n.navTransaction,
-          icon: Icons.history,
-          onPressed: onHistory,
+          icon: SvgPicture.asset(
+            IconLinks.transaction,
+            width: 16,
+            height: 16,
+            excludeFromSemantics: true,
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).colorScheme.onSurface,
+              BlendMode.srcIn,
+            ),
+          ),
+          onPressed: onTransactions,
           decorative: decorative,
         ),
         const SizedBox(width: 4),
         _WalletCardAction(
           tint: tint,
           label: l10n.walletEdit,
-          icon: Icons.edit_outlined,
+          icon: const Icon(Icons.edit_outlined, size: 16),
           onPressed: onEdit,
           decorative: decorative,
         ),
@@ -151,7 +155,7 @@ class _WalletCardAction extends StatelessWidget {
   });
 
   final String label;
-  final IconData icon;
+  final Widget icon;
   final VoidCallback? onPressed;
   final Color tint;
   final bool decorative;
@@ -171,7 +175,7 @@ class _WalletCardAction extends StatelessWidget {
         minimumSize: const Size(34, 34),
         padding: EdgeInsets.zero,
       ),
-      icon: Icon(icon, size: 16),
+      icon: icon,
       onPressed: decorative ? () {} : onPressed,
     );
   }

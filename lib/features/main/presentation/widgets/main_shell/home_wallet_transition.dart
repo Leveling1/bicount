@@ -19,6 +19,7 @@ class HomeWalletTransition extends StatefulWidget {
     required this.selectedIndex,
     required this.onSelectTab,
     required this.onSelectCoveredTab,
+    required this.onOpenWalletTransactions,
     required this.builder,
   });
 
@@ -27,6 +28,7 @@ class HomeWalletTransition extends StatefulWidget {
   final int selectedIndex;
   final ValueChanged<int> onSelectTab;
   final ValueChanged<int> onSelectCoveredTab;
+  final ValueChanged<String> onOpenWalletTransactions;
   final Widget Function(VoidCallback openWallets) builder;
 
   @override

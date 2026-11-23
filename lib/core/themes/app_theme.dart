@@ -898,11 +898,11 @@ class AppTheme {
         focusColor: AppColors.primaryColorDark,
         hoverColor: AppColors.primaryColorDark,
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusLarge),
+          borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
           borderSide: BorderSide.none,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusLarge),
+          borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
           borderSide: BorderSide.none,
         ),
         floatingLabelStyle: TextStyle(
@@ -919,15 +919,15 @@ class AppTheme {
       ),
       menuStyle: MenuStyle(
         backgroundColor: WidgetStatePropertyAll(AppColors.cardColorDark),
-        elevation: WidgetStatePropertyAll(0),
+        elevation: WidgetStatePropertyAll(1),
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(AppDimens.radiusLarge),
+              Radius.circular(AppDimens.radiusMedium),
             ),
           ),
         ),
-        padding: WidgetStatePropertyAll(AppDimens.paddingAllSmall),
+        // padding: WidgetStatePropertyAll(AppDimens.paddingAllSmall),
       ),
       textStyle: TextStyle(
         color: AppColors.textColorDark,

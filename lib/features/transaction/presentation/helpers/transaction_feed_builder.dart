@@ -3,6 +3,7 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/presentation/models/transaction_feed_item.dart';
+import 'package:bicount/features/wallet/domain/services/wallet_attribution.dart';
 import 'package:flutter/material.dart';
 
 List<TransactionFeedItem> buildTransactionFeed(MainEntity data) {
@@ -19,6 +20,7 @@ List<TransactionFeedItem> filterTransactionFeed({
   required List<TransactionFeedItem> source,
   required String query,
   required int selectedIndex,
+  String? walletId,
 }) {
   final normalizedQuery = query.trim().toLowerCase();
   final currentUserParticipantIds =
@@ -28,6 +30,13 @@ List<TransactionFeedItem> filterTransactionFeed({
       );
 
   return source.where((item) {
+    if (walletId != null &&
+        !walletSides(
+          data,
+          item.transaction,
+        ).any((side) => side.id == walletId)) {
+      return false;
+    }
     final matchesSearch =
         normalizedQuery.isEmpty || item.searchText.contains(normalizedQuery);
     if (!matchesSearch) {

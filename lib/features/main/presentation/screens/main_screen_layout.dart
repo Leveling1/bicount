@@ -42,6 +42,15 @@ extension _MainScreenLayout on _MainScreenState {
           selectedIndex: _selectedIndex,
           onSelectTab: _onItemTapped,
           onSelectCoveredTab: (index) => _onItemTapped(index, animate: false),
+          onOpenWalletTransactions: (walletId) {
+            FocusScope.of(context).unfocus();
+            searchTransaction.clear();
+            _updateShell(() {
+              _transactionWalletId = walletId;
+              _selectedIndexTransaction = 0;
+              showSearchBar = false;
+            });
+          },
           builder: (openWallets) => Scaffold(
             backgroundColor: hasSharedContainer
                 ? Theme.of(context).scaffoldBackgroundColor
@@ -89,8 +98,16 @@ extension _MainScreenLayout on _MainScreenState {
         );
         if (!BackendEnvironment.isLocalPreproduction) return shell;
         return BlocProvider(
-          create: (_) =>
-              WalletBloc(WalletRepositoryImpl())..add(const WatchWallets()),
+          create: (context) => WalletBloc(
+            WalletRepositoryImpl(),
+            balanceChanges: context.read<MainBloc>().stream.where(
+              (state) => state is MainLoaded,
+            ),
+            currencyConfig: context.read<CurrencyCubit>().state.config,
+            currencyChanges: context.read<CurrencyCubit>().stream.map(
+              (state) => state.config,
+            ),
+          )..add(const WatchWallets()),
           child: shell,
         );
       },
@@ -111,6 +128,8 @@ extension _MainScreenLayout on _MainScreenState {
         searchController: searchTransaction,
         selectedIndexTransaction: _selectedIndexTransaction,
         onTransactionFilterTap: _onItemTappedTransaction,
+        walletId: _transactionWalletId,
+        onWalletChanged: (id) => _updateShell(() => _transactionWalletId = id),
         focusTransactionId: focusTransactionId,
       ),
       ProfileScreen(data: data),

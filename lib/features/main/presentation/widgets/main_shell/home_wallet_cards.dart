@@ -1,6 +1,7 @@
 import 'package:bicount/core/widgets/wallet/wallet_card_face.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/presentation/widgets/wallet_overview_card.dart';
+import 'package:bicount/features/wallet/presentation/widgets/wallet_balance_text.dart';
 import 'package:flutter/material.dart';
 
 class HomeWalletCardPath {
@@ -63,6 +64,7 @@ class HomeWalletCards extends StatelessWidget {
         children: [
           WalletCardFace(
             wallet: path.wallet,
+            balance: WalletBalanceText(walletId: path.wallet.id),
             showDetails: true,
             detailsOpacity: _interval(.28, .67),
           ),

@@ -1,8 +1,10 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/custom_dropdown_menu.dart';
 import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/data/repositories/wallet_repository_impl.dart';
+import 'package:bicount/features/wallet/presentation/widgets/wallet_form_field.dart';
 import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,7 +69,7 @@ class _WalletTransferFormState extends State<WalletTransferForm> {
     final currencies = {
       ...config.currencies.map((item) => item.code),
       currency,
-    };
+    }.toList();
     final l10n = context.l10n;
     return AlertDialog(
       title: Text(l10n.walletTransfer),
@@ -79,6 +81,7 @@ class _WalletTransferFormState extends State<WalletTransferForm> {
             children: [
               WalletDropdown(
                 label: l10n.walletFrom,
+                useSharedMenu: true,
                 wallets: widget.wallets,
                 value: _source,
                 onChanged: (id) => setState(() => _source = id),
@@ -86,16 +89,15 @@ class _WalletTransferFormState extends State<WalletTransferForm> {
               AppDimens.spacerSmall,
               WalletDropdown(
                 label: l10n.walletTo,
+                useSharedMenu: true,
                 wallets: widget.wallets,
                 value: _target,
                 onChanged: (id) => setState(() => _target = id),
               ),
-              TextFormField(
+              WalletFormField(
+                label: l10n.walletBalance,
                 controller: _amount,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                decoration: InputDecoration(labelText: l10n.walletBalance),
+                inputType: const TextInputType.numberWithOptions(decimal: true),
                 validator: (_) {
                   final value = _value;
                   return value == null || !value.isFinite || value < .01
@@ -103,13 +105,19 @@ class _WalletTransferFormState extends State<WalletTransferForm> {
                       : null;
                 },
               ),
-              DropdownButtonFormField<String>(
-                initialValue: currency,
-                items: [
-                  for (final code in currencies)
-                    DropdownMenuItem(value: code, child: Text(code)),
+              CustomDropdownMenu(
+                key: ValueKey((currency, currencies.join(','))),
+                title: l10n.fieldSelectCurrency,
+                initialValue: currencies.indexOf(currency),
+                menuEntries: [
+                  for (final (index, code) in currencies.indexed)
+                    DropdownMenuEntry(value: index, label: code),
                 ],
-                onChanged: (code) => setState(() => _currency = code),
+                onChanged: (index) {
+                  if (index != null) {
+                    setState(() => _currency = currencies[index]);
+                  }
+                },
               ),
             ],
           ),

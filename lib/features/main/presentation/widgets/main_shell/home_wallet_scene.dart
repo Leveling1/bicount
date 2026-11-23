@@ -11,6 +11,7 @@ class _HomeWalletScene extends StatelessWidget {
     required this.paths,
     required this.geometry,
     required this.home,
+    required this.onOpenTransactions,
   });
 
   final Animation<double> animation;
@@ -22,13 +23,17 @@ class _HomeWalletScene extends StatelessWidget {
   final List<HomeWalletCardPath> paths;
   final WalletCardFlightGeometry geometry;
   final Widget home;
+  final ValueChanged<String> onOpenTransactions;
 
   @override
   Widget build(BuildContext context) {
     final walletActive = showWallet && !moving && !direct;
     final slide = CurveTween(curve: const Interval(0, .76));
     final wallet = showWallet
-        ? SizedBox.expand(key: geometry.listPage, child: const WalletScreen())
+        ? SizedBox.expand(
+            key: geometry.listPage,
+            child: WalletScreen(onOpenTransactions: onOpenTransactions),
+          )
         : null;
     return ClipRect(
       child: Stack(
@@ -96,6 +101,11 @@ extension _HomeWalletSceneLayout on _HomeWalletTransitionState {
       paths: _paths,
       geometry: _geometry,
       home: widget.builder(() => _go(true)),
+      onOpenTransactions: (walletId) {
+        if (_directTab != null) return;
+        widget.onOpenWalletTransactions(walletId);
+        _selectTab(2);
+      },
     );
     if (!widget.hasSharedContainer) return scene;
     final theme = Theme.of(context);
