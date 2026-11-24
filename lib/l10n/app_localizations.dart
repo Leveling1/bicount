@@ -4154,8 +4154,14 @@ abstract class AppLocalizations {
   /// No description provided for @walletTransfer.
   ///
   /// In en, this message translates to:
-  /// **'Transfer between wallets'**
+  /// **'Internal transfer'**
   String get walletTransfer;
+
+  /// No description provided for @walletTransferTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer from {source} to {destination}'**
+  String walletTransferTitle(String source, String destination);
 
   /// No description provided for @walletFrom.
   ///

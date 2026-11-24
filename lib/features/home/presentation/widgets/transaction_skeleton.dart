@@ -1,7 +1,6 @@
+import 'package:bicount/core/widgets/transaction_card_skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
-
-import '../../../../core/widgets/transaction_card.dart';
 
 class TransactionSkeleton extends StatelessWidget {
   const TransactionSkeleton({super.key});
@@ -10,7 +9,7 @@ class TransactionSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: 5,
-      itemBuilder: (_, __) =>
+      itemBuilder: (_, _) =>
           SkeletonItem(child: const TransactionCardSkeleton()),
     );
   }

@@ -145,8 +145,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final feed = buildTransactionFeed(widget.data);
-    _maybeOpenFocusedTransaction(feed);
     final (wallets, walletId) = BackendEnvironment.isLocalPreproduction
         ? context.select(
             (WalletBloc bloc) => (
@@ -158,6 +156,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
             ),
           )
         : (const <WalletModel>[], null);
+    final feed = buildTransactionFeed(
+      widget.data,
+      context: BackendEnvironment.isLocalPreproduction ? context : null,
+      wallets: wallets,
+    );
+    _maybeOpenFocusedTransaction(feed);
     final filteredFeed = filterTransactionFeed(
       data: widget.data,
       source: feed,

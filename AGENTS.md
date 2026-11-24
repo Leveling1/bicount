@@ -1687,6 +1687,10 @@ Carried forward deliberately, not oversights:
 - SQLite projects every recognized transaction side into one balance per
   wallet and original currency. Friend-link changes refresh affected ledger
   entries. A transfer is one transaction with two wallet pointers.
+- The Transactions feed shows an internal transfer under Expenses for the
+  source wallet and under Income for the destination wallet. These are views
+  of the same transaction. Monthly flows and analytics exclude internal
+  transfers. The title records both wallet names at creation.
 - Wallet cards show their total in the account's reference currency. WalletBloc
   shares native balances across cards and refreshes them with finance changes;
   currency changes recalculate the display. Missing FX rates show an unavailable

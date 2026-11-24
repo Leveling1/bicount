@@ -28,7 +28,7 @@ class _WalletRepository implements WalletRepository {
     WalletModel(id: 'bank', ownerUid: 'user', name: 'Bank', createdAt: '-'),
   ];
 
-  final transfers = <(String, String, double, String)>[];
+  final transfers = <(String, String, double, String, String)>[];
 
   @override
   Stream<List<WalletModel>> watch() => Stream.value(_wallets);
@@ -44,7 +44,7 @@ class _WalletRepository implements WalletRepository {
     required String currency,
     required String title,
   }) async {
-    transfers.add((from.id, to.id, amount, currency));
+    transfers.add((from.id, to.id, amount, currency, title));
   }
 
   @override
@@ -137,7 +137,9 @@ void main() {
       await tester.ensureVisible(save);
       await tester.tap(save);
       await tester.pumpAndSettle();
-      expect(repository.transfers, [('cash', 'bank', 24.50, 'USD')]);
+      expect(repository.transfers, [
+        ('cash', 'bank', 24.50, 'USD', 'Transfer from Cash to Bank'),
+      ]);
       expect(sheet, findsNothing);
     },
   );

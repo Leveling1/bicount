@@ -18,6 +18,8 @@ class TransactionFeedTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return TransactionCard(
       transaction: item.transaction,
+      displayTitle: item.displayTitle,
+      walletTransferDirection: item.walletTransferDirection,
       onTap: () => showTransactionFeedDetails(context, data: data, item: item),
     );
   }

@@ -3,6 +3,7 @@ import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
+import 'package:bicount/core/services/transaction_direction_service.dart';
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
 import 'package:bicount/core/services/open_occurrence_sheet.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -34,9 +35,16 @@ part 'detail_transaction_actions.dart';
 part 'detail_transaction_related_operations.dart';
 
 class DetailTransactionScreen extends StatefulWidget {
-  const DetailTransactionScreen({super.key, required this.transaction});
+  const DetailTransactionScreen({
+    super.key,
+    required this.transaction,
+    this.displayTitle,
+    this.walletTransferDirection,
+  });
 
   final TransactionDetailArgs transaction;
+  final String? displayTitle;
+  final TransactionDirection? walletTransferDirection;
 
   @override
   State<DetailTransactionScreen> createState() =>
@@ -148,6 +156,8 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
 
           return TransactionDetailContent(
             transaction: widget.transaction,
+            displayTitle: widget.displayTitle,
+            walletTransferDirection: widget.walletTransferDirection,
             canManage: canManage,
             isLoading: state is TransactionLoading,
             debt: _relatedDebt,

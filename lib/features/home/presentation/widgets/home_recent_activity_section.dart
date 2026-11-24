@@ -1,3 +1,4 @@
+import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/open_transaction_sheet.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -6,7 +7,10 @@ import 'package:bicount/core/widgets/empty_state_card.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/transaction/presentation/helpers/transaction_feed_builder.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_feed_tile.dart';
+import 'package:bicount/features/wallet/data/models/wallet_model.dart';
+import 'package:bicount/features/wallet/presentation/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeRecentActivitySection extends StatelessWidget {
   const HomeRecentActivitySection({
@@ -20,7 +24,16 @@ class HomeRecentActivitySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final recentItems = buildTransactionFeed(data).take(5).toList();
+    final wallets = BackendEnvironment.isLocalPreproduction
+        ? context.select(
+            (WalletBloc? bloc) => bloc?.state.wallets ?? const <WalletModel>[],
+          )
+        : const <WalletModel>[];
+    final recentItems = buildTransactionFeed(
+      data,
+      context: BackendEnvironment.isLocalPreproduction ? context : null,
+      wallets: wallets,
+    ).take(5).toList();
 
     final itemWidgets = <Widget>[];
     for (var index = 0; index < recentItems.length; index++) {

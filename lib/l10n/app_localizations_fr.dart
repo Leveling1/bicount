@@ -2111,7 +2111,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get walletArchived => 'Archivé';
 
   @override
-  String get walletTransfer => 'Transférer entre portefeuilles';
+  String get walletTransfer => 'Transfert interne';
+
+  @override
+  String walletTransferTitle(String source, String destination) {
+    return 'Transfert de $source vers $destination';
+  }
 
   @override
   String get walletFrom => 'Payer depuis';

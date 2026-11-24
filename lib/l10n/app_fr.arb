@@ -824,7 +824,14 @@
   "walletArchive": "Archiver le portefeuille",
   "walletRestore": "Restaurer le portefeuille",
   "walletArchived": "Archivé",
-  "walletTransfer": "Transférer entre portefeuilles",
+  "walletTransfer": "Transfert interne",
+  "walletTransferTitle": "Transfert de {source} vers {destination}",
+  "@walletTransferTitle": {
+    "placeholders": {
+      "source": {"type": "String"},
+      "destination": {"type": "String"}
+    }
+  },
   "walletFrom": "Payer depuis",
   "walletTo": "Recevoir dans",
   "walletNoMovements": "Aucun mouvement pour le moment",

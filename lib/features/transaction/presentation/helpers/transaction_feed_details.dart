@@ -15,6 +15,8 @@ void showTransactionFeedDetails(
     minHeight: 0.95,
     color: null,
     child: DetailTransactionScreen(
+      displayTitle: item.displayTitle,
+      walletTransferDirection: item.walletTransferDirection,
       transaction: TransactionDetailArgs(
         user: data.user,
         transactionDetail: item.transaction,

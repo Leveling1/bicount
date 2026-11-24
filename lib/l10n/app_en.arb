@@ -824,7 +824,14 @@
   "walletArchive": "Archive wallet",
   "walletRestore": "Restore wallet",
   "walletArchived": "Archived",
-  "walletTransfer": "Transfer between wallets",
+  "walletTransfer": "Internal transfer",
+  "walletTransferTitle": "Transfer from {source} to {destination}",
+  "@walletTransferTitle": {
+    "placeholders": {
+      "source": {"type": "String"},
+      "destination": {"type": "String"}
+    }
+  },
   "walletFrom": "Pay from",
   "walletTo": "Receive in",
   "walletNoMovements": "No movements yet",

@@ -2,6 +2,7 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
+import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/domain/repositories/wallet_repository.dart';
@@ -54,12 +55,17 @@ class _WalletTransferFormState extends State<WalletTransferForm> {
         : _currency.text;
     setState(() => _saving = true);
     try {
+      final from = widget.wallets.firstWhere((wallet) => wallet.id == _source);
+      final to = widget.wallets.firstWhere((wallet) => wallet.id == _target);
       await widget.repository.transfer(
-        from: widget.wallets.firstWhere((wallet) => wallet.id == _source),
-        to: widget.wallets.firstWhere((wallet) => wallet.id == _target),
+        from: from,
+        to: to,
         amount: _value!,
         currency: currency,
-        title: context.l10n.walletTransfer,
+        title: context.l10n.walletTransferTitle(
+          walletLabel(context, from),
+          walletLabel(context, to),
+        ),
       );
       if (mounted && ModalRoute.of(context)?.isCurrent == true) {
         Navigator.pop(context);

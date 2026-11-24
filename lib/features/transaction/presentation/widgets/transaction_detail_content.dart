@@ -8,6 +8,7 @@ import 'package:bicount/core/services/transaction_participant_identity_service.d
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
+import 'package:bicount/core/utils/formated_text.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:bicount/core/widgets/custom_badge.dart';
@@ -21,8 +22,6 @@ import 'package:bicount/features/transaction/presentation/widgets/transaction_de
 import 'package:bicount/features/wallet/presentation/widgets/transaction_wallet_details.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../../../../core/utils/formated_text.dart';
 
 part 'transaction_detail_helpers.dart';
 part 'transaction_detail_header.dart';
@@ -39,9 +38,13 @@ class TransactionDetailContent extends StatelessWidget {
     this.onEditPressed,
     this.onViewDebtPressed,
     this.onConfirmSalaryPressed,
+    this.displayTitle,
+    this.walletTransferDirection,
   });
 
   final TransactionDetailArgs transaction;
+  final String? displayTitle;
+  final TransactionDirection? walletTransferDirection;
   final bool canManage;
   final bool isLoading;
   final VoidCallback? onDeletePressed;
@@ -69,17 +72,18 @@ class TransactionDetailContent extends StatelessWidget {
   Widget build(BuildContext context) {
     const double iconSize = 20;
     final data = transaction.transactionDetail;
+    final name = displayTitle ?? data.name;
     final uid = Supabase.instance.client.auth.currentUser!.id;
     final formattedDate = formatedDate(data.date);
     final formattedTime = formatedTime(data.date);
-    final formattedCreatedDateTime = formatedDateTime(
-      data.createdAt ?? data.date,
-    );
-    final direction = _directionService.resolveFromEntity(
-      transaction: data,
-      currentUserId: uid,
-      friends: transaction.friends,
-    );
+    final createdAt = formatedDateTime(data.createdAt ?? data.date);
+    final direction =
+        walletTransferDirection ??
+        _directionService.resolveFromEntity(
+          transaction: data,
+          currentUserId: uid,
+          friends: transaction.friends,
+        );
     final sign = direction.symbol;
 
     final currentUser = FriendsModel(
@@ -118,7 +122,7 @@ class TransactionDetailContent extends StatelessWidget {
               children: [
                 ..._heading(context, direction, data, iconSize),
                 Text(
-                  FormatedText().capitalizeFirstLetter(data.name),
+                  FormatedText().capitalizeFirstLetter(name),
                   style: Theme.of(context).textTheme.headlineLarge,
                   textAlign: TextAlign.center,
                 ),
@@ -178,10 +182,7 @@ class TransactionDetailContent extends StatelessWidget {
               context.l10n.commonCreatedAt,
               style: Theme.of(context).textTheme.bodySmall,
             ),
-            Text(
-              formattedCreatedDateTime,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            Text(createdAt, style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
         const SizedBox(height: AppDimens.paddingLarge),

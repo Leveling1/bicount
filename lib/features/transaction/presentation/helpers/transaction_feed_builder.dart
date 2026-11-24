@@ -1,18 +1,60 @@
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/services/transaction_direction_service.dart';
 import 'package:bicount/core/services/transaction_participant_identity_service.dart';
+import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
+import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:bicount/features/transaction/presentation/models/transaction_feed_item.dart';
+import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/domain/services/wallet_attribution.dart';
 import 'package:flutter/material.dart';
 
-List<TransactionFeedItem> buildTransactionFeed(MainEntity data) {
+List<TransactionFeedItem> buildTransactionFeed(
+  MainEntity data, {
+  BuildContext? context,
+  List<WalletModel> wallets = const [],
+}) {
+  final walletsById = {for (final wallet in wallets) wallet.id: wallet};
   final items = data.transactions
-      .map(TransactionFeedItem.fromTransaction)
+      .map(
+        (transaction) => TransactionFeedItem.fromTransaction(
+          transaction,
+          displayTitle: context == null
+              ? null
+              : _legacyTransferTitle(context, transaction, walletsById),
+        ),
+      )
       .toList();
 
   items.sort((left, right) => right.timelineDate.compareTo(left.timelineDate));
   return items;
+}
+
+const _legacyTransferTitles = {
+  'Transfer between wallets',
+  'Transférer entre portefeuilles',
+};
+
+String? _legacyTransferTitle(
+  BuildContext context,
+  TransactionModel transaction,
+  Map<String, WalletModel> walletsById,
+) {
+  if (transaction.type != TransactionTypes.walletTransferCode ||
+      !_legacyTransferTitles.contains(transaction.name)) {
+    return null;
+  }
+  final principalId = WalletModel.principalId(transaction.uid);
+  final from = walletsById[transaction.senderWalletId ?? principalId];
+  final to = walletsById[transaction.beneficiaryWalletId ?? principalId];
+  if (from == null || to == null || from.id == to.id) {
+    return context.l10n.walletTransfer;
+  }
+  return context.l10n.walletTransferTitle(
+    walletLabel(context, from),
+    walletLabel(context, to),
+  );
 }
 
 List<TransactionFeedItem> filterTransactionFeed({
@@ -29,24 +71,48 @@ List<TransactionFeedItem> filterTransactionFeed({
         friends: data.friends,
       );
 
-  return source.where((item) {
-    if (walletId != null &&
-        !walletSides(
-          data,
-          item.transaction,
-        ).any((side) => side.id == walletId)) {
-      return false;
-    }
-    final matchesSearch =
-        normalizedQuery.isEmpty || item.searchText.contains(normalizedQuery);
-    if (!matchesSearch) {
-      return false;
+  final filtered = <TransactionFeedItem>[];
+  for (final item in source) {
+    if (!item.searchText.contains(normalizedQuery)) continue;
+    final sides = walletId == null
+        ? const <({bool sender, String id})>[]
+        : walletSides(
+            data,
+            item.transaction,
+          ).where((side) => side.id == walletId);
+    if (walletId != null && sides.isEmpty) continue;
+
+    if (item.filterType == TransactionTypes.walletTransferCode) {
+      final sends = sides.any((side) => side.sender);
+      final receives = sides.any((side) => !side.sender);
+      final sign = sends == receives
+          ? TransactionSign.none
+          : sends
+          ? TransactionSign.negative
+          : TransactionSign.positive;
+      final matchesType = switch (selectedIndex) {
+        0 => true,
+        1 => sign == TransactionSign.positive,
+        2 => sign == TransactionSign.negative,
+        _ => false,
+      };
+      if (matchesType) {
+        filtered.add(
+          item.withWalletTransferDirection(
+            TransactionDirection(
+              sign: sign,
+              origin: TransactionOrigin.internal,
+            ),
+          ),
+        );
+      }
+      continue;
     }
 
     if (selectedIndex == 0) {
-      return true;
+      filtered.add(item);
+      continue;
     }
-    if (item.filterType == TransactionTypes.walletTransferCode) return false;
 
     final isSender = currentUserParticipantIds.contains(
       item.transaction.sender,
@@ -55,7 +121,7 @@ List<TransactionFeedItem> filterTransactionFeed({
       item.transaction.beneficiary,
     );
     final isSelfTransfer = isSender && isBeneficiary;
-    return switch (selectedIndex) {
+    final matchesType = switch (selectedIndex) {
       1 =>
         isBeneficiary &&
             (!isSelfTransfer || TransactionTypes.isIncomeType(item.filterType)),
@@ -71,7 +137,9 @@ List<TransactionFeedItem> filterTransactionFeed({
             item.filterType == TransactionTypes.otherRecurringIncomeCode,
       _ => true,
     };
-  }).toList();
+    if (matchesType) filtered.add(item);
+  }
+  return filtered;
 }
 
 Map<String, List<TransactionFeedItem>> groupTransactionFeedByDate(
