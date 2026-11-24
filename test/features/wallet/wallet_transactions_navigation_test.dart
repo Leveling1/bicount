@@ -1,8 +1,11 @@
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/constants/icon_links.dart';
+import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
+import 'package:bicount/core/widgets/wallet/wallet_card_stack.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/home_wallet_transition.dart';
+import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/domain/repositories/wallet_repository.dart';
@@ -18,6 +21,13 @@ import 'package:flutter_test/flutter_test.dart';
 class _WalletRepository implements WalletRepository {
   @override
   Stream<List<WalletModel>> watch() => Stream.value(const [
+    WalletModel(
+      id: 'principal',
+      ownerUid: 'user',
+      name: 'Principal',
+      createdAt: '-',
+      isDefault: true,
+    ),
     WalletModel(id: 'bank', ownerUid: 'user', name: 'Bank', createdAt: '-'),
     WalletModel(id: 'cash', ownerUid: 'user', name: 'Cash', createdAt: '-'),
   ]);
@@ -31,10 +41,31 @@ void main() {
   testWidgets(
     'wallet action opens Transactions directly with its wallet selected',
     (tester) async {
+      await tester.binding.setSurfaceSize(const Size(410, 860));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
       final search = TextEditingController();
+      final tabs = PageController(initialPage: 1);
       addTearDown(search.dispose);
+      addTearDown(tabs.dispose);
       var index = 0;
       String? walletId;
+      final data = MainEntity.fromEmpty();
+      data.transactions.add(
+        TransactionModel(
+          tid: 'hidden',
+          uid: data.user.uid,
+          gtid: 'hidden',
+          name: 'Outside the displayed wallets',
+          type: TransactionTypes.expenseCode,
+          senderId: data.user.uid,
+          senderWalletId: 'not-displayed',
+          beneficiaryId: 'friend',
+          date: '2026-11-23T12:00:00',
+          amount: 10,
+          currency: 'CDF',
+          note: '',
+        ),
+      );
       late StateSetter update;
       await tester.pumpWidget(
         MaterialApp(
@@ -57,14 +88,21 @@ void main() {
                       setState(() => walletId = id),
                   builder: (openWallets) => Scaffold(
                     body: index == 2
-                        ? TransactionScreen(
-                            data: MainEntity.fromEmpty(),
-                            searchController: search,
-                            selectedIndexTransaction: 0,
-                            onTransactionFilterTap: (_) {},
-                            walletId: walletId,
-                            onWalletChanged: (id) =>
-                                setState(() => walletId = id),
+                        ? PageView(
+                            controller: tabs,
+                            children: [
+                              const Text('Analysis'),
+                              TransactionScreen(
+                                data: data,
+                                searchController: search,
+                                selectedIndexTransaction: 0,
+                                onTransactionFilterTap: (_) {},
+                                walletId: walletId,
+                                onWalletChanged: (id) =>
+                                    setState(() => walletId = id),
+                              ),
+                              const Text('Profile'),
+                            ],
                           )
                         : Center(
                             child: TextButton(
@@ -96,11 +134,9 @@ void main() {
       );
       await tester.tap(action);
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 80));
       expect(index, 2);
       expect(walletId, 'bank');
       expect(find.text('Open wallets'), findsNothing);
-      expect(find.byType(WalletScreen), findsOneWidget);
       await tester.pumpAndSettle();
       expect(find.byType(WalletScreen), findsNothing);
       expect(
@@ -115,24 +151,48 @@ void main() {
         tester.widget<WalletCard>(find.byType(WalletCard)).walletId,
         'bank',
       );
+      final l10n = AppLocalizations.of(
+        tester.element(find.byType(WalletCard)),
+      )!;
+      expect(find.text(l10n.walletAll), findsNothing);
+      expect(find.text(l10n.walletNoMovements), findsNothing);
+      expect(
+        tester
+            .widget<Text>(find.text(l10n.transactionNoTransactionsFound))
+            .textAlign,
+        TextAlign.center,
+      );
 
       final screen = tester.element(find.byType(TransactionScreen));
+      String? selectedWalletId() =>
+          tester.widget<WalletCard>(find.byType(WalletCard)).walletId;
       update(() => walletId = 'cash');
       await tester.pumpAndSettle();
       expect(tester.element(find.byType(TransactionScreen)), same(screen));
-      expect(
-        tester.widget<WalletCard>(find.byType(WalletCard)).walletId,
-        'cash',
-      );
+      expect(selectedWalletId(), 'cash');
       await tester.tap(find.byType(PopupMenuButton<int>));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Bank').hitTestable());
       await tester.pumpAndSettle();
       expect(walletId, 'bank');
-      expect(
-        tester.widget<WalletCard>(find.byType(WalletCard)).walletId,
-        'bank',
-      );
+      expect(selectedWalletId(), 'bank');
+
+      update(() => walletId = null);
+      await tester.pumpAndSettle();
+      final stack = find.byType(WalletCardStack);
+      expect(selectedWalletId(), 'principal');
+      for (final (direction, expected) in [
+        (1, 'cash'), // First to last, then forward across the same boundary.
+        (-1, 'principal'),
+        (-1, 'bank'),
+        (1, 'principal'),
+      ]) {
+        await tester.fling(stack, Offset(direction * 185, 0), 700);
+        await tester.pumpAndSettle();
+        expect(tabs.page, 1);
+        expect(walletId, expected);
+        expect(selectedWalletId(), expected);
+      }
       expect(tester.takeException(), isNull);
     },
     skip: !BackendEnvironment.isLocalPreproduction,

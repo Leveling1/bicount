@@ -1,6 +1,8 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/features/wallet/data/models/wallet_model.dart';
+import 'package:bicount/features/wallet/presentation/bloc/wallet_bloc.dart';
 import 'package:bicount/features/wallet/presentation/widgets/wallet_card.dart';
 import 'package:bicount/core/services/open_transaction_sheet.dart';
 import 'package:bicount/core/widgets/bicount_reveal.dart';
@@ -14,6 +16,7 @@ import 'package:bicount/features/transaction/presentation/widgets/transaction_fe
 import 'package:bicount/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderSliver, SliverConstraints;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 part 'transaction_screen_scroll.dart';
@@ -144,10 +147,16 @@ class _TransactionScreenState extends State<TransactionScreen> {
   Widget build(BuildContext context) {
     final feed = buildTransactionFeed(widget.data);
     _maybeOpenFocusedTransaction(feed);
+    final wallets = BackendEnvironment.isLocalPreproduction
+        ? context.select((WalletBloc bloc) => bloc.state.wallets)
+        : const <WalletModel>[];
+    final walletId = BackendEnvironment.isLocalPreproduction
+        ? _resolveWallet(wallets)
+        : null;
     final filteredFeed = filterTransactionFeed(
       data: widget.data,
       source: feed,
-      walletId: _walletId,
+      walletId: walletId,
       query: widget.showSearchBar ? widget.searchController.text : '',
       selectedIndex: widget.selectedIndexTransaction,
     );
@@ -157,6 +166,19 @@ class _TransactionScreenState extends State<TransactionScreen> {
       context,
       hasTransactions: feed.isNotEmpty,
       groups: grouped,
+      wallets: wallets,
+      walletId: walletId,
     );
+  }
+
+  String _resolveWallet(List<WalletModel> wallets) {
+    final requested = _walletId;
+    if (requested != null &&
+        (wallets.isEmpty || wallets.any((wallet) => wallet.id == requested))) {
+      return requested;
+    }
+    return wallets.where((wallet) => wallet.isDefault).firstOrNull?.id ??
+        wallets.firstOrNull?.id ??
+        WalletModel.principalId(widget.data.user.uid);
   }
 }

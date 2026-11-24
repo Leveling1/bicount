@@ -4,6 +4,8 @@ import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/core/widgets/wallet/wallet_card_face.dart';
 import 'package:flutter/material.dart';
 
+part 'wallet_card_stack_motion.dart';
+
 class WalletCardStack extends StatefulWidget {
   const WalletCardStack({
     super.key,
@@ -11,12 +13,14 @@ class WalletCardStack extends StatefulWidget {
     required this.selectedIndex,
     required this.onChanged,
     this.balanceBuilder,
+    this.loop = false,
   });
 
   final List<WalletModel?> wallets;
   final int selectedIndex;
   final ValueChanged<int> onChanged;
   final Widget Function(WalletModel?)? balanceBuilder;
+  final bool loop;
 
   @override
   State<WalletCardStack> createState() => _WalletCardStackState();
@@ -24,11 +28,17 @@ class WalletCardStack extends StatefulWidget {
 
 class _WalletCardStackState extends State<WalletCardStack> {
   static const _depth = 8.0;
+  int get _count => widget.wallets.length;
+  bool get _loops => widget.loop && _count > 1;
+  int get _pageCount => _loops ? _count * 3 : _count;
+  int get _initialPage => widget.selectedIndex + (_loops ? _count : 0);
+  int _walletIndex(int page) => page % _count;
+
   late final _pages = PageController(
-    initialPage: widget.selectedIndex,
+    initialPage: _initialPage,
     keepPage: false,
   );
-  late int _restingIndex = widget.selectedIndex;
+  late int _restingPage = _initialPage;
 
   @override
   void didUpdateWidget(WalletCardStack oldWidget) {
@@ -36,20 +46,48 @@ class _WalletCardStackState extends State<WalletCardStack> {
     if (oldWidget.selectedIndex == widget.selectedIndex) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_pages.hasClients) return;
-      final index = widget.selectedIndex;
-      if (_pages.page?.round() == index) return;
+      final page = _pages.page ?? _restingPage.toDouble();
+      final current = page.round();
+      var delta = widget.selectedIndex - _walletIndex(current);
+      if (_loops && delta.abs() > _count / 2) {
+        delta += delta.isNegative ? _count : -_count;
+      }
+      final target = (current + delta).clamp(0, _pageCount - 1);
+      if ((page - target).abs() < .001) return;
       if (MediaQuery.disableAnimationsOf(context) ||
-          ((_pages.page ?? index) - index).abs() > 1) {
-        _pages.jumpToPage(index);
-        setState(() => _restingIndex = index);
+          (page - target).abs() > 1) {
+        _pages.jumpToPage(target);
       } else {
         _pages.animateToPage(
-          index,
+          target,
           duration: const Duration(milliseconds: 260),
           curve: Curves.easeOutCubic,
         );
       }
     });
+  }
+
+  bool _onScrollEnd(ScrollEndNotification notification) {
+    if (notification.depth != 0) return false;
+    final page = _pages.page?.round();
+    if (page == null || page == _restingPage) return false;
+    final index = _walletIndex(page);
+    setState(() => _restingPage = page);
+    if (index != widget.selectedIndex) widget.onChanged(index);
+    if (_loops && (page < _count || page >= _count * 2)) {
+      // Move back to the middle copy while keeping the same wallet visible.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted ||
+            !_pages.hasClients ||
+            _pages.position.isScrollingNotifier.value ||
+            _pages.page?.round() != page) {
+          return;
+        }
+        setState(() => _restingPage = _count + index);
+        _pages.jumpToPage(_restingPage);
+      });
+    }
+    return false;
   }
 
   @override
@@ -83,76 +121,23 @@ class _WalletCardStackState extends State<WalletCardStack> {
                 builder: (context, _) {
                   final page =
                       _pages.hasClients && _pages.position.hasContentDimensions
-                      ? _pages.page ?? widget.selectedIndex.toDouble()
-                      : widget.selectedIndex.toDouble();
-                  final lastIndex = widget.wallets.length - 1;
-                  final current = _restingIndex.clamp(0, lastIndex);
-                  final offset = (page - current).clamp(-1.0, 1.0);
-                  final next = (current + offset.sign.toInt()).clamp(
-                    0,
-                    lastIndex,
-                  );
-                  final progress = offset.abs();
-                  final rear = [
-                    for (var step = 1; step < widget.wallets.length; step++)
-                      (current + step) % widget.wallets.length,
-                  ];
-                  if (next != current) {
-                    rear.remove(next);
-                    rear.insert(0, next);
-                  }
-
-                  return Stack(
-                    alignment: Alignment.bottomCenter,
-                    clipBehavior: Clip.none,
-                    children: [
-                      for (var layer = layers; layer >= 1; layer--)
-                        Transform.translate(
-                          offset: Offset(
-                            0,
-                            -_depth * (layer - (layer == 1 ? progress : 0)),
-                          ),
-                          child: Transform.scale(
-                            scale:
-                                1 -
-                                .035 * (layer - (layer == 1 ? progress : 0)),
-                            alignment: Alignment.topCenter,
-                            child: _face(
-                              rear[layer - 1],
-                              height,
-                              foreground: layer == 1 && progress > 0,
-                            ),
-                          ),
-                        ),
-                      if (progress < 1)
-                        Transform.translate(
-                          offset: Offset(-offset * width * direction, 0),
-                          child: Transform.rotate(
-                            angle: reduceMotion ? 0 : -offset * direction * .12,
-                            child: Opacity(
-                              opacity: ((1 - progress) / .2).clamp(0.0, 1.0),
-                              child: _face(current, height, foreground: true),
-                            ),
-                          ),
-                        ),
-                    ],
+                      ? _pages.page ?? _restingPage.toDouble()
+                      : _restingPage.toDouble();
+                  return _buildCards(
+                    page,
+                    width,
+                    height,
+                    layers,
+                    direction,
+                    reduceMotion,
                   );
                 },
               ),
               NotificationListener<ScrollEndNotification>(
-                onNotification: (notification) {
-                  final index = _pages.page?.round();
-                  if (index != null && index != _restingIndex) {
-                    setState(() => _restingIndex = index);
-                  }
-                  return false;
-                },
+                onNotification: _onScrollEnd,
                 child: PageView.builder(
                   controller: _pages,
-                  itemCount: widget.wallets.length,
-                  onPageChanged: (index) {
-                    if (index != widget.selectedIndex) widget.onChanged(index);
-                  },
+                  itemCount: _pageCount,
                   itemBuilder: (_, _) => const SizedBox.expand(),
                 ),
               ),
@@ -160,18 +145,6 @@ class _WalletCardStackState extends State<WalletCardStack> {
           ),
         );
       },
-    );
-  }
-
-  Widget _face(int index, double height, {required bool foreground}) {
-    return SizedBox(
-      height: height,
-      width: double.infinity,
-      child: WalletCardFace(
-        wallet: widget.wallets[index],
-        balance: widget.balanceBuilder?.call(widget.wallets[index]),
-        showDetails: foreground,
-      ),
     );
   }
 }

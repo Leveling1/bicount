@@ -5,6 +5,8 @@ extension on _TransactionScreenState {
     BuildContext context, {
     required bool hasTransactions,
     required Map<String, List<TransactionFeedItem>> groups,
+    required List<WalletModel> wallets,
+    required String? walletId,
   }) {
     return CustomScrollView(
       key: const PageStorageKey<String>('transaction-feed'),
@@ -18,8 +20,8 @@ extension on _TransactionScreenState {
           SliverToBoxAdapter(
             key: _walletHeaderKey,
             child: WalletCard(
-              data: widget.data,
-              walletId: _walletId,
+              wallets: wallets,
+              walletId: walletId,
               onChanged: _selectWallet,
             ),
           ),
@@ -102,7 +104,10 @@ extension on _TransactionScreenState {
 
   Widget _emptyState(BuildContext context, {required bool hasTransactions}) {
     if (hasTransactions) {
-      return Text(context.l10n.transactionNoTransactionsFound);
+      return Text(
+        context.l10n.transactionNoTransactionsFound,
+        textAlign: TextAlign.center,
+      );
     }
     return BicountReveal(
       child: EmptyTransactionStateCard(
