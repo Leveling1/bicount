@@ -3416,13 +3416,13 @@ abstract class AppLocalizations {
   /// No description provided for @salaryHomeCardAttention.
   ///
   /// In en, this message translates to:
-  /// **'Pending amount: {amount}'**
+  /// **'Pending amount'**
   String get salaryHomeCardAttention;
 
   /// No description provided for @salaryHomeCardNext.
   ///
   /// In en, this message translates to:
-  /// **'Next deposit scheduled for {date}'**
+  /// **'Next deposit scheduled'**
   String get salaryHomeCardNext;
 
   /// No description provided for @salaryHomeCardCount.
@@ -4084,6 +4084,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Color'**
   String get walletColor;
+
+  /// No description provided for @walletColorSilver.
+  ///
+  /// In en, this message translates to:
+  /// **'Silver'**
+  String get walletColorSilver;
+
+  /// No description provided for @walletColorBlue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get walletColorBlue;
+
+  /// No description provided for @walletColorTeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Teal'**
+  String get walletColorTeal;
+
+  /// No description provided for @walletColorLavender.
+  ///
+  /// In en, this message translates to:
+  /// **'Lavender'**
+  String get walletColorLavender;
+
+  /// No description provided for @walletColorGold.
+  ///
+  /// In en, this message translates to:
+  /// **'Gold'**
+  String get walletColorGold;
+
+  /// No description provided for @walletMobileOperator.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile Money operator'**
+  String get walletMobileOperator;
+
+  /// No description provided for @walletNoProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get walletNoProvider;
 
   /// No description provided for @walletIcon.
   ///

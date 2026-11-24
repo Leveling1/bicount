@@ -1364,6 +1364,7 @@ const _walletColumns = {
   'name': 'name',
   'kind': 'kind',
   'card_network': 'card_network',
+  'mobile_operator': 'mobile_operator',
   'icon': 'icon',
   'color': 'color',
   'is_default': 'is_default',

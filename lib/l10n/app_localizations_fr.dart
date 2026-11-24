@@ -1738,7 +1738,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get salaryHomeCardTitle => 'Gestion des salaires';
 
   @override
-  String get salaryHomeCardAttention =>'Montant en attente';
+  String get salaryHomeCardAttention => 'Montant en attente';
 
   @override
   String get salaryHomeCardNext => 'Prochain versement';
@@ -2076,6 +2076,27 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get walletColor => 'Couleur';
+
+  @override
+  String get walletColorSilver => 'Argent';
+
+  @override
+  String get walletColorBlue => 'Bleu';
+
+  @override
+  String get walletColorTeal => 'Vert canard';
+
+  @override
+  String get walletColorLavender => 'Lavande';
+
+  @override
+  String get walletColorGold => 'Or';
+
+  @override
+  String get walletMobileOperator => 'Opérateur Mobile Money';
+
+  @override
+  String get walletNoProvider => 'Aucun';
 
   @override
   String get walletIcon => 'Icône';

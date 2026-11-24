@@ -40,13 +40,15 @@ class _WalletRepository implements WalletRepository {
 
 Future<void> _verifyWalletEditorSheets(WidgetTester tester) async {
   await tester.tap(find.text('New wallet').hitTestable());
-  await tester.pumpAndSettle();
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 400));
   expect(find.byType(BottomSheet), findsOneWidget);
   expect(find.byType(AlertDialog), findsNothing);
   final save = find.text('Save');
   await tester.ensureVisible(save);
   await tester.tap(save);
-  await tester.pumpAndSettle();
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 400));
   expect(
     find.text(
       AppLocalizations.of(tester.element(save))!.validationFieldRequired,
@@ -63,7 +65,8 @@ Future<void> _verifyWalletEditorSheets(WidgetTester tester) async {
   );
   await tester.ensureVisible(edit);
   await tester.tap(edit);
-  await tester.pumpAndSettle();
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 400));
   final sheet = find.byType(BottomSheet);
   expect(sheet, findsOneWidget);
   expect(find.byType(AlertDialog), findsNothing);
@@ -73,7 +76,7 @@ Future<void> _verifyWalletEditorSheets(WidgetTester tester) async {
   );
   expect(
     find.descendant(of: sheet, matching: find.text('Bank')),
-    findsOneWidget,
+    findsNWidgets(2),
   );
   expect(
     find.descendant(of: sheet, matching: find.text('Archive wallet')),

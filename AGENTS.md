@@ -1702,3 +1702,11 @@ Carried forward deliberately, not oversights:
 - A wallet's transaction action opens the main Transaction tab with that wallet
   selected, All types active, and any old search cleared. Use the transaction SVG;
   there is no separate wallet-history page.
+- Creation and editing show a floating preview above the name field, using the
+  shared card face. Name and appearance changes update a temporary draft only;
+  saving remains explicit. The preview stays face-on and loops a subtle 4 dp
+  vertical translation over 12 seconds, without a separate ground shadow. Pause
+  it when animations are disabled or the editor's ticker mode is inactive.
+- In the wallet editor sheet, the title and preview stay above the scrollable
+  fields and actions. Disable the shared sheet's outer scroll for this editor;
+  its header adapts to the available height when the keyboard opens.

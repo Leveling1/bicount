@@ -158,6 +158,17 @@ le portefeuille Principal et les références sur les trois tables d’opératio
 Le RPC de reclassement contrôle le côté du participant. La seconde lance les
 échéances automatiques sur la base locale et reprend les portefeuilles du modèle.
 
+La migration `wallet_mobile_operator` ajoute `wallets.mobile_operator`, un
+code facultatif réservé au type Mobile Money. Les portefeuilles existants
+gardent leur type et n'ont pas d'opérateur par défaut. La colonne est aussi
+ajoutée aux caches SQLite existants à leur ouverture.
+
+Logos Mobile Money utilisés pour identifier les opérateurs : [M-Pesa](https://commons.wikimedia.org/wiki/File:M-PESA_LOGO-01.svg),
+[Orange Money](https://commons.wikimedia.org/wiki/File:Logo_Orange_Money.svg),
+[Airtel Money](https://www.casinobankingmethods.com/wp-content/uploads/2021/02/Airtel-Money.svg)
+et [Afrimoney](https://www.africell.ao/wp-content/uploads/2023/05/TERMOS-E-CONDICOES-DE-USO-DO-SERVICO-AFRIMONEY-CLIENTE-1.pdf)
+(vectorisé à partir du logo du document officiel).
+
 SQLite conserve une ligne par portefeuille et devise. Les liens de contacts
 déclenchent la mise à jour des mouvements concernés. Les transferts internes
 saisis dans l’application utilisent la même devise des deux côtés.

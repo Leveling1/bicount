@@ -7,6 +7,7 @@ Future<T?> showCustomBottomSheet<T>({
   required Widget child,
   Color? color,
   bool scrollEnabled = true,
+  double horizontalPadding = 25,
   required double minHeight, // kept for compatibility, not used
 }) {
   final bgColor = color ?? Theme.of(context).scaffoldBackgroundColor;
@@ -32,8 +33,8 @@ Future<T?> showCustomBottomSheet<T>({
         child: Padding(
           padding: EdgeInsets.only(
             top: 15,
-            left: 25,
-            right: 25,
+            left: horizontalPadding,
+            right: horizontalPadding,
             bottom: MediaQuery.of(ctx).viewInsets.bottom,
           ),
           child: LayoutBuilder(

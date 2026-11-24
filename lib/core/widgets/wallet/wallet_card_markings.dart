@@ -10,17 +10,24 @@ class _WalletMarkings extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final wallet = this.wallet;
-    final kind = switch (wallet?.kind) {
-      WalletKind.bankAccount => l10n.walletBank,
-      WalletKind.cash => l10n.walletCash,
-      WalletKind.card => l10n.walletCard,
-      WalletKind.mobileMoney => l10n.walletMobile,
-      WalletKind.other => l10n.walletOther,
-      null => l10n.walletAll,
+    final kind = wallet?.kind;
+    final kindLabel = kind == null
+        ? l10n.walletAll
+        : walletKindLabel(context, kind);
+    final operator = wallet?.mobileOperator;
+    final logo = switch (kind) {
+      WalletKind.card => walletNetworkLogo(wallet?.cardNetwork),
+      WalletKind.mobileMoney when operator != null => walletOperatorLogo(
+        operator,
+      ),
+      _ => null,
     };
-    final network = switch (wallet?.cardNetwork) {
-      WalletCardNetwork.visa => 'VISA',
-      WalletCardNetwork.mastercard => 'mastercard',
+    final logoLabel = switch (kind) {
+      WalletKind.mobileMoney when operator != null => walletOperatorLabel(
+        operator,
+      ),
+      WalletKind.card =>
+        wallet?.cardNetwork == WalletCardNetwork.visa ? 'Visa' : 'Mastercard',
       _ => null,
     };
     final iconColor = DefaultTextStyle.of(context).style.color;
@@ -32,7 +39,7 @@ class _WalletMarkings extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                kind.toUpperCase(),
+                kindLabel.toUpperCase(),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -41,17 +48,15 @@ class _WalletMarkings extends StatelessWidget {
                 ),
               ),
             ),
-            if (wallet?.kind == WalletKind.card)
-              Transform.rotate(
-                angle: -math.pi / 2,
-                child: Icon(
-                  Icons.contactless_outlined,
-                  size: 24,
-                  color: iconColor,
-                ),
-              )
-            else
-              Icon(walletIcons[wallet?.icon ?? 0], size: 22, color: iconColor),
+            SvgPicture.asset(
+              walletKindIcon(kind ?? WalletKind.other),
+              width: 22,
+              height: 22,
+              colorFilter: iconColor == null
+                  ? null
+                  : ColorFilter.mode(iconColor, BlendMode.srcIn),
+              excludeFromSemantics: true,
+            ),
           ],
         ),
         if (balance != null)
@@ -75,6 +80,7 @@ class _WalletMarkings extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
+              flex: 2,
               child: Text(
                 wallet == null ? l10n.appName : walletLabel(context, wallet),
                 maxLines: 1,
@@ -85,19 +91,20 @@ class _WalletMarkings extends StatelessWidget {
                 ),
               ),
             ),
-            if (network != null)
-              Text(
-                network,
-                style: TextStyle(
-                  fontSize: network == 'VISA' ? 25 : 17,
-                  height: 1,
-                  fontStyle: network == 'VISA'
-                      ? FontStyle.italic
-                      : FontStyle.normal,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.7,
+            if (logo != null) ...[
+              const SizedBox(width: 8),
+              Expanded(
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: SvgPicture.asset(
+                    logo,
+                    width: 62,
+                    height: 24,
+                    semanticsLabel: logoLabel,
+                  ),
                 ),
               ),
+            ],
           ],
         ),
       ],

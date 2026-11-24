@@ -23,6 +23,8 @@ class _WalletScreenState extends State<WalletScreen> {
       showCustomBottomSheet<void>(
         context: context,
         minHeight: 0.95,
+        scrollEnabled: false,
+        horizontalPadding: 0,
         child: WalletEditor(wallet: wallet),
       );
 

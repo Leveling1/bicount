@@ -2,9 +2,33 @@ import 'package:bicount/core/offline/offline_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 
-enum WalletKind { bankAccount, cash, card, mobileMoney, other }
+enum WalletKind {
+  bankAccount(1),
+  cash(2),
+  card(3),
+  mobileMoney(4),
+  other(0);
+
+  const WalletKind(this.legacyIcon);
+
+  final int legacyIcon;
+}
 
 enum WalletCardNetwork { visa, mastercard, other }
+
+enum WalletMobileOperator {
+  mpesa('mpesa'),
+  orangeMoney('orange_money'),
+  airtelMoney('airtel_money'),
+  afrimoney('afrimoney');
+
+  const WalletMobileOperator(this.code);
+
+  final String code;
+
+  static WalletMobileOperator? fromCode(Object? code) =>
+      values.where((operator) => operator.code == code).firstOrNull;
+}
 
 class WalletModel extends OfflineModel with Equatable {
   const WalletModel({
@@ -14,6 +38,7 @@ class WalletModel extends OfflineModel with Equatable {
     required this.createdAt,
     this.kind = WalletKind.other,
     this.cardNetwork,
+    this.mobileOperator,
     this.icon = 0,
     this.color = 0,
     this.isDefault = false,
@@ -25,6 +50,7 @@ class WalletModel extends OfflineModel with Equatable {
   final String name;
   final WalletKind kind;
   final WalletCardNetwork? cardNetwork;
+  final WalletMobileOperator? mobileOperator;
   final int icon;
   final int color;
   final bool isDefault;
@@ -42,6 +68,7 @@ class WalletModel extends OfflineModel with Equatable {
     cardNetwork: row['card_network'] == null
         ? null
         : WalletCardNetwork.values[(row['card_network'] as num).toInt()],
+    mobileOperator: WalletMobileOperator.fromCode(row['mobile_operator']),
     icon: (row['icon'] as num).toInt(),
     color: (row['color'] as num).toInt(),
     isDefault: row['is_default'] == true || row['is_default'] == 1,
@@ -55,6 +82,7 @@ class WalletModel extends OfflineModel with Equatable {
     'name': name,
     'kind': kind.index,
     'card_network': cardNetwork?.index,
+    'mobile_operator': mobileOperator?.code,
     'icon': icon,
     'color': color,
     'is_default': local ? (isDefault ? 1 : 0) : isDefault,
@@ -69,6 +97,7 @@ class WalletModel extends OfflineModel with Equatable {
     name,
     kind,
     cardNetwork,
+    mobileOperator,
     icon,
     color,
     isDefault,

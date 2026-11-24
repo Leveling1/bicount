@@ -2078,6 +2078,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get walletColor => 'Color';
 
   @override
+  String get walletColorSilver => 'Silver';
+
+  @override
+  String get walletColorBlue => 'Blue';
+
+  @override
+  String get walletColorTeal => 'Teal';
+
+  @override
+  String get walletColorLavender => 'Lavender';
+
+  @override
+  String get walletColorGold => 'Gold';
+
+  @override
+  String get walletMobileOperator => 'Mobile Money operator';
+
+  @override
+  String get walletNoProvider => 'None';
+
+  @override
   String get walletIcon => 'Icon';
 
   @override

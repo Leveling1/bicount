@@ -58,7 +58,7 @@ class WalletRepositoryImpl implements WalletRepository {
     required String name,
     required WalletKind kind,
     WalletCardNetwork? network,
-    required int icon,
+    WalletMobileOperator? mobileOperator,
     required int color,
     bool archived = false,
   }) async {
@@ -76,7 +76,8 @@ class WalletRepositoryImpl implements WalletRepository {
         name: name.trim(),
         kind: kind,
         cardNetwork: kind == WalletKind.card ? network : null,
-        icon: icon,
+        mobileOperator: kind == WalletKind.mobileMoney ? mobileOperator : null,
+        icon: kind.legacyIcon,
         color: color,
         isDefault: existing?.isDefault ?? false,
         createdAt:

@@ -17,7 +17,7 @@ abstract interface class WalletRepository {
     required String name,
     required WalletKind kind,
     WalletCardNetwork? network,
-    required int icon,
+    WalletMobileOperator? mobileOperator,
     required int color,
     bool archived = false,
   });

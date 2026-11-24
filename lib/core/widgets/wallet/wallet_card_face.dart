@@ -4,6 +4,7 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 part 'wallet_brushed_finish.dart';
 part 'wallet_card_markings.dart';
@@ -46,19 +47,7 @@ class WalletCardFace extends StatelessWidget {
       child: ClipRRect(
         borderRadius: radius,
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              stops: const [0, .38, .67, 1],
-              colors: [
-                Color.lerp(metal, Colors.white, .28)!,
-                metal,
-                Color.lerp(metal, Colors.white, .14)!,
-                Color.lerp(metal, const Color(0xFF514A41), .14)!,
-              ],
-            ),
-          ),
+          decoration: BoxDecoration(gradient: walletFinishGradient(metal)),
           child: CustomPaint(
             painter: const _BrushedFinish(),
             child: onTap == null
