@@ -1,4 +1,5 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/dropdown_chevron_theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomDropdownMenu extends StatefulWidget {
@@ -32,6 +33,7 @@ class _CustomDropdownMenuState extends State<CustomDropdownMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final chevron = DropdownChevronTheme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -39,6 +41,8 @@ class _CustomDropdownMenuState extends State<CustomDropdownMenu> {
         DropdownMenuFormField<int>(
           width: double.infinity,
           hintText: widget.hintText,
+          trailingIcon: chevron.icon(),
+          selectedTrailingIcon: chevron.icon(expanded: true),
           dropdownMenuEntries: widget.menuEntries,
           initialSelection: _selectedValue,
           onSelected: (int? newValue) {

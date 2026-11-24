@@ -147,12 +147,17 @@ class _TransactionScreenState extends State<TransactionScreen> {
   Widget build(BuildContext context) {
     final feed = buildTransactionFeed(widget.data);
     _maybeOpenFocusedTransaction(feed);
-    final wallets = BackendEnvironment.isLocalPreproduction
-        ? context.select((WalletBloc bloc) => bloc.state.wallets)
-        : const <WalletModel>[];
-    final walletId = BackendEnvironment.isLocalPreproduction
-        ? _resolveWallet(wallets)
-        : null;
+    final (wallets, walletId) = BackendEnvironment.isLocalPreproduction
+        ? context.select(
+            (WalletBloc bloc) => (
+              bloc.state.wallets,
+              bloc.state.resolveTransactionWalletId(
+                widget.data.user.uid,
+                _walletId,
+              ),
+            ),
+          )
+        : (const <WalletModel>[], null);
     final filteredFeed = filterTransactionFeed(
       data: widget.data,
       source: feed,
@@ -169,16 +174,5 @@ class _TransactionScreenState extends State<TransactionScreen> {
       wallets: wallets,
       walletId: walletId,
     );
-  }
-
-  String _resolveWallet(List<WalletModel> wallets) {
-    final requested = _walletId;
-    if (requested != null &&
-        (wallets.isEmpty || wallets.any((wallet) => wallet.id == requested))) {
-      return requested;
-    }
-    return wallets.where((wallet) => wallet.isDefault).firstOrNull?.id ??
-        wallets.firstOrNull?.id ??
-        WalletModel.principalId(widget.data.user.uid);
   }
 }

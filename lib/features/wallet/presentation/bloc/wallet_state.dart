@@ -15,6 +15,16 @@ final class WalletState {
   final List<WalletBalance>? balances;
   final CurrencyConfigEntity currencyConfig;
 
+  String resolveTransactionWalletId(String ownerUid, String? requested) {
+    if (requested != null &&
+        (wallets.isEmpty || wallets.any((wallet) => wallet.id == requested))) {
+      return requested;
+    }
+    return wallets.where((wallet) => wallet.isDefault).firstOrNull?.id ??
+        wallets.firstOrNull?.id ??
+        WalletModel.principalId(ownerUid);
+  }
+
   double? totalFor(String? walletId) => balances == null
       ? null
       : walletBalanceTotal(balances!, currencyConfig, walletId: walletId);

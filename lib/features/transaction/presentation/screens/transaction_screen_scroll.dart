@@ -42,7 +42,11 @@ extension on _TransactionScreenState {
                 TransactionEmptyResultsSliver(
                   precedingScrollExtent:
                       headerConstraints.precedingScrollExtent,
-                  child: _emptyState(context, hasTransactions: hasTransactions),
+                  child: _emptyState(
+                    context,
+                    hasTransactions: hasTransactions,
+                    walletId: walletId,
+                  ),
                 )
               else ...[
                 TransactionFeedList(groups: groups, data: widget.data),
@@ -102,7 +106,11 @@ extension on _TransactionScreenState {
     );
   }
 
-  Widget _emptyState(BuildContext context, {required bool hasTransactions}) {
+  Widget _emptyState(
+    BuildContext context, {
+    required bool hasTransactions,
+    required String? walletId,
+  }) {
     if (hasTransactions) {
       return Text(
         context.l10n.transactionNoTransactionsFound,
@@ -111,7 +119,11 @@ extension on _TransactionScreenState {
     }
     return BicountReveal(
       child: EmptyTransactionStateCard(
-        onPressed: () => openTransactionSheet(context, widget.data),
+        onPressed: () => openTransactionSheet(
+          context,
+          widget.data,
+          prefilledExpenseWalletId: walletId,
+        ),
       ),
     );
   }

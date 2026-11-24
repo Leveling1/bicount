@@ -1,15 +1,13 @@
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
-import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_row.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/data/repositories/wallet_repository_impl.dart';
 import 'package:bicount/features/wallet/domain/services/wallet_attribution.dart';
+import 'transaction_wallet_detail_row.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TransactionWalletDetails extends StatefulWidget {
@@ -59,7 +57,7 @@ class _TransactionWalletDetailsState extends State<TransactionWalletDetails> {
             for (final side in sides)
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: _WalletDetailRow(
+                child: TransactionWalletDetailRow(
                   title: sides.length == 1
                       ? context.l10n.walletPicker
                       : side.sender
@@ -94,70 +92,5 @@ class _TransactionWalletDetailsState extends State<TransactionWalletDetails> {
         ).showSnackBar(SnackBar(content: Text(context.l10n.walletError)));
       }
     }
-  }
-}
-
-class _WalletDetailRow extends StatelessWidget {
-  const _WalletDetailRow({
-    required this.title,
-    required this.wallet,
-    required this.options,
-    required this.onChanged,
-  });
-
-  final String title;
-  final WalletModel? wallet;
-  final List<WalletModel> options;
-  final ValueChanged<String>? onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final current = wallet;
-    final change = onChanged;
-    final row = TransactionDetailRow(
-      title: title,
-      content: current == null
-          ? context.l10n.walletPrincipal
-          : walletLabel(context, current),
-      contentIcon: change == null ? null : Icons.expand_more,
-      capitalizeContent: false,
-    );
-    if (change == null) return row;
-
-    return MenuAnchor(
-      alignmentOffset: const Offset(0, 4),
-      menuChildren: [
-        for (final option in options)
-          MenuItemButton(
-            onPressed: option.id == current?.id
-                ? null
-                : () => change(option.id),
-            child: Text(walletLabel(context, option)),
-          ),
-      ],
-      builder: (context, menu, child) {
-        void toggle() => menu.isOpen ? menu.close() : menu.open();
-        return Semantics(
-          button: true,
-          child: FocusableActionDetector(
-            shortcuts: const {
-              SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-              SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-            },
-            actions: {
-              ActivateIntent: CallbackAction<ActivateIntent>(
-                onInvoke: (_) => toggle(),
-              ),
-            },
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: toggle,
-              child: child,
-            ),
-          ),
-        );
-      },
-      child: row,
-    );
   }
 }

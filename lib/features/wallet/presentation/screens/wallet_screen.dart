@@ -53,9 +53,13 @@ class _WalletScreenState extends State<WalletScreen> {
               return IconButton(
                 tooltip: l10n.walletTransfer,
                 icon: const Icon(Icons.swap_horiz, size: 20),
-                onPressed: () => showDialog<void>(
+                onPressed: () => showCustomBottomSheet<void>(
                   context: context,
-                  builder: (_) => WalletTransferForm(wallets: active),
+                  minHeight: 0.95,
+                  child: WalletTransferForm(
+                    wallets: active,
+                    repository: context.read<WalletBloc>().repository,
+                  ),
                 ),
               );
             },

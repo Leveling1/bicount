@@ -1,6 +1,7 @@
 import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/dropdown_chevron_theme.dart';
 import 'package:bicount/features/currency/domain/entities/app_currency_entity.dart';
 import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:flutter/material.dart';
@@ -272,6 +273,7 @@ class CurrencyField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chevron = DropdownChevronTheme.of(context);
     return BlocBuilder<CurrencyCubit, CurrencyState>(
       builder: (context, state) {
         final currencies = state.config.sortedCurrencies;
@@ -283,6 +285,8 @@ class CurrencyField extends StatelessWidget {
 
         return _CurrencyChipShell(
           child: DropdownMenuFormField<String>(
+            trailingIcon: chevron.icon(),
+            selectedTrailingIcon: chevron.icon(expanded: true),
             enabled: isEnabled,
             controller: controller,
             initialSelection: currencies.any((c) => c.code == selectedCode)

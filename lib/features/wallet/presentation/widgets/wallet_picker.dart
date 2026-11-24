@@ -1,6 +1,7 @@
 import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
+import 'package:bicount/core/themes/dropdown_chevron_theme.dart';
 import 'package:bicount/core/widgets/custom_dropdown_menu.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/data/repositories/wallet_repository_impl.dart';
@@ -88,6 +89,7 @@ class WalletDropdown extends StatelessWidget {
         child: DropdownButton<String>(
           isExpanded: true,
           isDense: true,
+          icon: DropdownChevronTheme.of(context).icon(),
           value: selected,
           hint: showPrincipalSelection
               ? Text(

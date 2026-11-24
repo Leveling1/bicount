@@ -1,4 +1,4 @@
-import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
+import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
@@ -7,8 +7,8 @@ import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/salary/domain/entities/salary_occurrence_entity.dart';
 import 'package:bicount/features/salary/presentation/widgets/salary_status_badge.dart';
+import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../core/widgets/custom_button.dart';
 
@@ -147,13 +147,6 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: AppDimens.spacingSmall),
-            WalletPicker(
-              label: context.l10n.walletTo,
-              value:
-                  _walletId ??
-                  widget.occurrence.recurringTransfert.beneficiaryWalletId,
-              onChanged: (id) => setState(() => _walletId = id),
-            ),
             SimpleAmountField(
               amount: _amountController,
               currency: _currencyController,
@@ -166,6 +159,17 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
               context.l10n.transactionSetExactAmountReceived,
               style: Theme.of(context).textTheme.bodySmall,
             ),
+            if (BackendEnvironment.isLocalPreproduction) ...[
+              AppDimens.spacerMedium,
+              WalletPicker(
+                label: context.l10n.walletTo,
+                useSharedMenu: true,
+                value:
+                    _walletId ??
+                    occurrence.recurringTransfert.beneficiaryWalletId,
+                onChanged: (id) => setState(() => _walletId = id),
+              ),
+            ],
             const SizedBox(height: AppDimens.spacingMedium),
             CustomButton(
               text: context.l10n.salaryConfirmPaymentCta,

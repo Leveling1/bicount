@@ -11,6 +11,7 @@ void openTransactionSheet(
       TransactionHandlerInitialType.expense,
   bool showTypeSelector = true,
   FriendsModel? prefilledFriend,
+  String? prefilledExpenseWalletId,
 }) {
   showCustomBottomSheet(
     context: context,
@@ -22,6 +23,7 @@ void openTransactionSheet(
       friends: data.friends,
       initialType: initialType,
       prefilledFriend: prefilledFriend,
+      prefilledExpenseWalletId: prefilledExpenseWalletId,
       showTypeSelector: showTypeSelector,
     ),
   );

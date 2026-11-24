@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
 import 'app_gradient.dart';
+import 'dropdown_chevron_theme.dart';
 
 class AppTheme {
   ///================== Light Theme ==================///
@@ -479,6 +480,7 @@ class AppTheme {
 
     /// Extensions light
     extensions: <ThemeExtension<dynamic>>[
+      DropdownChevronTheme.defaults,
       AppGradients(
         primaryGradient: LinearGradient(
           colors: [Color(0xFFE1DFD7), Color(0xFFD4D1CC)],
@@ -977,6 +979,7 @@ class AppTheme {
 
     /// Extensions dark
     extensions: <ThemeExtension<dynamic>>[
+      DropdownChevronTheme.defaults,
       AppGradients(
         primaryGradient: LinearGradient(
           colors: [Color(0XFF1E2028), Color(0XFF2B2E33)],

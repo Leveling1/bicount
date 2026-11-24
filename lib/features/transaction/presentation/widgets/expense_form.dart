@@ -46,6 +46,7 @@ class ExpenseForm extends StatefulWidget {
     required this.friends,
     this.initialTransaction,
     this.prefilledFriend,
+    this.prefilledWalletId,
     this.onCompleted,
   });
 
@@ -53,6 +54,7 @@ class ExpenseForm extends StatefulWidget {
   final List<FriendsModel> friends;
   final TransactionEntity? initialTransaction;
   final FriendsModel? prefilledFriend;
+  final String? prefilledWalletId;
   final VoidCallback? onCompleted;
 
   @override
@@ -118,6 +120,9 @@ class _ExpenseFormState extends State<ExpenseForm>
   @override
   void initState() {
     super.initState();
+    if (widget.initialTransaction == null) {
+      _walletId = widget.prefilledWalletId;
+    }
     _date.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
     _amount.addListener(_onRealtimePreviewDependencyChanged);
     _currency.addListener(_onRealtimePreviewDependencyChanged);

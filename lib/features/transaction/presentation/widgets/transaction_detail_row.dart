@@ -6,13 +6,13 @@ class TransactionDetailRow extends StatelessWidget {
     super.key,
     required this.title,
     required this.content,
-    this.contentIcon,
+    this.trailing,
     this.capitalizeContent = true,
   });
 
   final String title;
   final String content;
-  final IconData? contentIcon;
+  final Widget? trailing;
   final bool capitalizeContent;
 
   @override
@@ -34,7 +34,7 @@ class TransactionDetailRow extends StatelessWidget {
         ),
         Flexible(
           flex: 2,
-          child: contentIcon == null
+          child: trailing == null
               ? Text(displayContent, style: style)
               : Row(
                   mainAxisSize: MainAxisSize.min,
@@ -47,7 +47,7 @@ class TransactionDetailRow extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Icon(contentIcon, size: 18, color: style?.color),
+                    trailing!,
                   ],
                 ),
         ),

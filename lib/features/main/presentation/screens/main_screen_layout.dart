@@ -87,10 +87,25 @@ extension _MainScreenLayout on _MainScreenState {
                     selectedIndex: _selectedIndex,
                     onTap: _onItemTapped,
                   ),
-            floatingActionButton: MainShellFab(
-              selectedIndex: _selectedIndex,
-              onPressed: () => openTransactionSheet(context, preparedData),
-              transaction: preparedData.transactions.length,
+            floatingActionButton: Builder(
+              builder: (context) => MainShellFab(
+                selectedIndex: _selectedIndex,
+                onPressed: () => openTransactionSheet(
+                  context,
+                  preparedData,
+                  prefilledExpenseWalletId:
+                      BackendEnvironment.isLocalPreproduction
+                      ? context
+                            .read<WalletBloc>()
+                            .state
+                            .resolveTransactionWalletId(
+                              preparedData.user.uid,
+                              _transactionWalletId,
+                            )
+                      : null,
+                ),
+                transaction: preparedData.transactions.length,
+              ),
             ),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,

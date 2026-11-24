@@ -20,6 +20,7 @@ class TransactionHandler extends StatefulWidget {
     this.initialType = TransactionHandlerInitialType.expense,
     this.showTypeSelector = true,
     this.prefilledFriend,
+    this.prefilledExpenseWalletId,
   });
 
   final UserModel? user;
@@ -27,6 +28,7 @@ class TransactionHandler extends StatefulWidget {
   final TransactionHandlerInitialType initialType;
   final bool showTypeSelector;
   final FriendsModel? prefilledFriend;
+  final String? prefilledExpenseWalletId;
 
   @override
   State<TransactionHandler> createState() => _TransactionHandlerState();
@@ -88,6 +90,7 @@ class _TransactionHandlerState extends State<TransactionHandler> {
                   user: widget.user,
                   friends: transactionFriends,
                   prefilledFriend: widget.prefilledFriend,
+                  prefilledWalletId: widget.prefilledExpenseWalletId,
                 ),
                 1 => IncomeForm(
                   user: widget.user,

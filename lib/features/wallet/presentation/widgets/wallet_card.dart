@@ -1,5 +1,6 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/dropdown_chevron_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/presentation/bloc/wallet_bloc.dart';
@@ -81,7 +82,7 @@ class WalletCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const Icon(Icons.expand_more, size: 18),
+                        DropdownChevronTheme.of(context).icon(),
                       ],
                     ),
                   ),
