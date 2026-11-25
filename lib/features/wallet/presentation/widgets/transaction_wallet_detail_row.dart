@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/dropdown_chevron_theme.dart';
@@ -23,10 +21,60 @@ class TransactionWalletDetailRow extends StatelessWidget {
   final List<WalletModel> options;
   final ValueChanged<String>? onChanged;
 
+  Future<void> _showWalletMenu(
+    BuildContext context,
+    ValueChanged<String> change,
+  ) async {
+    final overlay = Navigator.of(context).overlay!;
+    final overlayBox = overlay.context.findRenderObject()! as RenderBox;
+    final row = context.findRenderObject()! as RenderBox;
+    final bounds =
+        row.localToGlobal(Offset.zero, ancestor: overlayBox) & row.size;
+    final direction = Directionality.of(context);
+    final x = direction == TextDirection.ltr ? bounds.right : bounds.left;
+    final items = [
+      for (final option in options)
+        PopupMenuItem(
+          value: option.id,
+          child: Text(walletLabel(context, option)),
+        ),
+    ];
+    final padding = MediaQuery.paddingOf(overlay.context);
+    final menuPadding =
+        PopupMenuTheme.of(context).menuPadding ??
+        const EdgeInsets.symmetric(vertical: AppDimens.paddingSmall);
+    final menuHeight = items.fold(
+      menuPadding.vertical,
+      (height, item) => height + item.height,
+    );
+    final below = bounds.bottom + AppDimens.spacingExtraSmall;
+    final above = bounds.top - AppDimens.spacingExtraSmall;
+    final fitsBelow =
+        below + menuHeight <=
+        overlayBox.size.height - padding.bottom - AppDimens.paddingSmall;
+    final fitsAbove =
+        above - menuHeight >= padding.top + AppDimens.paddingSmall;
+    final top = !fitsBelow && fitsAbove ? above - menuHeight : below;
+
+    final selected = await showMenu<String>(
+      context: context,
+      position: RelativeRect.fromSize(
+        Rect.fromLTWH(x, top, 0, 0),
+        overlayBox.size,
+      ),
+      items: items,
+      initialValue: wallet?.id,
+      clipBehavior: Clip.antiAlias,
+    );
+    if (context.mounted && selected != null && selected != wallet?.id) {
+      change(selected);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final current = wallet;
-    final change = onChanged;
+    final change = options.length > 1 ? onChanged : null;
     final row = TransactionDetailRow(
       title: title,
       content: current == null
@@ -41,62 +89,24 @@ class TransactionWalletDetailRow extends StatelessWidget {
     );
     if (change == null) return row;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = math.min(192.0, constraints.maxWidth);
-        return MenuAnchor(
-          alignmentOffset: Offset(-width, AppDimens.spacingExtraSmall),
-          crossAxisUnconstrained: false,
-          style: MenuStyle(
-            alignment: AlignmentDirectional.bottomEnd,
-            fixedSize: WidgetStatePropertyAll(Size.fromWidth(width)),
-            shape: const WidgetStatePropertyAll(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(AppDimens.borderRadiusMedium),
-                ),
-              ),
-            ),
+    return Semantics(
+      button: true,
+      child: FocusableActionDetector(
+        shortcuts: const {
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: {
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) => _showWalletMenu(context, change),
           ),
-          clipBehavior: Clip.antiAlias,
-          menuChildren: [
-            for (final option in options)
-              MenuItemButton(
-                onPressed: option.id == current?.id
-                    ? null
-                    : () => change(option.id),
-                child: Text(
-                  walletLabel(context, option),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-          ],
-          builder: (context, menu, child) {
-            void toggle() => menu.isOpen ? menu.close() : menu.open();
-            return Semantics(
-              button: true,
-              child: FocusableActionDetector(
-                shortcuts: const {
-                  SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-                  SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-                },
-                actions: {
-                  ActivateIntent: CallbackAction<ActivateIntent>(
-                    onInvoke: (_) => toggle(),
-                  ),
-                },
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: toggle,
-                  child: child,
-                ),
-              ),
-            );
-          },
+        },
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => _showWalletMenu(context, change),
           child: row,
-        );
-      },
+        ),
+      ),
     );
   }
 }

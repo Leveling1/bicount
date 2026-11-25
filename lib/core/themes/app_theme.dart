@@ -7,12 +7,21 @@ import 'app_gradient.dart';
 import 'dropdown_chevron_theme.dart';
 
 class AppTheme {
+  static const _popupMenuTheme = PopupMenuThemeData(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(AppDimens.borderRadiusMedium),
+      ),
+    ),
+  );
+
   ///================== Light Theme ==================///
   static ThemeData get lightTheme => ThemeData(
     brightness: Brightness.light,
     primaryColor: AppColors.primaryColorLight,
     scaffoldBackgroundColor: AppColors.backgroundColorLight,
     iconTheme: const IconThemeData(color: AppColors.inactiveColorLight),
+    popupMenuTheme: _popupMenuTheme,
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AppColors.surfaceColorLight,
       selectedItemColor: AppColors.surfaceColorDark,
@@ -516,6 +525,7 @@ class AppTheme {
     primaryColor: AppColors.primaryColorDark,
     scaffoldBackgroundColor: AppColors.backgroundColorDark,
     iconTheme: const IconThemeData(color: AppColors.inactiveColorDark),
+    popupMenuTheme: _popupMenuTheme,
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.black,
       selectedItemColor: AppColors.surfaceColorDark,

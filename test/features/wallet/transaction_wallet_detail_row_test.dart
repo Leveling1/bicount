@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_theme.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/presentation/widgets/transaction_wallet_detail_row.dart';
 import 'package:bicount/l10n/app_localizations.dart';
@@ -25,10 +26,14 @@ void main() {
       const rowKey = ValueKey('wallet row');
 
       for (final direction in TextDirection.values) {
+        final theme = direction == TextDirection.ltr
+            ? AppTheme.lightTheme
+            : AppTheme.darkTheme;
         for (final nearBottom in [false, true]) {
           String? selection;
           await tester.pumpWidget(
             MaterialApp(
+              theme: theme,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
               home: Directionality(
@@ -68,11 +73,28 @@ void main() {
               )
               .first;
           final bounds = tester.getRect(menu);
-          final shape =
-              tester.widget<Material>(menu).shape as RoundedRectangleBorder;
+          final menuMaterial = tester.widget<Material>(menu);
+          final shape = menuMaterial.shape as RoundedRectangleBorder;
           expect(
             shape.borderRadius,
             const BorderRadius.all(Radius.circular(12)),
+          );
+          expect(shape, theme.popupMenuTheme.shape);
+          expect(menuMaterial.color, theme.colorScheme.surfaceContainer);
+          final selected = find.widgetWithText(
+            PopupMenuItem<String>,
+            current.name,
+          );
+          expect(
+            find.ancestor(
+              of: selected,
+              matching: find.byWidgetPredicate(
+                (widget) =>
+                    widget is ColoredBox &&
+                    widget.color == theme.highlightColor,
+              ),
+            ),
+            findsOneWidget,
           );
           if (direction == TextDirection.ltr) {
             expect(bounds.right, closeTo(row.right, .1));

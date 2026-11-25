@@ -61,6 +61,7 @@ class WalletCard extends StatelessWidget {
                 child: PopupMenuButton<int>(
                   tooltip: context.l10n.walletPicker,
                   initialValue: selectedIndex,
+                  clipBehavior: Clip.antiAlias,
                   onSelected: select,
                   itemBuilder: (context) => [
                     for (final (index, wallet) in wallets.indexed)
