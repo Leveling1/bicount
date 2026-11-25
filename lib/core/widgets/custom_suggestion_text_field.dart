@@ -181,7 +181,7 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
               child: Card(
                 elevation: 4.0,
                 color: Theme.of(context).cardColor,
-                shape: RoundedRectangleBorder(
+                shape: RoundedSuperellipseBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListView.builder(

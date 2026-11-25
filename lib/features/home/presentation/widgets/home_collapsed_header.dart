@@ -14,10 +14,12 @@ class _CollapsedHomeHeader extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: const BorderRadius.all(
+            Radius.circular(AppDimens.borderRadiusLarge),
+          ),
         ),
       ),
       child: Center(
@@ -29,10 +31,12 @@ class _CollapsedHomeHeader extends StatelessWidget {
               height: 40,
               padding: const EdgeInsets.all(8.0),
               margin: const EdgeInsets.only(left: AppDimens.marginMedium),
-              decoration: BoxDecoration(
+              decoration: ShapeDecoration(
                 color: theme.cardColor,
-                borderRadius: BorderRadius.circular(
-                  AppDimens.borderRadiusMedium,
+                shape: RoundedSuperellipseBorder(
+                  borderRadius: BorderRadius.circular(
+                    AppDimens.borderRadiusMedium,
+                  ),
                 ),
               ),
               child: Center(

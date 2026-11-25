@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_corners.dart';
 import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -33,9 +34,10 @@ class CustomAmountField extends StatelessWidget {
       width: double.infinity,
       height: 120,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
+      decoration: appCornerDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
+        legacy: WalletCorners.of(context),
       ),
       child: Stack(
         children: [
@@ -357,10 +359,7 @@ class _CurrencyChipShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 95,
-      child: Center(child: child),
-    );
+    return SizedBox(width: 95, child: Center(child: child));
   }
 }
 
@@ -395,14 +394,17 @@ class SimpleAmountField extends StatelessWidget {
               ? null
               : (value) {
                   final amount = double.tryParse(
-                    (value ?? '').trim().replaceAll(' ', '').replaceAll(',', '.'),
+                    (value ?? '')
+                        .trim()
+                        .replaceAll(' ', '')
+                        .replaceAll(',', '.'),
                   );
                   if (amount == null || amount <= 0) {
                     return context.l10n.validationFieldRequired;
                   }
                   return null;
                 },
-        
+
           decoration: InputDecoration(
             hintText: hintText,
             suffixIcon: CurrencyField(

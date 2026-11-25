@@ -32,7 +32,9 @@ class _HomeWalletScene extends StatelessWidget {
     final wallet = showWallet
         ? SizedBox.expand(
             key: geometry.listPage,
-            child: WalletScreen(onOpenTransactions: onOpenTransactions),
+            child: WalletCornerTheme(
+              child: WalletScreen(onOpenTransactions: onOpenTransactions),
+            ),
           )
         : null;
     return ClipRect(
@@ -120,7 +122,11 @@ extension _HomeWalletSceneLayout on _HomeWalletTransitionState {
             child: MediaQuery.removePadding(
               context: context,
               removeBottom: true,
-              child: ContainerBody(protectTopInset: false, child: scene),
+              child: ContainerBody(
+                protectTopInset: false,
+                preserveWalletCorners: widget.enabled || _showWallet,
+                child: scene,
+              ),
             ),
           ),
           if (!keyboardVisible)

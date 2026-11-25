@@ -29,10 +29,14 @@ class QuickActionButton extends StatelessWidget {
 
     return Material(
       color: theme.cardColor, // theme.cardColor,
-      borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+      shape: RoundedSuperellipseBorder(
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+      ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        customBorder: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
         hoverColor: theme.colorScheme.surfaceContainer,
         splashColor: Colors.transparent,
         highlightColor: theme.primaryColor.withValues(alpha: 0.16),

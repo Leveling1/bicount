@@ -138,12 +138,16 @@ class _GroupScreenState extends State<GroupScreen> {
                       minHeight:
                           MediaQuery.sizeOf(context).height - _headerHeight,
                     ),
-                    decoration: BoxDecoration(
+                    decoration: ShapeDecoration(
                       color: Theme.of(
                         context,
                       ).scaffoldBackgroundColor, // Couleur normale
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(AppDimens.borderRadiusUltraLarge),
+                      shape: RoundedSuperellipseBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(
+                            AppDimens.borderRadiusUltraLarge,
+                          ),
+                        ),
                       ),
                     ),
                     child: Padding(

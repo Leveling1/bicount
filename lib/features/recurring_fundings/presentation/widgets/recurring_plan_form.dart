@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/wallet_corner_theme.dart';
 import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
@@ -72,14 +73,16 @@ class _RecurringPlanFormState extends State<RecurringPlanForm> {
       child: Column(
         children: [
           CustomAmountField(amount: _amount, currency: _currency),
-          WalletPicker(
-            label: _income ? context.l10n.walletTo : context.l10n.walletFrom,
-            value:
-                _walletId ??
-                (_income
-                    ? widget.summary.recurringTransfert.beneficiaryWalletId
-                    : widget.summary.recurringTransfert.senderWalletId),
-            onChanged: (id) => setState(() => _walletId = id),
+          WalletCornerTheme(
+            child: WalletPicker(
+              label: _income ? context.l10n.walletTo : context.l10n.walletFrom,
+              value:
+                  _walletId ??
+                  (_income
+                      ? widget.summary.recurringTransfert.beneficiaryWalletId
+                      : widget.summary.recurringTransfert.senderWalletId),
+              onChanged: (id) => setState(() => _walletId = id),
+            ),
           ),
           AppDimens.spacerMedium,
           CustomFormField(

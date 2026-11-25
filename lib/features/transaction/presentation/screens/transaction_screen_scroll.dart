@@ -19,10 +19,12 @@ extension on _TransactionScreenState {
         if (BackendEnvironment.isLocalPreproduction)
           SliverToBoxAdapter(
             key: _walletHeaderKey,
-            child: WalletCard(
-              wallets: wallets,
-              walletId: walletId,
-              onChanged: _selectWallet,
+            child: WalletCornerTheme(
+              child: WalletCard(
+                wallets: wallets,
+                walletId: walletId,
+                onChanged: _selectWallet,
+              ),
             ),
           ),
         SliverLayoutBuilder(

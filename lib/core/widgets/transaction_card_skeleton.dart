@@ -1,3 +1,4 @@
+import 'corner_skeleton_box.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
@@ -10,20 +11,16 @@ class TransactionCardSkeleton extends StatelessWidget {
     return SkeletonItem(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         child: Row(
           children: [
             // 🟣 Avatar placeholder
-            SkeletonAvatar(
-              style: SkeletonAvatarStyle(
-                width: 40,
-                height: 40,
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
+            CornerSkeletonBox(width: 40, height: 40, radius: 20),
             AppDimens.spacerMediumSmall,
 
             // 🟢 Name + Date placeholder
@@ -31,21 +28,9 @@ class TransactionCardSkeleton extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SkeletonLine(
-                    style: SkeletonLineStyle(
-                      height: 14,
-                      width: 120,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
+                  CornerSkeletonBox(height: 14, width: 120, radius: 4),
                   const SizedBox(height: 8),
-                  SkeletonLine(
-                    style: SkeletonLineStyle(
-                      height: 12,
-                      width: 60,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
+                  CornerSkeletonBox(height: 12, width: 60, radius: 4),
                 ],
               ),
             ),
@@ -54,21 +39,9 @@ class TransactionCardSkeleton extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                SkeletonLine(
-                  style: SkeletonLineStyle(
-                    height: 14,
-                    width: 50,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
+                CornerSkeletonBox(height: 14, width: 50, radius: 4),
                 AppDimens.spacerSmall,
-                SkeletonLine(
-                  style: SkeletonLineStyle(
-                    height: 12,
-                    width: 40,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
+                CornerSkeletonBox(height: 12, width: 40, radius: 4),
               ],
             ),
           ],

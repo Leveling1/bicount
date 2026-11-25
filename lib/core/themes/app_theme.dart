@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_corners.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'app_gradient.dart';
 import 'dropdown_chevron_theme.dart';
 
 class AppTheme {
+  // PopupMenuButton and showMenu are currently used by Wallets only.
   static const _popupMenuTheme = PopupMenuThemeData(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.all(
@@ -16,7 +18,30 @@ class AppTheme {
   );
 
   ///================== Light Theme ==================///
-  static ThemeData get lightTheme => ThemeData(
+  static ThemeData get lightTheme => _lightTheme();
+  static ThemeData get darkTheme => _darkTheme();
+
+  static final _lightWalletTheme = _lightTheme(legacyCorners: true);
+  static final _darkWalletTheme = _darkTheme(legacyCorners: true);
+
+  static ThemeData walletCorners(ThemeData theme) {
+    if (theme.extension<WalletCorners>() != null) return theme;
+    final wallet = theme.brightness == Brightness.dark
+        ? _darkWalletTheme
+        : _lightWalletTheme;
+    return theme.copyWith(
+      extensions: [...theme.extensions.values, const WalletCorners()],
+      chipTheme: wallet.chipTheme,
+      datePickerTheme: wallet.datePickerTheme,
+      dialogTheme: wallet.dialogTheme,
+      dropdownMenuTheme: wallet.dropdownMenuTheme,
+      elevatedButtonTheme: wallet.elevatedButtonTheme,
+      inputDecorationTheme: wallet.inputDecorationTheme,
+      outlinedButtonTheme: wallet.outlinedButtonTheme,
+    );
+  }
+
+  static ThemeData _lightTheme({bool legacyCorners = false}) => ThemeData(
     brightness: Brightness.light,
     primaryColor: AppColors.primaryColorLight,
     scaffoldBackgroundColor: AppColors.backgroundColorLight,
@@ -43,12 +68,14 @@ class AppTheme {
       focusColor: AppColors.primaryColorLight,
       hoverColor: AppColors.primaryColorLight,
       contentPadding: AppDimens.paddingAllSmall,
-      enabledBorder: OutlineInputBorder(
+      enabledBorder: appInputBorder(
         borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+        legacy: legacyCorners,
         borderSide: BorderSide.none,
       ),
-      border: OutlineInputBorder(
+      border: appInputBorder(
         borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+        legacy: legacyCorners,
         borderSide: BorderSide.none,
       ),
       floatingLabelStyle: TextStyle(
@@ -91,9 +118,10 @@ class AppTheme {
           return AppColors.surfaceColorLight;
         }),
         elevation: WidgetStateProperty.resolveWith<double>((states) => 0.0),
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
+        shape: WidgetStateProperty.all<OutlinedBorder>(
+          appCornerShape(
             borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+            legacy: legacyCorners,
           ),
         ),
         foregroundColor: WidgetStateProperty.all<Color>(
@@ -122,9 +150,10 @@ class AppTheme {
           return AppColors.surfaceColorLight.withValues(alpha: 0.1);
         }),
         elevation: WidgetStateProperty.resolveWith<double>((states) => 0.0),
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
+        shape: WidgetStateProperty.all<OutlinedBorder>(
+          appCornerShape(
             borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+            legacy: legacyCorners,
             side: BorderSide(color: AppColors.surfaceColorLight, width: 2),
           ),
         ),
@@ -316,7 +345,10 @@ class AppTheme {
           const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
         shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          appCornerShape(
+            borderRadius: BorderRadius.circular(8),
+            legacy: legacyCorners,
+          ),
         ),
       ),
       cancelButtonStyle: ButtonStyle(
@@ -332,7 +364,10 @@ class AppTheme {
           AppColors.primaryColorLight.withValues(alpha: 0.1),
         ),
         shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          appCornerShape(
+            borderRadius: BorderRadius.circular(8),
+            legacy: legacyCorners,
+          ),
         ),
       ),
 
@@ -342,14 +377,16 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.cardColorLight,
-        border: OutlineInputBorder(
+        border: appInputBorder(
           borderRadius: BorderRadius.circular(8),
+          legacy: legacyCorners,
           borderSide: BorderSide(
             color: AppColors.primaryColorLight.withValues(alpha: 0.3),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: appInputBorder(
           borderRadius: BorderRadius.circular(8),
+          legacy: legacyCorners,
           borderSide: const BorderSide(
             color: AppColors.primaryColorLight,
             width: 2,
@@ -380,12 +417,14 @@ class AppTheme {
         suffixIconColor: AppColors.inactiveColorLight,
         focusColor: AppColors.primaryColorLight,
         hoverColor: AppColors.primaryColorLight,
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: appInputBorder(
           borderRadius: BorderRadius.circular(AppDimens.radiusLarge),
+          legacy: legacyCorners,
           borderSide: BorderSide.none,
         ),
-        border: OutlineInputBorder(
+        border: appInputBorder(
           borderRadius: BorderRadius.circular(AppDimens.radiusLarge),
+          legacy: legacyCorners,
           borderSide: BorderSide.none,
         ),
         floatingLabelStyle: TextStyle(
@@ -409,10 +448,11 @@ class AppTheme {
         backgroundColor: WidgetStatePropertyAll(AppColors.cardColorLight),
         elevation: WidgetStatePropertyAll(0),
         shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
+          appCornerShape(
             borderRadius: BorderRadius.all(
               Radius.circular(AppDimens.radiusLarge),
             ),
+            legacy: legacyCorners,
           ),
         ),
         padding: WidgetStatePropertyAll(AppDimens.paddingAllSmall),
@@ -433,8 +473,9 @@ class AppTheme {
     dialogTheme: DialogThemeData(
       backgroundColor: AppColors.cardColorLight,
       surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
+      shape: appCornerShape(
         borderRadius: BorderRadius.circular(AppDimens.radiusExtraLarge),
+        legacy: legacyCorners,
       ),
       titleTextStyle: TextStyle(
         color: AppColors.textColorLight,
@@ -481,8 +522,9 @@ class AppTheme {
         }
         return AppColors.cardColorLight; // Couleur non sélectionné
       }),
-      shape: RoundedRectangleBorder(
+      shape: appCornerShape(
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusMediumLarge),
+        legacy: legacyCorners,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     ),
@@ -520,7 +562,7 @@ class AppTheme {
   );
 
   ///================== Dark Theme ==================///
-  static ThemeData get darkTheme => ThemeData(
+  static ThemeData _darkTheme({bool legacyCorners = false}) => ThemeData(
     brightness: Brightness.dark,
     primaryColor: AppColors.primaryColorDark,
     scaffoldBackgroundColor: AppColors.backgroundColorDark,
@@ -546,12 +588,14 @@ class AppTheme {
       suffixIconColor: AppColors.inactiveColorDark,
       focusColor: AppColors.primaryColorDark,
       hoverColor: AppColors.primaryColorDark,
-      enabledBorder: OutlineInputBorder(
+      enabledBorder: appInputBorder(
         borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+        legacy: legacyCorners,
         borderSide: BorderSide.none,
       ),
-      border: OutlineInputBorder(
+      border: appInputBorder(
         borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+        legacy: legacyCorners,
         borderSide: BorderSide.none,
       ),
       floatingLabelStyle: TextStyle(
@@ -581,8 +625,9 @@ class AppTheme {
     dialogTheme: DialogThemeData(
       backgroundColor: AppColors.cardColorDark,
       surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
+      shape: appCornerShape(
         borderRadius: BorderRadius.circular(AppDimens.radiusExtraLarge),
+        legacy: legacyCorners,
       ),
       titleTextStyle: TextStyle(
         color: AppColors.textColorDark,
@@ -619,9 +664,10 @@ class AppTheme {
           return AppColors.surfaceColorDark;
         }),
         elevation: WidgetStateProperty.resolveWith<double>((states) => 0.0),
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
+        shape: WidgetStateProperty.all<OutlinedBorder>(
+          appCornerShape(
             borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+            legacy: legacyCorners,
           ),
         ),
         foregroundColor: WidgetStateProperty.all<Color>(
@@ -650,9 +696,10 @@ class AppTheme {
           return AppColors.surfaceColorDark.withValues(alpha: 0.1);
         }),
         elevation: WidgetStateProperty.resolveWith<double>((states) => 0.0),
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
+        shape: WidgetStateProperty.all<OutlinedBorder>(
+          appCornerShape(
             borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+            legacy: legacyCorners,
             side: BorderSide(color: AppColors.surfaceColorDark, width: 2),
           ),
         ),
@@ -845,7 +892,10 @@ class AppTheme {
           const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
         shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          appCornerShape(
+            borderRadius: BorderRadius.circular(8),
+            legacy: legacyCorners,
+          ),
         ),
       ),
       cancelButtonStyle: ButtonStyle(
@@ -861,7 +911,10 @@ class AppTheme {
           AppColors.primaryColorDark.withValues(alpha: 0.1),
         ),
         shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          appCornerShape(
+            borderRadius: BorderRadius.circular(8),
+            legacy: legacyCorners,
+          ),
         ),
       ),
 
@@ -871,14 +924,16 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.cardColorDark,
-        border: OutlineInputBorder(
+        border: appInputBorder(
           borderRadius: BorderRadius.circular(8),
+          legacy: legacyCorners,
           borderSide: BorderSide(
             color: AppColors.primaryColorDark.withValues(alpha: 0.3),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: appInputBorder(
           borderRadius: BorderRadius.circular(8),
+          legacy: legacyCorners,
           borderSide: const BorderSide(
             color: AppColors.primaryColorDark,
             width: 2,
@@ -909,12 +964,14 @@ class AppTheme {
         suffixIconColor: AppColors.inactiveColorDark,
         focusColor: AppColors.primaryColorDark,
         hoverColor: AppColors.primaryColorDark,
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: appInputBorder(
           borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+          legacy: legacyCorners,
           borderSide: BorderSide.none,
         ),
-        border: OutlineInputBorder(
+        border: appInputBorder(
           borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
+          legacy: legacyCorners,
           borderSide: BorderSide.none,
         ),
         floatingLabelStyle: TextStyle(
@@ -933,10 +990,11 @@ class AppTheme {
         backgroundColor: WidgetStatePropertyAll(AppColors.cardColorDark),
         elevation: WidgetStatePropertyAll(1),
         shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
+          appCornerShape(
             borderRadius: BorderRadius.all(
               Radius.circular(AppDimens.radiusMedium),
             ),
+            legacy: legacyCorners,
           ),
         ),
         // padding: WidgetStatePropertyAll(AppDimens.paddingAllSmall),
@@ -981,8 +1039,9 @@ class AppTheme {
         }
         return AppColors.cardColorDark; // Couleur non sélectionné
       }),
-      shape: RoundedRectangleBorder(
+      shape: appCornerShape(
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusMediumLarge),
+        legacy: legacyCorners,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     ),

@@ -658,14 +658,41 @@ private object BarChartRenderer {
             val left = index * (barWidthPx + gapPx)
             val top = heightPx - barHeightPx
             paint.color = colors.getOrElse(index) { Color.GRAY }
-            canvas.drawRoundRect(
-                RectF(left, top, left + barWidthPx, heightPx),
-                cornerRadius,
-                cornerRadius,
+            canvas.drawPath(
+                continuousCornerPath(RectF(left, top, left + barWidthPx, heightPx), cornerRadius),
                 paint,
             )
         }
         return bitmap
+    }
+}
+
+private fun continuousCornerPath(bounds: RectF, radius: Float): Path {
+    val r = minOf(radius, bounds.width() / 2, bounds.height() / 2)
+    val near = r * 0.2063f
+    val middle = r * 0.4126f
+    val far = r * 0.67f
+    val left = bounds.left
+    val top = bounds.top
+    val right = bounds.right
+    val bottom = bounds.bottom
+
+    // Two cubic segments approximate a degree-three superellipse for each corner.
+    return Path().apply {
+        moveTo(left + r, top)
+        lineTo(right - r, top)
+        cubicTo(right - far, top, right - middle, top, right - near, top + near)
+        cubicTo(right, top + middle, right, top + far, right, top + r)
+        lineTo(right, bottom - r)
+        cubicTo(right, bottom - far, right, bottom - middle, right - near, bottom - near)
+        cubicTo(right - middle, bottom, right - far, bottom, right - r, bottom)
+        lineTo(left + r, bottom)
+        cubicTo(left + far, bottom, left + middle, bottom, left + near, bottom - near)
+        cubicTo(left, bottom - middle, left, bottom - far, left, bottom - r)
+        lineTo(left, top + r)
+        cubicTo(left, top + far, left, top + middle, left + near, top + near)
+        cubicTo(left + middle, top, left + far, top, left + r, top)
+        close()
     }
 }
 

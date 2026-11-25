@@ -44,17 +44,19 @@ class ProfileSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
       color: balance >= 0 ? null : Colors.red,
     );
 
-    return ClipRRect(
+    return ClipRSuperellipse(
       borderRadius: BorderRadius.only(
         bottomLeft: Radius.circular(AppDimens.borderRadiusLarge),
         bottomRight: Radius.circular(AppDimens.borderRadiusLarge),
       ),
       child: DecoratedBox(
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: theme.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(AppDimens.borderRadiusLarge),
-            bottomRight: Radius.circular(AppDimens.borderRadiusLarge),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(AppDimens.borderRadiusLarge),
+              bottomRight: Radius.circular(AppDimens.borderRadiusLarge),
+            ),
           ),
         ),
         child: SizedBox.expand(
@@ -171,7 +173,9 @@ class _CollapsedProfileHeader extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        customBorder: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppDimens.paddingMedium,

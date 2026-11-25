@@ -17,9 +17,11 @@ class SubscriptionBadge extends StatelessWidget {
         horizontal: AppDimens.paddingSmallMedium,
         vertical: AppDimens.paddingExtraSmall,
       ),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: color.withValues(alpha: 0.18),
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
+        ),
       ),
       child: Text(
         label,

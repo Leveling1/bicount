@@ -34,15 +34,19 @@ class CompanyLargeCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 20),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           hoverColor: Theme.of(context).colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          customBorder: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          ),
           splashColor: Colors.transparent,
           highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: () {
@@ -57,10 +61,12 @@ class CompanyLargeCard extends StatelessWidget {
                   children: [
                     Container(
                       constraints: const BoxConstraints(minWidth: 70),
-                      decoration: BoxDecoration(
+                      decoration: ShapeDecoration(
                         color: badgeColor.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(
-                          AppDimens.borderRadiusFull,
+                        shape: RoundedSuperellipseBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppDimens.borderRadiusFull,
+                          ),
                         ),
                       ),
                       padding: const EdgeInsets.symmetric(

@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/wallet_corner_theme.dart';
 import 'package:bicount/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/state_app.dart';

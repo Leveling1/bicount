@@ -18,15 +18,19 @@ class TitleIconButtomRow extends StatelessWidget {
         Text(title, style: Theme.of(context).textTheme.titleMedium),
         const Spacer(),
         Container(
-          decoration: BoxDecoration(
+          decoration: ShapeDecoration(
             color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(5),
+            shape: RoundedSuperellipseBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               hoverColor: Theme.of(context).colorScheme.surfaceContainer,
-              borderRadius: BorderRadius.circular(5),
+              customBorder: RoundedSuperellipseBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
               splashColor: Colors.transparent,
               highlightColor: Theme.of(
                 context,

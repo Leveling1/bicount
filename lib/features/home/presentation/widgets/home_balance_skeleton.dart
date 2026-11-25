@@ -53,6 +53,7 @@ class _HomeBalanceSkeleton extends StatelessWidget {
                     child: BicountSkeletonBox(
                       height: constraints.maxHeight,
                       radius: 14,
+                      preserveWalletCorners: true,
                     ),
                   ),
                 ],

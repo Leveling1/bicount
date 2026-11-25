@@ -37,15 +37,19 @@ class _CustomPickImageState extends State<CustomPickImage> {
     return Container(
       height: 55,
       width: double.infinity,
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           hoverColor: Theme.of(context).colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(12),
+          customBorder: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           splashColor: Colors.transparent,
           highlightColor: Theme.of(
             context,
@@ -58,7 +62,7 @@ class _CustomPickImageState extends State<CustomPickImage> {
                     size: 25,
                     color: Theme.of(context).textTheme.titleMedium?.color,
                   )
-                : ClipRRect(
+                : ClipRSuperellipse(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.file(
                       selectedImage!,

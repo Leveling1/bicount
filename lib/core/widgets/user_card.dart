@@ -12,15 +12,19 @@ class UserCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           hoverColor: Theme.of(context).colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          customBorder: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          ),
           splashColor: Colors.transparent,
           highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: () {},
@@ -64,9 +68,11 @@ class UserCardSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SkeletonItem(
       child: Container(
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          ),
         ),
       ),
     );

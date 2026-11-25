@@ -92,9 +92,11 @@ class _SummaryCard extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     height: 154,
     padding: AppDimens.paddingAllExtraLarge,
-    decoration: BoxDecoration(
+    decoration: ShapeDecoration(
       color: Theme.of(context).cardColor,
-      borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+      shape: RoundedSuperellipseBorder(
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+      ),
     ),
     child: const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,9 +129,11 @@ class _QuickAction extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     height: 72,
     padding: const EdgeInsets.symmetric(horizontal: 16),
-    decoration: BoxDecoration(
+    decoration: ShapeDecoration(
       color: Theme.of(context).cardColor,
-      borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+      shape: RoundedSuperellipseBorder(
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+      ),
     ),
     child: const Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,

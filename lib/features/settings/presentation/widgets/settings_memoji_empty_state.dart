@@ -13,9 +13,11 @@ class SettingsMemojiEmptyState extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

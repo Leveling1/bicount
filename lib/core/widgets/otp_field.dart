@@ -196,18 +196,23 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
                             duration: const Duration(milliseconds: 300),
                             width: 50,
                             height: 50,
-                            decoration: BoxDecoration(
+                            decoration: ShapeDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: _isLocalSuccess
-                                    ? Colors.green
-                                    : (showAnError
-                                        ? errorColor
-                                        : (isCurrentBoxFocused
-                                            ? borderColorNormal
-                                            : borderColorNormal.withValues(alpha: 0.4))),
-                                width: isCurrentBoxFocused ? 1.8 : 1.2,
+                              shape: RoundedSuperellipseBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(
+                                  color: _isLocalSuccess
+                                      ? Colors.green
+                                      : (showAnError
+                                            ? errorColor
+                                            : (isCurrentBoxFocused
+                                                  ? borderColorNormal
+                                                  : borderColorNormal
+                                                        .withValues(
+                                                          alpha: 0.4,
+                                                        ))),
+                                  width: isCurrentBoxFocused ? 1.8 : 1.2,
+                                ),
                               ),
                             ),
                             child: Center(
@@ -302,7 +307,9 @@ class LoadingBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    final RRect rrect = RRect.fromRectAndRadius(rect, const Radius.circular(12));
+    final path = const RoundedSuperellipseBorder(
+      borderRadius: BorderRadius.all(Radius.circular(12)),
+    ).getOuterPath(rect);
 
     final paint = Paint()
       ..strokeWidth = 2.0
@@ -319,7 +326,7 @@ class LoadingBorderPainter extends CustomPainter {
       transform: GradientRotation(animationValue * 2 * 3.141592653589793),
     ).createShader(rect);
 
-    canvas.drawRRect(rrect, paint);
+    canvas.drawPath(path, paint);
   }
 
   @override

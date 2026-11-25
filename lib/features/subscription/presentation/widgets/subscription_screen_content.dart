@@ -137,9 +137,11 @@ class _OverviewCard extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints(minWidth: 140),
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/wallet_corner_theme.dart';
 import 'package:bicount/features/wallet/presentation/widgets/wallet_picker.dart';
 import 'package:bicount/core/constants/account_funding_const.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
@@ -117,10 +118,12 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   CustomAmountField(amount: _amount, currency: _currency),
-                  WalletPicker(
-                    label: context.l10n.walletTo,
-                    value: _walletId ?? widget.initialFunding?.walletId,
-                    onChanged: (id) => setState(() => _walletId = id),
+                  WalletCornerTheme(
+                    child: WalletPicker(
+                      label: context.l10n.walletTo,
+                      value: _walletId ?? widget.initialFunding?.walletId,
+                      onChanged: (id) => setState(() => _walletId = id),
+                    ),
                   ),
                 ],
               ),

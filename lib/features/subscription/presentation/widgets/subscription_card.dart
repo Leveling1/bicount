@@ -36,15 +36,19 @@ class SubscriptionCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          customBorder: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(AppDimens.paddingMedium),
             child: Column(

@@ -80,7 +80,11 @@ class AnalysisMetricCard extends StatelessWidget {
           ? content
           : InkWell(
               onTap: onTap,
-              borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+              customBorder: RoundedSuperellipseBorder(
+                borderRadius: BorderRadius.circular(
+                  AppDimens.borderRadiusLarge,
+                ),
+              ),
               child: content,
             ),
     );

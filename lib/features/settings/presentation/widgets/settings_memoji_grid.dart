@@ -52,15 +52,17 @@ class SettingsMemojiGrid extends StatelessWidget {
               scale: selected ? 1.04 : 1,
               child: Container(
                 padding: const EdgeInsets.all(AppDimens.paddingExtraSmall),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                    AppDimens.borderRadiusFull,
-                  ),
-                  border: Border.all(
-                    color: selected
-                        ? Theme.of(context).primaryColor
-                        : Colors.transparent,
-                    width: 2,
+                decoration: ShapeDecoration(
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(
+                      AppDimens.borderRadiusFull,
+                    ),
+                    side: BorderSide(
+                      color: selected
+                          ? Theme.of(context).primaryColor
+                          : Colors.transparent,
+                      width: 2,
+                    ),
                   ),
                 ),
                 child: SettingsAvatar(

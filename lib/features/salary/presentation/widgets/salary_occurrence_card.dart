@@ -24,15 +24,19 @@ class SalaryOccurrenceCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          customBorder: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          ),
           child: Column(
             children: [
               Row(

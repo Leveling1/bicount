@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/wallet_corner_theme.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
 import 'package:bicount/core/utils/form_date_utils.dart';
@@ -132,16 +133,18 @@ class _DebtContractFormState extends State<DebtContractForm> {
             validatorMessage: context.l10n.transactionEnterValidAmount,
             currencyController: _currencyController,
           ),
-          WalletPicker(
-            label: widget.isLender
-                ? context.l10n.walletFrom
-                : context.l10n.walletTo,
-            value:
-                _walletId ??
-                (widget.isLender
-                    ? widget.debt.lenderWalletId
-                    : widget.debt.borrowerWalletId),
-            onChanged: (id) => setState(() => _walletId = id),
+          WalletCornerTheme(
+            child: WalletPicker(
+              label: widget.isLender
+                  ? context.l10n.walletFrom
+                  : context.l10n.walletTo,
+              value:
+                  _walletId ??
+                  (widget.isLender
+                      ? widget.debt.lenderWalletId
+                      : widget.debt.borrowerWalletId),
+              onChanged: (id) => setState(() => _walletId = id),
+            ),
           ),
           const SizedBox(height: AppDimens.spacingMedium),
           CustomFormField(

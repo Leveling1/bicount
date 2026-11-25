@@ -1714,3 +1714,12 @@ Carried forward deliberately, not oversights:
 - In the wallet editor sheet, the title and preview stay above the scrollable
   fields and actions. Disable the shared sheet's outer scroll for this editor;
   its header adapts to the available height when the keyboard opens.
+
+## Interface Corners
+
+- Use Flutter's rounded superellipse for rectangular UI with rounded corners.
+  Reuse the existing radius values and align fills, borders, clipping and ink.
+- The Wallets UI keeps its existing corner geometry. This includes its screen,
+  fields, menus, sheets, cards, placeholders, previews and transitions, and
+  wallet controls embedded in other features. Preserve these shapes when
+  changing the global theme or shared widgets.

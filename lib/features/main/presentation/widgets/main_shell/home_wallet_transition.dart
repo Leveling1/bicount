@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:bicount/core/widgets/container_body.dart';
+import 'package:bicount/core/widgets/wallet_corner_theme.dart';
 import 'package:bicount/core/widgets/wallet/wallet_card_flight.dart';
 import 'package:bicount/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:bicount/features/main/presentation/widgets/main_shell/home_wallet_cards.dart';

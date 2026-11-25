@@ -24,9 +24,11 @@ class EmptyStateCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16.0),
       margin: EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Colors.transparent, //Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

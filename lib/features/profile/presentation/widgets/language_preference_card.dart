@@ -21,7 +21,9 @@ class LanguagePreferenceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return DetailsCard(
       child: InkWell(
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        customBorder: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(4),

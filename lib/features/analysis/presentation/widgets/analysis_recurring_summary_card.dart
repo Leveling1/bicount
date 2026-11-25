@@ -36,8 +36,10 @@ class AnalysisRecurringSummaryCard extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: onTap,
-                  borderRadius: BorderRadius.circular(
-                    AppDimens.borderRadiusLarge,
+                  customBorder: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(
+                      AppDimens.borderRadiusLarge,
+                    ),
                   ),
                   child: DetailsCard(
                     isMargin: false,
@@ -162,11 +164,13 @@ class _MetricChip extends StatelessWidget {
         horizontal: AppDimens.paddingSmall,
         vertical: AppDimens.paddingSmall,
       ),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(
           context,
         ).scaffoldBackgroundColor, //color.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

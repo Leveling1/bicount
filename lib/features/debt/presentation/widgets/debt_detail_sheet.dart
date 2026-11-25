@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/wallet_corner_theme.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/date_format_utils.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
@@ -122,12 +123,14 @@ class _DebtDetailSheetState extends State<DebtDetailSheet> {
           ),
           const SizedBox(height: AppDimens.spacingLarge),
           if (widget.summary.canRecordPayment && debt.remainingAmount > 0) ...[
-            WalletPicker(
-              label: widget.summary.isReceivable
-                  ? context.l10n.walletTo
-                  : context.l10n.walletFrom,
-              value: _walletId,
-              onChanged: (id) => setState(() => _walletId = id),
+            WalletCornerTheme(
+              child: WalletPicker(
+                label: widget.summary.isReceivable
+                    ? context.l10n.walletTo
+                    : context.l10n.walletFrom,
+                value: _walletId,
+                onChanged: (id) => setState(() => _walletId = id),
+              ),
             ),
             DebtDetailPaymentSection(
               amountController: _amountController,

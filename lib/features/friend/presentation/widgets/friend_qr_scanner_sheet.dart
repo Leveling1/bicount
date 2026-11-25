@@ -19,10 +19,12 @@ class _FriendQrScannerSheetState extends State<FriendQrScannerSheet> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.sizeOf(context).height * 0.72,
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(AppDimens.borderRadiusExtraLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(AppDimens.borderRadiusExtraLarge),
+          ),
         ),
       ),
       child: Column(
@@ -33,7 +35,7 @@ class _FriendQrScannerSheetState extends State<FriendQrScannerSheet> {
           ),
           const SizedBox(height: AppDimens.marginMedium),
           Expanded(
-            child: ClipRRect(
+            child: ClipRSuperellipse(
               borderRadius: BorderRadius.circular(
                 AppDimens.borderRadiusExtraLarge,
               ),

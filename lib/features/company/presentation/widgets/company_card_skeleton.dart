@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/corner_skeleton_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 
@@ -11,53 +12,35 @@ class CompanyCardSkeleton extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         margin: const EdgeInsets.only(bottom: 20),
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(16),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
         child: Row(
           children: [
             // Avatar
-            SkeletonAvatar(
-              style: SkeletonAvatarStyle(
-                width: 60,
-                height: 60,
-                borderRadius: BorderRadius.circular(50),
-              ),
-            ),
+            CornerSkeletonBox(width: 60, height: 60, radius: 50),
             const SizedBox(width: 12),
             // Texte
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SkeletonLine(
-                    style: SkeletonLineStyle(
-                      height: 16,
-                      width: double.infinity,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                  CornerSkeletonBox(
+                    height: 16,
+                    width: double.infinity,
+                    radius: 8,
                   ),
                   const SizedBox(height: 8),
-                  SkeletonLine(
-                    style: SkeletonLineStyle(
-                      height: 12,
-                      width: 150,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
+                  CornerSkeletonBox(height: 12, width: 150, radius: 8),
                 ],
               ),
             ),
             const SizedBox(width: 12),
             // Profit
-            SkeletonLine(
-              style: SkeletonLineStyle(
-                height: 16,
-                width: 50,
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
+            CornerSkeletonBox(height: 16, width: 50, radius: 8),
           ],
         ),
       ),

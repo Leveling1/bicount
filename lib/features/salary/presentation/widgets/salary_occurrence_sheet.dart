@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/wallet_corner_theme.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -161,13 +162,15 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
             ),
             if (BackendEnvironment.isLocalPreproduction) ...[
               AppDimens.spacerMedium,
-              WalletPicker(
-                label: context.l10n.walletTo,
-                useSharedMenu: true,
-                value:
-                    _walletId ??
-                    occurrence.recurringTransfert.beneficiaryWalletId,
-                onChanged: (id) => setState(() => _walletId = id),
+              WalletCornerTheme(
+                child: WalletPicker(
+                  label: context.l10n.walletTo,
+                  useSharedMenu: true,
+                  value:
+                      _walletId ??
+                      occurrence.recurringTransfert.beneficiaryWalletId,
+                  onChanged: (id) => setState(() => _walletId = id),
+                ),
               ),
             ],
             const SizedBox(height: AppDimens.spacingMedium),

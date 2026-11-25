@@ -22,9 +22,11 @@ class HeaderButton extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(right: AppDimens.marginMedium),
         constraints: const BoxConstraints(minWidth: 70),
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: buttonColor.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
+          ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Row(

@@ -27,9 +27,11 @@ class SalaryPlanCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
         padding: const EdgeInsets.all(AppDimens.paddingMedium),
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

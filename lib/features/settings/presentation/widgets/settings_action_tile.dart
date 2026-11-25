@@ -31,7 +31,9 @@ class SettingsActionTile extends StatelessWidget {
         : Theme.of(context).hintColor;
 
     return InkWell(
-      borderRadius: BorderRadius.circular(18),
+      customBorder: RoundedSuperellipseBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),

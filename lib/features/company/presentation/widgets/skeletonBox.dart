@@ -30,8 +30,10 @@ class SkeletonBox extends StatelessWidget {
           child: Container(
             width: 180,
             height: 28,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
+            decoration: ShapeDecoration(
+              shape: RoundedSuperellipseBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
               color: Theme.of(context).cardColor.withValues(alpha: 0.3),
             ),
           ),
@@ -47,8 +49,10 @@ class SkeletonBox extends StatelessWidget {
               Container(
                 width: 220,
                 height: 14,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
+                decoration: ShapeDecoration(
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
@@ -56,8 +60,10 @@ class SkeletonBox extends StatelessWidget {
               Container(
                 width: 250,
                 height: 14,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
+                decoration: ShapeDecoration(
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
@@ -65,8 +71,10 @@ class SkeletonBox extends StatelessWidget {
               Container(
                 width: MediaQuery.of(context).size.width * 0.6,
                 height: 14,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
+                decoration: ShapeDecoration(
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
@@ -94,8 +102,10 @@ class SkeletonBox extends StatelessWidget {
               child: SkeletonItem(
                 child: Container(
                   height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
+                  decoration: ShapeDecoration(
+                    shape: RoundedSuperellipseBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                     color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
                 ),
@@ -106,8 +116,10 @@ class SkeletonBox extends StatelessWidget {
               child: SkeletonItem(
                 child: Container(
                   height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
+                  decoration: ShapeDecoration(
+                    shape: RoundedSuperellipseBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                     color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
                 ),
@@ -126,8 +138,10 @@ class SkeletonBox extends StatelessWidget {
               child: SkeletonItem(
                 child: Container(
                   height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
+                  decoration: ShapeDecoration(
+                    shape: RoundedSuperellipseBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                     color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
                 ),
@@ -138,8 +152,10 @@ class SkeletonBox extends StatelessWidget {
               child: SkeletonItem(
                 child: Container(
                   height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
+                  decoration: ShapeDecoration(
+                    shape: RoundedSuperellipseBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                     color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
                 ),
@@ -180,8 +196,10 @@ class GroupCardSkeleton extends StatelessWidget {
               child: Container(
                 width: 80,
                 height: 12,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
+                decoration: ShapeDecoration(
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                   color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
@@ -192,8 +210,10 @@ class GroupCardSkeleton extends StatelessWidget {
               child: Container(
                 width: 60,
                 height: 10,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
+                decoration: ShapeDecoration(
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                   color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),

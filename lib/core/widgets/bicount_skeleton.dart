@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_corners.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 
@@ -8,11 +9,13 @@ class BicountSkeletonBox extends StatelessWidget {
     required this.height,
     this.radius = AppDimens.borderRadiusMedium,
     this.margin,
+    this.preserveWalletCorners = false,
   });
 
   final double width;
   final double height;
   final double radius;
+  final bool preserveWalletCorners;
   final EdgeInsetsGeometry? margin;
 
   @override
@@ -23,9 +26,12 @@ class BicountSkeletonBox extends StatelessWidget {
       width: width,
       height: height,
       margin: margin,
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(radius),
+        shape: appCornerShape(
+          borderRadius: BorderRadius.circular(radius),
+          legacy: preserveWalletCorners,
+        ),
       ),
     );
   }

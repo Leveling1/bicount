@@ -102,11 +102,13 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
     return SafeArea(
       child: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
-        child: ClipRRect(
+        child: ClipRSuperellipse(
           borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.all(4),
@@ -130,9 +132,11 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
                           width: _selectedRect!.width,
                           height: _selectedRect!.height,
                           child: DecoratedBox(
-                            decoration: BoxDecoration(
+                            decoration: ShapeDecoration(
                               color: const Color(0xFF6C6C6C),
-                              borderRadius: BorderRadius.circular(8),
+                              shape: RoundedSuperellipseBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
                         ),
@@ -184,7 +188,9 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
                   fontWeight: FontWeight.bold,
                   fontSize: Theme.of(context).textTheme.titleSmall!.fontSize,
                 )
-              : Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.normal),
+              : Theme.of(
+                  context,
+                ).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.normal),
         ),
       ),
     );

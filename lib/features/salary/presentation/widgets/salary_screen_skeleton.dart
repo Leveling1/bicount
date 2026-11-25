@@ -63,9 +63,11 @@ class _SalaryMetricSkeletonCard extends StatelessWidget {
     return Container(
       width: width,
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,9 +91,11 @@ class _SalaryOccurrenceSkeletonCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,9 +128,11 @@ class _SalaryPlanSkeletonCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,

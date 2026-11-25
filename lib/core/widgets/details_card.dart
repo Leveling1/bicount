@@ -18,9 +18,11 @@ class DetailsCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       margin: isMargin ? EdgeInsets.only(top: AppDimens.marginMedium) : null,
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: isPadding
           ? Padding(

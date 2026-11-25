@@ -29,7 +29,9 @@ class DebtSummaryCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        customBorder: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
         child: DetailsCard(
           isMargin: false,
           child: Column(
@@ -50,10 +52,12 @@ class DebtSummaryCard extends StatelessWidget {
                       horizontal: AppDimens.paddingSmall,
                       vertical: AppDimens.paddingExtraSmall,
                     ),
-                    decoration: BoxDecoration(
+                    decoration: ShapeDecoration(
                       color: color.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(
-                        AppDimens.borderRadiusFull,
+                      shape: RoundedSuperellipseBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppDimens.borderRadiusFull,
+                        ),
                       ),
                     ),
                     child: Text(

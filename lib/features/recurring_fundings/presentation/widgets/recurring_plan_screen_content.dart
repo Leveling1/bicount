@@ -157,9 +157,11 @@ class _OverviewCard extends StatelessWidget {
     return Container(
       width: (MediaQuery.sizeOf(context).width - 48) / 2,
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

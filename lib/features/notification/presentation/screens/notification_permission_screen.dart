@@ -74,9 +74,7 @@ class _NotificationPermissionScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      CustomDotLottie(
-                        filePath: AnimationFilePath.notification,
-                      ),
+                      CustomDotLottie(filePath: AnimationFilePath.notification),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -110,12 +108,14 @@ class _NotificationPermissionScreenState
                       Container(
                         width: double.infinity,
                         padding: AppDimens.paddingAllMedium,
-                        decoration: BoxDecoration(
+                        decoration: ShapeDecoration(
                           color: theme.colorScheme.primary.withValues(
                             alpha: 0.08,
                           ),
-                          borderRadius: BorderRadius.circular(
-                            AppDimens.borderRadiusMedium,
+                          shape: RoundedSuperellipseBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppDimens.borderRadiusMedium,
+                            ),
                           ),
                         ),
                         child: Text(

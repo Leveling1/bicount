@@ -29,8 +29,10 @@ class TransactionFilterChips extends StatelessWidget {
               right: isLast ? AppDimens.paddingMedium : 8.0,
             ),
             child: InkWell(
-              borderRadius: BorderRadius.circular(
-                AppDimens.borderRadiusMediumLarge,
+              customBorder: RoundedSuperellipseBorder(
+                borderRadius: BorderRadius.circular(
+                  AppDimens.borderRadiusMediumLarge,
+                ),
               ),
               onTap: () => onTap(index),
               child: Container(
@@ -38,12 +40,14 @@ class TransactionFilterChips extends StatelessWidget {
                   horizontal: 16,
                   vertical: 8,
                 ),
-                decoration: BoxDecoration(
+                decoration: ShapeDecoration(
                   color: isSelected
                       ? Theme.of(context).chipTheme.selectedColor
                       : Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(
-                    AppDimens.borderRadiusMediumLarge,
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(
+                      AppDimens.borderRadiusMediumLarge,
+                    ),
                   ),
                 ),
                 child: Text(

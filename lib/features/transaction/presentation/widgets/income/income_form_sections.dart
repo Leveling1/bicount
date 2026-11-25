@@ -13,11 +13,14 @@ extension _IncomeFormSections on _IncomeFormState {
         CustomAmountField(amount: _amount, currency: _currency),
         if (BackendEnvironment.isLocalPreproduction) ...[
           AppDimens.spacerMedium,
-          WalletPicker(
-            label: context.l10n.walletTo,
-            useSharedMenu: true,
-            value: _walletId ?? widget.initialTransaction?.beneficiaryWalletId,
-            onChanged: (id) => _update(() => _walletId = id),
+          WalletCornerTheme(
+            child: WalletPicker(
+              label: context.l10n.walletTo,
+              useSharedMenu: true,
+              value:
+                  _walletId ?? widget.initialTransaction?.beneficiaryWalletId,
+              onChanged: (id) => _update(() => _walletId = id),
+            ),
           ),
         ],
         if (canEditAllFields) ...[

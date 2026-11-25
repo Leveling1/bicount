@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/wallet_corner_theme.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/constants/transaction_types.dart';

@@ -76,9 +76,11 @@ class SubscriptionDetailView extends StatelessWidget {
         const SizedBox(height: AppDimens.paddingExtraSmall),
         Container(
           constraints: const BoxConstraints(minWidth: 70),
-          decoration: BoxDecoration(
+          decoration: ShapeDecoration(
             color: badgeColor.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
+            shape: RoundedSuperellipseBorder(
+              borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
+            ),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: Text(

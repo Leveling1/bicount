@@ -45,7 +45,9 @@ class CardTypeRevenue extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         hoverColor: Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        customBorder: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+        ),
         splashColor: Colors.transparent,
         highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
         onTap: onTap,

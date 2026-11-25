@@ -27,7 +27,9 @@ class ProfileCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         hoverColor: Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusExtraLarge),
+        customBorder: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusExtraLarge),
+        ),
         splashColor: Colors.transparent,
         highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
         onTap: onTap,

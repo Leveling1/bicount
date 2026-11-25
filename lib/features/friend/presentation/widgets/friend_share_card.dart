@@ -112,11 +112,13 @@ class FriendShareCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(AppDimens.paddingMedium),
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: Theme.of(
             context,
           ).scaffoldBackgroundColor.withValues(alpha: 0.45),
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          ),
         ),
         child: QrImageView(
           data: share.inviteUrl,
@@ -143,11 +145,13 @@ class FriendShareCard extends StatelessWidget {
       child: Container(
         width: _qrSize + (AppDimens.paddingMedium * 2),
         height: _qrSize + (AppDimens.paddingMedium * 2),
-        decoration: BoxDecoration(
+        decoration: ShapeDecoration(
           color: Theme.of(
             context,
           ).scaffoldBackgroundColor.withValues(alpha: 0.45),
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+          ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -187,9 +191,11 @@ class FriendShareCard extends StatelessWidget {
     final color = Theme.of(context).colorScheme.error;
     return Container(
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: color.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

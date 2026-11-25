@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_corners.dart';
 import 'package:flutter/material.dart';
 
 import '../themes/app_dimens.dart';
@@ -19,10 +20,11 @@ Future<T?> showCustomBottomSheet<T>({
     context: context,
     isScrollControlled: true,
     backgroundColor: bgColor,
-    shape: const RoundedRectangleBorder(
+    shape: appCornerShape(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(AppDimens.radiusExtraLarge),
       ),
+      legacy: WalletCorners.of(context),
     ),
     constraints: BoxConstraints(
       minWidth: screenWidth,
@@ -57,11 +59,12 @@ Future<T?> showCustomBottomSheet<T>({
                   Container(
                     width: 50,
                     height: handleHeight,
-                    decoration: BoxDecoration(
+                    decoration: appCornerDecoration(
                       color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(
                         AppDimens.borderRadiusFull,
                       ),
+                      legacy: WalletCorners.of(context),
                     ),
                   ),
                   const SizedBox(height: spacing),

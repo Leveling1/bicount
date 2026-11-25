@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_corners.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -154,11 +155,12 @@ class _ProviderButton extends StatelessWidget {
                       Container(
                         width: 36,
                         height: 36,
-                        decoration: BoxDecoration(
+                        decoration: appCornerDecoration(
                           color: AppColors.surfaceColorDark,
                           borderRadius: BorderRadius.circular(
                             AppDimens.borderRadiusMedium,
                           ),
+                          legacy: WalletCorners.of(context),
                         ),
                         padding: const EdgeInsets.all(8),
                         child: SvgPicture.asset(icon),
@@ -233,11 +235,12 @@ class CustomAuthIconButton extends StatelessWidget {
     return Container(
       width: 36,
       height: 36,
-      decoration: BoxDecoration(
+      decoration: appCornerDecoration(
         color: Theme.of(
           context,
         ).elevatedButtonTheme.style?.backgroundColor?.resolve({}),
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+        legacy: WalletCorners.of(context),
       ),
       margin: EdgeInsets.only(
         right: AppDimens.marginExtraSmall,
@@ -253,7 +256,10 @@ class CustomAuthIconButton extends StatelessWidget {
               ?.backgroundColor
               ?.resolve({})
               ?.withValues(alpha: 0.4),
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+          customBorder: appCornerShape(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+            legacy: WalletCorners.of(context),
+          ),
           onTap: onPressed,
           child: Padding(
             padding: const EdgeInsets.all(8),
@@ -348,9 +354,10 @@ class CustomIconButton extends StatelessWidget {
     return Container(
       width: 36,
       height: 36,
-      decoration: BoxDecoration(
+      decoration: appCornerDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+        legacy: WalletCorners.of(context),
       ),
       margin: EdgeInsets.only(
         right: AppDimens.marginExtraSmall,
@@ -361,7 +368,10 @@ class CustomIconButton extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           hoverColor: Theme.of(context).cardColor.withValues(alpha: 0.4),
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+          customBorder: appCornerShape(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+            legacy: WalletCorners.of(context),
+          ),
           onTap: onPressed,
           child: Center(
             child: loading
