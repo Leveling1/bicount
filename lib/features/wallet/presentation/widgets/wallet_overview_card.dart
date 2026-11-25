@@ -136,7 +136,7 @@ class WalletOverviewActions extends StatelessWidget {
         _WalletCardAction(
           tint: tint,
           label: l10n.walletEdit,
-          icon: const Icon(Icons.edit_outlined, size: 16),
+          icon: const Icon(Icons.edit, size: 16),
           onPressed: onEdit,
           decorative: decorative,
         ),

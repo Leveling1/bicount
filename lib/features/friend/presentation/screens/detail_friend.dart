@@ -60,7 +60,7 @@ class DetailFriend extends StatelessWidget {
               if (detail != null && detail.canDeleteProfile)
                 CustomIconButton(
                   onPressed: () => _openDeleteFlow(context, currentFriend),
-                  icon: Icons.delete_outline,
+                  icon: Icons.delete,
                 ),
             ],
           ),
