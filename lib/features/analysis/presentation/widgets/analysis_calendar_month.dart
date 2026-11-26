@@ -1,4 +1,5 @@
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/features/analysis/presentation/widgets/analysis_month_grid.dart';
 import 'package:flutter/material.dart';
 
 class AnalysisCalendarMonth extends StatelessWidget {
@@ -24,8 +25,6 @@ class AnalysisCalendarMonth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final material = MaterialLocalizations.of(context);
-    final offset = DateUtils.firstDayOffset(month.year, month.month, material);
-    final lastDay = DateUtils.getDaysInMonth(month.year, month.month);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,26 +39,13 @@ class AnalysisCalendarMonth extends StatelessWidget {
             ),
           ),
         ),
-        for (
-          var week = 0;
-          week < offset + lastDay;
-          week += DateTime.daysPerWeek
-        )
-          Row(
-            children: [
-              for (var column = 0; column < DateTime.daysPerWeek; column++)
-                Expanded(child: _buildDay(week + column - offset + 1, lastDay)),
-            ],
-          ),
+        AnalysisMonthGrid(month: month, dayBuilder: _buildDay),
         AppDimens.spacerSmall,
       ],
     );
   }
 
-  Widget _buildDay(int day, int lastDay) {
-    if (day < 1 || day > lastDay) return const SizedBox(height: 44);
-
-    final date = DateTime(month.year, month.month, day);
+  Widget _buildDay(DateTime date) {
     final rangeStart = start;
     final rangeEnd = end;
     final isStart = DateUtils.isSameDay(date, rangeStart);

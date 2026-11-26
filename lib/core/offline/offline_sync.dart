@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_config.dart';
 import 'offline_codecs.g.dart';
+import 'offline_conflict_archive.dart';
 import 'offline_conflict_clock.dart';
 import 'offline_conditional_delivery.dart';
 import 'offline_conditional_creation.dart';
@@ -146,7 +147,8 @@ class OfflineSync {
         final last = _lastPull[codec.table];
         final journalCollection = _journalTables.contains(codec.table);
         final interval = switch (codec.table) {
-          'analysis_contact_categories' => const Duration(seconds: 30),
+          'analysis_contact_categories' ||
+          'recurring_plan_pauses' => const Duration(seconds: 30),
           _ when journalActive && journalCollection => const Duration(hours: 1),
           _ => const Duration(minutes: 5),
         };

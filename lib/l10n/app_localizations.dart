@@ -4085,6 +4085,18 @@ abstract class AppLocalizations {
   /// **'Wallet balances are unavailable.'**
   String get analysisWalletBalancesUnavailable;
 
+  /// No description provided for @analysisRecurringCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring calendar'**
+  String get analysisRecurringCalendar;
+
+  /// No description provided for @analysisRecurringCalendarEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring payments are scheduled for this day.'**
+  String get analysisRecurringCalendarEmpty;
+
   /// No description provided for @walletTitle.
   ///
   /// In en, this message translates to:
@@ -4294,6 +4306,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Balance'**
   String get walletBalance;
+
+  /// No description provided for @recurringPlanPauseCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause plan'**
+  String get recurringPlanPauseCta;
+
+  /// No description provided for @recurringPlanResumeCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume plan'**
+  String get recurringPlanResumeCta;
+
+  /// No description provided for @recurringPlansPauseCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause plans'**
+  String get recurringPlansPauseCta;
+
+  /// No description provided for @recurringPlansResumeCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume plans'**
+  String get recurringPlansResumeCta;
+
+  /// No description provided for @recurringPlansManagePauses.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage pauses'**
+  String get recurringPlansManagePauses;
+
+  /// No description provided for @recurringPlanPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get recurringPlanPaused;
+
+  /// No description provided for @recurringPlanPauseHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause history'**
+  String get recurringPlanPauseHistory;
+
+  /// No description provided for @recurringPlanKeepSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the usual schedule'**
+  String get recurringPlanKeepSchedule;
+
+  /// No description provided for @recurringPlanChooseResumeDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a new first due date'**
+  String get recurringPlanChooseResumeDate;
+
+  /// No description provided for @recurringPlanPauseNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled occurrences during the pause are skipped. Recorded transactions are kept.'**
+  String get recurringPlanPauseNotice;
+
+  /// No description provided for @recurringPlanResumeNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose when each plan’s future occurrences should start.'**
+  String get recurringPlanResumeNotice;
+
+  /// No description provided for @recurringPlanPauseSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause saved'**
+  String get recurringPlanPauseSaved;
+
+  /// No description provided for @recurringPlanResumeSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resumption saved'**
+  String get recurringPlanResumeSaved;
+
+  /// No description provided for @recurringPlanPauseError.
+  ///
+  /// In en, this message translates to:
+  /// **'The change couldn’t be saved. Check the plan status and date, then try again.'**
+  String get recurringPlanPauseError;
+
+  /// No description provided for @recurringPlanPausedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused {date}'**
+  String recurringPlanPausedOn(String date);
+
+  /// No description provided for @recurringPlanResumedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resumed {date}'**
+  String recurringPlanResumedOn(String date);
+
+  /// No description provided for @recurringPlanNewDueOn.
+  ///
+  /// In en, this message translates to:
+  /// **'New first due date {date}'**
+  String recurringPlanNewDueOn(String date);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -37,7 +37,8 @@ class SalaryOccurrenceEntity extends Equatable {
       recurringTransfert.recurringTransfertTypeId ==
           TransactionTypes.salaryCode &&
       AppExecutionMode.requiresConfirmation(recurringTransfert.executionMode);
-  bool get remindersEnabled => recurringTransfert.reminderEnabled;
+  bool get remindersEnabled =>
+      !recurringTransfert.isPaused && recurringTransfert.reminderEnabled;
 
   @override
   List<Object?> get props => [

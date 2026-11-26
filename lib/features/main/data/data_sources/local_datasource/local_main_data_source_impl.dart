@@ -133,6 +133,7 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       setSubscription: (subscription) =>
           _recurringTransfertsSubscription = subscription,
       errorLabel: 'recurring transferts',
+      watch: Repository().watchRecurringPlans,
     );
   }
 
@@ -144,6 +145,7 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     setSubscription,
     required String errorLabel,
     Query? query,
+    Stream<List<T>> Function()? watch,
   }) {
     final existing = getSubject();
     if (existing != null) {
@@ -154,10 +156,10 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
       final subject = BehaviorSubject<List<T>>.seeded(const []);
       setSubject(subject);
 
-      unawaited(primeListSubject(subject, query));
-      final subscription = Repository()
-          .subscribeToRealtime<T>(query: query)
-          .listen(subject.add, onError: subject.addError);
+      if (watch == null) unawaited(primeListSubject(subject, query));
+      final subscription =
+          (watch?.call() ?? Repository().subscribeToRealtime<T>(query: query))
+              .listen(subject.add, onError: subject.addError);
       setSubscription(subscription);
       return subject.stream;
     } catch (error) {
@@ -190,7 +192,8 @@ class LocalMainDataSourceImpl implements MainLocalDataSource {
     }
     final recurringSubject = _recurringTransfertsSubject;
     if (recurringSubject != null && !recurringSubject.isClosed) {
-      await primeListSubject(recurringSubject, null);
+      final plans = await Repository().readRecurringPlans();
+      if (!recurringSubject.isClosed) recurringSubject.add(plans);
     }
   }
 

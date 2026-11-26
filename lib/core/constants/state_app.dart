@@ -145,6 +145,7 @@ final class AppRecurringTransfertState {
   static const int active = 0;
   static const int inactive = 1;
   static const int archived = 2;
+  static const int paused = 3;
 
   static int normalize(int? status) {
     switch (status) {
@@ -152,6 +153,8 @@ final class AppRecurringTransfertState {
         return inactive;
       case archived:
         return archived;
+      case paused:
+        return paused;
       case active:
       default:
         return active;

@@ -2078,6 +2078,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get analysisWalletBalancesUnavailable => 'Les soldes des portefeuilles sont indisponibles.';
 
   @override
+  String get analysisRecurringCalendar => 'Calendrier des récurrences';
+
+  @override
+  String get analysisRecurringCalendarEmpty => 'Aucune échéance prévue ce jour.';
+
+  @override
   String get walletTitle => 'Portefeuilles';
 
   @override
@@ -2183,4 +2189,61 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get walletBalance => 'Solde';
+
+  @override
+  String get recurringPlanPauseCta => 'Mettre en pause';
+
+  @override
+  String get recurringPlanResumeCta => 'Reprendre';
+
+  @override
+  String get recurringPlansPauseCta => 'Mettre des plans en pause';
+
+  @override
+  String get recurringPlansResumeCta => 'Reprendre des plans';
+
+  @override
+  String get recurringPlansManagePauses => 'Gérer les pauses';
+
+  @override
+  String get recurringPlanPaused => 'En pause';
+
+  @override
+  String get recurringPlanPauseHistory => 'Historique des pauses';
+
+  @override
+  String get recurringPlanKeepSchedule => 'Garder le calendrier habituel';
+
+  @override
+  String get recurringPlanChooseResumeDate => 'Choisir une nouvelle première échéance';
+
+  @override
+  String get recurringPlanPauseNotice => 'Les échéances prévues pendant la pause sont ignorées. Les transactions enregistrées sont conservées.';
+
+  @override
+  String get recurringPlanResumeNotice => 'Choisissez la première échéance à venir pour chaque plan.';
+
+  @override
+  String get recurringPlanPauseSaved => 'Pause enregistrée';
+
+  @override
+  String get recurringPlanResumeSaved => 'Reprise enregistrée';
+
+  @override
+  String get recurringPlanPauseError => 'La modification a échoué. Vérifiez le statut du plan et la date, puis réessayez.';
+
+  @override
+  String recurringPlanPausedOn(String date) {
+    return 'Pause le $date';
+  }
+
+  @override
+  String recurringPlanResumedOn(String date) {
+    return 'Reprise le $date';
+  }
+
+  @override
+  String recurringPlanNewDueOn(String date) {
+    return 'Nouvelle première échéance le $date';
+  }
 }

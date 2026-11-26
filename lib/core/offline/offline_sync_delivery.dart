@@ -11,9 +11,19 @@ extension on OfflineSync {
         excludeUnresolvedLegacy: true,
       );
       if (pending.isEmpty) break;
+      var madeProgress = false;
       for (final operation in pending) {
         if (repository.currentUserId != uid) return false;
+        final isPause = operation.collection == recurringPlanPauseCodec.table;
         try {
+          if (isPause &&
+              await outbox.hasEarlierRelatedOperation(
+                operation,
+                'recurring_transfert_id',
+              )) {
+            continue;
+          }
+          madeProgress = true;
           if (OfflineSync._conditionalTestEnabled &&
               OfflineSync._journalTables.contains(operation.collection) &&
               (operation.action == 'upsert' || operation.action == 'delete')) {
@@ -112,6 +122,16 @@ extension on OfflineSync {
           }
           await outbox.acknowledge(uid, operation.id);
         } catch (error) {
+          if (isPause && _isRecurringPauseConflict(error)) {
+            await archiveConditionalConflict(
+              db: db,
+              operation: operation,
+              reason: (error as PostgrestException).message,
+            );
+            await outbox.acknowledge(uid, operation.id);
+            _lastPull.remove(recurringPlanPauseCodec.table);
+            continue;
+          }
           await outbox.defer(
             uid,
             operation.id,
@@ -121,10 +141,19 @@ extension on OfflineSync {
           return !_isTransportError(error);
         }
       }
-      if (pending.length < 100) break;
+      if (!madeProgress || pending.length < 100) break;
     }
     return true;
   }
+
+  bool _isRecurringPauseConflict(Object error) =>
+      error is PostgrestException &&
+      ((error.code == '23505' &&
+              error.message.contains('recurring_plan_pauses_one_open')) ||
+          (error.code == '23514' &&
+              (error.message == 'Recurring pause overlaps another pause' ||
+                  error.message ==
+                      'Recurring pause history cannot be rewritten')));
 
   bool _isTransportError(Object error) =>
       error is SocketException ||

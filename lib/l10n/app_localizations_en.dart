@@ -2078,6 +2078,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analysisWalletBalancesUnavailable => 'Wallet balances are unavailable.';
 
   @override
+  String get analysisRecurringCalendar => 'Recurring calendar';
+
+  @override
+  String get analysisRecurringCalendarEmpty => 'No recurring payments are scheduled for this day.';
+
+  @override
   String get walletTitle => 'Wallets';
 
   @override
@@ -2183,4 +2189,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get walletBalance => 'Balance';
+
+  @override
+  String get recurringPlanPauseCta => 'Pause plan';
+
+  @override
+  String get recurringPlanResumeCta => 'Resume plan';
+
+  @override
+  String get recurringPlansPauseCta => 'Pause plans';
+
+  @override
+  String get recurringPlansResumeCta => 'Resume plans';
+
+  @override
+  String get recurringPlansManagePauses => 'Manage pauses';
+
+  @override
+  String get recurringPlanPaused => 'Paused';
+
+  @override
+  String get recurringPlanPauseHistory => 'Pause history';
+
+  @override
+  String get recurringPlanKeepSchedule => 'Keep the usual schedule';
+
+  @override
+  String get recurringPlanChooseResumeDate => 'Choose a new first due date';
+
+  @override
+  String get recurringPlanPauseNotice => 'Scheduled occurrences during the pause are skipped. Recorded transactions are kept.';
+
+  @override
+  String get recurringPlanResumeNotice => 'Choose when each plan’s future occurrences should start.';
+
+  @override
+  String get recurringPlanPauseSaved => 'Pause saved';
+
+  @override
+  String get recurringPlanResumeSaved => 'Resumption saved';
+
+  @override
+  String get recurringPlanPauseError => 'The change couldn’t be saved. Check the plan status and date, then try again.';
+
+  @override
+  String recurringPlanPausedOn(String date) {
+    return 'Paused $date';
+  }
+
+  @override
+  String recurringPlanResumedOn(String date) {
+    return 'Resumed $date';
+  }
+
+  @override
+  String recurringPlanNewDueOn(String date) {
+    return 'New first due date $date';
+  }
 }

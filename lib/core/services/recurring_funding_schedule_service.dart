@@ -26,7 +26,7 @@ class RecurringFundingScheduleService {
   DateTime nextOccurrence(DateTime value, int frequency) {
     switch (frequency) {
       case Frequency.weekly:
-        return value.add(const Duration(days: 7));
+        return value.copyWith(day: value.day + DateTime.daysPerWeek);
       case Frequency.monthly:
         return DateTime(value.year, value.month + 1, value.day);
       case Frequency.quarterly:

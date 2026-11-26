@@ -36,6 +36,30 @@ class _AnalysisScreenContent extends StatelessWidget {
           ),
         ),
 
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              BlocSelector<MainBloc, MainState, List<RecurringTransfertModel>>(
+                selector: (state) => state is MainLoaded
+                    ? state.startData.recurringTransferts
+                    : const [],
+                builder: (context, plans) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppDimens.marginLarge),
+                  child: AnalysisRecurringCalendar(plans: plans),
+                ),
+              ),
+              if (BackendEnvironment.isLocalPreproduction)
+                const Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppDimens.paddingMedium,
+                  ),
+                  child: AnalysisWalletDistributionCard(),
+                ),
+            ],
+          ),
+        ),
+
         // ── Period selector — PINNED ──
         SliverPersistentHeader(
           pinned: true,
@@ -86,8 +110,6 @@ class _AnalysisScreenContent extends StatelessWidget {
                       child: AnalysisMetricOverview(dashboard: dashboard),
                     ),
                     const SizedBox(height: AppDimens.marginLarge),
-                    if (BackendEnvironment.isLocalPreproduction)
-                      const AnalysisWalletDistributionCard(),
                     BicountReveal(
                       delay: const Duration(milliseconds: 190),
                       child: Column(

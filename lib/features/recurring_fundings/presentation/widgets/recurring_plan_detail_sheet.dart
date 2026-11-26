@@ -7,7 +7,9 @@ import 'package:bicount/features/currency/domain/entities/currency_config_entity
 import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
+import 'package:bicount/features/recurring_fundings/data/repositories/recurring_transfert_repository_impl.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
+import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_pause_action.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_summary_entity.dart';
 import 'package:bicount/features/recurring_fundings/domain/services/recurring_plan_collection_builder.dart';
 import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_transfert_bloc.dart';
@@ -16,6 +18,7 @@ import 'package:bicount/features/recurring_fundings/presentation/bloc/recurring_
 import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_detail_skeleton.dart';
 import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_detail_view.dart';
 import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_form.dart';
+import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_pause_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,17 +27,27 @@ Future<void> showRecurringPlanDetailSheet(
   required RecurringPlanScope scope,
   required String recurringTransfertId,
 }) {
+  final existingBloc = context.read<RecurringTransfertBloc?>();
+  final detail = RecurringPlanDetailSheet(
+    scope: scope,
+    recurringTransfertId: recurringTransfertId,
+  );
+  final Widget content;
+  if (existingBloc != null) {
+    content = BlocProvider.value(value: existingBloc, child: detail);
+  } else {
+    final repository = context.read<RecurringTransfertRepositoryImpl>();
+    content = BlocProvider(
+      create: (_) => RecurringTransfertBloc(repository),
+      child: detail,
+    );
+  }
+
   return showCustomBottomSheet(
     context: context,
     minHeight: 0.65,
     color: null,
-    child: BlocProvider.value(
-      value: context.read<RecurringTransfertBloc>(),
-      child: RecurringPlanDetailSheet(
-        scope: scope,
-        recurringTransfertId: recurringTransfertId,
-      ),
-    ),
+    child: content,
   );
 }
 
@@ -114,11 +127,13 @@ class _RecurringPlanDetailSheetState extends State<RecurringPlanDetailSheet> {
                     recurringState.targetId == targetId,
                 onEditPressed: () => setState(() => _isEditing = true),
                 onDeletePressed: () => _confirmDelete(context, summary),
-                onTerminatePressed: summary.isActive
-                    ? () => context.read<RecurringTransfertBloc>().add(
-                        TerminateRecurringPlanRequested(
-                          summary.recurringTransfert,
-                        ),
+                onPauseActionPressed: summary.isActive || summary.canResume
+                    ? () => showRecurringPlanPauseSheet(
+                        context,
+                        action: summary.isPaused
+                            ? RecurringPlanPauseAction.resume
+                            : RecurringPlanPauseAction.pause,
+                        plans: [summary],
                       )
                     : null,
               );

@@ -19,8 +19,9 @@ class RecurringPlanSummaryEntity extends Equatable {
   final double totalRecordedReferenceAmount;
   final int recordedCount;
 
-  bool get isActive =>
-      AppRecurringTransfertState.isActive(recurringTransfert.status);
+  bool get isActive => !isPaused && recurringTransfert.hasSchedule;
+  bool get isPaused => recurringTransfert.isPaused;
+  bool get canResume => recurringTransfert.hasOpenPause;
   bool get isAutomatic =>
       AppExecutionMode.isAutomatic(recurringTransfert.executionMode);
   bool get requiresConfirmation =>

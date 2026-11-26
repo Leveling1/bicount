@@ -6,6 +6,14 @@ import 'package:path/path.dart' as path;
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bicount/features/analysis/data/models/analysis_contact_category.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_plan_pause.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
+import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_pause_action.dart';
+import 'package:bicount/features/recurring_fundings/domain/services/recurring_plan_schedule.dart';
+import 'package:bicount/features/transaction/data/models/transaction.model.dart';
+import 'package:intl/intl.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:uuid/uuid.dart';
 import 'package:bicount/features/wallet/data/data_sources/local_datasource/wallet_balance_store.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 
@@ -29,6 +37,7 @@ part 'offline_repository_mutations.dart';
 part 'offline_repository_account_data.dart';
 part 'offline_repository_local_data.dart';
 part 'offline_repository_analysis_categories.dart';
+part 'offline_repository_recurring_pauses.dart';
 
 class Repository {
   Repository._() : sqliteProvider = LocalSqliteProvider();

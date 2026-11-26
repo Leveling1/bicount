@@ -10,6 +10,7 @@ import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/group/data/models/group.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/project/data/models/project.model.dart';
+import 'package:bicount/features/recurring_fundings/data/models/recurring_plan_pause.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/subscription/data/models/subscription.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
@@ -1402,6 +1403,27 @@ final analysisContactCategoryCodec = OfflineCodec<AnalysisContactCategory>(
   toRemote: (category) => category.toRow(),
 );
 
+const _recurringPlanPauseColumns = {
+  'pause_id': 'pause_id',
+  'recurring_transfert_id': 'recurring_transfert_id',
+  'paused_at': 'paused_at',
+  'paused_on': 'paused_on',
+  'resumed_at': 'resumed_at',
+  'resumed_on': 'resumed_on',
+  'next_due_date_override': 'next_due_date_override',
+};
+
+final recurringPlanPauseCodec = OfflineCodec<RecurringPlanPause>(
+  table: 'recurring_plan_pauses',
+  key: 'pause_id',
+  columns: _recurringPlanPauseColumns,
+  localColumns: _recurringPlanPauseColumns,
+  fromLocal: RecurringPlanPause.fromRow,
+  fromRemote: RecurringPlanPause.fromRow,
+  toLocal: (pause) => pause.toRow(),
+  toRemote: (pause) => pause.toRow(),
+);
+
 final List<OfflineCodec<dynamic>> allOfflineCodecs = [
   if (BackendEnvironment.isLocalPreproduction) walletModelCodec,
   memojiModelCodec,
@@ -1413,6 +1435,7 @@ final List<OfflineCodec<dynamic>> allOfflineCodecs = [
   friendsModelCodec,
   projectModelCodec,
   recurringTransfertModelCodec,
+  recurringPlanPauseCodec,
   transactionModelCodec,
   analysisContactCategoryCodec,
 ];

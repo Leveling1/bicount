@@ -2,6 +2,7 @@ import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:bicount/features/analysis/presentation/widgets/analysis_calendar_month.dart';
+import 'package:bicount/features/analysis/presentation/widgets/analysis_month_grid.dart';
 import 'package:flutter/material.dart';
 
 class AnalysisRangeCalendar extends StatefulWidget {
@@ -107,21 +108,7 @@ class _AnalysisRangeCalendarState extends State<AnalysisRangeCalendar> {
             ),
           ),
         ),
-        Row(
-          children: [
-            for (var index = 0; index < DateTime.daysPerWeek; index++)
-              Expanded(
-                child: Center(
-                  child: Text(
-                    material.narrowWeekdays[(material.firstDayOfWeekIndex +
-                            index) %
-                        DateTime.daysPerWeek],
-                    style: theme.textTheme.titleSmall,
-                  ),
-                ),
-              ),
-          ],
-        ),
+        const AnalysisMonthWeekdays(),
         const Divider(),
         Expanded(
           child: CustomScrollView(

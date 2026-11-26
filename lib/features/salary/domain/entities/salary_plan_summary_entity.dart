@@ -20,7 +20,8 @@ class SalaryPlanSummaryEntity extends Equatable {
   bool get requiresConfirmation =>
       AppExecutionMode.requiresConfirmation(recurringTransfert.executionMode);
 
-  bool get remindersEnabled => recurringTransfert.reminderEnabled;
+  bool get remindersEnabled =>
+      !recurringTransfert.isPaused && recurringTransfert.reminderEnabled;
 
   int get totalAttentionCount => overdueCount + dueTodayCount;
 

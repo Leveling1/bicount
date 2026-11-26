@@ -329,6 +329,8 @@ Interaction rule:
 - the intro copy, overall layout, and section structure should remain fixed during period changes
 - contact categories are private per account and per chart. They reclassify ordinary income and expense rows in the breakdown while preserving cashflow totals and the dedicated categories for debt principal, repayments, salary and subscriptions.
 - category selections write to the own-account SQLite cache and outbox in one transaction, then sync to `analysis_contact_categories`. See `docs/backend_followup_actions.md`.
+- The recurring calendar shows active plans from MainBloc on their scheduled days.
+  It selects today initially and sits above the wallet distribution and period filters.
 
 ### debt
 

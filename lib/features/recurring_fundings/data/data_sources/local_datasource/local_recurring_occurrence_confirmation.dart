@@ -14,6 +14,9 @@ extension on LocalRecurringTransfertDataSourceImpl {
     if (currentPlan == null) {
       throw Exception('Recurring plan not found.');
     }
+    if (!canConfirmRecurringDate(currentPlan, occurrence.expectedDate)) {
+      throw StateError('Recurring occurrence is unavailable.');
+    }
 
     final existingTransaction = await _findOccurrenceTransaction(
       currentPlan.recurringTransfertId ?? '',
@@ -54,9 +57,10 @@ extension on LocalRecurringTransfertDataSourceImpl {
         recurringOccurrenceDate: occurrence.expectedDate.toIso8601String(),
         generationMode: TransactionTypes.generationManualConfirmation,
       );
-      await Repository().upsert<TransactionModel>(
+      await Repository().saveRecurringConfirmation(
         transaction,
-        isCreation: true,
+        planId: currentPlan.recurringTransfertId!,
+        expectedDate: occurrence.expectedDate,
       );
       if (_currentUid != null) {
         await _offlineFinanceLocalService.applyTransactionEffects(

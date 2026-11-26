@@ -1,4 +1,3 @@
-import 'package:bicount/core/constants/state_app.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/services/recurring_funding_schedule_service.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
@@ -7,6 +6,7 @@ import 'package:bicount/features/recurring_fundings/data/models/recurring_transf
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_collection_entity.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_summary_entity.dart';
+import 'package:bicount/features/recurring_fundings/domain/services/recurring_plan_schedule.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
 
 class RecurringPlanCollectionBuilder {
@@ -87,7 +87,9 @@ class RecurringPlanCollectionBuilder {
 
     return RecurringPlanSummaryEntity(
       recurringTransfert: plan,
-      nextExpectedDate: _resolveNextExpectedDate(plan, today),
+      nextExpectedDate: RecurringPlanSchedule(
+        scheduleService: scheduleService,
+      ).firstOnOrAfter(plan, today),
       lastRecordedDate: linkedTransactions.isEmpty
           ? null
           : scheduleService.parseDate(linkedTransactions.first.date),
@@ -101,39 +103,11 @@ class RecurringPlanCollectionBuilder {
     );
   }
 
-  DateTime? _resolveNextExpectedDate(
-    RecurringTransfertModel plan,
-    DateTime today,
-  ) {
-    if (!AppRecurringTransfertState.isActive(plan.status)) {
-      return null;
-    }
-
-    final startDate = scheduleService.parseDate(plan.startDate);
-    if (startDate == null) {
-      return null;
-    }
-    final endDate = scheduleService.parseDate(plan.endDate);
-    final frequency = _effectiveFrequency(plan.frequency);
-    var cursor = scheduleService.startOfDay(startDate);
-
-    while (cursor.isBefore(today)) {
-      cursor = scheduleService.nextOccurrence(cursor, frequency);
-    }
-
-    if (endDate != null &&
-        cursor.isAfter(scheduleService.startOfDay(endDate))) {
-      return null;
-    }
-
-    return cursor;
-  }
-
   double _monthlyReferenceAmount(
     RecurringTransfertModel plan,
     CurrencyConfigEntity currencyConfig,
   ) {
-    final frequency = _effectiveFrequency(plan.frequency);
+    final frequency = RecurringPlanSchedule.effectiveFrequency(plan.frequency);
     final referenceAmount = currencyAmountService.record(
       originalAmount: plan.amount,
       originalCurrencyCode: plan.currency,
@@ -147,14 +121,6 @@ class RecurringPlanCollectionBuilder {
       Frequency.quarterly => referenceAmount / 3,
       Frequency.yearly => referenceAmount / 12,
       _ => referenceAmount,
-    };
-  }
-
-  int _effectiveFrequency(int frequency) {
-    return switch (frequency) {
-      4 => Frequency.quarterly,
-      5 => Frequency.yearly,
-      _ => frequency,
     };
   }
 

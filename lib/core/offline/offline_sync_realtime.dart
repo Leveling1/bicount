@@ -6,7 +6,10 @@ extension on OfflineSync {
   void watchCodec(OfflineCodec<dynamic> codec) {
     // Postgres Changes delete events do not enforce row-level read policies.
     // Use authenticated snapshots for private preferences on every device.
-    if (codec.table == analysisContactCategoryCodec.table) return;
+    if (codec.table == analysisContactCategoryCodec.table ||
+        codec.table == recurringPlanPauseCodec.table) {
+      return;
+    }
     final ownerUserId = repository.currentUserId;
     if (_channels.containsKey(codec.table) || ownerUserId == null) {
       return;
@@ -48,6 +51,10 @@ extension on OfflineSync {
   ) async {
     final uid = repository.currentUserId;
     if (uid == null || uid != ownerUserId) return;
+    if (codec.table == recurringTransfertModelCodec.table) {
+      _lastPull.remove(recurringPlanPauseCodec.table);
+      schedule();
+    }
     if (OfflineJournal.enabled &&
         OfflineSync._journalTables.contains(codec.table)) {
       // Journal mode uses realtime only as a wake-up signal. Applying an old

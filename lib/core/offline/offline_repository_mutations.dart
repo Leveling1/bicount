@@ -4,6 +4,12 @@ extension OfflineRepositoryMutations on Repository {
   Future<T> upsert<T extends OfflineModel>(
     T model, {
     bool isCreation = false,
+  }) => _upsert(model, isCreation: isCreation);
+
+  Future<T> _upsert<T extends OfflineModel>(
+    T model, {
+    required bool isCreation,
+    Future<void> Function(Transaction, String)? validate,
   }) async {
     final codec = codecFor<T>();
     final local = codec.toLocal(model);
@@ -28,6 +34,7 @@ extension OfflineRepositoryMutations on Repository {
       editedLatest: editTime?.latest,
     );
     await OfflineOutbox(db).commit(operation, (tx) async {
+      if (validate != null) await validate(tx, uid);
       await tx.insert(
         codec.localTable,
         local,

@@ -312,3 +312,38 @@ The mobile app still keeps `/salary` as a backward-compatible alias for older li
 4. Put one rule in automatic mode and verify that the backend scheduled process creates the missing `account_funding` row.
 5. Verify realtime or next-sync propagation on another device.
 6. Verify that duplicate automatic rows are not created when the backend job runs twice.
+
+## 12. Pauses des plans récurrents unifiés
+
+La migration `20261126160402_recurring_plan_pauses.sql` ajoute
+`public.recurring_plan_pauses` pour les revenus et dépenses de
+`public.recurring_transfert`. Chaque ligne conserve l’instant et le jour
+civil de la pause et de la reprise, ainsi que la nouvelle première échéance
+si elle est choisie. Seul le propriétaire du plan accède à cet historique.
+Un plan peut avoir plusieurs pauses historiques et une seule pause ouverte.
+
+- Le calendrier exclut le jour de pause et les jours suivants jusqu’à la
+  reprise, dont le jour est inclus. Avec une nouvelle échéance, le plan
+  redémarre à cette date et conserve sa fréquence.
+- Le statut serveur vaut `3` pendant une pause ouverte, puis revient à
+  `0` à la reprise. Le traitement des rappels sélectionne les plans de
+  statut `0`. La base bloque aussi les rappels déjà préparés pour une
+  échéance devenue périmée et les nouvelles écritures dans les périodes
+  suspendues. Les transactions existantes restent dans le registre.
+- Les actions groupées s’enregistrent en une transaction SQLite. Le serveur
+  reçoit les écritures à la reconnexion, dans l’ordre pour chaque plan.
+  Si deux appareils ouvrent simultanément une pause, le serveur conserve
+  celle qui a été acceptée en premier. L’intention concurrente est archivée
+  localement avant la prochaine lecture de l’historique serveur.
+- Les dates des rappels et du traitement automatique côté serveur sont en UTC.
+  Les jours de pause, de reprise et de nouvelle échéance conservent les dates
+  civiles enregistrées par l’application.
+
+Le traitement automatique unifié de préproduction
+`bicount_wallet.generate_due_movements` respecte ce statut et la nouvelle
+échéance. Lors de la vérification de production, les deux tâches de génération
+planifiées appelaient encore les anciennes tables. La migration des pauses
+n’active aucun nouveau traitement automatique en production. Déployer la
+migration de pauses avant la version mobile qui utilise la table, puis
+valider séparément la bascule de la génération automatique vers
+`recurring_transfert`.

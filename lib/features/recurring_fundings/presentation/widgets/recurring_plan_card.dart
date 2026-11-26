@@ -57,7 +57,9 @@ class RecurringPlanCard extends StatelessWidget {
                     ),
                     const SizedBox(width: AppDimens.spacingSmall),
                     SalaryStatusBadge(
-                      label: summary.isActive
+                      label: summary.isPaused
+                          ? context.l10n.recurringPlanPaused
+                          : summary.isActive
                           ? context.l10n.statusActive
                           : context.l10n.statusInactive,
                       color: summary.isActive
