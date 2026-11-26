@@ -18,39 +18,46 @@ class AnalysisWalletDistributionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WalletBloc, WalletState>(
       builder: (context, state) {
+        if (state.wallets.length < 2) return const SizedBox.shrink();
+
         final balances = state.balances;
         final l10n = context.l10n;
         final theme = Theme.of(context);
-        return DetailsCard(
-          isMargin: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: AppDimens.spacingSmall,
-            children: [
-              Text(
-                l10n.analysisWalletDistribution,
-                style: theme.textTheme.titleMedium,
-              ),
-              Text(
-                l10n.analysisWalletCurrentBalances,
-                style: theme.textTheme.bodySmall,
-              ),
-              if (balances == null)
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppDimens.marginLarge),
+          child: DetailsCard(
+            isMargin: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: AppDimens.spacingSmall,
+              children: [
                 Text(
-                  l10n.analysisWalletBalancesUnavailable,
-                  style: theme.textTheme.bodySmall,
-                )
-              else
-                _WalletDistributionContent(
-                  distribution: AnalysisWalletDistribution.fromBalances(
-                    state.wallets,
-                    balances,
-                    state.currencyConfig,
-                  ),
-                  walletIds: state.wallets.map((wallet) => wallet.id).toList(),
-                  currencyCode: state.currencyConfig.referenceCurrencyCode,
+                  l10n.analysisWalletDistribution,
+                  style: theme.textTheme.titleMedium,
                 ),
-            ],
+                Text(
+                  l10n.analysisWalletCurrentBalances,
+                  style: theme.textTheme.bodySmall,
+                ),
+                if (balances == null)
+                  Text(
+                    l10n.analysisWalletBalancesUnavailable,
+                    style: theme.textTheme.bodySmall,
+                  )
+                else
+                  _WalletDistributionContent(
+                    distribution: AnalysisWalletDistribution.fromBalances(
+                      state.wallets,
+                      balances,
+                      state.currencyConfig,
+                    ),
+                    walletIds: state.wallets
+                        .map((wallet) => wallet.id)
+                        .toList(),
+                    currencyCode: state.currencyConfig.referenceCurrencyCode,
+                  ),
+              ],
+            ),
           ),
         );
       },

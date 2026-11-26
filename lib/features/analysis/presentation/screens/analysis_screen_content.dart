@@ -86,10 +86,8 @@ class _AnalysisScreenContent extends StatelessWidget {
                       child: AnalysisMetricOverview(dashboard: dashboard),
                     ),
                     const SizedBox(height: AppDimens.marginLarge),
-                    if (BackendEnvironment.isLocalPreproduction) ...[
+                    if (BackendEnvironment.isLocalPreproduction)
                       const AnalysisWalletDistributionCard(),
-                      const SizedBox(height: AppDimens.marginLarge),
-                    ],
                     BicountReveal(
                       delay: const Duration(milliseconds: 190),
                       child: Column(

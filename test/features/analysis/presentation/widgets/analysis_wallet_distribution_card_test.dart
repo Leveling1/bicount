@@ -16,6 +16,8 @@ void main() {
     'plots comparable positive balances and updates after a transfer',
     (tester) async {
       final repository = _WalletRepository();
+      final allWallets = repository.wallets;
+      repository.wallets = allWallets.take(1).toList();
       final bloc = WalletBloc(
         repository,
         currencyConfig: const CurrencyConfigEntity(
@@ -49,6 +51,20 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
+
+      final card = find.byType(AnalysisWalletDistributionCard);
+      final title = find.text('Wallet distribution');
+      expect(title, findsNothing);
+      expect(tester.getSize(card).height, 0);
+
+      repository.wallets = allWallets.take(2).toList();
+      bloc.add(const WatchWallets());
+      await tester.pumpAndSettle();
+      expect(title, findsOneWidget);
+
+      repository.wallets = allWallets;
+      bloc.add(const WatchWallets());
       await tester.pumpAndSettle();
 
       final ring = find.byType(AnalysisWalletDistributionRing);
@@ -122,6 +138,12 @@ void main() {
       await tester.pumpAndSettle();
       expect(ring, findsNothing);
       expect(find.text('No wallet has a positive balance.'), findsOneWidget);
+
+      repository.wallets = allWallets.take(1).toList();
+      bloc.add(const WatchWallets());
+      await tester.pumpAndSettle();
+      expect(title, findsNothing);
+      expect(tester.getSize(card).height, 0);
       expect(tester.takeException(), isNull);
     },
   );
@@ -138,8 +160,7 @@ class _WalletRepository implements WalletRepository {
   @override
   Future<List<WalletBalance>> balances() async => rows;
 
-  @override
-  Stream<List<WalletModel>> watch() => Stream.value(const [
+  List<WalletModel> wallets = const [
     WalletModel(id: 'bank', ownerUid: 'user', name: 'Bank', createdAt: ''),
     WalletModel(id: 'cash', ownerUid: 'user', name: 'Cash', createdAt: ''),
     WalletModel(
@@ -156,7 +177,10 @@ class _WalletRepository implements WalletRepository {
       archivedAt: '2026-11-25',
     ),
     WalletModel(id: 'empty', ownerUid: 'user', name: 'Empty', createdAt: ''),
-  ]);
+  ];
+
+  @override
+  Stream<List<WalletModel>> watch() => Stream.value(wallets);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
