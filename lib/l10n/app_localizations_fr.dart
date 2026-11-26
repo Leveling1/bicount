@@ -2081,6 +2081,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get analysisRecurringCalendar => 'Calendrier des récurrences';
 
   @override
+  String get analysisRecurringBudget => 'Budget récurrent';
+
+  @override
+  String get analysisRecurringBudgetRemaining => 'Reste prévu';
+
+  @override
+  String get analysisRecurringBudgetDeficit => 'Déficit prévu';
+
+  @override
+  String get analysisRecurringBudgetOtherCharges => 'Autres charges';
+
+  @override
+  String get analysisRecurringBudgetRatesUnavailable => 'Les taux de change de certaines échéances sont indisponibles.';
+
+  @override
   String get analysisRecurringCalendarEmpty => 'Aucune échéance prévue ce jour.';
 
   @override

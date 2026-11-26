@@ -13,9 +13,19 @@ import 'package:flutter/material.dart';
 part 'analysis_recurring_calendar_day.dart';
 
 class AnalysisRecurringCalendar extends StatefulWidget {
-  const AnalysisRecurringCalendar({super.key, required this.plans});
+  const AnalysisRecurringCalendar({
+    super.key,
+    required this.plans,
+    this.monthFooterBuilder,
+  });
 
   final List<RecurringTransfertModel> plans;
+  final Widget Function(
+    BuildContext,
+    DateTime,
+    Map<DateTime, List<AnalysisRecurringEntry>>,
+  )?
+  monthFooterBuilder;
 
   @override
   State<AnalysisRecurringCalendar> createState() =>
@@ -53,7 +63,7 @@ class _AnalysisRecurringCalendarState extends State<AnalysisRecurringCalendar> {
     final material = MaterialLocalizations.of(context);
     final selectedEntries = _entries[_selectedDay] ?? const [];
 
-    return Column(
+    final calendar = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: AppDimens.spacingSmall,
       children: [
@@ -143,6 +153,12 @@ class _AnalysisRecurringCalendarState extends State<AnalysisRecurringCalendar> {
             ),
           ),
       ],
+    );
+    final footerBuilder = widget.monthFooterBuilder;
+    if (footerBuilder == null || _entries.isEmpty) return calendar;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [calendar, footerBuilder(context, _month, _entries)],
     );
   }
 }

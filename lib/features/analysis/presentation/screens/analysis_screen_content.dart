@@ -8,7 +8,7 @@ class _AnalysisScreenContent extends StatelessWidget {
     return CustomScrollView(
       slivers: [
         // ── Header (title + description) — scrolls away ──
-        SliverPadding(
+        /*SliverPadding(
           padding: const EdgeInsets.fromLTRB(
             AppDimens.paddingMedium,
             AppDimens.paddingLarge,
@@ -34,8 +34,7 @@ class _AnalysisScreenContent extends StatelessWidget {
               ),
             ),
           ),
-        ),
-
+        ),*/
         SliverToBoxAdapter(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -46,7 +45,14 @@ class _AnalysisScreenContent extends StatelessWidget {
                     : const [],
                 builder: (context, plans) => Padding(
                   padding: const EdgeInsets.only(bottom: AppDimens.marginLarge),
-                  child: AnalysisRecurringCalendar(plans: plans),
+                  child: AnalysisRecurringCalendar(
+                    plans: plans,
+                    monthFooterBuilder: (context, month, entries) =>
+                        AnalysisRecurringBudgetCard(
+                          month: month,
+                          agenda: entries,
+                        ),
+                  ),
                 ),
               ),
               if (BackendEnvironment.isLocalPreproduction)

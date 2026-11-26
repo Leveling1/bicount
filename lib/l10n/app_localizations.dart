@@ -4091,6 +4091,36 @@ abstract class AppLocalizations {
   /// **'Recurring calendar'**
   String get analysisRecurringCalendar;
 
+  /// No description provided for @analysisRecurringBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring budget'**
+  String get analysisRecurringBudget;
+
+  /// No description provided for @analysisRecurringBudgetRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected remainder'**
+  String get analysisRecurringBudgetRemaining;
+
+  /// No description provided for @analysisRecurringBudgetDeficit.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected deficit'**
+  String get analysisRecurringBudgetDeficit;
+
+  /// No description provided for @analysisRecurringBudgetOtherCharges.
+  ///
+  /// In en, this message translates to:
+  /// **'Other charges'**
+  String get analysisRecurringBudgetOtherCharges;
+
+  /// No description provided for @analysisRecurringBudgetRatesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Exchange rates are unavailable for some planned payments.'**
+  String get analysisRecurringBudgetRatesUnavailable;
+
   /// No description provided for @analysisRecurringCalendarEmpty.
   ///
   /// In en, this message translates to:
