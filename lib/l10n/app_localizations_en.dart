@@ -2039,6 +2039,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analysisPeriodAllLabel => 'All';
 
   @override
+  String get analysisPeriodCustomLabel => 'Date range';
+
+  @override
+  String get analysisContactCategories => 'Contact categories';
+
+  @override
+  String get analysisAddContactsToBothCharts => 'Add selected contacts to both charts';
+
+  @override
+  String get analysisNoContacts => 'No contacts available.';
+
+  @override
+  String get analysisSearchContacts => 'Search contacts';
+
+  @override
+  String get analysisContactCategoriesSaveError => 'Could not save the contact categories.';
+
+  @override
+  String get analysisWalletDistribution => 'Wallet distribution';
+
+  @override
+  String get analysisWalletCurrentBalances => 'Current balances';
+
+  @override
+  String get analysisWalletPositiveTotal => 'Positive balances';
+
+  @override
+  String get analysisWalletNoPositiveBalances => 'No wallet has a positive balance.';
+
+  @override
+  String get analysisWalletOutsideChart => 'Negative or unavailable balances';
+
+  @override
+  String get analysisWalletBalanceUnavailable => 'Unavailable';
+
+  @override
+  String get analysisWalletBalancesUnavailable => 'Wallet balances are unavailable.';
+
+  @override
   String get walletTitle => 'Wallets';
 
   @override

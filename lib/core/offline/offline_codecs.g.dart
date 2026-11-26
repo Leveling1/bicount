@@ -2,6 +2,7 @@
 import 'package:bicount/core/models/memoji.model.dart';
 import 'package:bicount/features/add_fund/data/models/account_funding.model.dart';
 import 'package:bicount/features/add_fund/data/models/recurring_funding.model.dart';
+import 'package:bicount/features/analysis/data/models/analysis_contact_category.dart';
 import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/company/data/models/company.model.dart';
 import 'package:bicount/features/company/data/models/company_with_user_link.model.dart';
@@ -1383,6 +1384,24 @@ final walletModelCodec = OfflineCodec<WalletModel>(
   toRemote: (wallet) => wallet.toRow(),
 );
 
+const _analysisContactCategoryColumns = {
+  'category_id': 'category_id',
+  'owner_uid': 'owner_uid',
+  'friend_sid': 'friend_sid',
+  'chart': 'chart',
+};
+
+final analysisContactCategoryCodec = OfflineCodec<AnalysisContactCategory>(
+  table: 'analysis_contact_categories',
+  key: 'category_id',
+  columns: _analysisContactCategoryColumns,
+  localColumns: _analysisContactCategoryColumns,
+  fromLocal: AnalysisContactCategory.fromRow,
+  fromRemote: AnalysisContactCategory.fromRow,
+  toLocal: (category) => category.toRow(),
+  toRemote: (category) => category.toRow(),
+);
+
 final List<OfflineCodec<dynamic>> allOfflineCodecs = [
   if (BackendEnvironment.isLocalPreproduction) walletModelCodec,
   memojiModelCodec,
@@ -1395,6 +1414,7 @@ final List<OfflineCodec<dynamic>> allOfflineCodecs = [
   projectModelCodec,
   recurringTransfertModelCodec,
   transactionModelCodec,
+  analysisContactCategoryCodec,
 ];
 
 /// Decode old per-device rows and queued requests during additive migration.

@@ -4,6 +4,9 @@ extension on OfflineSync {
   void _watch<T extends OfflineModel>() => watchCodec(codecFor<T>());
 
   void watchCodec(OfflineCodec<dynamic> codec) {
+    // Postgres Changes delete events do not enforce row-level read policies.
+    // Use authenticated snapshots for private preferences on every device.
+    if (codec.table == analysisContactCategoryCodec.table) return;
     final ownerUserId = repository.currentUserId;
     if (_channels.containsKey(codec.table) || ownerUserId == null) {
       return;

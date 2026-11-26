@@ -3,6 +3,8 @@ import 'package:sqflite_common/sqlite_api.dart';
 import 'offline_operation.dart';
 import 'offline_archive_schema.dart';
 
+part 'offline_outbox_batch.dart';
+
 /// Stores local changes and their outgoing operations in the same database.
 class OfflineOutbox {
   const OfflineOutbox(this.database);
@@ -89,53 +91,56 @@ class OfflineOutbox {
   Future<T> commit<T>(
     OfflineOperation operation,
     Future<T> Function(Transaction transaction) mutation,
-  ) {
+  ) => database.transaction((tx) => _commit(tx, operation, mutation));
+
+  Future<T> _commit<T>(
+    Transaction transaction,
+    OfflineOperation operation,
+    Future<T> Function(Transaction transaction) mutation,
+  ) async {
     if (operation.userId.isEmpty ||
         operation.recordId.isEmpty ||
         operation.collection.isEmpty ||
         operation.action.isEmpty) {
       throw ArgumentError('An offline operation requires an owner and target.');
     }
-    return database.transaction((transaction) async {
-      final previous = await transaction.query(
-        _table,
-        columns: ['is_creation', 'creation_operation_id'],
-        where: 'user_id = ? AND collection = ? AND record_id = ?',
-        whereArgs: [operation.userId, operation.collection, operation.recordId],
-        limit: 1,
-      );
-      final result = await mutation(transaction);
-      await transaction.rawInsert(
-        'INSERT OR IGNORE INTO bicount_guarded_operation_archive '
-        '(operation_id, user_id, collection, record_id, action, payload, created_at, is_creation, creation_operation_id) '
-        'SELECT operation_id, user_id, collection, record_id, action, payload, created_at, is_creation, creation_operation_id '
-        'FROM $_table WHERE user_id = ? AND collection = ? AND record_id = ? '
-        'AND EXISTS (SELECT 1 FROM bicount_legacy_pending_guard g '
-        'WHERE g.user_id = $_table.user_id AND g.collection = $_table.collection '
-        'AND g.record_id = $_table.record_id)',
-        [operation.userId, operation.collection, operation.recordId],
-      );
-      await transaction.delete(
-        _table,
-        where: 'user_id = ? AND collection = ? AND record_id = ?',
-        whereArgs: [operation.userId, operation.collection, operation.recordId],
-      );
-      final data = operation.toDatabase();
-      if (previous.isNotEmpty && previous.single['is_creation'] == 1) {
-        data['is_creation'] = 1;
-        data['creation_operation_id'] =
-            previous.single['creation_operation_id'];
-      } else if (previous.isNotEmpty) {
-        // A new claim cannot turn an older unknown intent into a proven create.
-        data['is_creation'] = 0;
-        data['creation_operation_id'] = null;
-      } else if (operation.isCreation) {
-        data['creation_operation_id'] =
-            operation.creationOperationId ?? operation.id;
-      }
-      await transaction.insert(_table, data);
-      return result;
-    });
+    final previous = await transaction.query(
+      _table,
+      columns: ['is_creation', 'creation_operation_id'],
+      where: 'user_id = ? AND collection = ? AND record_id = ?',
+      whereArgs: [operation.userId, operation.collection, operation.recordId],
+      limit: 1,
+    );
+    final result = await mutation(transaction);
+    await transaction.rawInsert(
+      'INSERT OR IGNORE INTO bicount_guarded_operation_archive '
+      '(operation_id, user_id, collection, record_id, action, payload, created_at, is_creation, creation_operation_id) '
+      'SELECT operation_id, user_id, collection, record_id, action, payload, created_at, is_creation, creation_operation_id '
+      'FROM $_table WHERE user_id = ? AND collection = ? AND record_id = ? '
+      'AND EXISTS (SELECT 1 FROM bicount_legacy_pending_guard g '
+      'WHERE g.user_id = $_table.user_id AND g.collection = $_table.collection '
+      'AND g.record_id = $_table.record_id)',
+      [operation.userId, operation.collection, operation.recordId],
+    );
+    await transaction.delete(
+      _table,
+      where: 'user_id = ? AND collection = ? AND record_id = ?',
+      whereArgs: [operation.userId, operation.collection, operation.recordId],
+    );
+    final data = operation.toDatabase();
+    if (previous.isNotEmpty && previous.single['is_creation'] == 1) {
+      data['is_creation'] = 1;
+      data['creation_operation_id'] = previous.single['creation_operation_id'];
+    } else if (previous.isNotEmpty) {
+      // A new claim cannot turn an older unknown intent into a proven create.
+      data['is_creation'] = 0;
+      data['creation_operation_id'] = null;
+    } else if (operation.isCreation) {
+      data['creation_operation_id'] =
+          operation.creationOperationId ?? operation.id;
+    }
+    await transaction.insert(_table, data);
+    return result;
   }
 
   Future<List<OfflineOperation>> pending(

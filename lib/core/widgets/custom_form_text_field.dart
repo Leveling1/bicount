@@ -30,10 +30,12 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
-    _controller.addListener(() {
-      widget.onChanged?.call(_controller.text);
-      setState(() {});
-    });
+    _controller.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    widget.onChanged?.call(_controller.text);
+    setState(() {});
   }
 
   @override
@@ -50,6 +52,7 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
 
   @override
   void dispose() {
+    _controller.removeListener(_onTextChanged);
     if (widget.controller == null) {
       _controller.dispose();
     }
@@ -67,6 +70,7 @@ class CustomFormField extends StatelessWidget {
     this.message,
     this.enableValidator = true,
     this.isDate = false,
+    this.validator,
   });
 
   final String label;
@@ -76,6 +80,7 @@ class CustomFormField extends StatelessWidget {
   final String? message;
   final bool? enableValidator;
   final bool isDate;
+  final String? Function(String?)? validator;
 
   String? _validator(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
@@ -105,7 +110,7 @@ class CustomFormField extends StatelessWidget {
                 hintText: hint,
                 inputType: inputType,
                 validator: enableValidator!
-                    ? (value) => _validator(context, value)
+                    ? validator ?? (value) => _validator(context, value)
                     : null,
               ),
       ],

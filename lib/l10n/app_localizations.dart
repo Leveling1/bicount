@@ -4007,6 +4007,84 @@ abstract class AppLocalizations {
   /// **'All'**
   String get analysisPeriodAllLabel;
 
+  /// No description provided for @analysisPeriodCustomLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date range'**
+  String get analysisPeriodCustomLabel;
+
+  /// No description provided for @analysisContactCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact categories'**
+  String get analysisContactCategories;
+
+  /// No description provided for @analysisAddContactsToBothCharts.
+  ///
+  /// In en, this message translates to:
+  /// **'Add selected contacts to both charts'**
+  String get analysisAddContactsToBothCharts;
+
+  /// No description provided for @analysisNoContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'No contacts available.'**
+  String get analysisNoContacts;
+
+  /// No description provided for @analysisSearchContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Search contacts'**
+  String get analysisSearchContacts;
+
+  /// No description provided for @analysisContactCategoriesSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the contact categories.'**
+  String get analysisContactCategoriesSaveError;
+
+  /// No description provided for @analysisWalletDistribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet distribution'**
+  String get analysisWalletDistribution;
+
+  /// No description provided for @analysisWalletCurrentBalances.
+  ///
+  /// In en, this message translates to:
+  /// **'Current balances'**
+  String get analysisWalletCurrentBalances;
+
+  /// No description provided for @analysisWalletPositiveTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Positive balances'**
+  String get analysisWalletPositiveTotal;
+
+  /// No description provided for @analysisWalletNoPositiveBalances.
+  ///
+  /// In en, this message translates to:
+  /// **'No wallet has a positive balance.'**
+  String get analysisWalletNoPositiveBalances;
+
+  /// No description provided for @analysisWalletOutsideChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Negative or unavailable balances'**
+  String get analysisWalletOutsideChart;
+
+  /// No description provided for @analysisWalletBalanceUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get analysisWalletBalanceUnavailable;
+
+  /// No description provided for @analysisWalletBalancesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet balances are unavailable.'**
+  String get analysisWalletBalancesUnavailable;
+
   /// No description provided for @walletTitle.
   ///
   /// In en, this message translates to:

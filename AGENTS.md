@@ -319,7 +319,7 @@ Supported periods:
 - 7 days
 - 30 days
 - 90 days
-- all
+- custom date range with both dates included, displayed on the Analyses filter chip after confirmation
 
 Interaction rule:
 
@@ -327,6 +327,8 @@ Interaction rule:
 - do not animate or rebuild the whole Analysis screen as if a full page reload happened
 - only the data-driven widgets should update, such as metric values, charts, breakdowns, and subscription insights
 - the intro copy, overall layout, and section structure should remain fixed during period changes
+- contact categories are private per account and per chart. They reclassify ordinary income and expense rows in the breakdown while preserving cashflow totals and the dedicated categories for debt principal, repayments, salary and subscriptions.
+- category selections write to the own-account SQLite cache and outbox in one transaction, then sync to `analysis_contact_categories`. See `docs/backend_followup_actions.md`.
 
 ### debt
 
@@ -1697,6 +1699,9 @@ Carried forward deliberately, not oversights:
   total rather than mixing currencies. The All wallets card includes all wallets.
 - Local preproduction is the only enabled environment for the wallet schema,
   UI, and automatic occurrences. See `docs/backend_followup_actions.md`.
+- The Analyses wallet distribution uses the current WalletBloc balances without
+  applying the analysis period. The ring shows shares of positive balances,
+  and negative or unconvertible balances are listed separately.
 - Home, Transactions, and the Wallets overview share the card face in
   `lib/core/widgets/wallet/`. Home and Wallets share the standard bottom
   navigation with Home selected. Tap the card preview or swipe the Home screen

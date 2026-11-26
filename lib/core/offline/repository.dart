@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:bicount/features/analysis/data/models/analysis_contact_category.dart';
 import 'package:bicount/features/wallet/data/data_sources/local_datasource/wallet_balance_store.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 
@@ -27,6 +28,7 @@ part 'offline_repository_wallet.dart';
 part 'offline_repository_mutations.dart';
 part 'offline_repository_account_data.dart';
 part 'offline_repository_local_data.dart';
+part 'offline_repository_analysis_categories.dart';
 
 class Repository {
   Repository._() : sqliteProvider = LocalSqliteProvider();

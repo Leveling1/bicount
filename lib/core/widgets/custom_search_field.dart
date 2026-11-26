@@ -5,12 +5,14 @@ class CustomSearchField extends StatefulWidget {
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final bool autofocus;
+  final String? hintText;
 
   const CustomSearchField({
     super.key,
     required this.controller,
     this.onChanged,
     this.autofocus = false,
+    this.hintText,
   });
 
   @override
@@ -46,7 +48,7 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          hintText: "Search",
+          hintText: widget.hintText ?? "Search",
           hintStyle: Theme.of(
             context,
           ).textTheme.titleSmall!.copyWith(color: AppColors.inactiveColorDark),

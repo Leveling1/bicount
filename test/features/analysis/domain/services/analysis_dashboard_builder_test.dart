@@ -1,5 +1,7 @@
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/features/analysis/data/models/analysis_contact_category.dart';
+import 'package:bicount/features/analysis/domain/entities/analysis_chart.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/analysis/data/models/analysis_source_data.dart';
 import 'package:bicount/features/analysis/domain/entities/analysis_dashboard_entity.dart';
@@ -7,6 +9,7 @@ import 'package:bicount/features/analysis/domain/services/analysis_dashboard_bui
 import 'package:bicount/features/debt/data/models/debt.model.dart';
 import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -38,8 +41,9 @@ void main() {
     required String beneficiaryId,
     required double amount,
     String? originId,
+    DateTime? date,
   }) {
-    final now = DateTime.now();
+    final now = date ?? DateTime.now();
 
     return TransactionModel(
       tid: tid,
@@ -238,6 +242,156 @@ void main() {
       expect(latestPoint.cumulativeNet, 915);
     },
   );
+
+  test('a custom period includes both full days and excludes nearby rows', () {
+    final start = DateTime(2026, 11, 3);
+    final end = DateTime(2026, 11, 5);
+
+    TransactionModel income(String id, DateTime date, double amount) =>
+        transaction(
+          tid: id,
+          name: id,
+          type: TransactionTypes.incomeCode,
+          senderId: 'friend',
+          beneficiaryId: currentUserId,
+          amount: amount,
+          date: date,
+        );
+
+    final dashboard = builder.build(
+      AnalysisSourceData(
+        currentUserId: currentUserId,
+        friends: const [],
+        recurringTransferts: const [],
+        debts: const [],
+        transactions: [
+          income('before', DateTime(2026, 11, 2, 23, 59), 100),
+          income('start', start, 10),
+          income('end', DateTime(2026, 11, 5, 23, 59), 20),
+          income('after', DateTime(2026, 11, 6), 100),
+        ],
+      ),
+      AnalysisPeriod.custom(DateTimeRange(start: start, end: end)),
+      currencyConfig,
+    );
+
+    expect(dashboard.inflow, 30);
+    expect(dashboard.cashflowPoints.map((point) => point.date), [
+      start,
+      DateTime(2026, 11, 4),
+      end,
+    ]);
+    expect(dashboard.cashflowPoints.last.cumulativeNet, 30);
+  });
+
+  test('contact categories move ordinary flows and preserve chart totals', () {
+    final friends = [
+      FriendsModel(
+        sid: 'alice-sid',
+        fid: currentUserId,
+        uid: 'alice-uid',
+        username: 'Alice',
+        email: '',
+        image: '',
+        relationType: FriendConst.friend,
+      ),
+      FriendsModel(
+        sid: 'bob-sid',
+        fid: currentUserId,
+        username: 'Bob',
+        email: '',
+        image: '',
+        relationType: FriendConst.friend,
+      ),
+    ];
+    TransactionModel flow(
+      String id,
+      int type,
+      String sender,
+      String receiver,
+      double amount,
+    ) => transaction(
+      tid: id,
+      name: id,
+      type: type,
+      senderId: sender,
+      beneficiaryId: receiver,
+      amount: amount,
+    );
+    final dashboard = builder.build(
+      AnalysisSourceData(
+        currentUserId: currentUserId,
+        friends: friends,
+        recurringTransferts: const [],
+        debts: const [],
+        contactCategories: [
+          AnalysisContactCategory.forContact(
+            currentUserId,
+            'alice-sid',
+            AnalysisChart.income,
+          ),
+          AnalysisContactCategory.forContact(
+            currentUserId,
+            'bob-sid',
+            AnalysisChart.income,
+          ),
+          AnalysisContactCategory.forContact(
+            currentUserId,
+            'bob-sid',
+            AnalysisChart.expense,
+          ),
+        ],
+        transactions: [
+          flow(
+            '1',
+            TransactionTypes.incomeCode,
+            'alice-uid',
+            currentUserId,
+            25,
+          ),
+          flow('2', TransactionTypes.incomeCode, 'alice-sid', currentUserId, 5),
+          flow('3', TransactionTypes.incomeCode, 'bob-sid', currentUserId, 10),
+          flow(
+            '4',
+            TransactionTypes.salaryCode,
+            'alice-uid',
+            currentUserId,
+            50,
+          ),
+          flow(
+            '5',
+            TransactionTypes.expenseCode,
+            currentUserId,
+            'alice-sid',
+            20,
+          ),
+          flow('6', TransactionTypes.expenseCode, currentUserId, 'bob-sid', 15),
+          flow(
+            '7',
+            TransactionTypes.subscriptionCode,
+            currentUserId,
+            'bob-sid',
+            12,
+          ),
+        ],
+      ),
+      AnalysisPeriod.month30,
+      currencyConfig,
+    );
+
+    expect(dashboard.inflow, 90);
+    expect(dashboard.outflow, 47);
+    expect(dashboard.incomeBreakdown, const [
+      AnalysisBreakdownItem(label: 'Salary', value: 50),
+      AnalysisBreakdownItem(label: 'Alice', value: 30, friendSid: 'alice-sid'),
+      AnalysisBreakdownItem(label: 'Bob', value: 10, friendSid: 'bob-sid'),
+    ]);
+    expect(dashboard.expenseBreakdown, const [
+      AnalysisBreakdownItem(label: 'Expenses', value: 20),
+      AnalysisBreakdownItem(label: 'Subscriptions', value: 12),
+      AnalysisBreakdownItem(label: 'Bob', value: 15, friendSid: 'bob-sid'),
+    ]);
+  });
 
   test('migrated self-income contributes only to cashflow inflow', () {
     final dashboard = builder.build(

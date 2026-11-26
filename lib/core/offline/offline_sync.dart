@@ -145,9 +145,11 @@ class OfflineSync {
         watchCodec(codec);
         final last = _lastPull[codec.table];
         final journalCollection = _journalTables.contains(codec.table);
-        final interval = journalActive && journalCollection
-            ? const Duration(hours: 1)
-            : const Duration(minutes: 5);
+        final interval = switch (codec.table) {
+          'analysis_contact_categories' => const Duration(seconds: 30),
+          _ when journalActive && journalCollection => const Duration(hours: 1),
+          _ => const Duration(minutes: 5),
+        };
         if (last == null || DateTime.now().difference(last) > interval) {
           try {
             await pullCodec(codec);

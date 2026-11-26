@@ -3,8 +3,14 @@ import 'package:flutter/material.dart';
 
 class PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
+  final EdgeInsetsGeometry padding;
 
-  const PinnedHeaderDelegate({required this.child});
+  const PinnedHeaderDelegate({
+    required this.child,
+    this.padding = const EdgeInsets.symmetric(
+      horizontal: AppDimens.paddingMedium,
+    ),
+  });
 
   static const _height = 56.0; // ajuste selon ton widget
 
@@ -22,7 +28,7 @@ class PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
   ) {
     return Container(
       height: _height,
-      padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
+      padding: padding,
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
@@ -32,5 +38,5 @@ class PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant PinnedHeaderDelegate oldDelegate) =>
-      oldDelegate.child != child;
+      oldDelegate.child != child || oldDelegate.padding != padding;
 }

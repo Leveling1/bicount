@@ -175,3 +175,13 @@ saisis dans l’application utilisent la même devise des deux côtés.
 
 Vérifications locales : `python supabase/tests/preprod_wallet_api.py` et
 `flutter test test/features/wallet`.
+
+## Catégories de contacts dans Analyses
+
+La table `public.analysis_contact_categories` stocke des préférences privées
+par compte, contact (`friends.sid`) et graphique (`income` ou `expense`).
+Appliquer `20261126104025_analysis_contact_categories.sql` avant de distribuer
+le build mobile. Chaque utilisateur gère les préférences de ses propres
+contacts. La suppression d’un contact supprime ses préférences. La file
+d’attente SQLite transmet les changements. Les autres appareils les récupèrent
+pendant la synchronisation périodique via les lectures authentifiées.

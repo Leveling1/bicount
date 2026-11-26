@@ -107,7 +107,7 @@ class AnalysisCashflowChart extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(top: 8),
                           child: Text(
-                            dashboard.period == AnalysisPeriod.all
+                            dashboard.period.usesMonthlyBuckets
                                 ? DateFormat('MMM yy').format(point.date)
                                 : DateFormat('dd MMM').format(point.date),
                             style: Theme.of(context).textTheme.bodySmall,

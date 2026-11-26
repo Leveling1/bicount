@@ -1,34 +1,59 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-enum AnalysisPeriod { week7, month30, quarter90, all }
+final class AnalysisPeriod extends Equatable {
+  const AnalysisPeriod._(this.days) : dateRange = null;
+  const AnalysisPeriod.custom(DateTimeRange range)
+    : days = null,
+      dateRange = range;
+
+  static const week7 = AnalysisPeriod._(7);
+  static const month30 = AnalysisPeriod._(30);
+  static const quarter90 = AnalysisPeriod._(90);
+  static const all = AnalysisPeriod._(null);
+  static const presets = [week7, month30, quarter90];
+
+  final int? days;
+  final DateTimeRange? dateRange;
+
+  bool get usesMonthlyBuckets =>
+      this == all || (dateRange?.duration.inDays ?? 0) >= 90;
+
+  @override
+  List<Object?> get props => [days, dateRange];
+}
 
 extension AnalysisPeriodX on AnalysisPeriod {
   String label(BuildContext context) {
-    switch (this) {
-      case AnalysisPeriod.week7:
-        return context.l10n.analysisPeriod7DLabel;
-      case AnalysisPeriod.month30:
-        return context.l10n.analysisPeriod30DLabel;
-      case AnalysisPeriod.quarter90:
-        return context.l10n.analysisPeriod90DLabel;
-      case AnalysisPeriod.all:
-        return context.l10n.analysisPeriodAllLabel;
+    final range = dateRange;
+    if (range != null) {
+      final locale = Localizations.localeOf(context).toString();
+      final end = DateFormat.yMMMd(locale).format(range.end);
+      if (DateUtils.isSameDay(range.start, range.end)) return end;
+
+      final startFormat = range.start.year == range.end.year
+          ? DateFormat.MMMd(locale)
+          : DateFormat.yMMMd(locale);
+      return '${startFormat.format(range.start)} – $end';
     }
+    return switch (days) {
+      7 => context.l10n.analysisPeriod7DLabel,
+      30 => context.l10n.analysisPeriod30DLabel,
+      90 => context.l10n.analysisPeriod90DLabel,
+      _ => context.l10n.analysisPeriodAllLabel,
+    };
   }
 
   String description(BuildContext context) {
-    switch (this) {
-      case AnalysisPeriod.week7:
-        return context.l10n.analysisPeriod7DDescription;
-      case AnalysisPeriod.month30:
-        return context.l10n.analysisPeriod30DDescription;
-      case AnalysisPeriod.quarter90:
-        return context.l10n.analysisPeriod90DDescription;
-      case AnalysisPeriod.all:
-        return context.l10n.analysisPeriodAllDescription;
-    }
+    if (dateRange != null) return label(context);
+    return switch (days) {
+      7 => context.l10n.analysisPeriod7DDescription,
+      30 => context.l10n.analysisPeriod30DDescription,
+      90 => context.l10n.analysisPeriod90DDescription,
+      _ => context.l10n.analysisPeriodAllDescription,
+    };
   }
 }
 
@@ -123,11 +148,16 @@ class AnalysisCashflowPoint extends Equatable {
 }
 
 class AnalysisBreakdownItem extends Equatable {
-  const AnalysisBreakdownItem({required this.label, required this.value});
+  const AnalysisBreakdownItem({
+    required this.label,
+    required this.value,
+    this.friendSid,
+  });
 
   final String label;
   final double value;
+  final String? friendSid;
 
   @override
-  List<Object?> get props => [label, value];
+  List<Object?> get props => [label, value, friendSid];
 }

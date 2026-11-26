@@ -2039,6 +2039,45 @@ class AppLocalizationsFr extends AppLocalizations {
   String get analysisPeriodAllLabel => 'Tout';
 
   @override
+  String get analysisPeriodCustomLabel => 'Période';
+
+  @override
+  String get analysisContactCategories => 'Catégories de contacts';
+
+  @override
+  String get analysisAddContactsToBothCharts => 'Ajouter les contacts sélectionnés aux deux graphiques';
+
+  @override
+  String get analysisNoContacts => 'Aucun contact disponible.';
+
+  @override
+  String get analysisSearchContacts => 'Rechercher un contact';
+
+  @override
+  String get analysisContactCategoriesSaveError => 'Impossible d’enregistrer les catégories de contacts.';
+
+  @override
+  String get analysisWalletDistribution => 'Répartition par portefeuille';
+
+  @override
+  String get analysisWalletCurrentBalances => 'Soldes actuels';
+
+  @override
+  String get analysisWalletPositiveTotal => 'Soldes positifs';
+
+  @override
+  String get analysisWalletNoPositiveBalances => 'Aucun portefeuille n’a de solde positif.';
+
+  @override
+  String get analysisWalletOutsideChart => 'Soldes négatifs ou indisponibles';
+
+  @override
+  String get analysisWalletBalanceUnavailable => 'Indisponible';
+
+  @override
+  String get analysisWalletBalancesUnavailable => 'Les soldes des portefeuilles sont indisponibles.';
+
+  @override
   String get walletTitle => 'Portefeuilles';
 
   @override

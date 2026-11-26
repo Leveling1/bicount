@@ -1,18 +1,7 @@
 part of 'l10n_extensions.dart';
 
 extension L10nAnalysisLabels on BuildContext {
-  String analysisPeriodLabel(AnalysisPeriod period) {
-    switch (period) {
-      case AnalysisPeriod.week7:
-        return l10n.analysisPeriod7DLabel;
-      case AnalysisPeriod.month30:
-        return l10n.analysisPeriod30DLabel;
-      case AnalysisPeriod.quarter90:
-        return l10n.analysisPeriod90DLabel;
-      case AnalysisPeriod.all:
-        return l10n.analysisPeriodAllLabel;
-    }
-  }
+  String analysisPeriodLabel(AnalysisPeriod period) => period.label(this);
 
   String analysisBreakdownLabel(String label) {
     switch (label) {

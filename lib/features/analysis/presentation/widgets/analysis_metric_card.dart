@@ -34,12 +34,12 @@ class AnalysisMetricCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 18,
-            backgroundColor: color.withValues(alpha: 0.14),
+            backgroundColor: color,
             child: SvgPicture.asset(
               icon,
               width: AppDimens.iconSizeSmall,
               height: AppDimens.iconSizeSmall,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
             ),
           ),
           const SizedBox(height: AppDimens.marginMedium),
