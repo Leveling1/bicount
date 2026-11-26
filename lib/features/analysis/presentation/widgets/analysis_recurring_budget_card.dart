@@ -44,7 +44,7 @@ class AnalysisRecurringBudgetCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppDimens.paddingMedium,
-        AppDimens.spacingSmall,
+        0,
         AppDimens.paddingMedium,
         0,
       ),

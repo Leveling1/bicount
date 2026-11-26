@@ -61,7 +61,7 @@ class _AnalysisScreenContent extends StatelessWidget {
                     horizontal: AppDimens.paddingMedium,
                   ),
                   child: AnalysisWalletDistributionCard(),
-                ),
+                ), 
             ],
           ),
         ),
