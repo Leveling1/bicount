@@ -1,0 +1,83 @@
+import 'package:bicount/core/themes/app_corners.dart';
+import 'package:flutter/material.dart';
+
+import '../themes/app_dimens.dart';
+
+Future<T?> showCustomBottomSheet<T>({
+  required BuildContext context,
+  required Widget child,
+  Color? color,
+  bool scrollEnabled = true,
+  double horizontalPadding = AppDimens.sheetHorizontalPadding,
+  required double minHeight, // kept for compatibility, not used
+}) {
+  final bgColor = color ?? Theme.of(context).scaffoldBackgroundColor;
+  final media = MediaQuery.of(context);
+  final screenHeight = media.size.height;
+  final screenWidth = media.size.width;
+
+  return showModalBottomSheet<T>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: bgColor,
+    shape: appCornerShape(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(AppDimens.radiusExtraLarge),
+      ),
+      legacy: WalletCorners.of(context),
+    ),
+    constraints: BoxConstraints(
+      minWidth: screenWidth,
+      maxHeight: screenHeight * AppDimens.sheetHeightFraction,
+    ),
+    builder: (BuildContext ctx) {
+      return SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: AppSizes.dp15,
+            left: horizontalPadding,
+            right: horizontalPadding,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom,
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              const handleHeight = AppDimens.sheetHandleHeight;
+              const spacing = AppDimens.sheetHandleGap;
+              final scrollMaxHeight =
+                  (constraints.maxHeight - handleHeight - spacing).clamp(
+                    0.0,
+                    double.infinity,
+                  );
+              final sheetContent = scrollEnabled
+                  ? SingleChildScrollView(child: child)
+                  : child;
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: AppSizes.dp50,
+                    height: handleHeight,
+                    decoration: appCornerDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(
+                        AppDimens.borderRadiusFull,
+                      ),
+                      legacy: WalletCorners.of(context),
+                    ),
+                  ),
+                  const SizedBox(height: spacing),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: scrollMaxHeight),
+                    child: sheetContent,
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      );
+    },
+  );
+}
