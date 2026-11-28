@@ -115,6 +115,7 @@ class _AgendaEntry extends StatelessWidget {
     return Material(
       type: MaterialType.transparency,
       child: BicountPressable(
+        scaleContentOnly: true,
         customBorder: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
         ),

@@ -18,7 +18,7 @@ class _BudgetPeriodMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Material(
-      color: theme.colorScheme.onSurface.withValues(alpha: 0.06),
+      color: theme.scaffoldBackgroundColor,
       shape: appPressShape,
       clipBehavior: Clip.antiAlias,
       child: BicountPressable.control(

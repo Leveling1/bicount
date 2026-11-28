@@ -1,5 +1,6 @@
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/animations/bicount_pressable.dart';
+import 'package:bicount/features/settings/presentation/widgets/settings_section.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -32,13 +33,20 @@ class SettingsActionTile extends StatelessWidget {
         ? Theme.of(context).colorScheme.error
         : Theme.of(context).hintColor;
 
+    final sectionPadding = SettingsOptionInsets.of(context);
     return BicountPressable(
+      scaleContentOnly: true,
       customBorder: RoundedSuperellipseBorder(
         borderRadius: BorderRadius.circular(AppSizes.dp18),
       ),
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSizes.dp6),
+        padding:
+            sectionPadding +
+            const EdgeInsets.symmetric(
+              horizontal: AppDimens.paddingMedium,
+              vertical: AppSizes.dp6,
+            ),
         child: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: Icon(icon, color: color),

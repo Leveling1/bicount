@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 part 'bicount_pressable_pointer.dart';
+part 'bicount_pressable_feedback.dart';
 
 /// Applies press feedback to an entire surface without changing its hit area.
 class BicountPressable extends StatefulWidget {
@@ -19,6 +20,7 @@ class BicountPressable extends StatefulWidget {
     this.color = Colors.transparent,
     this.hoverColor,
     this.clipBehavior = Clip.none,
+    this.scaleContentOnly = false,
   }) : builder = null,
        controlBuilder = null,
        isControl = false,
@@ -33,6 +35,7 @@ class BicountPressable extends StatefulWidget {
       color = Colors.transparent,
       hoverColor = null,
       clipBehavior = Clip.none,
+      scaleContentOnly = false,
       controlBuilder = null,
       isControl = false,
       enabled = true;
@@ -51,6 +54,7 @@ class BicountPressable extends StatefulWidget {
        color = Colors.transparent,
        hoverColor = null,
        clipBehavior = Clip.none,
+       scaleContentOnly = false,
        isControl = true;
 
   final VoidCallback? onTap;
@@ -61,6 +65,10 @@ class BicountPressable extends StatefulWidget {
   final Color color;
   final Color? hoverColor;
   final Clip clipBehavior;
+
+  /// Keeps the hit area and tint still while scaling the contents on press.
+  final bool scaleContentOnly;
+
   final Widget Function(BuildContext context, bool pressed)? controlBuilder;
   final bool enabled;
   final bool isControl;
@@ -71,8 +79,6 @@ class BicountPressable extends StatefulWidget {
 
 class _BicountPressableState extends State<BicountPressable> {
   static const _minimumPress = Duration(milliseconds: 64);
-  static const _pressDuration = Duration(milliseconds: 55);
-  static const _releaseDuration = Duration(milliseconds: 140);
 
   late final _states = WidgetStatesController()..addListener(_onStateChanged);
   final _showPress = ValueNotifier(false);
@@ -132,83 +138,5 @@ class _BicountPressableState extends State<BicountPressable> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final legacy = WalletCorners.of(context);
-    final reduceMotion = MediaQuery.disableAnimationsOf(context);
-    final button = widget.builder;
-    final tint = appPressedColor(Theme.of(context).primaryColor);
-    final shape =
-        widget.customBorder ??
-        (widget.borderRadius == BorderRadius.zero
-            ? appPressShape
-            : appCornerShape(
-                borderRadius: widget.borderRadius,
-                legacy: legacy,
-              ));
-    final surface = button == null && !widget.isControl;
-    final tintShape = shape is OutlinedBorder
-        ? shape.copyWith(side: BorderSide.none)
-        : shape;
-    final animate = surface || !reduceMotion;
-    final controller = animate ? _states : null;
-    final content = widget.isControl
-        ? widget.child
-        : button?.call(controller) ??
-              Material(
-                type: widget.color == Colors.transparent
-                    ? MaterialType.transparency
-                    : MaterialType.canvas,
-                color: widget.color,
-                shape: shape,
-                clipBehavior: widget.clipBehavior,
-                child: InkWell(
-                  onTap: widget.onTap,
-                  onTapCancel: animate ? _cancelHold : null,
-                  statesController: controller,
-                  customBorder: shape,
-                  hoverColor: widget.hoverColor,
-                  splashFactory: !legacy ? NoSplash.splashFactory : null,
-                  overlayColor: !legacy
-                      ? const WidgetStateProperty.fromMap({
-                          WidgetState.pressed: Colors.transparent,
-                        })
-                      : null,
-                  child: widget.child,
-                ),
-              );
-
-    final feedback = ValueListenableBuilder(
-      valueListenable: _showPress,
-      child: content,
-      builder: (context, pressed, child) => TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0, end: pressed ? 1 : 0),
-        duration: reduceMotion
-            ? Duration.zero
-            : pressed
-            ? _pressDuration
-            : _releaseDuration,
-        curve: Curves.easeOutCubic,
-        child:
-            widget.controlBuilder?.call(context, widget.enabled && pressed) ??
-            child,
-        builder: (context, progress, child) => Transform.scale(
-          scale: reduceMotion ? 1 : 1 - 0.03 * progress,
-          transformHitTests: false,
-          child: surface && !legacy
-              ? DecoratedBox(
-                  position: DecorationPosition.foreground,
-                  decoration: ShapeDecoration(
-                    color: tint.withValues(alpha: tint.a * progress),
-                    shape: tintShape,
-                  ),
-                  child: child,
-                )
-              : child,
-        ),
-      ),
-    );
-    if (!widget.isControl) return feedback;
-
-    return _observePointer(feedback);
-  }
+  Widget build(BuildContext context) => _buildFeedback(context);
 }

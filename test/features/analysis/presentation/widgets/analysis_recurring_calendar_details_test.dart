@@ -1,3 +1,5 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
+import 'package:bicount/core/themes/app_press_theme.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/themes/app_theme.dart';
@@ -64,7 +66,32 @@ void main() {
     ]) {
       final row = find.text(plan.title);
       await tester.ensureVisible(row);
-      await tester.tap(row);
+      final pressSurface = find.ancestor(
+        of: row,
+        matching: find.byType(BicountPressable),
+      );
+      final surfaceBounds = tester.getRect(pressSurface);
+      final labelBounds = tester.getRect(row);
+      final press = await tester.startGesture(tester.getCenter(row));
+      await tester.pump(const Duration(milliseconds: 120));
+      await tester.pump(const Duration(milliseconds: 120));
+
+      expect(tester.getRect(pressSurface), surfaceBounds);
+      expect(tester.getRect(row).width, lessThan(labelBounds.width));
+      final fill = find.descendant(
+        of: pressSurface,
+        matching: find.byWidgetPredicate(
+          (widget) =>
+              widget is DecoratedBox &&
+              widget.decoration is ShapeDecoration &&
+              (widget.decoration as ShapeDecoration).color ==
+                  appPressedColor(AppTheme.darkTheme.primaryColor),
+        ),
+      );
+      expect(fill, findsOneWidget);
+      expect(tester.getRect(fill), surfaceBounds);
+
+      await press.up();
       await tester.pumpAndSettle();
 
       final detail = find.byType(RecurringPlanDetailSheet);
