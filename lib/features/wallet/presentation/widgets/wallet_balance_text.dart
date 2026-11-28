@@ -1,5 +1,7 @@
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
+import 'package:bicount/features/currency/domain/entities/app_currency_entity.dart';
+import 'package:bicount/features/wallet/domain/services/wallet_balance_total.dart';
 import 'package:bicount/features/wallet/presentation/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,18 +13,28 @@ class WalletBalanceText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<WalletBloc, WalletState, (double?, String)>(
+    return BlocSelector<
+      WalletBloc,
+      WalletState,
+      (WalletBalanceValuation?, String, List<AppCurrencyEntity>)
+    >(
       selector: (state) => (
-        state.totalFor(walletId),
+        state.balanceFor(walletId),
         state.currencyConfig.referenceCurrencyCode,
+        state.currencyConfig.currencies,
       ),
       builder: (context, value) {
-        final label = value.$1 == null
+        final (balance, currencyCode, _) = value;
+        final amount = balance?.amount;
+        final missingRates = balance?.missingRates;
+        final label = amount != null
+            ? NumberFormatUtils.formatCurrency(
+                amount,
+                currencyCode: currencyCode,
+              )
+            : missingRates == null
             ? '—'
-            : NumberFormatUtils.formatCurrency(
-                value.$1!,
-                currencyCode: value.$2,
-              );
+            : context.l10n.walletBalanceMissingRates(missingRates);
         return Semantics(
           label: '${context.l10n.walletBalance}: $label',
           excludeSemantics: true,

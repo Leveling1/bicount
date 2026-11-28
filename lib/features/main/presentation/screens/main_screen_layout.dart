@@ -110,7 +110,17 @@ extension _MainScreenLayout on _MainScreenState {
                 FloatingActionButtonLocation.centerFloat,
           ),
         );
-        if (!BackendEnvironment.walletsEnabled) return shell;
+        final shellWithWhatsNew = WhatsNewPrompt(
+          enabled:
+              state is MainLoaded &&
+              preparedData.user.uid.isNotEmpty &&
+              _selectedIndex == 0 &&
+              currentUri.path == '/' &&
+              !currentUri.hasQuery &&
+              BicountHomeWidgetService.instance.pendingAction == null,
+          child: shell,
+        );
+        if (!BackendEnvironment.walletsEnabled) return shellWithWhatsNew;
         return BlocProvider(
           create: (context) => WalletBloc(
             WalletRepositoryImpl(),
@@ -122,7 +132,7 @@ extension _MainScreenLayout on _MainScreenState {
               (state) => state.config,
             ),
           )..add(const WatchWallets()),
-          child: shell,
+          child: shellWithWhatsNew,
         );
       },
     );

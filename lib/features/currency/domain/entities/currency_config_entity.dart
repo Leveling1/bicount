@@ -94,6 +94,11 @@ class CurrencyConfigEntity extends Equatable {
 
   ExchangeRateSnapshotEntity? latestSnapshot(String currencyCode) {
     final normalizedCode = _normalizeCode(currencyCode);
+    if (normalizedCode == defaultReferenceCurrencyCode) {
+      return ExchangeRateSnapshotEntity.cdf(
+        DateTime.now().toIso8601String().substring(0, 10),
+      );
+    }
     final candidates =
         snapshotsByKey.values
             .where((snapshot) => snapshot.currencyCode == normalizedCode)
@@ -102,12 +107,6 @@ class CurrencyConfigEntity extends Equatable {
 
     if (candidates.isNotEmpty) {
       return candidates.first;
-    }
-
-    if (normalizedCode == defaultReferenceCurrencyCode) {
-      return ExchangeRateSnapshotEntity.cdf(
-        DateTime.now().toIso8601String().substring(0, 10),
-      );
     }
 
     return null;

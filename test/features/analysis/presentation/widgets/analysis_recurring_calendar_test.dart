@@ -85,7 +85,7 @@ void main() {
       expect(find.text('Abonnement mensuel'), findsOneWidget);
 
       final calendar = find.byType(AnalysisRecurringCalendar);
-      final amounts = find.text('25 Fc');
+      final amounts = find.text('25 CDF');
       expect(amounts, findsNWidgets(2));
       final detailRight =
           tester.getRect(calendar).right - AppDimens.paddingMedium;

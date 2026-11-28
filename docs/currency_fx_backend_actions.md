@@ -210,17 +210,13 @@ Parsing rules:
 Recommended:
 
 - scheduled job or cron-triggered edge function: `sync-bcc-exchange-rates`
-- optional helper SQL view or RPC for latest rates by currency
+- SQL view `public.latest_exchange_rate_snapshots` for current rates
 
-Optional helper view:
-
-- `public.latest_exchange_rate_snapshots`
-
-Possible shape:
-
-- one latest row per `currency_code`
-
-This is optional because the mobile app can also query `exchange_rate_snapshots` ordered by `rate_date desc`, but a dedicated view is cleaner.
+The mobile app refreshes the catalogue and current rates after authentication.
+It reads one latest row per currency from the view and caches all available
+rates, including when some requested currencies are absent. It reads
+`exchange_rate_snapshots` directly for date-specific rates. The CDF rate is
+provided by the client at 1 CDF.
 
 ## RLS Guidance
 

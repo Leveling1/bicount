@@ -85,12 +85,12 @@ void main() {
           ..arc(strokeCap: StrokeCap.round)
           ..arc(strokeCap: StrokeCap.round),
       );
-      final leadingBalance = find.text('7 500 Fc | 75%');
+      final leadingBalance = find.text('7 500 CDF | 75%');
       expect(leadingBalance, findsOneWidget);
       expect(tester.widget<Text>(leadingBalance).maxLines, 1);
-      expect(find.text('2 500 Fc | 25%'), findsOneWidget);
-      expect(find.text('10 000 Fc'), findsOneWidget);
-      expect(find.text('-50 Fc'), findsOneWidget);
+      expect(find.text('2 500 CDF | 25%'), findsOneWidget);
+      expect(find.text('10 000 CDF'), findsOneWidget);
+      expect(find.text('-50 CDF'), findsOneWidget);
       expect(find.text('Unavailable'), findsOneWidget);
       expect(find.text('Empty'), findsNothing);
       expect(
@@ -106,8 +106,8 @@ void main() {
       bloc.add(const RefreshWalletBalances());
       await tester.pumpAndSettle();
       expect(slices(), [5500, 4500]);
-      expect(find.text('5 500 Fc | 55%'), findsOneWidget);
-      expect(find.text('10 000 Fc'), findsOneWidget);
+      expect(find.text('5 500 CDF | 55%'), findsOneWidget);
+      expect(find.text('10 000 CDF'), findsOneWidget);
       expect(
         tester.getTopLeft(find.text('Cash')).dy,
         lessThan(tester.getTopLeft(find.text('Bank')).dy),

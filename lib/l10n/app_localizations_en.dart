@@ -2224,6 +2224,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get walletBalance => 'Balance';
 
   @override
+  String walletBalanceMissingRates(String currencies) {
+    return 'Rate unavailable for $currencies';
+  }
+
+  @override
   String get recurringPlanPauseCta => 'Pause plan';
 
   @override
@@ -2261,6 +2266,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recurringPlanResumeSaved => 'Resumption saved';
+
+  @override
+  String get whatsNewTitle => 'What’s new in Bicount';
+
+  @override
+  String get whatsNewDismiss => 'Got it';
 
   @override
   String get recurringPlanPauseError => 'The change couldn’t be saved. Check the plan status and date, then try again.';

@@ -17,6 +17,7 @@ class CurrencyLocalDataSourceImpl implements CurrencyLocalDataSource {
   static const _referenceCurrencyKey = 'bicount_reference_currency_v1';
   static const _currencyCatalogKey = 'bicount_currency_catalog_v1';
   static const _snapshotCacheKey = 'bicount_fx_snapshots_v1';
+  Future<void> _snapshotWrite = Future<void>.value();
 
   @override
   Future<String?> readReferenceCurrencyCode() async {
@@ -82,7 +83,14 @@ class CurrencyLocalDataSourceImpl implements CurrencyLocalDataSource {
   }
 
   @override
-  Future<void> cacheSnapshots(
+  Future<void> cacheSnapshots(Iterable<ExchangeRateSnapshotEntity> snapshots) {
+    return _snapshotWrite = _snapshotWrite.then(
+      (_) => _writeSnapshots(snapshots),
+      onError: (Object _, StackTrace _) => _writeSnapshots(snapshots),
+    );
+  }
+
+  Future<void> _writeSnapshots(
     Iterable<ExchangeRateSnapshotEntity> snapshots,
   ) async {
     final preferences = await SharedPreferences.getInstance();

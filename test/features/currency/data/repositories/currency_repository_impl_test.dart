@@ -55,10 +55,6 @@ class _FakeCurrencyRemoteDataSource implements CurrencyRemoteDataSource {
     List<String> codes,
   ) async {
     latestCodes = List<String>.from(codes)..sort();
-    if (latestCodes.length == 1 && latestCodes.first == 'CDF') {
-      throw Exception('CDF latest snapshot is synthetic.');
-    }
-
     return latestCodes
         .map(
           (code) => ExchangeRateSnapshotEntity(
@@ -138,7 +134,7 @@ void main() {
     } catch (_) {
       await Supabase.initialize(
         url: 'https://example.supabase.co',
-        anonKey: 'test-anon-key',
+        publishableKey: 'test-anon-key',
       );
     }
   });
@@ -205,7 +201,7 @@ void main() {
 
       await repository.ensureReferenceHistory('CDF', includeStoredDates: true);
 
-      expect(remote.latestCodes, ['CDF']);
+      expect(remote.latestCodes, isEmpty);
       expect(remote.historyCodes, ['EUR', 'USD']);
       expect(remote.historyDates, ['2026-04-01']);
     },

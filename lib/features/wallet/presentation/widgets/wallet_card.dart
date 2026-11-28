@@ -31,7 +31,10 @@ class WalletCard extends StatelessWidget {
     final index = wallets.indexWhere((wallet) => wallet.id == walletId);
     final selectedIndex = index < 0 ? 0 : index;
     final wallet = wallets[selectedIndex];
-    final balances = context.select((WalletBloc bloc) => bloc.state.balances);
+    final (balances, _) = context.select(
+      (WalletBloc bloc) =>
+          (bloc.state.balances, bloc.state.currencyConfig.currencies),
+    );
     final amounts = balances
         ?.where((balance) => balance.walletId == wallet.id)
         .map(

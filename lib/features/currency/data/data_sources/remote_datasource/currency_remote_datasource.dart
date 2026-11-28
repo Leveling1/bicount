@@ -1,4 +1,3 @@
-import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/currency/domain/entities/app_currency_entity.dart';
 import 'package:bicount/features/currency/domain/entities/exchange_rate_snapshot_entity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -52,32 +51,20 @@ class CurrencyRemoteDataSourceImpl implements CurrencyRemoteDataSource {
     }
 
     final rows = await _client
-        .from('exchange_rate_snapshots')
+        .from('latest_exchange_rate_snapshots')
         .select(
           'snapshot_id, currency_code, rate_date, rate_to_cdf, provider, source_url, created_at',
         )
         .inFilter('currency_code', requestedCodes.toList())
-        .order('rate_date', ascending: false)
         .timeout(const Duration(seconds: 5));
 
-    final snapshotsByCode = <String, ExchangeRateSnapshotEntity>{};
-    for (final row in rows as List<dynamic>) {
-      final snapshot = ExchangeRateSnapshotEntity.fromJson(
-        row as Map<String, dynamic>,
-      );
-      snapshotsByCode.putIfAbsent(snapshot.currencyCode, () => snapshot);
-      if (snapshotsByCode.length == requestedCodes.length) {
-        break;
-      }
-    }
-
-    if (snapshotsByCode.length != requestedCodes.length) {
-      throw MessageFailure(
-        message: 'Unable to load the latest exchange rates right now.',
-      );
-    }
-
-    return snapshotsByCode.values.toList(growable: false);
+    return rows
+        .where((row) => row['rate_to_cdf'] is num)
+        .map(ExchangeRateSnapshotEntity.fromJson)
+        .where(
+          (snapshot) => snapshot.rateToCdf.isFinite && snapshot.rateToCdf > 0,
+        )
+        .toList(growable: false);
   }
 
   @override

@@ -25,9 +25,14 @@ final class WalletState {
         WalletModel.principalId(ownerUid);
   }
 
-  double? totalFor(String? walletId) => balances == null
-      ? null
-      : walletBalanceTotal(balances!, currencyConfig, walletId: walletId);
+  WalletBalanceValuation? balanceFor(String? walletId) {
+    final rows = balances;
+    return rows == null
+        ? null
+        : valueWalletBalance(rows, currencyConfig, walletId: walletId);
+  }
+
+  double? totalFor(String? walletId) => balanceFor(walletId)?.amount;
 
   WalletState copyWith({
     List<WalletModel>? wallets,

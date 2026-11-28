@@ -1,8 +1,16 @@
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/wallet/domain/repositories/wallet_repository.dart';
 
+typedef WalletBalanceValuation = ({double? amount, String? missingRates});
+
 /// Converts net native balances only when every required rate is available.
 double? walletBalanceTotal(
+  Iterable<WalletBalance> balances,
+  CurrencyConfigEntity config, {
+  String? walletId,
+}) => valueWalletBalance(balances, config, walletId: walletId).amount;
+
+WalletBalanceValuation valueWalletBalance(
   Iterable<WalletBalance> balances,
   CurrencyConfigEntity config, {
   String? walletId,
@@ -20,6 +28,8 @@ double? walletBalanceTotal(
   final target = CurrencyConfigEntity.normalizeCode(
     config.referenceCurrencyCode,
   );
+  final targetRate = _validRate(config, target);
+  final missingRates = <String>{};
   var total = 0.0;
   for (final entry in native.entries) {
     if (entry.value == 0) continue;
@@ -28,17 +38,23 @@ double? walletBalanceTotal(
       total += amount;
       continue;
     }
-    final sourceRate = config.latestRateToCdf(entry.key);
-    final targetRate = config.latestRateToCdf(target);
-    if (sourceRate == null ||
-        !sourceRate.isFinite ||
-        sourceRate <= 0 ||
-        targetRate == null ||
-        !targetRate.isFinite ||
-        targetRate <= 0) {
-      return null;
+    final sourceRate = _validRate(config, entry.key);
+    if (sourceRate == null) missingRates.add(entry.key);
+    if (targetRate == null) missingRates.add(target);
+    if (sourceRate != null && targetRate != null) {
+      total += amount * sourceRate / targetRate;
     }
-    total += amount * sourceRate / targetRate;
   }
-  return total.isFinite ? total : null;
+  final missing = missingRates.isEmpty
+      ? null
+      : (missingRates.toList()..sort()).join(', ');
+  return (
+    amount: missing == null && total.isFinite ? total : null,
+    missingRates: missing,
+  );
+}
+
+double? _validRate(CurrencyConfigEntity config, String currency) {
+  final rate = config.latestRateToCdf(currency);
+  return rate != null && rate.isFinite && rate > 0 ? rate : null;
 }

@@ -4373,6 +4373,12 @@ abstract class AppLocalizations {
   /// **'Balance'**
   String get walletBalance;
 
+  /// No description provided for @walletBalanceMissingRates.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate unavailable for {currencies}'**
+  String walletBalanceMissingRates(String currencies);
+
   /// No description provided for @recurringPlanPauseCta.
   ///
   /// In en, this message translates to:
@@ -4450,6 +4456,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Resumption saved'**
   String get recurringPlanResumeSaved;
+
+  /// No description provided for @whatsNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What’s new in Bicount'**
+  String get whatsNewTitle;
+
+  /// No description provided for @whatsNewDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get whatsNewDismiss;
 
   /// No description provided for @recurringPlanPauseError.
   ///

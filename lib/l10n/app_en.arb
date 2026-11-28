@@ -867,6 +867,14 @@
   "walletReassign": "Change wallet",
   "walletPicker": "Wallet",
   "walletBalance": "Balance",
+  "walletBalanceMissingRates": "Rate unavailable for {currencies}",
+  "@walletBalanceMissingRates": {
+    "placeholders": {
+      "currencies": {
+        "type": "String"
+      }
+    }
+  },
   "recurringPlanPauseCta": "Pause plan",
   "recurringPlanResumeCta": "Resume plan",
   "recurringPlansPauseCta": "Pause plans",
@@ -880,6 +888,8 @@
   "recurringPlanResumeNotice": "Choose when each plan’s future occurrences should start.",
   "recurringPlanPauseSaved": "Pause saved",
   "recurringPlanResumeSaved": "Resumption saved",
+  "whatsNewTitle": "What’s new in Bicount",
+  "whatsNewDismiss": "Got it",
   "recurringPlanPauseError": "The change couldn’t be saved. Check the plan status and date, then try again.",
   "recurringPlanPausedOn": "Paused {date}",
   "@recurringPlanPausedOn": {"placeholders": {"date": {"type": "String"}}},

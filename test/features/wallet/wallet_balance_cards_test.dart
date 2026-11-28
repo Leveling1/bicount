@@ -83,21 +83,32 @@ void main() {
       );
       await pump(0);
       await tester.pumpAndSettle();
-      expect(find.text('250 150 Fc'), findsOneWidget);
+      expect(find.text('250 150 CDF'), findsOneWidget);
       await pump(1);
       await tester.pumpAndSettle();
-      expect(find.text('250 200 Fc'), findsOneWidget);
+      expect(find.text('250 200 CDF'), findsOneWidget);
 
       repository.rows = [(walletId: 'bank', currency: 'USD', minor: 5000)];
       changes.add(null);
       await tester.pumpAndSettle();
-      expect(find.text('125 000 Fc'), findsOneWidget);
+      expect(find.text('125 000 CDF'), findsOneWidget);
       currency.add(config.copyWith(referenceCurrencyCode: 'USD'));
       await tester.pumpAndSettle();
-      expect(find.text('50 \$'), findsOneWidget);
+      expect(find.text('50 USD'), findsOneWidget);
       currency.add(config.copyWith(referenceCurrencyCode: 'CAD'));
       await tester.pumpAndSettle();
-      expect(find.text('—'), findsOneWidget);
+      expect(find.text('Rate unavailable for CAD'), findsOneWidget);
+      currency.add(
+        config.copyWith(referenceCurrencyCode: 'CAD').withSnapshotUpserts([
+          const ExchangeRateSnapshotEntity(
+            currencyCode: 'CAD',
+            rateDate: '2026-11-23',
+            rateToCdf: 2000,
+          ),
+        ]),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('62.5 CAD'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );

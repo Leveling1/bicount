@@ -29,10 +29,12 @@ class AppCurrencyEntity extends Equatable {
   }
 
   factory AppCurrencyEntity.fromJson(Map<String, dynamic> json) {
+    final code = '${json['code'] ?? 'CDF'}'.trim().toUpperCase();
+    final symbol = json['symbol']?.toString();
     return AppCurrencyEntity(
-      code: '${json['code'] ?? 'CDF'}'.toUpperCase(),
+      code: code,
       name: '${json['name'] ?? 'Congolese franc'}',
-      symbol: '${json['symbol'] ?? 'Fc'}',
+      symbol: symbol == null || symbol.trim().isEmpty ? code : symbol,
       decimals: (json['decimals'] as num?)?.toInt() ?? 2,
       displayOrder: (json['display_order'] as num?)?.toInt() ?? 0,
       isActive: json['is_active'] as bool? ?? true,
@@ -43,13 +45,13 @@ class AppCurrencyEntity extends Equatable {
     AppCurrencyEntity(
       code: 'CDF',
       name: 'Congolese franc',
-      symbol: 'Fc',
+      symbol: 'CDF',
       displayOrder: 0,
     ),
     AppCurrencyEntity(
       code: 'USD',
       name: 'US dollar',
-      symbol: '\$',
+      symbol: 'USD',
       displayOrder: 1,
     ),
     AppCurrencyEntity(

@@ -867,6 +867,14 @@
   "walletReassign": "Changer de portefeuille",
   "walletPicker": "Portefeuille",
   "walletBalance": "Solde",
+  "walletBalanceMissingRates": "Taux indisponible pour {currencies}",
+  "@walletBalanceMissingRates": {
+    "placeholders": {
+      "currencies": {
+        "type": "String"
+      }
+    }
+  },
   "recurringPlanPauseCta": "Mettre en pause",
   "recurringPlanResumeCta": "Reprendre",
   "recurringPlansPauseCta": "Mettre des plans en pause",
@@ -880,6 +888,8 @@
   "recurringPlanResumeNotice": "Choisissez la première échéance à venir pour chaque plan.",
   "recurringPlanPauseSaved": "Pause enregistrée",
   "recurringPlanResumeSaved": "Reprise enregistrée",
+  "whatsNewTitle": "Nouveautés de Bicount",
+  "whatsNewDismiss": "C’est compris",
   "recurringPlanPauseError": "La modification a échoué. Vérifiez le statut du plan et la date, puis réessayez.",
   "recurringPlanPausedOn": "Pause le {date}",
   "recurringPlanResumedOn": "Reprise le {date}",

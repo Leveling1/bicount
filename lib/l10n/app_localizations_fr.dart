@@ -2224,6 +2224,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get walletBalance => 'Solde';
 
   @override
+  String walletBalanceMissingRates(String currencies) {
+    return 'Taux indisponible pour $currencies';
+  }
+
+  @override
   String get recurringPlanPauseCta => 'Mettre en pause';
 
   @override
@@ -2261,6 +2266,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get recurringPlanResumeSaved => 'Reprise enregistrée';
+
+  @override
+  String get whatsNewTitle => 'Nouveautés de Bicount';
+
+  @override
+  String get whatsNewDismiss => 'C’est compris';
 
   @override
   String get recurringPlanPauseError => 'La modification a échoué. Vérifiez le statut du plan et la date, puis réessayez.';

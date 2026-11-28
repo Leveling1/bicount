@@ -26,6 +26,7 @@ import 'package:bicount/features/transaction/presentation/screens/transaction_ha
 import 'package:bicount/features/transaction/presentation/screens/transaction_screen.dart';
 import 'package:bicount/features/wallet/data/repositories/wallet_repository_impl.dart';
 import 'package:bicount/features/wallet/presentation/bloc/wallet_bloc.dart';
+import 'package:bicount/features/whats_new/presentation/widgets/whats_new_prompt.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -14,24 +14,23 @@ import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+part 'currency_repository_sync.dart';
+
 class CurrencyRepositoryImpl {
   CurrencyRepositoryImpl({
-    required CurrencyLocalDataSource localDataSource,
-    required CurrencyRemoteDataSource remoteDataSource,
+    required this._localDataSource,
+    required this._remoteDataSource,
     CurrencyRecordHistoryService? recordHistoryService,
     CurrencyUserPreferenceService? userPreferenceService,
-  }) : _localDataSource = localDataSource,
-       _remoteDataSource = remoteDataSource,
-       _recordHistoryService =
+  }) : _recordHistoryService =
            recordHistoryService ?? CurrencyRecordHistoryService(),
        _userPreferenceService =
            userPreferenceService ?? CurrencyUserPreferenceService() {
     _pushConfig(CurrencyConfigEntity.fallback());
-    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((
-      _,
-    ) {
-      unawaited(_safeRebindUserPreferenceStream());
-    });
+    _sessionUserId = Supabase.instance.client.auth.currentUser?.id;
+    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen(
+      _onAuthStateChanged,
+    );
   }
 
   final CurrencyLocalDataSource _localDataSource;
@@ -44,64 +43,22 @@ class CurrencyRepositoryImpl {
   StreamSubscription<List<AppCurrencyEntity>>? _currencyCatalogSubscription;
   StreamSubscription<String?>? _userPreferenceSubscription;
   StreamSubscription<AuthState>? _authSubscription;
+  Future<void>? _hydrationInFlight;
+  String? _sessionUserId;
+  bool _disposed = false;
 
   Stream<CurrencyConfigEntity> watchConfig() => _configSubject.stream;
 
   CurrencyConfigEntity get currentConfig => _configSubject.value;
 
-  Future<void> hydrate() async {
-    final cachedCurrencies = await _localDataSource.readCachedCurrencies();
-    final cachedSnapshots = await _localDataSource.readCachedSnapshots();
-    final storedReferenceCurrency = await _localDataSource
-        .readReferenceCurrencyCode();
-    final userReferenceCurrency = await _userPreferenceService
-        .readCurrentUserReferenceCurrency();
-
-    _pushConfig(
-      CurrencyConfigEntity(
-        referenceCurrencyCode: CurrencyConfigEntity.normalizeCode(
-          userReferenceCurrency ?? storedReferenceCurrency,
-        ),
-        currencies: cachedCurrencies.isEmpty
-            ? currentConfig.currencies
-            : cachedCurrencies,
-        snapshotsByKey: cachedSnapshots,
-      ),
-    );
-
-    _currencyCatalogSubscription ??= _remoteDataSource.watchCurrencies().listen(
-      (currencies) {
-        unawaited(_safeOnRemoteCurrenciesChanged(currencies));
-      },
-      onError: (Object error, StackTrace stackTrace) {
-        debugPrint('Currency catalog realtime unavailable: $error');
-      },
-    );
-    await _safeRebindUserPreferenceStream();
-
-    try {
-      await refreshCurrencies();
-
-      // Rates for the whole catalogue, not just the reference currency.
-      // Snapshots are otherwise fetched only for currencies typed on this
-      // device, so a shared account bringing in transactions in a currency
-      // never recorded here left that currency without any rate — and every
-      // total involving it came out wrong.
-      await _refreshLatestSnapshots(
-        currentConfig.currencies.map((currency) => currency.code).toSet(),
-      );
-
-      await ensureReferenceHistory(
-        currentConfig.referenceCurrencyCode,
-        includeStoredDates: true,
-      );
-    } catch (_) {}
-  }
+  Future<void> hydrate() =>
+      _hydrationInFlight ??= _hydrateCurrencies().whenComplete(() {
+        _hydrationInFlight = null;
+      });
 
   Future<void> refreshCurrencies() async {
     final currencies = await _remoteDataSource.fetchCurrencies();
-    await _localDataSource.cacheCurrencies(currencies);
-    _pushConfig(currentConfig.copyWith(currencies: currencies));
+    await _onRemoteCurrenciesChanged(currencies);
   }
 
   Future<void> selectReferenceCurrency(String currencyCode) async {
@@ -131,7 +88,10 @@ class CurrencyRepositoryImpl {
     if (!includeStoredDates) {
       return;
     }
+    await _refreshReferenceHistory(normalizedCode);
+  }
 
+  Future<void> _refreshReferenceHistory(String normalizedCode) async {
     final rateDates = await _recordHistoryService.collectStoredRateDates();
     final historyCurrencyCodes = {
       normalizedCode,
@@ -254,50 +214,6 @@ class CurrencyRepositoryImpl {
     );
   }
 
-  Future<List<ExchangeRateSnapshotEntity>> _refreshLatestSnapshots(
-    Set<String> codes,
-  ) async {
-    final normalizedCodes = codes
-        .map(CurrencyConfigEntity.normalizeCode)
-        .where((code) => code.isNotEmpty)
-        .toSet();
-
-    // Check if we already have these snapshots in memory/cache.
-    final cachedSnapshots = normalizedCodes
-        .map(currentConfig.latestSnapshot)
-        .whereType<ExchangeRateSnapshotEntity>()
-        .toList(growable: false);
-
-    // Always trigger a background refresh regardless of cache state.
-    unawaited(
-      _remoteDataSource
-          .fetchLatestSnapshotsForCodes(normalizedCodes.toList(growable: false))
-          .then(_mergeSnapshots)
-          .catchError((e) {
-            if (e is! Exception || !e.toString().contains('SocketException')) {
-              debugPrint('Background FX refresh warning: $e');
-            }
-          }),
-    );
-
-    // Return cached snapshots immediately when available.
-    if (cachedSnapshots.isNotEmpty) {
-      return cachedSnapshots;
-    }
-
-    // No cache at all: try remote as a last resort, but with a short timeout
-    // so we don't block the user for too long.
-    try {
-      final remoteSnapshots = await _remoteDataSource
-          .fetchLatestSnapshotsForCodes(normalizedCodes.toList(growable: false))
-          .timeout(const Duration(seconds: 3));
-      await _mergeSnapshots(remoteSnapshots);
-      return remoteSnapshots;
-    } catch (_) {
-      return cachedSnapshots;
-    }
-  }
-
   Future<void> _ensureSnapshotsForDate({
     required Set<String> currencyCodes,
     required String rateDate,
@@ -389,21 +305,21 @@ class CurrencyRepositoryImpl {
   Future<void> _mergeSnapshots(
     List<ExchangeRateSnapshotEntity> snapshots,
   ) async {
-    if (snapshots.isEmpty) {
+    if (_disposed || snapshots.isEmpty) {
       return;
     }
     await _localDataSource.cacheSnapshots(snapshots);
-    _pushConfig(currentConfig.withSnapshotUpserts(snapshots));
+    if (!_disposed) _pushConfig(currentConfig.withSnapshotUpserts(snapshots));
   }
 
   Future<void> _onRemoteCurrenciesChanged(
     List<AppCurrencyEntity> currencies,
   ) async {
-    if (currencies.isEmpty) {
+    if (_disposed || currencies.isEmpty) {
       return;
     }
     await _localDataSource.cacheCurrencies(currencies);
-    _pushConfig(currentConfig.copyWith(currencies: currencies));
+    if (!_disposed) _pushConfig(currentConfig.copyWith(currencies: currencies));
   }
 
   Future<void> _onUserReferenceCurrencyChanged(String? currencyCode) async {
@@ -469,6 +385,7 @@ class CurrencyRepositoryImpl {
   }
 
   Future<void> dispose() async {
+    _disposed = true;
     await _authSubscription?.cancel();
     await _currencyCatalogSubscription?.cancel();
     await _userPreferenceSubscription?.cancel();
