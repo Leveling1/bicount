@@ -81,6 +81,7 @@ def main():
         test_env['BICOUNT_PREPROD_TEST_DELETED_TID'] = deleted_tid
         test_env['BICOUNT_PREPROD_TEST_LOCAL_DELETE_TID'] = local_delete_tid
         subprocess.run(['flutter', 'test', '--no-pub',
+                        '--dart-define=BICOUNT_LOCAL_PREPROD=true',
                         'supabase/tests/preprod_creation_flutter_test.dart',
                         'supabase/tests/preprod_conflict_flutter_test.dart'],
                        cwd=WORKDIR.parents[2], env=test_env, check=True,

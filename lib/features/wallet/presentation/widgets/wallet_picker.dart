@@ -35,7 +35,7 @@ class WalletPicker extends StatefulWidget {
 }
 
 class _WalletPickerState extends State<WalletPicker> {
-  final _wallets = BackendEnvironment.isLocalPreproduction
+  final _wallets = BackendEnvironment.walletsEnabled
       ? WalletRepositoryImpl().watch()
       : null;
 

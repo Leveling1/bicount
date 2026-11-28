@@ -120,6 +120,6 @@ void main() {
         await tester.pumpAndSettle();
       }
     },
-    skip: !BackendEnvironment.isLocalPreproduction,
+    skip: !BackendEnvironment.walletsEnabled,
   );
 }

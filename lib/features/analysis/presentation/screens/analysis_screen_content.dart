@@ -49,7 +49,7 @@ class _AnalysisScreenContent extends StatelessWidget {
                 ),
               ),
               const AnalysisRecurringBudgetSection(),
-              if (BackendEnvironment.isLocalPreproduction)
+              if (BackendEnvironment.walletsEnabled)
                 const Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: AppDimens.paddingMedium,

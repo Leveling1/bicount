@@ -154,6 +154,58 @@ void main() {
     expect(rows.last['journal_generation'], 1);
   });
 
+  test(
+    'first journal load can recover only unchanged pending baselines',
+    () async {
+      final db = await database();
+      addTearDown(db.close);
+      final outbox = OfflineOutbox(db);
+      for (final id in ['unchanged', 'changed']) {
+        await db.insert('bicount_remote_baseline', {
+          'user_id': 'user-1',
+          'collection': 'transactions',
+          'record_id': id,
+          'remote_payload': jsonEncode(transaction(id, 10)),
+        });
+        await outbox.commit(
+          OfflineOperation(
+            userId: 'user-1',
+            collection: 'transactions',
+            recordId: id,
+            action: 'upsert',
+            payload: {'tid': id, 'amount': 15},
+          ),
+          (_) async {},
+        );
+      }
+      await const OfflineMerge().snapshot(
+        db: db,
+        codec: transactionModelCodec,
+        userId: 'user-1',
+        rows: [
+          {...transaction('unchanged', 10), 'sender_wallet_id': null},
+          transaction('changed', 20),
+        ],
+        confirmedDeletes: const [],
+        observedSequence: 5,
+        observedGeneration: 2,
+      );
+      final baselines = {
+        for (final row in await db.query('bicount_remote_baseline'))
+          row['record_id']: row,
+      };
+      expect(baselines['unchanged']?['journal_sequence'], 5);
+      expect(baselines['unchanged']?['journal_generation'], 2);
+      expect(baselines['changed']?['journal_sequence'], isNull);
+      expect(
+        (jsonDecode(baselines['changed']!['remote_payload'] as String)
+            as Map)['amount'],
+        10,
+      );
+      expect(await outbox.pending('user-1'), hasLength(2));
+    },
+  );
+
   test('bootstrap, invalidation and journal page advance the cursor', () async {
     final db = await database();
     addTearDown(db.close);

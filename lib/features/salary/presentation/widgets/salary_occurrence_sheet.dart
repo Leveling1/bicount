@@ -160,7 +160,7 @@ class _SalaryOccurrenceSheetState extends State<SalaryOccurrenceSheet> {
               context.l10n.transactionSetExactAmountReceived,
               style: Theme.of(context).textTheme.bodySmall,
             ),
-            if (BackendEnvironment.isLocalPreproduction) ...[
+            if (BackendEnvironment.walletsEnabled) ...[
               AppDimens.spacerMedium,
               WalletCornerTheme(
                 child: WalletPicker(

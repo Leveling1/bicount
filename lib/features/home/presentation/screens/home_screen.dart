@@ -70,7 +70,7 @@ class HomeScreen extends StatelessWidget {
               HomeSliverHeader(
                 balance: data.user.balance ?? 0.0,
                 referenceCurrencyCode: data.referenceCurrencyCode,
-                onOpenWallets: BackendEnvironment.isLocalPreproduction
+                onOpenWallets: BackendEnvironment.walletsEnabled
                     ? onOpenWallets
                     : null,
                 monthlyInflow: monthlyFlow.inflowWithCarryover,

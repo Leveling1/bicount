@@ -25,14 +25,14 @@ class HomeRecentActivitySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final wallets = BackendEnvironment.isLocalPreproduction
+    final wallets = BackendEnvironment.walletsEnabled
         ? context.select(
             (WalletBloc? bloc) => bloc?.state.wallets ?? const <WalletModel>[],
           )
         : const <WalletModel>[];
     final recentItems = buildTransactionFeed(
       data,
-      context: BackendEnvironment.isLocalPreproduction ? context : null,
+      context: BackendEnvironment.walletsEnabled ? context : null,
       wallets: wallets,
     ).take(5).toList();
 

@@ -10,7 +10,7 @@ class _HomeBalanceSkeleton extends StatelessWidget {
       height: AppSizes.dp18,
     );
     const spacing = SizedBox(height: AppDimens.paddingSmall);
-    if (!BackendEnvironment.isLocalPreproduction) {
+    if (!BackendEnvironment.walletsEnabled) {
       return const Column(
         children: [
           label,

@@ -1,4 +1,5 @@
 import 'package:bicount/core/themes/app_theme.dart';
+import 'package:bicount/core/widgets/app_popup_menu_item.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/presentation/widgets/transaction_wallet_detail_row.dart';
 import 'package:bicount/l10n/app_localizations.dart';
@@ -68,21 +69,23 @@ void main() {
                 matching: find.byWidgetPredicate(
                   (widget) =>
                       widget is Material &&
+                      widget.color == theme.colorScheme.surfaceContainer &&
                       widget.clipBehavior == Clip.antiAlias,
                 ),
               )
               .first;
           final bounds = tester.getRect(menu);
           final menuMaterial = tester.widget<Material>(menu);
-          final shape = menuMaterial.shape as RoundedRectangleBorder;
-          expect(
-            shape.borderRadius,
-            const BorderRadius.all(Radius.circular(12)),
-          );
+          final shape = menuMaterial.shape;
+          expect(switch (shape) {
+            RoundedRectangleBorder(:final borderRadius) => borderRadius,
+            RoundedSuperellipseBorder(:final borderRadius) => borderRadius,
+            _ => null,
+          }, const BorderRadius.all(Radius.circular(12)));
           expect(shape, theme.popupMenuTheme.shape);
           expect(menuMaterial.color, theme.colorScheme.surfaceContainer);
           final selected = find.widgetWithText(
-            PopupMenuItem<String>,
+            AppPopupMenuItem<String>,
             current.name,
           );
           expect(

@@ -49,7 +49,7 @@ void main() {
         AppDimens.paddingMedium + AppDimens.paddingSmallCard.left,
       );
       expect(tester.getSize(avatar).width, AppDimens.transactionAvatarSize);
-      if (BackendEnvironment.isLocalPreproduction) {
+      if (BackendEnvironment.walletsEnabled) {
         final preview = tester.getRect(
           find.byKey(const ValueKey('home-wallet-skeleton')),
         );

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../constants/backend_environment.dart';
 import 'offline_codecs.g.dart';
 import 'offline_merge.dart';
 
@@ -26,7 +27,7 @@ class OfflineJournal {
   /// Attach the supplied marker only to rows this fresh snapshot observes.
   final Future<void> Function(OfflineCodec<dynamic>, int, int) snapshot;
   final void Function(Type) notify;
-  static const enabled = bool.fromEnvironment('BICOUNT_SYNC_JOURNAL');
+  static const enabled = BackendEnvironment.isJournalEnabled;
   static const _merge = OfflineMerge();
 
   static final _codecs = <String, OfflineCodec<dynamic>>{

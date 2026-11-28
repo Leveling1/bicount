@@ -506,10 +506,9 @@ final debtModelCodec = OfflineCodec<DebtModel>(
     'debtId': 'debt_id',
     'createdBy': 'created_by',
     'lenderId': 'lender_id',
-    if (BackendEnvironment.isLocalPreproduction)
-      'lenderWalletId': 'lender_wallet_id',
+    if (BackendEnvironment.walletsEnabled) 'lenderWalletId': 'lender_wallet_id',
     'borrowerId': 'borrower_id',
-    if (BackendEnvironment.isLocalPreproduction)
+    if (BackendEnvironment.walletsEnabled)
       'borrowerWalletId': 'borrower_wallet_id',
     'principalTransactionId': 'principal_transaction_id',
     'title': 'title',
@@ -532,10 +531,9 @@ final debtModelCodec = OfflineCodec<DebtModel>(
     'debtId': 'debt_id',
     'createdBy': 'created_by',
     'lenderId': 'lender_id',
-    if (BackendEnvironment.isLocalPreproduction)
-      'lenderWalletId': 'lender_wallet_id',
+    if (BackendEnvironment.walletsEnabled) 'lenderWalletId': 'lender_wallet_id',
     'borrowerId': 'borrower_id',
-    if (BackendEnvironment.isLocalPreproduction)
+    if (BackendEnvironment.walletsEnabled)
       'borrowerWalletId': 'borrower_wallet_id',
     'principalTransactionId': 'principal_transaction_id',
     'title': 'title',
@@ -610,10 +608,9 @@ final debtModelCodec = OfflineCodec<DebtModel>(
     'debt_id': m.debtId,
     'created_by': m.createdBy,
     'lender_id': m.lenderId,
-    if (BackendEnvironment.isLocalPreproduction)
-      'lender_wallet_id': m.lenderWalletId,
+    if (BackendEnvironment.walletsEnabled) 'lender_wallet_id': m.lenderWalletId,
     'borrower_id': m.borrowerId,
-    if (BackendEnvironment.isLocalPreproduction)
+    if (BackendEnvironment.walletsEnabled)
       'borrower_wallet_id': m.borrowerWalletId,
     'principal_transaction_id': m.principalTransactionId,
     'title': m.title,
@@ -636,10 +633,10 @@ final debtModelCodec = OfflineCodec<DebtModel>(
     'debt_id': m.debtId,
     'created_by': m.createdBy,
     'lender_id': m.lenderId,
-    if (BackendEnvironment.isLocalPreproduction && m.lenderWalletId != null)
+    if (BackendEnvironment.walletsEnabled && m.lenderWalletId != null)
       'lender_wallet_id': m.lenderWalletId,
     'borrower_id': m.borrowerId,
-    if (BackendEnvironment.isLocalPreproduction && m.borrowerWalletId != null)
+    if (BackendEnvironment.walletsEnabled && m.borrowerWalletId != null)
       'borrower_wallet_id': m.borrowerWalletId,
     'principal_transaction_id': m.principalTransactionId,
     'title': m.title,
@@ -885,10 +882,9 @@ final recurringTransfertModelCodec = OfflineCodec<RecurringTransfertModel>(
     'amount': 'amount',
     'currency': 'currency',
     'senderId': 'sender_id',
-    if (BackendEnvironment.isLocalPreproduction)
-      'senderWalletId': 'sender_wallet_id',
+    if (BackendEnvironment.walletsEnabled) 'senderWalletId': 'sender_wallet_id',
     'beneficiaryId': 'beneficiary_id',
-    if (BackendEnvironment.isLocalPreproduction)
+    if (BackendEnvironment.walletsEnabled)
       'beneficiaryWalletId': 'beneficiary_wallet_id',
     'frequency': 'frequency',
     'startDate': 'start_date',
@@ -910,10 +906,9 @@ final recurringTransfertModelCodec = OfflineCodec<RecurringTransfertModel>(
     'amount': 'amount',
     'currency': 'currency',
     'senderId': 'sender_id',
-    if (BackendEnvironment.isLocalPreproduction)
-      'senderWalletId': 'sender_wallet_id',
+    if (BackendEnvironment.walletsEnabled) 'senderWalletId': 'sender_wallet_id',
     'beneficiaryId': 'beneficiary_id',
-    if (BackendEnvironment.isLocalPreproduction)
+    if (BackendEnvironment.walletsEnabled)
       'beneficiaryWalletId': 'beneficiary_wallet_id',
     'frequency': 'frequency',
     'startDate': 'start_date',
@@ -983,10 +978,9 @@ final recurringTransfertModelCodec = OfflineCodec<RecurringTransfertModel>(
     'amount': m.amount,
     'currency': m.currency,
     'sender_id': m.senderId,
-    if (BackendEnvironment.isLocalPreproduction)
-      'sender_wallet_id': m.senderWalletId,
+    if (BackendEnvironment.walletsEnabled) 'sender_wallet_id': m.senderWalletId,
     'beneficiary_id': m.beneficiaryId,
-    if (BackendEnvironment.isLocalPreproduction)
+    if (BackendEnvironment.walletsEnabled)
       'beneficiary_wallet_id': m.beneficiaryWalletId,
     'frequency': m.frequency,
     'start_date': m.startDate,
@@ -1008,11 +1002,10 @@ final recurringTransfertModelCodec = OfflineCodec<RecurringTransfertModel>(
     'amount': m.amount,
     'currency': m.currency,
     'sender_id': m.senderId,
-    if (BackendEnvironment.isLocalPreproduction && m.senderWalletId != null)
+    if (BackendEnvironment.walletsEnabled && m.senderWalletId != null)
       'sender_wallet_id': m.senderWalletId,
     'beneficiary_id': m.beneficiaryId,
-    if (BackendEnvironment.isLocalPreproduction &&
-        m.beneficiaryWalletId != null)
+    if (BackendEnvironment.walletsEnabled && m.beneficiaryWalletId != null)
       'beneficiary_wallet_id': m.beneficiaryWalletId,
     'frequency': m.frequency,
     'start_date': m.startDate,
@@ -1167,11 +1160,10 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'name': 'name',
     'type': 'type',
     'beneficiaryId': 'beneficiary_id',
-    if (BackendEnvironment.isLocalPreproduction)
+    if (BackendEnvironment.walletsEnabled)
       'beneficiaryWalletId': 'beneficiary_wallet_id',
     'senderId': 'sender_id',
-    if (BackendEnvironment.isLocalPreproduction)
-      'senderWalletId': 'sender_wallet_id',
+    if (BackendEnvironment.walletsEnabled) 'senderWalletId': 'sender_wallet_id',
     'date': 'date',
     'note': 'note',
     'amount': 'amount',
@@ -1199,11 +1191,10 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'name': 'name',
     'type': 'type',
     'beneficiaryId': 'beneficiary_id',
-    if (BackendEnvironment.isLocalPreproduction)
+    if (BackendEnvironment.walletsEnabled)
       'beneficiaryWalletId': 'beneficiary_wallet_id',
     'senderId': 'sender_id',
-    if (BackendEnvironment.isLocalPreproduction)
-      'senderWalletId': 'sender_wallet_id',
+    if (BackendEnvironment.walletsEnabled) 'senderWalletId': 'sender_wallet_id',
     'date': 'date',
     'note': 'note',
     'amount': 'amount',
@@ -1291,11 +1282,10 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'name': m.name,
     'type': m.type,
     'beneficiary_id': m.beneficiaryId,
-    if (BackendEnvironment.isLocalPreproduction)
+    if (BackendEnvironment.walletsEnabled)
       'beneficiary_wallet_id': m.beneficiaryWalletId,
     'sender_id': m.senderId,
-    if (BackendEnvironment.isLocalPreproduction)
-      'sender_wallet_id': m.senderWalletId,
+    if (BackendEnvironment.walletsEnabled) 'sender_wallet_id': m.senderWalletId,
     'date': m.date,
     'note': m.note,
     'amount': m.amount,
@@ -1323,11 +1313,10 @@ final transactionModelCodec = OfflineCodec<TransactionModel>(
     'name': m.name,
     'type': m.type,
     'beneficiary_id': m.beneficiaryId,
-    if (BackendEnvironment.isLocalPreproduction &&
-        m.beneficiaryWalletId != null)
+    if (BackendEnvironment.walletsEnabled && m.beneficiaryWalletId != null)
       'beneficiary_wallet_id': m.beneficiaryWalletId,
     'sender_id': m.senderId,
-    if (BackendEnvironment.isLocalPreproduction && m.senderWalletId != null)
+    if (BackendEnvironment.walletsEnabled && m.senderWalletId != null)
       'sender_wallet_id': m.senderWalletId,
     'date': m.date,
     'note': m.note,
@@ -1425,7 +1414,7 @@ final recurringPlanPauseCodec = OfflineCodec<RecurringPlanPause>(
 );
 
 final List<OfflineCodec<dynamic>> allOfflineCodecs = [
-  if (BackendEnvironment.isLocalPreproduction) walletModelCodec,
+  if (BackendEnvironment.walletsEnabled) walletModelCodec,
   memojiModelCodec,
   userModelCodec,
   companyModelCodec,

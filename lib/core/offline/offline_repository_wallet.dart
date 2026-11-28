@@ -6,8 +6,8 @@ extension OfflineRepositoryWallet on Repository {
     required bool isSender,
     required String walletId,
   }) async {
-    if (!BackendEnvironment.isLocalPreproduction) {
-      throw StateError('Wallets require local preproduction.');
+    if (!BackendEnvironment.walletsEnabled) {
+      throw StateError('Wallets are disabled for this build.');
     }
     final (uid, db) = await _writableDatabase();
     final codec = transactionModelCodec;

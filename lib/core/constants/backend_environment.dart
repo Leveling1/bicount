@@ -10,7 +10,16 @@ class BackendEnvironment {
   static const isConditionalTest = bool.fromEnvironment(
     'BICOUNT_EXPERIMENTAL_CONDITIONAL',
   );
-  static const isJournalEnabled = bool.fromEnvironment('BICOUNT_SYNC_JOURNAL');
+  static const isJournalEnabled = bool.fromEnvironment(
+    'BICOUNT_SYNC_JOURNAL',
+    defaultValue: !isLocalPreproduction,
+  );
+  static const usesGuardedSync =
+      isConditionalTest || (!isLocalPreproduction && isJournalEnabled);
+  static const walletsEnabled = bool.fromEnvironment(
+    'BICOUNT_WALLETS',
+    defaultValue: true,
+  );
   static const _localKey = String.fromEnvironment('BICOUNT_LOCAL_ANON_KEY');
   static const _localUrl = 'http://127.0.0.1:54321';
 

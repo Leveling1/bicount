@@ -150,13 +150,17 @@ Backend requis pour ce lot :
 - oui pour vérifier les droits de lecture cross-device et le realtime finance
 - non pour la recherche transaction
 - non pour la localisation des catégories
-## Portefeuilles en préproduction locale
+## Portefeuilles
 
-Les migrations `wallet_accounts` et `wallet_recurring_worker` sont
-réservées à la préproduction locale. La première crée les portefeuilles privés,
-le portefeuille Principal et les références sur les trois tables d’opérations.
-Le RPC de reclassement contrôle le côté du participant. La seconde lance les
-échéances automatiques sur la base locale et reprend les portefeuilles du modèle.
+Le lot de production du 28 novembre 2026 inclut `wallet_accounts`. Il crée les
+portefeuilles privés, ajoute un portefeuille Principal dans la nouvelle table
+pour chaque profil et ajoute des références facultatives sur les trois tables
+d’opérations. Les opérations historiques conservent des références nulles. Le
+RPC de reclassement contrôle le côté du participant. En production, le
+traitement `bicount-wallet-recurring` sélectionne uniquement les plans inscrits
+à leur création depuis le déploiement. Les plans antérieurs ne sont pas
+inscrits et leurs échéances ne sont pas avancées automatiquement par ce
+traitement. L’interface Flutter des portefeuilles est active par défaut.
 
 La migration `wallet_mobile_operator` ajoute `wallets.mobile_operator`, un
 code facultatif réservé au type Mobile Money. Les portefeuilles existants
@@ -180,8 +184,8 @@ Vérifications locales : `python supabase/tests/preprod_wallet_api.py` et
 
 La table `public.analysis_contact_categories` stocke des préférences privées
 par compte, contact (`friends.sid`) et graphique (`income` ou `expense`).
-Appliquer `20261126104025_analysis_contact_categories.sql` avant de distribuer
-le build mobile. Chaque utilisateur gère les préférences de ses propres
+La migration `20261126104025_analysis_contact_categories.sql` est incluse dans le
+lot de production du 28 novembre 2026. Chaque utilisateur gère les préférences de ses propres
 contacts. La suppression d’un contact supprime ses préférences. La file
 d’attente SQLite transmet les changements. Les autres appareils les récupèrent
 pendant la synchronisation périodique via les lectures authentifiées.

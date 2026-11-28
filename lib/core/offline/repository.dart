@@ -6,6 +6,7 @@ import 'package:path/path.dart' as path;
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bicount/features/analysis/data/models/analysis_contact_category.dart';
+import 'package:bicount/features/authentification/data/models/user.model.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_plan_pause.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_pause_action.dart';
@@ -100,7 +101,7 @@ class Repository {
     }
     final db = await _factory.openDatabase(target);
     await ensureOfflineModelSchema(db, allOfflineCodecs);
-    if (BackendEnvironment.isLocalPreproduction) {
+    if (BackendEnvironment.walletsEnabled) {
       await installWalletBalances(db, uid);
     }
     await OfflineOutbox(db).initialize();

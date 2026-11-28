@@ -11,7 +11,7 @@ extension _IncomeFormSections on _IncomeFormState {
     return Column(
       children: [
         CustomAmountField(amount: _amount, currency: _currency),
-        if (BackendEnvironment.isLocalPreproduction) ...[
+        if (BackendEnvironment.walletsEnabled) ...[
           AppDimens.spacerMedium,
           WalletCornerTheme(
             child: WalletPicker(

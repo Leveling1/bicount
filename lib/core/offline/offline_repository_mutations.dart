@@ -1,6 +1,34 @@
 part of 'repository.dart';
 
 extension OfflineRepositoryMutations on Repository {
+  Future<void> ensureUserProfile(UserModel profile) async {
+    final (uid, db) = await _writableDatabase();
+    if (profile.uid != uid) {
+      throw StateError('Profile must belong to the account.');
+    }
+    final codec = userModelCodec;
+    await OfflineOutbox(db).commit(
+      OfflineOperation(
+        userId: uid,
+        collection: codec.table,
+        recordId: uid,
+        action: 'remote_upsert',
+        payload: {
+          'key': codec.key,
+          'row': codec.toRemote(profile),
+          'ignore_duplicates': true,
+        },
+      ),
+      (tx) => tx.insert(
+        codec.localTable,
+        codec.toLocal(profile),
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+      ),
+    );
+    notifyType(UserModel);
+    _sync.schedule();
+  }
+
   Future<T> upsert<T extends OfflineModel>(
     T model, {
     bool isCreation = false,
@@ -17,10 +45,10 @@ extension OfflineRepositoryMutations on Repository {
     final id = remote[codec.key]?.toString();
     if (id == null || id.isEmpty) throw StateError('Missing ${codec.key}');
     final (uid, db) = await _writableDatabase();
-    if (BackendEnvironment.isLocalPreproduction) {
+    if (BackendEnvironment.walletsEnabled) {
       await retainOwnWalletPointers(db, uid, remote);
     }
-    final editTime = BackendEnvironment.isConditionalTest
+    final editTime = BackendEnvironment.usesGuardedSync
         ? OfflineConflictClock.instance.estimate()
         : null;
     final operation = OfflineOperation(
@@ -51,7 +79,7 @@ extension OfflineRepositoryMutations on Repository {
     final id = codec.toRemote(model)[codec.key]?.toString();
     if (id == null || id.isEmpty) throw StateError('Missing ${codec.key}');
     final (uid, db) = await _writableDatabase();
-    final editTime = BackendEnvironment.isConditionalTest
+    final editTime = BackendEnvironment.usesGuardedSync
         ? OfflineConflictClock.instance.estimate()
         : null;
     final operation = OfflineOperation(

@@ -1744,6 +1744,36 @@ Carried forward deliberately, not oversights:
   including wallet selectors. Preserve the Wallets corner geometry and use
   the same primary-color tint for both Material dropdown variants.
 
+## Button Implementation
+
+- Reuse the shared buttons in `lib/core/widgets/custom_button.dart` when a
+  variant fits. Use the existing theme, layout tokens, corner geometry, and
+  localized labels. Give icon-only actions a localized tooltip or semantic
+  label.
+- Use `BicountPressable` from
+  `lib/core/animations/bicount_pressable.dart` for app-owned press motion.
+  Use the default constructor for custom surfaces with `onTap`. Use
+  `BicountPressable.button` for Material buttons and pass its controller to
+  `statesController`. Use `BicountPressable.control` when the child owns its
+  gesture, such as a switch, chip, dropdown, or floating action button. Pass
+  the control's enabled condition when it can be disabled.
+- Animate the complete tappable surface by default. Supply the background and
+  shape to the shared widget so the fill, corners, icon, and label move
+  together, as in the Home Expense and Income shortcuts. Use
+  `scaleContentOnly` where the background and tint should remain fixed, as
+  in the established Settings rows and selected Analysis controls.
+- Keep the layout and hit area stable while the button animates. Run the
+  action on the normal tap callback without waiting for the animation. Use
+  disabled callbacks for inactive actions, keep the shared loading
+  treatment, and respect reduced motion. Use the tint and scoped themes
+  described in Press Feedback.
+- Keep the bottom navigation bar on its existing press feedback. Flutter-owned
+  selector items continue to use the applicable theme feedback.
+- Verify the actual control in its screen context on Android and iOS. Check
+  a quick tap, a cancelled gesture where applicable, and reduced motion.
+  For a full-surface button, verify that its background moves with its
+  contents and that its hit area stays the same.
+
 ## Layout Dimensions
 
 - Import shared Flutter layout measurements from `app_dimens.dart`. Use the

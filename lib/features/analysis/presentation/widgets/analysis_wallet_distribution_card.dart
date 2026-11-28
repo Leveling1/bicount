@@ -16,7 +16,10 @@ class AnalysisWalletDistributionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final walletBloc = context.read<WalletBloc?>();
+    if (walletBloc == null) return const SizedBox.shrink();
     return BlocBuilder<WalletBloc, WalletState>(
+      bloc: walletBloc,
       builder: (context, state) {
         if (state.wallets.length < 2) return const SizedBox.shrink();
 

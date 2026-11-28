@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
+import 'package:bicount/core/themes/app_press_theme.dart';
 import 'package:bicount/core/themes/app_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/app_popup_menu_item.dart';
@@ -136,15 +137,69 @@ void main() {
       expect(inCard(usd(450)), findsNWidgets(2));
 
       Future<void> selectBudgetOption(String control, String label) async {
-        final field = find.descendant(
-          of: find.byKey(ValueKey(control), skipOffstage: false),
-          matching: find.byType(PopupMenuButton<int>, skipOffstage: false),
-          skipOffstage: false,
-        );
+        final field = find.byKey(ValueKey(control), skipOffstage: false);
         await Scrollable.ensureVisible(tester.element(field), alignment: 0.5);
         await tester.pumpAndSettle();
-        await tester.tap(field);
+        final bounds = tester.getRect(field);
+        final theme = Theme.of(tester.element(field));
+        final gesture = await tester.startGesture(bounds.center);
+        await tester.pump(const Duration(milliseconds: 110));
+        await tester.pump(const Duration(milliseconds: 80));
+        final tint = find.descendant(
+          of: field,
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is DecoratedBox &&
+                widget.decoration ==
+                    ShapeDecoration(
+                      color: appPressedColor(theme.primaryColor),
+                      shape: appPressShape,
+                    ),
+          ),
+        );
+        expect(tint, findsOneWidget);
+        expect(tester.getRect(tint), bounds);
+        await gesture.cancel();
         await tester.pumpAndSettle();
+
+        final menuItems = find.byType(
+          AppPopupMenuItem<int>,
+          skipOffstage: false,
+        );
+        for (final point in [
+          Offset(bounds.left + 2, bounds.center.dy),
+          Offset(bounds.center.dx, bounds.top + 2),
+          Offset(bounds.center.dx, bounds.bottom - 2),
+        ]) {
+          await tester.tapAt(point);
+          await tester.pumpAndSettle();
+          expect(menuItems, findsWidgets);
+          Navigator.of(tester.element(menuItems.first)).pop();
+          await tester.pumpAndSettle();
+        }
+        await tester.tapAt(Offset(bounds.right - 2, bounds.center.dy));
+        await tester.pumpAndSettle();
+        final selected = find.byWidgetPredicate(
+          (widget) => widget is AppPopupMenuItem<int> && widget.selected,
+          skipOffstage: false,
+        );
+        expect(selected, findsOneWidget);
+        expect(
+          find.descendant(
+            of: selected,
+            matching: find.byWidgetPredicate(
+              (widget) =>
+                  widget is Material &&
+                  widget.shape == appPressShape &&
+                  widget.clipBehavior == Clip.antiAlias &&
+                  widget.color ==
+                      theme.colorScheme.onSurface.withValues(alpha: 0.08),
+              skipOffstage: false,
+            ),
+            skipOffstage: false,
+          ),
+          findsOneWidget,
+        );
         final entry = find.widgetWithText(AppPopupMenuItem<int>, label);
         await tester.ensureVisible(entry);
         await tester.pumpAndSettle();

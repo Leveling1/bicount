@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:sqflite_common/sqlite_api.dart';
 
 import 'offline_codecs.g.dart';
+import 'offline_payload_match.dart';
 
 /// Applies server rows without overwriting changes still waiting in the outbox.
 class OfflineMerge {
@@ -22,7 +23,21 @@ class OfflineMerge {
       final protectedIds = await _pendingIds(tx, userId, codec.table);
       for (final row in rows) {
         final id = row[codec.key]?.toString();
-        if (id == null || id.isEmpty || protectedIds.contains(id)) continue;
+        if (id == null || id.isEmpty) continue;
+        if (protectedIds.contains(id)) {
+          if (observedSequence != null && observedGeneration != null) {
+            await _attachFirstJournalMarker(
+              tx,
+              codec,
+              userId,
+              id,
+              row,
+              observedSequence,
+              observedGeneration,
+            );
+          }
+          continue;
+        }
         await _writeRemote(
           tx,
           codec,
@@ -69,6 +84,56 @@ class OfflineMerge {
         }
       }
     });
+  }
+
+  /// Attach a marker to an already observed row during the first journal load.
+  /// A later server version never replaces the baseline of a pending edit.
+  Future<void> _attachFirstJournalMarker(
+    DatabaseExecutor tx,
+    OfflineCodec<dynamic> codec,
+    String userId,
+    String id,
+    Map<String, dynamic> row,
+    int sequence,
+    int generation,
+  ) async {
+    final saved = await tx.query(
+      'bicount_remote_baseline',
+      columns: ['remote_payload'],
+      where:
+          'user_id = ? AND collection = ? AND record_id = ? '
+          'AND journal_generation IS NULL AND journal_sequence IS NULL',
+      whereArgs: [userId, codec.table, id],
+      limit: 1,
+    );
+    final payload = saved.isEmpty ? null : saved.single['remote_payload'];
+    if (payload is! String) return;
+    final prior = (jsonDecode(payload) as Map).cast<String, Object?>();
+    // These additive columns may be absent in snapshots made before deployment.
+    const optional = {
+      'sender_wallet_id',
+      'beneficiary_wallet_id',
+      'borrower_wallet_id',
+      'lender_wallet_id',
+    };
+    final comparable = Map<String, dynamic>.of(row)
+      ..removeWhere(
+        (key, value) =>
+            value == null && optional.contains(key) && !prior.containsKey(key),
+      );
+    if (prior.length != comparable.length ||
+        !remoteContainsSentPayload(prior, comparable)) {
+      return;
+    }
+    await _rememberRemote(
+      tx,
+      userId,
+      codec.table,
+      id,
+      row,
+      sequence,
+      generation,
+    );
   }
 
   Future<bool> event({

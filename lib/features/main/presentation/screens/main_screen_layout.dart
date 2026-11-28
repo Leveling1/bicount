@@ -33,7 +33,7 @@ extension _MainScreenLayout on _MainScreenState {
           data: preparedData,
         );
 
-        const hasSharedContainer = BackendEnvironment.isLocalPreproduction;
+        const hasSharedContainer = BackendEnvironment.walletsEnabled;
         final enableWalletSwipe =
             hasSharedContainer && _selectedIndex == 0 && state is MainLoaded;
         final shell = HomeWalletTransition(
@@ -93,8 +93,7 @@ extension _MainScreenLayout on _MainScreenState {
                 onPressed: () => openTransactionSheet(
                   context,
                   preparedData,
-                  prefilledExpenseWalletId:
-                      BackendEnvironment.isLocalPreproduction
+                  prefilledExpenseWalletId: BackendEnvironment.walletsEnabled
                       ? context
                             .read<WalletBloc>()
                             .state
@@ -111,7 +110,7 @@ extension _MainScreenLayout on _MainScreenState {
                 FloatingActionButtonLocation.centerFloat,
           ),
         );
-        if (!BackendEnvironment.isLocalPreproduction) return shell;
+        if (!BackendEnvironment.walletsEnabled) return shell;
         return BlocProvider(
           create: (context) => WalletBloc(
             WalletRepositoryImpl(),

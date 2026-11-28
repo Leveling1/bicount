@@ -66,7 +66,10 @@ void main() {
           .widgetList<DecoratedBox>(
             find.descendant(of: targetDay, matching: find.byType(DecoratedBox)),
           )
-          .map((box) => (box.decoration as BoxDecoration).color)
+          .map((box) => box.decoration)
+          .whereType<BoxDecoration>()
+          .where((decoration) => decoration.shape == BoxShape.circle)
+          .map((decoration) => decoration.color)
           .whereType<Color>();
       expect(
         markerColors,

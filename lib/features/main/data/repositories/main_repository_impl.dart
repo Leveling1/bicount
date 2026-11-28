@@ -82,7 +82,7 @@ class MainRepositoryImpl implements MainRepository {
               final repository = Repository();
               final totals = <String, double>{};
               final useWallets =
-                  BackendEnvironment.isLocalPreproduction &&
+                  BackendEnvironment.walletsEnabled &&
                   user.uid.isNotEmpty &&
                   repository.currentUserId == user.uid;
               if (useWallets) {

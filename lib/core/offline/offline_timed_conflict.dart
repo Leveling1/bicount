@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'offline_codecs.g.dart';
 import 'offline_conditional_acknowledgement.dart';
+import 'offline_conditional_mutation.dart';
 import 'offline_conflict_archive.dart';
 import 'offline_conflict_order.dart';
 import 'offline_remote_winner_merge.dart';
@@ -80,6 +81,14 @@ Future<bool> resolveTimedConflict({
   )?.toUtc();
   final sequence = (result['journal_sequence'] as num).toInt();
   final generation = (result['journal_generation'] as num).toInt();
+  final remoteUncertainty = result['remote_uncertainty_ms'];
+  if (remoteUncertainty != null &&
+      (remoteUncertainty is! num ||
+          !remoteUncertainty.isFinite ||
+          remoteUncertainty < 0 ||
+          remoteUncertainty > const Duration(minutes: 5).inMilliseconds)) {
+    return false;
+  }
   if ((row != null && row[codec.key]?.toString() != operation.recordId) ||
       remoteTime == null ||
       serverTime == null ||
@@ -105,7 +114,12 @@ Future<bool> resolveTimedConflict({
   final midpoint = earliest.add(latest.difference(earliest) ~/ 2);
   final order = compareConflictTimes(
     local: ConflictTimeEstimate(midpoint, latest.difference(earliest) ~/ 2),
-    remote: ConflictTimeEstimate(remoteTime, const Duration(seconds: 2)),
+    remote: ConflictTimeEstimate(
+      remoteTime,
+      remoteUncertainty is num
+          ? Duration(milliseconds: remoteUncertainty.ceil())
+          : const Duration(seconds: 2),
+    ),
   );
   if (order == ConflictOrder.uncertain) return false;
   if (order == ConflictOrder.remoteLater) {
@@ -144,6 +158,7 @@ Future<bool> resolveTimedConflict({
           'p_seen_sequence': sequence,
           'p_generation': generation,
           'p_patch': operation.action == 'upsert' ? operation.payload : null,
+          ...guardedEditTimeParams(operation),
         },
       )
       .timeout(const Duration(seconds: 8));

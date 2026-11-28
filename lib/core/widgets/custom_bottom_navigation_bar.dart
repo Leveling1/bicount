@@ -33,7 +33,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
     final theme = Theme.of(context);
     final pressFeedback = theme.extension<AppPressFeedback>();
-    final activeColor = theme.bottomNavigationBarTheme.selectedItemColor;
+    final activeColor =
+        theme.bottomNavigationBarTheme.selectedItemColor ??
+        theme.colorScheme.primary;
     final inactiveColor = AppColors.inactiveColorDark.withValues(alpha: 0.6);
 
     final bar = BottomNavigationBar(

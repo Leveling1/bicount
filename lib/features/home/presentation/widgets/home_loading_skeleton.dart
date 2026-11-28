@@ -41,7 +41,7 @@ class _HomeLoadingHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => HomeHeaderSliverLayout(
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-    expanded: BackendEnvironment.isLocalPreproduction
+    expanded: BackendEnvironment.walletsEnabled
         ? const Padding(
             padding: EdgeInsets.only(top: AppDimens.paddingExtraLarge),
             child: _HomeBalanceSkeleton(),

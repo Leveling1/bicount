@@ -41,7 +41,7 @@ class LocalAuthentification implements AuthentificationLocalDataSource {
           '';
       final username = _deriveUsername(email);
 
-      await Repository().upsert<UserModel>(
+      await Repository().ensureUserProfile(
         UserModel(
           uid: uid,
           image: Constants.memojiDefault,

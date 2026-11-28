@@ -26,7 +26,7 @@ class _TransactionWalletDetailsState extends State<TransactionWalletDetails> {
 
   @override
   Widget build(BuildContext context) {
-    if (!BackendEnvironment.isLocalPreproduction) {
+    if (!BackendEnvironment.walletsEnabled) {
       return const SizedBox.shrink();
     }
     final state = context.watch<MainBloc>().state;

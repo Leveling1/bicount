@@ -16,7 +16,7 @@ extension on _TransactionScreenState {
         context,
       ).copyWith(scrollbars: false),
       slivers: [
-        if (BackendEnvironment.isLocalPreproduction)
+        if (BackendEnvironment.walletsEnabled)
           SliverToBoxAdapter(
             key: _walletHeaderKey,
             child: WalletCornerTheme(
@@ -68,7 +68,7 @@ extension on _TransactionScreenState {
   }
 
   void _revealSearchResults() {
-    if (!BackendEnvironment.isLocalPreproduction) return;
+    if (!BackendEnvironment.walletsEnabled) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted ||
           !widget.showSearchBar ||

@@ -195,6 +195,6 @@ void main() {
       }
       expect(tester.takeException(), isNull);
     },
-    skip: !BackendEnvironment.isLocalPreproduction,
+    skip: !BackendEnvironment.walletsEnabled,
   );
 }

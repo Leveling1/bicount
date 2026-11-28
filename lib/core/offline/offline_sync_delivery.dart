@@ -24,7 +24,7 @@ extension on OfflineSync {
             continue;
           }
           madeProgress = true;
-          if (OfflineSync._conditionalTestEnabled &&
+          if (OfflineSync._guardedSyncEnabled &&
               OfflineSync._journalTables.contains(operation.collection) &&
               (operation.action == 'upsert' || operation.action == 'delete')) {
             if (operation.isCreation && operation.action == 'upsert') {
@@ -78,7 +78,7 @@ extension on OfflineSync {
             }
             await request.timeout(const Duration(seconds: 8));
           } else if (operation.action == 'transaction_wallet' &&
-              BackendEnvironment.isLocalPreproduction) {
+              BackendEnvironment.walletsEnabled) {
             await _client
                 .rpc('set_transaction_wallet', params: operation.payload)
                 .timeout(const Duration(seconds: 8));

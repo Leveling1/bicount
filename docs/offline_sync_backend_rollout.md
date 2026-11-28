@@ -2,10 +2,31 @@
 
 ## État
 
-La migration `supabase/migrations/20261106125356_offline_sync_journal_compat.sql`
-est préparée localement. Elle n'a pas été appliquée au projet Bicount de
-production. Le schéma `public` a été exporté sans données et restauré dans une
-instance Supabase locale isolée, puis la migration y a été appliquée. Des tests
+Le 28 novembre 2026, Bicount a installé le journal en production. La migration distante
+`20261128114758_bicount_production_compatibility_20261128` regroupe le journal
+compatible V1, les portefeuilles et leurs opérateurs, les catégories de contacts,
+les pauses et le retrait des deux RPC historiques. Elle a vérifié avant commit
+que les valeurs des lignes métier existantes étaient identiques, en ignorant
+les six nouvelles références de portefeuille, vérifiées nulles.
+Le lot distant `20261128120211_bicount_production_guarded_sync_and_recurring_20261128`
+a ensuite activé la capture, installé les RPC d’écriture conditionnelle et les
+reçus de création. Le build de production utilise le journal et les portefeuilles
+par défaut. Une écriture directe côté serveur porte l’heure du serveur. Une
+écriture conditionnelle du nouveau client porte son intervalle d’édition
+calibré. Une ancienne écriture mobile sans heure d’édition ne permet pas de
+choisir automatiquement une version. L’opération et le conflit sont conservés
+localement si l’ordre ne peut pas être établi. Une modification locale sur une
+ligne supprimée à distance reste en attente si l’appliquer implique de recréer
+la ligne. Les anciens clients restent autorisés à utiliser leurs écritures
+habituelles.
+
+Le traitement `bicount-wallet-recurring` est actif uniquement pour les plans
+inscrits à leur création après déploiement. Aucun plan historique n’a été
+inscrit, ni aucune échéance historique avancée. Ne pas rejouer les migrations
+sources de ces deux lots sur cette production.
+
+Le schéma `public` a été exporté sans données et restauré dans un environnement
+local isolé pour répéter la migration. Des tests
 SQL utilisent des comptes fictifs et sont annulés après exécution. Ils couvrent
 les cinq tables, les comptes liés, la perte d'accès, les curseurs, la lecture
 RLS et des écritures V1 sous le rôle `authenticated`, capture désactivée puis
@@ -62,7 +83,7 @@ avec `netstat` après chaque démarrage.
 --no-backup` : ces commandes supprimeraient la copie locale et ses données de
 test. Ne jamais utiliser ce répertoire local pour un `db push` vers production.
 
-## Ce que la migration ajoute
+## Ce que le premier lot ajoute
 
 - Deux nouvelles tables publiques, `bicount_sync_clock` et
   `bicount_sync_events`, lisibles uniquement par l'utilisateur concerné.
@@ -78,11 +99,11 @@ anciens clients gardent leurs appels et leurs droits actuels. Les déclencheurs
 font toutefois une vérification de configuration après chaque écriture : cette
 faible surcharge doit être mesurée avant la production.
 
-Cela garantit seulement que ce changement n'enlève pas de contrat V1. Le
-backend actuel a déjà supprimé `account_funding`, `subscriptions` et
-`recurring_fundings`, tandis que les fonctions existantes
-`charge_subscription` et `process_recurring_funding` les mentionnent encore.
-Le journal ne répare pas ce problème antérieur de l'ancienne version.
+Le backend avait déjà supprimé `account_funding`, `subscriptions` et
+`recurring_fundings`. Le lot de production retire les RPC
+`charge_subscription(uuid)` et `process_recurring_funding(text)` et désactive
+les deux tâches planifiées qui invoquaient leurs anciens endpoints. Les tâches
+`recurring_transfert_due` et `recurring_transfert_reminder` restent actives.
 
 ## Contrat du curseur
 
@@ -121,12 +142,12 @@ snapshot. Aucun effacement automatique n'est programmé à cette étape.
    créations, modifications, suppressions, changements d'accès et reconnexions.
 4. Mesurer la latence des écritures et le volume du journal. Vérifier que
    chaque événement n'est lisible que par son destinataire.
-5. Le lecteur Flutter est présent derrière `BICOUNT_SYNC_JOURNAL=true`, désactivé
-   par défaut. Valider ses parcours sur appareil avant toute activation générale.
+5. Le lecteur Flutter est actif par défaut dans le build de production.
+   `BICOUNT_SYNC_JOURNAL` reste configurable pour les essais.
 
-Les builds habituels utilisent encore des écritures inconditionnelles et ne
-protègent pas les modifications concurrentes. Le protocole ci-dessous est
-expérimental et limité à la préproduction locale.
+Les builds antérieurs à l’activation utilisent des écritures inconditionnelles.
+Cette section décrit les essais en préproduction qui ont précédé le
+déploiement du protocole de production décrit en haut de ce document.
 La migration locale supplémentaire `20261107155506_offline_conflict_clock.sql`
 prépare une horloge privée par ligne et conserve un marqueur après suppression.
 Elle est installée uniquement en préproduction. Elle observe l'heure à laquelle

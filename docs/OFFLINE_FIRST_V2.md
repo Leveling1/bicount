@@ -33,8 +33,8 @@ schema or data was changed during this audit or mobile alignment.
   paginated remote snapshots. Reconciliation runs in the background at startup
   and periodically while the app remains open. Hidden company collections and
   the unused memoji model do not add periodic requests in the visible release.
-- `offline_journal.dart` optionally consumes the per-user server journal when
-  built with `BICOUNT_SYNC_JOURNAL=true` and the backend enables that account.
+- `offline_journal.dart` consumes the per-user server journal by default in
+  production when the backend enables capture for the account.
   Otherwise the existing snapshot path remains active. Journal pages apply
   changes and advance their cursor in one SQLite transaction. A fresh snapshot
   is required on first use, cursor expiry, sequence gaps, or a capture generation
@@ -44,35 +44,28 @@ schema or data was changed during this audit or mobile alignment.
   local result within 400 ms; the stream receives later remote data.
 - The last remote row applied locally is stored with the row in the same SQLite
   transaction. A pending local operation freezes that baseline, allowing a
-  future conflict protocol to compare against what the device actually saw.
-  In the explicitly enabled local experiment, this baseline also carries the
-  journal sequence and generation observed before its fresh snapshot or event.
-  A pending or unobserved row is never advanced to a newer watermark. Normal
-  builds do not yet use this baseline to protect server writes.
+  guarded write to compare against what the device actually saw. The baseline
+  carries the journal sequence and generation observed before its fresh
+  snapshot or event. A baseline with no marker can gain its first marker only
+  if a fresh server snapshot still matches the saved row.
 - Explicit finance creation paths mark their queued intent as a creation. Its
   original operation UUID survives subsequent local edits and is archived with
   unresolved versions. Older queues without an original UUID stay unknown;
-  later edits do not guess or upgrade that provenance. This marker is
-  preparation only: a secure server-side creation protocol is not yet
-  implemented.
+  later edits do not guess or upgrade that provenance. A server receipt allows
+  retrying a proven creation without a second insert.
 
 ## Conflict and deletion rules
 
 The last acknowledged server write wins when a record has no pending local
 operation. A local pending operation wins over incoming realtime and snapshot
 data until it is acknowledged. The next reconciliation then reads the server
-version. This is not conflict detection: a queued upsert or delete can
-overwrite or remove a newer change made on another device, including an old
-client. The journal only detects incoming changes and does not prevent that
-race. A server-side atomic version check and a safe conflict recovery policy
-are still required before the new offline implementation is release-ready.
-The local-preproduction-only `BICOUNT_EXPERIMENTAL_CONDITIONAL` mode uses an
-atomic server check for five journal tables and may resolve an observed conflict
-when calibrated time ranges establish an order. It archives the losing version
+version. The production build uses an atomic server check for the five journal
+tables. When a guarded edit or a server-originated change has a reliable edit
+window, the two windows are compared and the losing version is archived
 locally. Missing baselines, uncertain clocks and an edit newer than a remote
-deletion can remain queued; archives are not a server backup. Old installed
-clients do not transmit their actual offline edit time, so their delayed writes
-cannot always be ordered correctly. This mode is not enabled in production.
+deletion can remain queued. These archives are local. Legacy clients can still
+write directly for compatibility and do not supply their offline edit time.
+An incoming legacy conflict without an edit window stays pending.
 Deletes are queued with the stable UUID and are idempotent. Remote
 deletes remove cached rows through realtime when the ID is present, or through
 the next full reconciliation. A snapshot verifies missing IDs individually

@@ -47,7 +47,7 @@ class OfflineSync {
   bool _journalInUse = false;
   DateTime? _lastClockSample;
   bool _samplingClock = false;
-  static const _conditionalTestEnabled = BackendEnvironment.isConditionalTest;
+  static const _guardedSyncEnabled = BackendEnvironment.usesGuardedSync;
 
   static const _journalTables = {
     'users',
@@ -95,7 +95,7 @@ class OfflineSync {
   Future<void> _run() async {
     final uid = repository.currentUserId;
     if (uid == null) return;
-    if (_conditionalTestEnabled) unawaited(_sampleConflictClock(uid));
+    if (_guardedSyncEnabled) unawaited(_sampleConflictClock(uid));
     try {
       final db = await repository.database();
       if (repository.legacyMigrationPending) return;
@@ -123,7 +123,6 @@ class OfflineSync {
           return;
         }
       }
-      if (!await _push(uid)) return;
       var journalActive = false;
       if (OfflineJournal.enabled) {
         try {
@@ -141,6 +140,7 @@ class OfflineSync {
       }
       if (_journalInUse && !journalActive) _lastPull.clear();
       _journalInUse = journalActive;
+      if (repository.currentUserId != uid || !await _push(uid)) return;
       for (final codec in allOfflineCodecs.where(_isEagerCollection)) {
         if (repository.currentUserId != uid) return;
         watchCodec(codec);

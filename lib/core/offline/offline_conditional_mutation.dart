@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../constants/backend_environment.dart';
 import 'outbox/offline_operation.dart';
 import 'offline_codecs.g.dart';
 
@@ -73,6 +74,7 @@ Future<ConditionalMutationReply> sendConditionalMutation({
           'p_seen_sequence': sequence,
           'p_generation': generation,
           'p_patch': operation.action == 'upsert' ? operation.payload : null,
+          ...guardedEditTimeParams(operation),
         },
       )
       .timeout(const Duration(seconds: 8));
@@ -132,4 +134,18 @@ Future<ConditionalMutationReply> sendConditionalMutation({
     default:
       throw StateError('Unknown conditional mutation reply.');
   }
+}
+
+Map<String, Object?> guardedEditTimeParams(OfflineOperation operation) {
+  final earliest = operation.editedEarliest;
+  final latest = operation.editedLatest;
+  if (BackendEnvironment.isLocalPreproduction ||
+      earliest == null ||
+      latest == null) {
+    return const {};
+  }
+  return {
+    'p_edited_earliest': earliest.toUtc().toIso8601String(),
+    'p_edited_latest': latest.toUtc().toIso8601String(),
+  };
 }
