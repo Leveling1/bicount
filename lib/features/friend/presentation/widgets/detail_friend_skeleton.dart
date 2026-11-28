@@ -14,13 +14,25 @@ class DetailFriendSkeleton extends StatelessWidget {
           vertical: AppDimens.paddingMedium,
         ),
         children: const [
-          BicountSkeletonBox(height: 170, radius: AppDimens.borderRadiusLarge),
+          BicountSkeletonBox(
+            height: AppSizes.dp170,
+            radius: AppDimens.borderRadiusLarge,
+          ),
           AppDimens.spacerLarge,
-          BicountSkeletonBox(height: 80, radius: AppDimens.borderRadiusLarge),
+          BicountSkeletonBox(
+            height: AppSizes.dp80,
+            radius: AppDimens.borderRadiusLarge,
+          ),
           AppDimens.spacerLarge,
-          BicountSkeletonBox(height: 110, radius: AppDimens.borderRadiusLarge),
+          BicountSkeletonBox(
+            height: AppSizes.dp110,
+            radius: AppDimens.borderRadiusLarge,
+          ),
           AppDimens.spacerLarge,
-          BicountSkeletonBox(height: 240, radius: AppDimens.borderRadiusLarge),
+          BicountSkeletonBox(
+            height: AppSizes.dp240,
+            radius: AppDimens.borderRadiusLarge,
+          ),
         ],
       ),
     );

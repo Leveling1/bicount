@@ -94,7 +94,7 @@ class SubscriptionLoadingView extends StatelessWidget {
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
       physics: const BouncingScrollPhysics(),
       children: [
-        const BicountSkeletonBox(height: 56),
+        const BicountSkeletonBox(height: AppSizes.dp56),
         const SizedBox(height: AppDimens.spacingMedium),
         Wrap(
           spacing: AppDimens.spacingMedium,
@@ -102,8 +102,8 @@ class SubscriptionLoadingView extends StatelessWidget {
           children: List.generate(
             3,
             (_) => const SizedBox(
-              width: 150,
-              child: BicountSkeletonBox(height: 92),
+              width: AppSizes.dp150,
+              child: BicountSkeletonBox(height: AppSizes.dp92),
             ),
           ),
         ),
@@ -111,7 +111,7 @@ class SubscriptionLoadingView extends StatelessWidget {
         ...List.generate(
           4,
           (_) => const BicountSkeletonBox(
-            height: 116,
+            height: AppSizes.dp116,
             margin: EdgeInsets.only(bottom: AppDimens.spacingMedium),
             radius: AppDimens.borderRadiusLarge,
           ),
@@ -135,7 +135,7 @@ class _OverviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(minWidth: 140),
+      constraints: const BoxConstraints(minWidth: AppSizes.dp140),
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
       decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,

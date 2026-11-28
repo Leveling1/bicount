@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:flutter/material.dart';
@@ -50,31 +51,33 @@ class DebtContractAmountField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: Theme.of(context).textTheme.titleMedium),
-        TextFormField(
-          controller: controller,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9,\. ]')),
-          ],
-          validator: (value) {
-            if (allowEmpty && (value == null || value.trim().isEmpty)) {
+        BicountPressable.control(
+          child: TextFormField(
+            controller: controller,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9,\. ]')),
+            ],
+            validator: (value) {
+              if (allowEmpty && (value == null || value.trim().isEmpty)) {
+                return null;
+              }
+              final amount = double.tryParse(
+                (value ?? '').trim().replaceAll(' ', '').replaceAll(',', '.'),
+              );
+              if (amount == null || amount <= 0) {
+                return validatorMessage;
+              }
               return null;
-            }
-            final amount = double.tryParse(
-              (value ?? '').trim().replaceAll(' ', '').replaceAll(',', '.'),
-            );
-            if (amount == null || amount <= 0) {
-              return validatorMessage;
-            }
-            return null;
-          },
-          decoration: InputDecoration(
-            suffixIcon: currencyController == null
-                ? null
-                : CurrencyField(
-                    controller: currencyController!,
-                    color: Theme.of(context).cardColor,
-                  ),
+            },
+            decoration: InputDecoration(
+              suffixIcon: currencyController == null
+                  ? null
+                  : CurrencyField(
+                      controller: currencyController!,
+                      color: Theme.of(context).cardColor,
+                    ),
+            ),
           ),
         ),
       ],

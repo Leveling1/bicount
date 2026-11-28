@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/open_friend_detail.dart';
 import 'package:bicount/core/services/open_invite_hub.dart';
@@ -121,19 +122,26 @@ class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
                           color: Theme.of(context).scaffoldBackgroundColor,
                           child: BicountReveal(
                             delay: const Duration(milliseconds: 90),
-                            child: TextField(
-                              controller: _searchController,
-                              decoration: InputDecoration(
-                                hintText: context.l10n.friendsSearchHint,
-                                prefixIcon: const Icon(Icons.search),
-                                suffixIcon: _searchQuery.isNotEmpty
-                                    ? IconButton(
-                                        icon: const Icon(Icons.close),
-                                        onPressed: () {
-                                          _searchController.clear();
-                                        },
-                                      )
-                                    : null,
+                            child: BicountPressable.control(
+                              child: TextField(
+                                controller: _searchController,
+                                decoration: InputDecoration(
+                                  hintText: context.l10n.friendsSearchHint,
+                                  prefixIcon: const Icon(Icons.search),
+                                  suffixIcon: _searchQuery.isNotEmpty
+                                      ? BicountPressable.button(
+                                          builder: (statesController) =>
+                                              IconButton(
+                                                statesController:
+                                                    statesController,
+                                                icon: const Icon(Icons.close),
+                                                onPressed: () {
+                                                  _searchController.clear();
+                                                },
+                                              ),
+                                        )
+                                      : null,
+                                ),
                               ),
                             ),
                           ),
@@ -162,8 +170,9 @@ class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
                             )
                           : SliverList.separated(
                               itemCount: friends.length,
-                              separatorBuilder: (_, __) =>
-                                  const SizedBox(height: 8),
+                              separatorBuilder: (_, __) => const SizedBox(
+                                height: AppDimens.spacingSmall,
+                              ),
                               itemBuilder: (context, index) {
                                 final friend = friends[index];
                                 return BicountReveal(
@@ -188,6 +197,4 @@ class _FriendsDirectoryScreenState extends State<FriendsDirectoryScreen> {
       },
     );
   }
-
-  
 }

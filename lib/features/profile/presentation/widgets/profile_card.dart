@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/utils/string_format_utils.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
@@ -25,26 +26,24 @@ class ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      child: InkWell(
+      child: BicountPressable(
         hoverColor: Theme.of(context).colorScheme.surfaceContainer,
         customBorder: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusExtraLarge),
         ),
-        splashColor: Colors.transparent,
-        highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
         onTap: onTap,
         child: Center(
           child: Column(
             children: [
-              AppAvatar(image: image, radius: 40),
-              const SizedBox(height: 12),
+              AppAvatar(image: image, radius: AppSizes.dp40),
+              const SizedBox(height: AppSizes.dp12),
               Text(
                 capitalizeFirstLetter(name),
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppDimens.spacingExtraSmall),
               Text(email, style: Theme.of(context).textTheme.titleSmall),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppDimens.spacingExtraSmall),
               Text(
                 NumberFormatUtils.formatCurrency(balance ?? 0.0),
                 style: (balance ?? 0.0) >= 0

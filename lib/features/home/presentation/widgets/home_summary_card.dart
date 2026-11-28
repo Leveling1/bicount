@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/wallet_corner_theme.dart';
 import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -139,7 +140,9 @@ class HomeSummaryCard extends StatelessWidget {
             top: 0,
             bottom: 0,
             width: HomeWalletPreview.width,
-            child: HomeWalletPreview(onOpen: openWallets),
+            child: WalletCornerTheme(
+              child: HomeWalletPreview(onOpen: openWallets),
+            ),
           ),
         ],
       ),

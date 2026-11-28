@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/themes/app_colors.dart';
@@ -13,7 +14,7 @@ class CompanyProfil extends StatelessWidget {
     super.key,
     required this.width,
     required this.height,
-    this.radius = 20,
+    this.radius = AppSizes.dp20,
     this.image,
   });
 
@@ -36,7 +37,7 @@ class CompanyProfil extends StatelessWidget {
                 fit: BoxFit.cover,
               )
             : Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(AppDimens.paddingSmall),
                 child: SvgPicture.asset(
                   "assets/icons/company.svg",
                   semanticsLabel: "Company",

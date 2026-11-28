@@ -9,6 +9,8 @@ import 'package:bicount/core/services/recurring_funding_schedule_service.dart';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/recurring_fundings/data/data_sources/local_datasource/recurring_transfert_local_datasource.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
+import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_pause_action.dart';
+import 'package:bicount/features/recurring_fundings/domain/services/recurring_plan_schedule.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/update_recurring_transfert_request_entity.dart';
 import 'package:bicount/features/salary/domain/entities/salary_occurrence_entity.dart';
 import 'package:bicount/features/transaction/data/models/transaction.model.dart';
@@ -34,6 +36,17 @@ class LocalRecurringTransfertDataSourceImpl
   final RecurringFundingScheduleService _scheduleService;
 
   String? get _currentUid => Supabase.instance.client.auth.currentUser?.id;
+
+  @override
+  Future<void> changePauses({
+    required String ownerUid,
+    required RecurringPlanPauseAction action,
+    required List<RecurringPlanPauseChange> changes,
+  }) => Repository().changeRecurringPauses(
+    ownerUid: ownerUid,
+    action: action,
+    changes: changes,
+  );
 
   @override
   Future<void> updateRecurringTransfert(
@@ -70,7 +83,11 @@ class LocalRecurringTransfertDataSourceImpl
             current.beneficiaryWalletId,
         frequency: request.frequency,
         startDate: normalizedStartDate,
-        nextDueDate: normalizedStartDate,
+        nextDueDate:
+            normalizedStartDate == current.startDate &&
+                request.frequency == current.frequency
+            ? current.nextDueDate
+            : normalizedStartDate,
         endDate: current.endDate,
         status: current.status,
         executionMode: current.executionMode,
@@ -150,8 +167,7 @@ class LocalRecurringTransfertDataSourceImpl
       return null;
     }
 
-    final items = await Repository().get<RecurringTransfertModel>(
-      policy: OfflineReadPolicy.localOnly,
+    final items = await Repository().readRecurringPlans(
       query: Query(
         where: [Where.exact('recurringTransfertId', recurringTransfertId)],
       ),

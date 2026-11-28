@@ -1,6 +1,7 @@
 import 'package:bicount/core/errors/failure.dart';
 import 'package:bicount/features/recurring_fundings/data/data_sources/local_datasource/recurring_transfert_local_datasource.dart';
 import 'package:bicount/features/recurring_fundings/data/models/recurring_transfert.model.dart';
+import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_pause_action.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/update_recurring_transfert_request_entity.dart';
 import 'package:bicount/features/recurring_fundings/domain/repositories/recurring_transfert_repository.dart';
 import 'package:bicount/features/salary/domain/entities/salary_occurrence_entity.dart';
@@ -9,6 +10,17 @@ class RecurringTransfertRepositoryImpl implements RecurringTransfertRepository {
   RecurringTransfertRepositoryImpl({required this.localDataSource});
 
   final RecurringTransfertLocalDataSource localDataSource;
+
+  @override
+  Future<void> changePauses({
+    required String ownerUid,
+    required RecurringPlanPauseAction action,
+    required List<RecurringPlanPauseChange> changes,
+  }) => localDataSource.changePauses(
+    ownerUid: ownerUid,
+    action: action,
+    changes: changes,
+  );
 
   @override
   Future<void> updateRecurringTransfert(

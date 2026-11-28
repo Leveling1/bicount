@@ -44,15 +44,17 @@ class FriendInviteSection extends StatelessWidget {
                         : invite.senderImage;
 
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.only(
+                        bottom: AppDimens.paddingSmallMedium,
+                      ),
                       child: Row(
                         children: [
                           AppAvatar(
                             image: (avatar ?? '').isEmpty ? null : avatar,
-                            radius: 18,
+                            radius: AppSizes.dp18,
                             fallbackIcon: Icons.person_outline,
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSizes.dp12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +64,7 @@ class FriendInviteSection extends StatelessWidget {
                                   style: Theme.of(context).textTheme.bodyMedium
                                       ?.copyWith(fontWeight: FontWeight.w600),
                                 ),
-                                const SizedBox(height: 2),
+                                const SizedBox(height: AppSizes.dp2),
                                 Text(
                                   subtitle,
                                   style: Theme.of(context).textTheme.bodySmall,

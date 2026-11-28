@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
@@ -22,9 +24,12 @@ class SubscriptionScreen extends StatelessWidget {
             actions: [
               if (state is MainLoaded && false) // subscriptions removed
                 // ignore: dead_code
-                IconButton(
-                  onPressed: () => _openSearch(context, state.startData),
-                  icon: const Icon(Icons.search_rounded),
+                BicountPressable.button(
+                  builder: (statesController) => IconButton(
+                    statesController: statesController,
+                    onPressed: () => _openSearch(context, state.startData),
+                    icon: const Icon(Icons.search_rounded),
+                  ),
                 ),
             ],
           ),
@@ -69,25 +74,28 @@ class _SubscriptionErrorState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppDimens.paddingLarge),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.wifi_tethering_error_rounded,
               color: Theme.of(context).colorScheme.error,
-              size: 32,
+              size: AppDimens.iconSizeLarge,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSizes.dp12),
             Text(
               context.l10n.runtimeDataLoadFailed,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: onRetry,
-              child: Text(context.l10n.commonRetry),
+            const SizedBox(height: AppDimens.spacingMedium),
+            BicountPressable.button(
+              builder: (statesController) => FilledButton(
+                statesController: statesController,
+                onPressed: onRetry,
+                child: Text(context.l10n.commonRetry),
+              ),
             ),
           ],
         ),

@@ -1,3 +1,6 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
+import 'package:bicount/features/settings/presentation/widgets/settings_section.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -30,13 +33,20 @@ class SettingsActionTile extends StatelessWidget {
         ? Theme.of(context).colorScheme.error
         : Theme.of(context).hintColor;
 
-    return InkWell(
+    final sectionPadding = SettingsOptionInsets.of(context);
+    return BicountPressable(
+      scaleContentOnly: true,
       customBorder: RoundedSuperellipseBorder(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(AppSizes.dp18),
       ),
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
+        padding:
+            sectionPadding +
+            const EdgeInsets.symmetric(
+              horizontal: AppDimens.paddingMedium,
+              vertical: AppSizes.dp6,
+            ),
         child: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: Icon(icon, color: color),
@@ -55,7 +65,7 @@ class SettingsActionTile extends StatelessWidget {
             children: [
               if (value != null)
                 Padding(
-                  padding: const EdgeInsets.only(right: 6),
+                  padding: const EdgeInsets.only(right: AppSizes.dp6),
                   child: Text(
                     value!,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -67,7 +77,7 @@ class SettingsActionTile extends StatelessWidget {
               if (isLoading)
                 LoadingAnimationWidget.hexagonDots(
                   color: Theme.of(context).primaryColor,
-                  size: 16,
+                  size: AppSizes.dp16,
                 )
               else
                 Icon(Icons.chevron_right, color: trailingColor),

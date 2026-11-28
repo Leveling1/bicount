@@ -47,7 +47,7 @@ class AnalysisCashflowChart extends StatelessWidget {
           ),
           const SizedBox(height: AppDimens.marginLarge),
           SizedBox(
-            height: 220,
+            height: AppSizes.dp220,
             child: LineChart(
               LineChartData(
                 minY: minValue > 0 ? 0 : minValue * 1.15,
@@ -64,7 +64,7 @@ class AnalysisCashflowChart extends StatelessWidget {
                       color: Theme.of(
                         context,
                       ).dividerColor.withValues(alpha: 0.18),
-                      strokeWidth: 1,
+                      strokeWidth: AppSizes.dp1,
                     );
                   },
                 ),
@@ -78,10 +78,12 @@ class AnalysisCashflowChart extends StatelessWidget {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 48,
+                      reservedSize: AppSizes.dp48,
                       getTitlesWidget: (value, meta) {
                         return Padding(
-                          padding: const EdgeInsets.only(right: 8),
+                          padding: const EdgeInsets.only(
+                            right: AppDimens.paddingSmall,
+                          ),
                           child: Text(
                             NumberFormatUtils.compactCurrency(value),
                             style: Theme.of(context).textTheme.bodySmall,
@@ -93,7 +95,7 @@ class AnalysisCashflowChart extends StatelessWidget {
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 30,
+                      reservedSize: AppSizes.dp30,
                       interval: _bottomInterval(
                         dashboard.cashflowPoints.length,
                       ),
@@ -105,9 +107,11 @@ class AnalysisCashflowChart extends StatelessWidget {
                         }
                         final point = dashboard.cashflowPoints[index];
                         return Padding(
-                          padding: const EdgeInsets.only(top: 8),
+                          padding: const EdgeInsets.only(
+                            top: AppDimens.paddingSmall,
+                          ),
                           child: Text(
-                            dashboard.period == AnalysisPeriod.all
+                            dashboard.period.usesMonthlyBuckets
                                 ? DateFormat('MMM yy').format(point.date)
                                 : DateFormat('dd MMM').format(point.date),
                             style: Theme.of(context).textTheme.bodySmall,
@@ -130,7 +134,7 @@ class AnalysisCashflowChart extends StatelessWidget {
                     }).toList(),
                     isCurved: true,
                     color: lineColor,
-                    barWidth: 3,
+                    barWidth: AppSizes.dp3,
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,

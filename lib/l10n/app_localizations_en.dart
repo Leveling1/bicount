@@ -2039,6 +2039,84 @@ class AppLocalizationsEn extends AppLocalizations {
   String get analysisPeriodAllLabel => 'All';
 
   @override
+  String get analysisPeriodCustomLabel => 'Date range';
+
+  @override
+  String get analysisContactCategories => 'Contact categories';
+
+  @override
+  String get analysisAddContactsToBothCharts => 'Add selected contacts to both charts';
+
+  @override
+  String get analysisNoContacts => 'No contacts available.';
+
+  @override
+  String get analysisSearchContacts => 'Search contacts';
+
+  @override
+  String get analysisContactCategoriesSaveError => 'Could not save the contact categories.';
+
+  @override
+  String get analysisWalletDistribution => 'Wallet distribution';
+
+  @override
+  String get analysisWalletCurrentBalances => 'Current balances';
+
+  @override
+  String get analysisWalletPositiveTotal => 'Positive balances';
+
+  @override
+  String get analysisWalletNoPositiveBalances => 'No wallet has a positive balance.';
+
+  @override
+  String get analysisWalletOutsideChart => 'Negative or unavailable balances';
+
+  @override
+  String get analysisWalletBalanceUnavailable => 'Unavailable';
+
+  @override
+  String get analysisWalletBalancesUnavailable => 'Wallet balances are unavailable.';
+
+  @override
+  String get analysisRecurringCalendar => 'Recurring calendar';
+
+  @override
+  String get analysisRecurringBudget => 'Recurring budget';
+
+  @override
+  String get analysisRecurringBudgetMonth => 'Month';
+
+  @override
+  String get analysisRecurringBudgetYear => 'Year';
+
+  @override
+  String get analysisRecurringBudgetEmptyMonth => 'A recurring income and a recurring charge are needed for this month.';
+
+  @override
+  String get analysisPeriodCurrentMonth => 'This month';
+
+  @override
+  String get analysisRecurringBudgetReceivedIncome => 'Received income';
+
+  @override
+  String get analysisRecurringBudgetTotalIncome => 'Recurring income';
+
+  @override
+  String get analysisRecurringBudgetRemaining => 'Expected remainder';
+
+  @override
+  String get analysisRecurringBudgetDeficit => 'Expected deficit';
+
+  @override
+  String get analysisRecurringBudgetOtherCharges => 'Other charges';
+
+  @override
+  String get analysisRecurringBudgetRatesUnavailable => 'Exchange rates are unavailable for some planned payments.';
+
+  @override
+  String get analysisRecurringCalendarEmpty => 'No recurring payments are scheduled for this day.';
+
+  @override
   String get walletTitle => 'Wallets';
 
   @override
@@ -2144,4 +2222,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get walletBalance => 'Balance';
+
+  @override
+  String get recurringPlanPauseCta => 'Pause plan';
+
+  @override
+  String get recurringPlanResumeCta => 'Resume plan';
+
+  @override
+  String get recurringPlansPauseCta => 'Pause plans';
+
+  @override
+  String get recurringPlansResumeCta => 'Resume plans';
+
+  @override
+  String get recurringPlansManagePauses => 'Manage pauses';
+
+  @override
+  String get recurringPlanPaused => 'Paused';
+
+  @override
+  String get recurringPlanPauseHistory => 'Pause history';
+
+  @override
+  String get recurringPlanKeepSchedule => 'Keep the usual schedule';
+
+  @override
+  String get recurringPlanChooseResumeDate => 'Choose a new first due date';
+
+  @override
+  String get recurringPlanPauseNotice => 'Scheduled occurrences during the pause are skipped. Recorded transactions are kept.';
+
+  @override
+  String get recurringPlanResumeNotice => 'Choose when each plan’s future occurrences should start.';
+
+  @override
+  String get recurringPlanPauseSaved => 'Pause saved';
+
+  @override
+  String get recurringPlanResumeSaved => 'Resumption saved';
+
+  @override
+  String get recurringPlanPauseError => 'The change couldn’t be saved. Check the plan status and date, then try again.';
+
+  @override
+  String recurringPlanPausedOn(String date) {
+    return 'Paused $date';
+  }
+
+  @override
+  String recurringPlanResumedOn(String date) {
+    return 'Resumed $date';
+  }
+
+  @override
+  String recurringPlanNewDueOn(String date) {
+    return 'New first due date $date';
+  }
 }

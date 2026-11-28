@@ -14,3 +14,9 @@ The capture switch in `bicount_sync.capture_config` defaults to off. The
 conditional mutation primitive is not connected to Flutter and is not a
 last-write-wins resolver. None of these migrations has been deployed to
 production. See `docs/offline_sync_backend_rollout.md` before any rollout.
+
+The recurring plan pause migration adds `public.recurring_plan_pauses` and
+integrates with the existing recurring-transfer status and due-date fields.
+Apply it before releasing the client that uses the new table. The local smoke
+test is `supabase/tests/recurring_plan_pauses_smoke.sql`. See
+`docs/recurring_funding_backend_actions.md` for scheduling and rollout details.

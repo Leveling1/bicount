@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
@@ -64,8 +65,8 @@ class _SettingsDeleteAccountSheetState
                 ),
                 AppDimens.spacerSmall,
                 Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+                  spacing: AppDimens.spacingSmall,
+                  runSpacing: AppDimens.spacingSmall,
                   children: reasons.entries.map((entry) {
                     final selected = entry.key == _reasonCode;
                     return CustomChoiceChip(
@@ -82,11 +83,13 @@ class _SettingsDeleteAccountSheetState
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 AppDimens.spacerSmall,
-                TextFormField(
-                  controller: _detailsController,
-                  maxLines: 4,
-                  decoration: InputDecoration(
-                    hintText: context.l10n.settingsDeleteDetailsHint,
+                BicountPressable.control(
+                  child: TextFormField(
+                    controller: _detailsController,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      hintText: context.l10n.settingsDeleteDetailsHint,
+                    ),
                   ),
                 ),
                 AppDimens.spacerLarge,

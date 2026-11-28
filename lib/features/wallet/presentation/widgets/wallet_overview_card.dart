@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/constants/icon_links.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
@@ -37,7 +39,7 @@ class WalletOverviewCard extends StatelessWidget {
         Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 20),
+              padding: const EdgeInsets.only(bottom: AppSizes.dp20),
               child: AspectRatio(
                 aspectRatio: aspectRatio,
                 child: SizedBox.expand(
@@ -58,7 +60,7 @@ class WalletOverviewCard extends StatelessWidget {
             ),
             if (!moving)
               PositionedDirectional(
-                start: 8,
+                start: AppSizes.dp8,
                 bottom: 0,
                 child: WalletOverviewActions(
                   wallet: wallet,
@@ -69,15 +71,18 @@ class WalletOverviewCard extends StatelessWidget {
           ],
         ),
         Padding(
-          padding: const EdgeInsetsDirectional.only(start: 12, top: 4),
+          padding: const EdgeInsetsDirectional.only(
+            start: AppDimens.paddingSmallMedium,
+            top: AppDimens.paddingExtraSmall,
+          ),
           child: Visibility(
             visible: !moving,
             maintainSize: true,
             maintainAnimation: true,
             maintainState: true,
             child: Wrap(
-              spacing: 12,
-              runSpacing: 4,
+              spacing: AppSizes.dp12,
+              runSpacing: AppDimens.spacingExtraSmall,
               children: [
                 if (wallet.archivedAt != null)
                   Text(l10n.walletArchived, style: theme.textTheme.labelMedium),
@@ -121,8 +126,8 @@ class WalletOverviewActions extends StatelessWidget {
           label: l10n.navTransaction,
           icon: SvgPicture.asset(
             IconLinks.transaction,
-            width: 16,
-            height: 16,
+            width: AppSizes.dp16,
+            height: AppSizes.dp16,
             excludeFromSemantics: true,
             colorFilter: ColorFilter.mode(
               Theme.of(context).colorScheme.onSurface,
@@ -132,11 +137,11 @@ class WalletOverviewActions extends StatelessWidget {
           onPressed: onTransactions,
           decorative: decorative,
         ),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppDimens.spacingExtraSmall),
         _WalletCardAction(
           tint: tint,
           label: l10n.walletEdit,
-          icon: const Icon(Icons.edit, size: 16),
+          icon: const Icon(Icons.edit, size: AppDimens.iconSizeSmall),
           onPressed: onEdit,
           decorative: decorative,
         ),
@@ -167,16 +172,19 @@ class _WalletCardAction extends StatelessWidget {
       tint.withValues(alpha: .24),
       colors.surfaceContainerHighest,
     );
-    return IconButton(
-      tooltip: decorative ? null : label,
-      style: IconButton.styleFrom(
-        backgroundColor: background,
-        foregroundColor: colors.onSurface,
-        minimumSize: const Size(34, 34),
-        padding: EdgeInsets.zero,
+    return BicountPressable.control(
+      enabled: !decorative && onPressed != null,
+      child: IconButton(
+        tooltip: decorative ? null : label,
+        style: IconButton.styleFrom(
+          backgroundColor: background,
+          foregroundColor: colors.onSurface,
+          minimumSize: const Size(AppSizes.dp34, AppSizes.dp34),
+          padding: EdgeInsets.zero,
+        ),
+        icon: icon,
+        onPressed: decorative ? () {} : onPressed,
       ),
-      icon: icon,
-      onPressed: decorative ? () {} : onPressed,
     );
   }
 }

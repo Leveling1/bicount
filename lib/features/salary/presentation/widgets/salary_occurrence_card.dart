@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
@@ -32,7 +33,7 @@ class SalaryOccurrenceCard extends StatelessWidget {
       ),
       child: Material(
         color: Colors.transparent,
-        child: InkWell(
+        child: BicountPressable(
           onTap: onTap,
           customBorder: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),

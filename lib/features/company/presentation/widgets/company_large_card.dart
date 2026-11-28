@@ -33,7 +33,7 @@ class CompanyLargeCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(bottom: AppSizes.dp20),
       decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
         shape: RoundedSuperellipseBorder(
@@ -47,8 +47,6 @@ class CompanyLargeCard extends StatelessWidget {
           customBorder: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
           ),
-          splashColor: Colors.transparent,
-          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: () {
             context.push('/companyDetail', extra: company.cid);
           },
@@ -60,7 +58,9 @@ class CompanyLargeCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Container(
-                      constraints: const BoxConstraints(minWidth: 70),
+                      constraints: const BoxConstraints(
+                        minWidth: AppSizes.dp70,
+                      ),
                       decoration: ShapeDecoration(
                         color: badgeColor.withValues(alpha: 0.3),
                         shape: RoundedSuperellipseBorder(
@@ -70,14 +70,14 @@ class CompanyLargeCard extends StatelessWidget {
                         ),
                       ),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                        horizontal: AppDimens.paddingSmall,
+                        vertical: AppDimens.paddingExtraSmall,
                       ),
                       child: Text(
                         role,
                         style: TextStyle(
                           color: badgeColor,
-                          fontSize: 11,
+                          fontSize: AppSizes.dp11,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -86,18 +86,18 @@ class CompanyLargeCard extends StatelessWidget {
                   ],
                 ),
                 CompanyProfil(
-                  width: 120,
-                  height: 120,
-                  radius: 50,
+                  width: AppSizes.dp120,
+                  height: AppSizes.dp120,
+                  radius: AppSizes.dp50,
                   image: company.image,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSizes.dp12),
                 Text(
                   company.name,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 company.description != null && company.description != ""
-                    ? const SizedBox(height: 4)
+                    ? const SizedBox(height: AppDimens.spacingExtraSmall)
                     : const SizedBox.shrink(),
                 company.description != null && company.description != ""
                     ? Text(
@@ -112,7 +112,7 @@ class CompanyLargeCard extends StatelessWidget {
                         ),
                       )
                     : const SizedBox.shrink(),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSizes.dp12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -124,7 +124,7 @@ class CompanyLargeCard extends StatelessWidget {
                             "Profit",
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppDimens.spacingExtraSmall),
                           Text(
                             NumberFormatUtils.formatCurrency(profit),
                             style: TextStyle(
@@ -146,7 +146,7 @@ class CompanyLargeCard extends StatelessWidget {
                             "Expenses",
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppDimens.spacingExtraSmall),
                           Text(
                             NumberFormatUtils.formatCurrency(expenses),
                             style: TextStyle(
@@ -168,7 +168,7 @@ class CompanyLargeCard extends StatelessWidget {
                             "Net Revenue",
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppDimens.spacingExtraSmall),
                           Text(
                             NumberFormatUtils.formatCurrency(revenue),
                             style: TextStyle(

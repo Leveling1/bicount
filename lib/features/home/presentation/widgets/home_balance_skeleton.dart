@@ -5,11 +5,18 @@ class _HomeBalanceSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const label = BicountSkeletonBox(width: 96, height: 18);
+    const label = BicountSkeletonBox(
+      width: AppSizes.dp96,
+      height: AppSizes.dp18,
+    );
     const spacing = SizedBox(height: AppDimens.paddingSmall);
     if (!BackendEnvironment.isLocalPreproduction) {
       return const Column(
-        children: [label, spacing, BicountSkeletonBox(width: 248, height: 36)],
+        children: [
+          label,
+          spacing,
+          BicountSkeletonBox(width: AppSizes.dp248, height: AppSizes.dp36),
+        ],
       );
     }
     return Stack(
@@ -27,7 +34,7 @@ class _HomeBalanceSkeleton extends StatelessWidget {
             children: [
               label,
               spacing,
-              BicountSkeletonBox(width: 200, height: 36),
+              BicountSkeletonBox(width: AppSizes.dp200, height: AppSizes.dp36),
               SizedBox(height: AppDimens.spacingMedium),
               _MonthlyBalanceSkeleton(),
               SizedBox(height: AppDimens.spacingSmall),
@@ -52,7 +59,7 @@ class _HomeBalanceSkeleton extends StatelessWidget {
                     width: constraints.maxHeight * WalletCardFace.aspectRatio,
                     child: BicountSkeletonBox(
                       height: constraints.maxHeight,
-                      radius: 14,
+                      radius: AppSizes.dp14,
                       preserveWalletCorners: true,
                     ),
                   ),
@@ -81,9 +88,12 @@ class _MonthlyBalanceSkeleton extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                BicountSkeletonBox(width: 78, height: 16),
-                SizedBox(height: 4),
-                BicountSkeletonBox(width: 106, height: 14),
+                BicountSkeletonBox(width: AppSizes.dp78, height: AppSizes.dp16),
+                SizedBox(height: AppDimens.spacingExtraSmall),
+                BicountSkeletonBox(
+                  width: AppSizes.dp106,
+                  height: AppSizes.dp14,
+                ),
               ],
             ),
           ),

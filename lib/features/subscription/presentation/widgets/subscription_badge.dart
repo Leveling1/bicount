@@ -27,7 +27,7 @@ class SubscriptionBadge extends StatelessWidget {
         label,
         style: Theme.of(
           context,
-        ).textTheme.bodySmall!.copyWith(color: color, fontSize: 11),
+        ).textTheme.bodySmall!.copyWith(color: color, fontSize: AppSizes.dp11),
       ),
     );
   }

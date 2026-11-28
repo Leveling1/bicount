@@ -6,6 +6,39 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 void main() {
   sqfliteFfiInit();
 
+  test('batch preferences and intents roll back together on failure', () async {
+    final db = await databaseFactoryFfi.openDatabase(inMemoryDatabasePath);
+    addTearDown(db.close);
+    await db.execute('CREATE TABLE preferences (id TEXT PRIMARY KEY)');
+    final outbox = OfflineOutbox(db);
+    await outbox.initialize();
+    final operations = [
+      for (final chart in ['income', 'expense'])
+        OfflineOperation(
+          userId: 'owner',
+          collection: 'analysis_contact_categories',
+          recordId: chart,
+          action: 'upsert',
+          payload: {'chart': chart},
+        ),
+    ];
+    await expectLater(
+      outbox.commitBatch(operations, (tx, operation) async {
+        await tx.insert('preferences', {'id': operation.recordId});
+        if (operation.recordId == 'expense') throw StateError('failed');
+      }),
+      throwsStateError,
+    );
+    expect(await db.query('preferences'), isEmpty);
+    expect(await outbox.pending('owner'), isEmpty);
+
+    await outbox.commitBatch(operations, (tx, operation) async {
+      await tx.insert('preferences', {'id': operation.recordId});
+    });
+    expect(await db.query('preferences'), hasLength(2));
+    expect(await outbox.pending('owner'), hasLength(2));
+  });
+
   test('archive schema upgrade preserves previously archived data', () async {
     final db = await databaseFactoryFfi.openDatabase(inMemoryDatabasePath);
     addTearDown(db.close);

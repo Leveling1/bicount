@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/localization/l10n_extensions.dart';
 import '../../../../core/widgets/typing_anime_text.dart';
@@ -25,7 +26,7 @@ class _AuthAnimeTextState extends State<AuthAnimeText> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(context.l10n.authUnifiedTitle, style: defaultStyle),
-        const SizedBox(width: 5.0),
+        const SizedBox(width: AppSizes.dp5),
         TypingAnimeText(
           textStyle: defaultStyle,
           texts: [

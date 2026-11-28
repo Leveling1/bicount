@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class _AddGroupState extends State<AddGroup> {
                 'Add group company',
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -74,7 +75,7 @@ class _AddGroupState extends State<AddGroup> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppDimens.spacingMedium),
                   Flexible(
                     flex: 4,
                     child: CustomFormField(
@@ -86,20 +87,20 @@ class _AddGroupState extends State<AddGroup> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               CustomFormField(
                 controller: _description,
                 label: "Description",
                 hint: 'Enter group description',
                 inputType: TextInputType.multiline,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppDimens.spacingExtraLarge),
               CustomButton(
                 text: 'Add',
                 loading: state is GroupLoading,
                 onPressed: _submit,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
             ],
           ),
         );

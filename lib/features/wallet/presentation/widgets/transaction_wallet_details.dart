@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
@@ -56,7 +57,7 @@ class _TransactionWalletDetailsState extends State<TransactionWalletDetails> {
           children: [
             for (final side in sides)
               Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: AppDimens.paddingSmall),
                 child: TransactionWalletDetailRow(
                   title: sides.length == 1
                       ? context.l10n.walletPicker

@@ -16,18 +16,21 @@ class FriendsDirectorySkeleton extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const BicountSkeletonBox(
-              height: 120,
+              height: AppSizes.dp120,
               radius: AppDimens.borderRadiusLarge,
             ),
             AppDimens.spacerLarge,
-            const BicountSkeletonBox(height: 14, width: 220),
+            const BicountSkeletonBox(
+              height: AppSizes.dp14,
+              width: AppSizes.dp220,
+            ),
             AppDimens.spacerLarge,
             Expanded(
               child: ListView.separated(
                 itemCount: 5,
                 separatorBuilder: (_, __) => AppDimens.spacerSmall,
                 itemBuilder: (_, __) => const BicountSkeletonBox(
-                  height: 74,
+                  height: AppSizes.dp74,
                   radius: AppDimens.borderRadiusLarge,
                 ),
               ),

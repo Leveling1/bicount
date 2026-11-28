@@ -22,19 +22,21 @@ class MetaPill extends StatelessWidget {
       children: [
         Icon(icon, size: AppDimens.iconSizeSmall, color: foreground),
         AppDimens.spacerWidthSmall,
-        RichText(
-          text: TextSpan(
-            style: Theme.of(context).textTheme.bodySmall,
-            children: [
-              TextSpan(text: '$label: '),
-              TextSpan(
-                text: value,
-                style: TextStyle(
-                  color: foreground,
-                  fontWeight: FontWeight.w700,
+        Flexible(
+          child: RichText(
+            text: TextSpan(
+              style: Theme.of(context).textTheme.bodySmall,
+              children: [
+                TextSpan(text: '$label: '),
+                TextSpan(
+                  text: value,
+                  style: TextStyle(
+                    color: foreground,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

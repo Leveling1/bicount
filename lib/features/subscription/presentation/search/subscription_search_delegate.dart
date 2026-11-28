@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/subscription/presentation/models/subscription_list_item.dart';
@@ -35,18 +36,24 @@ class SubscriptionSearchDelegate extends SearchDelegate<SubscriptionListItem?> {
   List<Widget>? buildActions(BuildContext context) {
     return [
       if (query.isNotEmpty)
-        IconButton(
-          onPressed: () => query = '',
-          icon: const Icon(Icons.close_rounded),
+        BicountPressable.button(
+          builder: (statesController) => IconButton(
+            statesController: statesController,
+            onPressed: () => query = '',
+            icon: const Icon(Icons.close_rounded),
+          ),
         ),
     ];
   }
 
   @override
   Widget? buildLeading(BuildContext context) {
-    return IconButton(
-      onPressed: () => close(context, null),
-      icon: const Icon(Icons.arrow_back_rounded),
+    return BicountPressable.button(
+      builder: (statesController) => IconButton(
+        statesController: statesController,
+        onPressed: () => close(context, null),
+        icon: const Icon(Icons.arrow_back_rounded),
+      ),
     );
   }
 

@@ -3,8 +3,13 @@ import 'dart:async';
 import 'package:bicount/features/currency/data/repositories/currency_repository_impl.dart';
 import 'package:bicount/features/currency/domain/entities/currency_config_entity.dart';
 import 'package:bicount/features/analysis/data/models/analysis_source_data.dart';
+import 'package:bicount/features/analysis/data/models/analysis_contact_category.dart';
+import 'package:bicount/features/analysis/data/repositories/analysis_contact_category_repository.dart';
+import 'package:bicount/features/analysis/domain/entities/analysis_chart.dart';
 import 'package:bicount/features/analysis/domain/entities/analysis_dashboard_entity.dart';
+import 'package:bicount/features/analysis/domain/services/analysis_contact_categories.dart';
 import 'package:bicount/features/analysis/domain/services/analysis_dashboard_builder.dart';
+import 'package:bicount/features/main/data/models/friends.model.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/main/presentation/bloc/main_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,13 +17,17 @@ import 'package:rxdart/rxdart.dart';
 
 part 'analysis_event.dart';
 part 'analysis_state.dart';
+part 'analysis_category_actions.dart';
 
 class AnalysisBloc extends Bloc<AnalysisEvent, AnalysisState> {
   AnalysisBloc({
     required this.mainBloc,
     required this.currencyRepository,
+    AnalysisContactCategoryRepository? categoryRepository,
     this.dashboardBuilder = const AnalysisDashboardBuilder(),
-  }) : super(AnalysisState.initial()) {
+  }) : _categoryRepository =
+           categoryRepository ?? AnalysisContactCategoryRepository(),
+       super(AnalysisState.initial()) {
     on<AnalysisStarted>(_onAnalysisStarted);
     on<AnalysisPeriodChanged>(_onAnalysisPeriodChanged);
     on<_AnalysisSourcesUpdated>(_onAnalysisSourcesUpdated);
@@ -29,48 +38,12 @@ class AnalysisBloc extends Bloc<AnalysisEvent, AnalysisState> {
   final MainBloc mainBloc;
   final CurrencyRepositoryImpl currencyRepository;
   final AnalysisDashboardBuilder dashboardBuilder;
+  final AnalysisContactCategoryRepository _categoryRepository;
 
   StreamSubscription<_AnalysisSourcesSnapshot>? _sourcesSubscription;
   MainState? _latestMainState;
   CurrencyConfigEntity _latestCurrencyConfig = CurrencyConfigEntity.fallback();
-
-  Future<void> _onAnalysisStarted(
-    AnalysisStarted event,
-    Emitter<AnalysisState> emit,
-  ) async {
-    emit(
-      state.copyWith(
-        status: AnalysisStatus.loading,
-        clearDashboard: true,
-        errorMessage: null,
-      ),
-    );
-
-    await _sourcesSubscription?.cancel();
-    _sourcesSubscription =
-        Rx.combineLatest2<
-              MainState,
-              CurrencyConfigEntity,
-              _AnalysisSourcesSnapshot
-            >(
-              mainBloc.stream.startWith(mainBloc.state),
-              currencyRepository.watchConfig(),
-              (mainState, currencyConfig) => _AnalysisSourcesSnapshot(
-                mainState: mainState,
-                currencyConfig: currencyConfig,
-              ),
-            )
-            .listen(
-              (snapshot) => add(
-                _AnalysisSourcesUpdated(
-                  snapshot.mainState,
-                  snapshot.currencyConfig,
-                ),
-              ),
-              onError: (error, _) =>
-                  add(_AnalysisDashboardFailed(error.toString())),
-            );
-  }
+  List<AnalysisContactCategory> _categories = const [];
 
   Future<void> _onAnalysisPeriodChanged(
     AnalysisPeriodChanged event,
@@ -98,6 +71,13 @@ class AnalysisBloc extends Bloc<AnalysisEvent, AnalysisState> {
     _latestCurrencyConfig = event.currencyConfig;
 
     final mainState = event.mainState;
+    _categories = mainState is MainLoaded
+        ? event.categories
+              .where(
+                (category) => category.ownerUid == mainState.startData.user.uid,
+              )
+              .toList()
+        : const [];
     if (mainState is MainLoaded) {
       add(_AnalysisDashboardUpdated(_buildDashboard(mainState.startData)));
       return;
@@ -159,6 +139,7 @@ class AnalysisBloc extends Bloc<AnalysisEvent, AnalysisState> {
         recurringTransferts: mainData.recurringTransferts,
         currentUserId: mainData.user.uid,
         friends: mainData.friends,
+        contactCategories: _categories,
       ),
       state.period,
       _latestCurrencyConfig,
@@ -185,8 +166,10 @@ class _AnalysisSourcesSnapshot {
   const _AnalysisSourcesSnapshot({
     required this.mainState,
     required this.currencyConfig,
+    required this.categories,
   });
 
   final MainState mainState;
   final CurrencyConfigEntity currencyConfig;
+  final List<AnalysisContactCategory> categories;
 }

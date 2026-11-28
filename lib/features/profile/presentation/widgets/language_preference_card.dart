@@ -20,44 +20,39 @@ class LanguagePreferenceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DetailsCard(
-      child: InkWell(
-        customBorder: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
-        ),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 6),
-                    Text(
-                      description,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppDimens.marginMedium),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimens.paddingExtraSmall),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(title, style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: AppSizes.dp6),
                   Text(
-                    currentValue,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                    description,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
-                  const SizedBox(height: 4),
-                  const Icon(CupertinoIcons.chevron_right, size: 18),
                 ],
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: AppDimens.marginMedium),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  currentValue,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: AppDimens.spacingExtraSmall),
+                const Icon(CupertinoIcons.chevron_right, size: AppSizes.dp18),
+              ],
+            ),
+          ],
         ),
       ),
     );

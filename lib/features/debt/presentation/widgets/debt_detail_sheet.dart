@@ -83,7 +83,7 @@ class _DebtDetailSheetState extends State<DebtDetailSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TransactionDetailActions(
-            iconSize: 20,
+            iconSize: AppSizes.dp20,
             isLoading: widget.isLoading,
             onDeletePressed: widget.onDeletePressed,
             onEditPressed: widget.onEditPressed,

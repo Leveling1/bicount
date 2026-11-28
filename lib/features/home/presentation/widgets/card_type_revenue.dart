@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:flutter/material.dart';
@@ -43,13 +44,11 @@ class CardTypeRevenue extends StatelessWidget {
     );
     return Material(
       color: Colors.transparent,
-      child: InkWell(
+      child: BicountPressable(
         hoverColor: Theme.of(context).colorScheme.surfaceContainer,
         customBorder: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
         ),
-        splashColor: Colors.transparent,
-        highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
         onTap: onTap,
         child: compact
             ? Padding(
@@ -66,7 +65,11 @@ class CardTypeRevenue extends StatelessWidget {
               )
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [badge, const SizedBox(height: 5), values],
+                children: [
+                  badge,
+                  const SizedBox(height: AppSizes.dp5),
+                  values,
+                ],
               ),
       ),
     );

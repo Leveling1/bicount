@@ -69,8 +69,8 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
             leading: IconButton(
               onPressed: () => context.pop(),
               icon: SizedBox(
-                width: 20,
-                height: 20,
+                width: AppSizes.dp20,
+                height: AppSizes.dp20,
                 child: SvgPicture.asset(
                   'assets/icons/back_icon.svg',
                   colorFilter: ColorFilter.mode(
@@ -93,7 +93,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                 icon: Icon(
                   Icons.ios_share_outlined,
                   color: Theme.of(context).textTheme.titleSmall!.color,
-                  size: 20,
+                  size: AppSizes.dp20,
                 ),
               ),
               IconButton(
@@ -101,7 +101,7 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                 icon: Icon(
                   Icons.edit,
                   color: Theme.of(context).textTheme.titleSmall!.color,
-                  size: 20,
+                  size: AppSizes.dp20,
                 ),
               ),
             ],
@@ -118,9 +118,9 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                         ? Column(
                             children: [
                               CompanyProfil(
-                                width: 100,
-                                height: 100,
-                                radius: 40,
+                                width: AppSizes.dp100,
+                                height: AppSizes.dp100,
+                                radius: AppSizes.dp40,
                                 image: state.company.image,
                               ),
                               _spacerHeight(),
@@ -230,13 +230,15 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                     _spacerHeight(),
                     state is DetailLoading
                         ? SizedBox(
-                            height: 170,
+                            height: AppSizes.dp170,
                             child: ListView.separated(
                               scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.only(right: 16),
+                              padding: const EdgeInsets.only(
+                                right: AppDimens.paddingMedium,
+                              ),
                               itemCount: 10, // Skeleton : 10 items
                               separatorBuilder: (_, __) =>
-                                  const SizedBox(width: 12),
+                                  const SizedBox(width: AppSizes.dp12),
                               itemBuilder: (context, index) {
                                 return const GroupCardSkeleton();
                               },
@@ -245,13 +247,15 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                         : state is DetailLoaded
                         ? state.company.groups!.isNotEmpty
                               ? SizedBox(
-                                  height: 170, // hauteur fixe
+                                  height: AppSizes.dp170, // hauteur fixe
                                   child: ListView.separated(
                                     scrollDirection: Axis.horizontal,
-                                    padding: const EdgeInsets.only(right: 16),
+                                    padding: const EdgeInsets.only(
+                                      right: AppDimens.paddingMedium,
+                                    ),
                                     itemCount: state.company.groups!.length,
                                     separatorBuilder: (_, __) => const SizedBox(
-                                      width: 12,
+                                      width: AppSizes.dp12,
                                     ), // espace entre les items
                                     itemBuilder: (context, index) {
                                       return GroupCard(
@@ -268,13 +272,15 @@ class _DetailCompanyScreenState extends State<DetailCompanyScreen> {
                                 )
                               : const Text("You haven't opened any teams.")
                         : SizedBox(
-                            height: 170,
+                            height: AppSizes.dp170,
                             child: ListView.separated(
                               scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.only(right: 16),
+                              padding: const EdgeInsets.only(
+                                right: AppDimens.paddingMedium,
+                              ),
                               itemCount: 10, // Skeleton : 10 items
                               separatorBuilder: (_, __) =>
-                                  const SizedBox(width: 12),
+                                  const SizedBox(width: AppSizes.dp12),
                               itemBuilder: (context, index) {
                                 return const GroupCardSkeleton();
                               },

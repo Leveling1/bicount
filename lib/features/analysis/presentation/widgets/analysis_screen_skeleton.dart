@@ -12,24 +12,36 @@ class AnalysisScreenSkeleton extends StatelessWidget {
         AppDimens.paddingMedium,
         AppDimens.paddingLarge,
         AppDimens.paddingMedium,
-        120,
+        AppSizes.dp120,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
-          BicountSkeletonBox(height: 22, width: 160),
+          BicountSkeletonBox(height: AppSizes.dp22, width: AppSizes.dp160),
           AppDimens.spacerSmall,
-          BicountSkeletonBox(height: 14, width: 240),
+          BicountSkeletonBox(height: AppSizes.dp14, width: AppSizes.dp240),
           AppDimens.spacerLarge,
-          BicountSkeletonBox(height: 44, radius: AppDimens.borderRadiusLarge),
+          BicountSkeletonBox(
+            height: AppSizes.dp44,
+            radius: AppDimens.borderRadiusLarge,
+          ),
           AppDimens.spacerLarge,
           _AnalysisMetricSkeleton(),
           AppDimens.spacerLarge,
-          BicountSkeletonBox(height: 240, radius: AppDimens.borderRadiusLarge),
+          BicountSkeletonBox(
+            height: AppSizes.dp240,
+            radius: AppDimens.borderRadiusLarge,
+          ),
           AppDimens.spacerLarge,
-          BicountSkeletonBox(height: 220, radius: AppDimens.borderRadiusLarge),
+          BicountSkeletonBox(
+            height: AppSizes.dp220,
+            radius: AppDimens.borderRadiusLarge,
+          ),
           AppDimens.spacerLarge,
-          BicountSkeletonBox(height: 200, radius: AppDimens.borderRadiusLarge),
+          BicountSkeletonBox(
+            height: AppSizes.dp200,
+            radius: AppDimens.borderRadiusLarge,
+          ),
         ],
       ),
     );
@@ -49,10 +61,22 @@ class _AnalysisMetricSkeleton extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       childAspectRatio: 1.6,
       children: const [
-        BicountSkeletonBox(height: 100, radius: AppDimens.borderRadiusLarge),
-        BicountSkeletonBox(height: 100, radius: AppDimens.borderRadiusLarge),
-        BicountSkeletonBox(height: 100, radius: AppDimens.borderRadiusLarge),
-        BicountSkeletonBox(height: 100, radius: AppDimens.borderRadiusLarge),
+        BicountSkeletonBox(
+          height: AppSizes.dp100,
+          radius: AppDimens.borderRadiusLarge,
+        ),
+        BicountSkeletonBox(
+          height: AppSizes.dp100,
+          radius: AppDimens.borderRadiusLarge,
+        ),
+        BicountSkeletonBox(
+          height: AppSizes.dp100,
+          radius: AppDimens.borderRadiusLarge,
+        ),
+        BicountSkeletonBox(
+          height: AppSizes.dp100,
+          radius: AppDimens.borderRadiusLarge,
+        ),
       ],
     );
   }

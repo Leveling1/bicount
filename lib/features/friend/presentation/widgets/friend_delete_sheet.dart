@@ -71,9 +71,11 @@ class _FriendDeleteSheetState extends State<FriendDeleteSheet> {
             padding: EdgeInsets.symmetric(vertical: AppDimens.paddingLarge),
             child: Center(
               child: SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2.4),
+                width: AppSizes.dp24,
+                height: AppSizes.dp24,
+                child: CircularProgressIndicator(
+                  strokeWidth: AppSizes.dp2Point4,
+                ),
               ),
             ),
           )

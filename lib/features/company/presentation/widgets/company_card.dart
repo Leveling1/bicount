@@ -14,7 +14,7 @@ class CompanyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(bottom: AppSizes.dp20),
       decoration: ShapeDecoration(
         color: Theme.of(context).cardColor,
         shape: RoundedSuperellipseBorder(
@@ -28,18 +28,23 @@ class CompanyCard extends StatelessWidget {
           customBorder: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
           ),
-          splashColor: Colors.transparent,
-          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: () {
             context.push('/companyDetail', extra: company.cid);
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            padding: const EdgeInsets.symmetric(
+              vertical: AppDimens.paddingSmallMedium,
+              horizontal: AppDimens.paddingSmallMedium,
+            ),
             child: Row(
               children: [
                 // Avatar
-                CompanyProfil(width: 60, height: 60, image: company.image),
-                const SizedBox(width: 12),
+                CompanyProfil(
+                  width: AppSizes.dp60,
+                  height: AppSizes.dp60,
+                  image: company.image,
+                ),
+                const SizedBox(width: AppSizes.dp12),
 
                 // Name and date
                 Expanded(
@@ -52,7 +57,7 @@ class CompanyCard extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       company.description != null && company.description != ""
-                          ? const SizedBox(height: 4)
+                          ? const SizedBox(height: AppDimens.spacingExtraSmall)
                           : const SizedBox.shrink(),
                       company.description != null && company.description != ""
                           ? Text(
@@ -70,7 +75,7 @@ class CompanyCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSizes.dp12),
                 // Date
                 Text(
                   NumberFormatUtils.formatCurrency(company.profit!),

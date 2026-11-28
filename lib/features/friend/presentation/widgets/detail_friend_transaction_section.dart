@@ -55,7 +55,8 @@ class DetailFriendTransactionSection extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: detail.transactions.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                separatorBuilder: (_, __) =>
+                    const SizedBox(height: AppDimens.spacingSmall),
                 itemBuilder: (context, index) {
                   final entity = TransactionEntity.fromTransaction(
                     detail.transactions[index],

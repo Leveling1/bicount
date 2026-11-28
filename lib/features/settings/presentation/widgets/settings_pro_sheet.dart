@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
@@ -164,12 +165,14 @@ class _SettingsField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: Theme.of(context).textTheme.titleSmall),
-          TextFormField(
-            controller: controller,
-            validator: validator,
-            keyboardType: inputType,
-            maxLines: maxLines,
-            decoration: InputDecoration(hintText: hint),
+          BicountPressable.control(
+            child: TextFormField(
+              controller: controller,
+              validator: validator,
+              keyboardType: inputType,
+              maxLines: maxLines,
+              decoration: InputDecoration(hintText: hint),
+            ),
           ),
         ],
       ),

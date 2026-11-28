@@ -29,7 +29,7 @@ extension on TransactionDetailContent {
               null => '-',
             },
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppDimens.spacingSmall),
           TransactionDetailRow(
             title: context.l10n.transactionDebtRemaining,
             content: NumberFormatUtils.formatCurrency(
@@ -38,7 +38,7 @@ extension on TransactionDetailContent {
             ),
           ),
           if (debt.repaidAmount > 0) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppDimens.spacingSmall),
             TransactionDetailRow(
               title: context.l10n.transactionDebtAlreadyPaid,
               content: NumberFormatUtils.formatCurrency(

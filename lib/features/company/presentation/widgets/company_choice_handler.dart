@@ -33,8 +33,6 @@ class CompanyChoiceHandler extends StatelessWidget {
           customBorder: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
           ),
-          splashColor: Colors.transparent,
-          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: onTap,
           child: Padding(
             padding: AppDimens.paddingAllMedium,
@@ -64,7 +62,7 @@ class CompanyChoiceHandler extends StatelessWidget {
                   ),
                 ),
                 // Right arrow icon
-                Icon(Icons.arrow_forward_ios, size: 16),
+                Icon(Icons.arrow_forward_ios, size: AppDimens.iconSizeSmall),
               ],
             ),
           ),

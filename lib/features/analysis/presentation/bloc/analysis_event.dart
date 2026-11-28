@@ -15,10 +15,15 @@ final class AnalysisPeriodChanged extends AnalysisEvent {
 }
 
 final class _AnalysisSourcesUpdated extends AnalysisEvent {
-  const _AnalysisSourcesUpdated(this.mainState, this.currencyConfig);
+  const _AnalysisSourcesUpdated(
+    this.mainState,
+    this.currencyConfig,
+    this.categories,
+  );
 
   final MainState mainState;
   final CurrencyConfigEntity currencyConfig;
+  final List<AnalysisContactCategory> categories;
 }
 
 final class _AnalysisDashboardUpdated extends AnalysisEvent {

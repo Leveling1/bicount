@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/localization/l10n_extensions.dart';
@@ -38,7 +40,7 @@ class SplitInputRow extends StatelessWidget {
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSizes.dp2),
                 Text(
                   mode == TransactionSplitMode.percentage
                       ? context.l10n.transactionSetPercentageReceived
@@ -48,16 +50,21 @@ class SplitInputRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSizes.dp12),
           SizedBox(
-            width: 120,
-            child: TextFormField(
-              controller: controller,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
+            width: AppSizes.dp120,
+            child: BicountPressable.control(
+              child: TextFormField(
+                controller: controller,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: InputDecoration(
+                  suffixText: suffix,
+                  hintText: '0.00',
+                ),
+                onChanged: onChanged,
               ),
-              decoration: InputDecoration(suffixText: suffix, hintText: '0.00'),
-              onChanged: onChanged,
             ),
           ),
         ],

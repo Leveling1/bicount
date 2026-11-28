@@ -112,6 +112,10 @@ extension _HomeWalletSceneLayout on _HomeWalletTransitionState {
     if (!widget.hasSharedContainer) return scene;
     final theme = Theme.of(context);
     final keyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
+    final navigation = CustomBottomNavigationBar(
+      selectedIndex: widget.selectedIndex,
+      onTap: _selectTab,
+    );
     return ColoredBox(
       color:
           theme.bottomNavigationBarTheme.backgroundColor ??
@@ -130,10 +134,7 @@ extension _HomeWalletSceneLayout on _HomeWalletTransitionState {
             ),
           ),
           if (!keyboardVisible)
-            CustomBottomNavigationBar(
-              selectedIndex: widget.selectedIndex,
-              onTap: _selectTab,
-            ),
+            WalletCornerTheme(enabled: _showWallet, child: navigation),
         ],
       ),
     );

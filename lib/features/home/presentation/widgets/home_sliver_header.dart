@@ -57,7 +57,7 @@ class HomeSliverHeader extends StatelessWidget {
       ),
       collapsed: Padding(
         key: const ValueKey('home-collapsed'),
-        padding: const EdgeInsets.symmetric(vertical: 22),
+        padding: const EdgeInsets.symmetric(vertical: AppSizes.dp22),
         child: _CollapsedHomeHeader(
           balanceText: NumberFormatUtils.compactCurrency(
             balance,

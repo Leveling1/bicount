@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -28,13 +29,11 @@ class AccountFundingTransactionCard extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
+      child: BicountPressable(
         hoverColor: Theme.of(context).colorScheme.surfaceContainer,
         customBorder: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
         ),
-        splashColor: Colors.transparent,
-        highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
         onTap: onTap,
         child: Padding(
           padding: AppDimens.paddingSmallCard,
@@ -42,10 +41,10 @@ class AccountFundingTransactionCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 backgroundColor: Theme.of(context).cardColor,
-                radius: 20,
+                radius: AppSizes.dp20,
                 child: SizedBox(
-                  width: 30,
-                  height: 30,
+                  width: AppSizes.dp30,
+                  height: AppSizes.dp30,
                   child: Icon(
                     Icons.savings_outlined,
                     color: Theme.of(context).textTheme.bodyLarge?.color,
@@ -65,7 +64,7 @@ class AccountFundingTransactionCard extends StatelessWidget {
                       TimeOfDay.fromDateTime(timelineDate).format(context),
                       style: TextStyle(
                         color: Colors.grey.shade500,
-                        fontSize: 13,
+                        fontSize: AppSizes.dp13,
                       ),
                     ),
                   ],
@@ -79,7 +78,7 @@ class AccountFundingTransactionCard extends StatelessWidget {
                     style: const TextStyle(
                       color: AppColors.primaryColorDark,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: AppSizes.dp16,
                     ),
                   ),
                   Text(

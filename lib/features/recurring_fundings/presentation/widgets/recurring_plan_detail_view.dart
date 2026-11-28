@@ -7,6 +7,7 @@ import 'package:bicount/core/widgets/details_card.dart';
 import 'package:bicount/features/main/domain/entities/main_entity.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_scope.dart';
 import 'package:bicount/features/recurring_fundings/domain/entities/recurring_plan_summary_entity.dart';
+import 'package:bicount/features/recurring_fundings/presentation/widgets/recurring_plan_pause_history.dart';
 import 'package:bicount/features/salary/presentation/widgets/salary_status_badge.dart';
 import 'package:bicount/features/subscription/presentation/widgets/meta_pill.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_actions.dart';
@@ -21,7 +22,7 @@ class RecurringPlanDetailView extends StatelessWidget {
     required this.isLoading,
     required this.onEditPressed,
     required this.onDeletePressed,
-    this.onTerminatePressed,
+    this.onPauseActionPressed,
   });
 
   final RecurringPlanScope scope;
@@ -30,7 +31,7 @@ class RecurringPlanDetailView extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onEditPressed;
   final VoidCallback onDeletePressed;
-  final VoidCallback? onTerminatePressed;
+  final VoidCallback? onPauseActionPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class RecurringPlanDetailView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TransactionDetailActions(
-          iconSize: 20,
+          iconSize: AppSizes.dp20,
           isLoading: isLoading,
           onDeletePressed: onDeletePressed,
           onEditPressed: onEditPressed,
@@ -55,7 +56,9 @@ class RecurringPlanDetailView extends StatelessWidget {
         ),
         const SizedBox(height: AppDimens.spacingSmall),
         SalaryStatusBadge(
-          label: summary.isActive
+          label: summary.isPaused
+              ? context.l10n.recurringPlanPaused
+              : summary.isActive
               ? context.l10n.statusActive
               : context.l10n.statusInactive,
           color: statusColor,
@@ -123,11 +126,15 @@ class RecurringPlanDetailView extends StatelessWidget {
             ],
           ),
         ),
-        if (onTerminatePressed != null) ...[
+        if (recurringTransfert.pauses.isNotEmpty)
+          RecurringPlanPauseHistory(pauses: recurringTransfert.pauses),
+        if (onPauseActionPressed != null) ...[
           const SizedBox(height: AppDimens.spacingMedium),
           CustomOutlinedButton(
-            onPressed: onTerminatePressed!,
-            text: context.l10n.recurringPlanTerminateCta,
+            onPressed: onPauseActionPressed!,
+            text: summary.isPaused
+                ? context.l10n.recurringPlanResumeCta
+                : context.l10n.recurringPlanPauseCta,
             loading: isLoading,
           ),
         ],

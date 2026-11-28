@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/custom_bottom_sheet.dart';
@@ -28,10 +29,10 @@ class _CompanyHandlerState extends State<CompanyHandler> {
               },
             ),
             Text('Add', style: Theme.of(context).textTheme.headlineMedium),
-            SizedBox(width: 48), // Pour équilibrer l'IconButton
+            SizedBox(width: AppSizes.dp48), // Pour équilibrer l'IconButton
           ],
         ),
-        SizedBox(height: 20),
+        SizedBox(height: AppSizes.dp20),
         CompanyChoiceHandler(
           title: 'Start a new company',
           content: 'Create a new company from scratch',
@@ -47,7 +48,7 @@ class _CompanyHandlerState extends State<CompanyHandler> {
             );
           },
         ),
-        SizedBox(height: 15),
+        SizedBox(height: AppSizes.dp15),
         CompanyChoiceHandler(
           title: 'Join a company',
           content: 'Use the invitation link to join a company',

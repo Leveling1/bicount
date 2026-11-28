@@ -14,18 +14,18 @@ class SalaryScreenSkeleton extends StatelessWidget {
         children: const [
           _SalaryMetricSkeletonGrid(),
           SizedBox(height: AppDimens.spacingLarge),
-          BicountSkeletonBox(height: 18, width: 180),
+          BicountSkeletonBox(height: AppSizes.dp18, width: AppSizes.dp180),
           SizedBox(height: AppDimens.spacingSmall),
           _SalaryOccurrenceSkeletonCard(),
           _SalaryOccurrenceSkeletonCard(),
           SizedBox(height: AppDimens.spacingLarge),
-          BicountSkeletonBox(height: 18, width: 140),
+          BicountSkeletonBox(height: AppSizes.dp18, width: AppSizes.dp140),
           SizedBox(height: AppDimens.spacingSmall),
           _SalaryPlanSkeletonCard(),
           _SalaryPlanSkeletonCard(),
           _SalaryPlanSkeletonCard(),
           SizedBox(height: AppDimens.spacingLarge),
-          BicountSkeletonBox(height: 18, width: 190),
+          BicountSkeletonBox(height: AppSizes.dp18, width: AppSizes.dp190),
           SizedBox(height: AppDimens.spacingSmall),
           _SalaryOccurrenceSkeletonCard(),
           _SalaryOccurrenceSkeletonCard(),
@@ -72,11 +72,11 @@ class _SalaryMetricSkeletonCard extends StatelessWidget {
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BicountSkeletonBox(height: 12, width: 90),
+          BicountSkeletonBox(height: AppSizes.dp12, width: AppSizes.dp90),
           SizedBox(height: AppDimens.spacingSmall),
-          BicountSkeletonBox(height: 24, width: 100),
+          BicountSkeletonBox(height: AppSizes.dp24, width: AppSizes.dp100),
           SizedBox(height: AppDimens.spacingExtraSmall),
-          BicountSkeletonBox(height: 12, width: 80),
+          BicountSkeletonBox(height: AppSizes.dp12, width: AppSizes.dp80),
         ],
       ),
     );
@@ -103,17 +103,26 @@ class _SalaryOccurrenceSkeletonCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: BicountSkeletonBox(height: 18, width: 160)),
+              Expanded(
+                child: BicountSkeletonBox(
+                  height: AppSizes.dp18,
+                  width: AppSizes.dp160,
+                ),
+              ),
               SizedBox(width: AppDimens.spacingSmall),
-              BicountSkeletonBox(height: 26, width: 78, radius: 999),
+              BicountSkeletonBox(
+                height: AppSizes.dp26,
+                width: AppSizes.dp78,
+                radius: AppSizes.dp999,
+              ),
             ],
           ),
           SizedBox(height: AppDimens.spacingExtraSmall),
-          BicountSkeletonBox(height: 12, width: 140),
+          BicountSkeletonBox(height: AppSizes.dp12, width: AppSizes.dp140),
           SizedBox(height: AppDimens.spacingExtraSmall),
-          BicountSkeletonBox(height: 12, width: 132),
+          BicountSkeletonBox(height: AppSizes.dp12, width: AppSizes.dp132),
           SizedBox(height: AppDimens.spacingMedium),
-          BicountSkeletonBox(height: 16, width: 110),
+          BicountSkeletonBox(height: AppSizes.dp16, width: AppSizes.dp110),
         ],
       ),
     );
@@ -140,17 +149,26 @@ class _SalaryPlanSkeletonCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: BicountSkeletonBox(height: 18, width: 170)),
+              Expanded(
+                child: BicountSkeletonBox(
+                  height: AppSizes.dp18,
+                  width: AppSizes.dp170,
+                ),
+              ),
               SizedBox(width: AppDimens.spacingSmall),
-              BicountSkeletonBox(height: 26, width: 92, radius: 999),
+              BicountSkeletonBox(
+                height: AppSizes.dp26,
+                width: AppSizes.dp92,
+                radius: AppSizes.dp999,
+              ),
             ],
           ),
           SizedBox(height: AppDimens.spacingSmall),
-          BicountSkeletonBox(height: 16, width: 118),
+          BicountSkeletonBox(height: AppSizes.dp16, width: AppSizes.dp118),
           SizedBox(height: AppDimens.spacingSmall),
-          BicountSkeletonBox(height: 12, width: 160),
+          BicountSkeletonBox(height: AppSizes.dp12, width: AppSizes.dp160),
           SizedBox(height: AppDimens.spacingSmall),
-          BicountSkeletonBox(height: 12, width: 190),
+          BicountSkeletonBox(height: AppSizes.dp12, width: AppSizes.dp190),
         ],
       ),
     );

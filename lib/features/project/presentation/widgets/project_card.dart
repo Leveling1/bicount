@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/app_press_theme.dart';
 import 'package:bicount/features/project/data/models/project.model.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -18,43 +20,46 @@ class ProjectCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
+        customBorder: appPressShape,
         hoverColor: Theme.of(context).colorScheme.surfaceContainer,
 
-        splashColor: Colors.transparent,
-        highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
         onTap: () {},
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(
+            vertical: AppDimens.paddingSmallMedium,
+          ),
           decoration: BoxDecoration(color: Colors.transparent),
           child: Row(
             children: [
               // Avatar
               CircleAvatar(
                 backgroundColor: Theme.of(context).cardColor,
-                radius: 30,
+                radius: AppSizes.dp30,
                 child: ClipOval(
                   child: project.image != null && project.image != ""
                       ? CachedNetworkImage(
                           imageUrl: project.image!,
-                          width: 60,
-                          height: 60,
+                          width: AppSizes.dp60,
+                          height: AppSizes.dp60,
                           fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              CircleImageSkeleton(width: 60, height: 60),
+                          placeholder: (context, url) => CircleImageSkeleton(
+                            width: AppSizes.dp60,
+                            height: AppSizes.dp60,
+                          ),
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.error),
                         )
                       : Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(AppDimens.paddingSmall),
                           child: Icon(
                             Icons.lightbulb,
-                            size: 30,
+                            size: AppSizes.dp30,
                             color: AppColors.inactiveColorDark,
                           ),
                         ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSizes.dp12),
 
               // Name and date
               Expanded(
@@ -65,12 +70,12 @@ class ProjectCard extends StatelessWidget {
                       project.name,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppDimens.spacingExtraSmall),
                     Text(
                       "Initiated by ${project.initiator}",
                       style: TextStyle(
                         color: Colors.grey.shade500,
-                        fontSize: 13,
+                        fontSize: AppSizes.dp13,
                       ),
                     ),
                   ],

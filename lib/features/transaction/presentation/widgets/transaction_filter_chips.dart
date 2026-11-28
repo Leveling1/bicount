@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
@@ -26,19 +27,19 @@ class TransactionFilterChips extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.only(
               left: isFirst ? AppDimens.paddingMedium : 0.0,
-              right: isLast ? AppDimens.paddingMedium : 8.0,
+              right: isLast ? AppDimens.paddingMedium : AppDimens.paddingSmall,
             ),
-            child: InkWell(
+            child: BicountPressable(
               customBorder: RoundedSuperellipseBorder(
                 borderRadius: BorderRadius.circular(
                   AppDimens.borderRadiusMediumLarge,
                 ),
               ),
               onTap: () => onTap(index),
-              child: Container(
+              child: Ink(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+                  horizontal: AppDimens.paddingMedium,
+                  vertical: AppDimens.paddingSmall,
                 ),
                 decoration: ShapeDecoration(
                   color: isSelected

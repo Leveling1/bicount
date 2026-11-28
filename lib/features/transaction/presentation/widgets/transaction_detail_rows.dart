@@ -16,7 +16,7 @@ extension on TransactionDetailContent {
             title: context.l10n.commonDate,
             content: formattedDate,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppDimens.spacingSmall),
           TransactionDetailRow(
             title: context.l10n.commonTime,
             content: formattedTime,
@@ -31,7 +31,7 @@ extension on TransactionDetailContent {
             title: context.l10n.commonSender,
             content: sender,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppDimens.spacingSmall),
           TransactionDetailRow(
             title: context.l10n.commonBeneficiary,
             content: beneficiary,
@@ -48,7 +48,8 @@ extension on TransactionDetailContent {
             title: context.l10n.commonFrequency,
             content: context.frequencyLabel(data.frequency ?? 0),
           ),
-          if (data.note.isNotEmpty) const SizedBox(height: 8),
+          if (data.note.isNotEmpty)
+            const SizedBox(height: AppDimens.spacingSmall),
           if (data.note.isNotEmpty)
             TransactionDetailRow(
               title: context.l10n.commonNote,

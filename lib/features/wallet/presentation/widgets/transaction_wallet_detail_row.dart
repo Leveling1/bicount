@@ -1,3 +1,5 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
+import 'package:bicount/core/widgets/app_popup_menu_item.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/dropdown_chevron_theme.dart';
@@ -5,7 +7,6 @@ import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:bicount/features/transaction/presentation/widgets/transaction_detail_row.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class TransactionWalletDetailRow extends StatelessWidget {
   const TransactionWalletDetailRow({
@@ -34,7 +35,7 @@ class TransactionWalletDetailRow extends StatelessWidget {
     final x = direction == TextDirection.ltr ? bounds.right : bounds.left;
     final items = [
       for (final option in options)
-        PopupMenuItem(
+        AppPopupMenuItem(
           value: option.id,
           child: Text(walletLabel(context, option)),
         ),
@@ -89,24 +90,9 @@ class TransactionWalletDetailRow extends StatelessWidget {
     );
     if (change == null) return row;
 
-    return Semantics(
-      button: true,
-      child: FocusableActionDetector(
-        shortcuts: const {
-          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-        },
-        actions: {
-          ActivateIntent: CallbackAction<ActivateIntent>(
-            onInvoke: (_) => _showWalletMenu(context, change),
-          ),
-        },
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _showWalletMenu(context, change),
-          child: row,
-        ),
-      ),
+    return BicountPressable(
+      onTap: () => _showWalletMenu(context, change),
+      child: row,
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -44,8 +45,8 @@ class TransferFormBeneficiaryList extends StatelessWidget {
       children: [
         if (showSplitMode) ...[
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: AppDimens.spacingSmall,
+            runSpacing: AppDimens.spacingSmall,
             children: TransactionSplitMode.values.map((mode) {
               return CustomChoiceChip(
                 label: context.splitModeLabel(mode),
@@ -55,7 +56,7 @@ class TransferFormBeneficiaryList extends StatelessWidget {
             }).toList(),
           ),
           if (errorMessage != null) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppDimens.spacingSmall),
             Text(
               localizeRuntimeMessage(context, errorMessage!),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -63,14 +64,16 @@ class TransferFormBeneficiaryList extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: 8),
+          const SizedBox(height: AppDimens.spacingSmall),
         ],
         ...beneficiaries.asMap().entries.map((entry) {
           final friend = entry.value;
           final previewShare = sharesByKey[beneficiaryKeyOf(friend)];
           final controller = splitControllerFor(friend);
           return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(
+              bottom: AppDimens.paddingSmallMedium,
+            ),
             child: _BeneficiaryLineItem(
               friend: friend,
               previewShare: previewShare,
@@ -126,7 +129,7 @@ class _BeneficiaryLineItem extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Padding(
-              padding: EdgeInsets.only(top: showSplitInput ? 6 : 0),
+              padding: EdgeInsets.only(top: showSplitInput ? AppSizes.dp6 : 0),
               child: Text(
                 friend.username,
                 style: Theme.of(
@@ -136,36 +139,38 @@ class _BeneficiaryLineItem extends StatelessWidget {
             ),
           ),
           if (showSplitInput) ...[
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSizes.dp12),
             Expanded(
               flex: 2,
               child: SizedBox(
-                height: 30,
-                child: TextFormField(
-                  controller: controller,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  inputFormatters: [CurrencyAmountFormatter()],
-                  textAlign: TextAlign.right,
-                  cursorHeight: 16,
-                  style: const TextStyle(fontSize: 16),
-                  decoration: InputDecoration(
-                    hintText: '0.00',
-                    suffixText: suffix,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 5,
-                      vertical: 4,
+                height: AppSizes.dp30,
+                child: BicountPressable.control(
+                  child: TextFormField(
+                    controller: controller,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
                     ),
+                    inputFormatters: [CurrencyAmountFormatter()],
+                    textAlign: TextAlign.right,
+                    cursorHeight: AppSizes.dp16,
+                    style: const TextStyle(fontSize: AppSizes.dp16),
+                    decoration: InputDecoration(
+                      hintText: '0.00',
+                      suffixText: suffix,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: AppSizes.dp5,
+                        vertical: AppDimens.paddingExtraSmall,
+                      ),
+                    ),
+                    onChanged: onChanged,
                   ),
-                  onChanged: onChanged,
                 ),
               ),
             ),
           ],
           if (previewAmount != null) ...[
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSizes.dp12),
             Expanded(
               flex: 2,
               child: Column(
@@ -177,7 +182,7 @@ class _BeneficiaryLineItem extends StatelessWidget {
                       color: Theme.of(context).hintColor,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSizes.dp2),
                   Text(
                     previewAmount,
                     textAlign: TextAlign.right,
@@ -190,9 +195,12 @@ class _BeneficiaryLineItem extends StatelessWidget {
             ),
           ],
           AppDimens.spacerWidthMini,
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.red),
-            onPressed: onRemove,
+          BicountPressable.button(
+            builder: (statesController) => IconButton(
+              statesController: statesController,
+              icon: const Icon(Icons.close, color: Colors.red),
+              onPressed: onRemove,
+            ),
           ),
         ],
       ),

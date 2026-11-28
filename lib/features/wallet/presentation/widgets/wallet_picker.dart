@@ -1,3 +1,6 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/app_press_theme.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/widgets/wallet/wallet_presentation.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
@@ -8,6 +11,8 @@ import 'package:bicount/features/wallet/data/repositories/wallet_repository_impl
 import 'package:bicount/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
+
+part 'wallet_classic_dropdown.dart';
 
 class WalletPicker extends StatefulWidget {
   const WalletPicker({
@@ -77,46 +82,12 @@ class WalletDropdown extends StatelessWidget {
     if (useSharedMenu && change != null) {
       return _buildSharedMenu(context, available, change);
     }
-    final selected = available.any((wallet) => wallet.id == value)
-        ? value
-        : null;
-    return InputDecorator(
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: const Icon(Icons.account_balance_wallet_outlined),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          isExpanded: true,
-          isDense: true,
-          icon: DropdownChevronTheme.of(context).icon(),
-          value: selected,
-          hint: showPrincipalSelection
-              ? Text(
-                  available
-                          .where((wallet) => wallet.isDefault)
-                          .map((wallet) => walletLabel(context, wallet))
-                          .firstOrNull ??
-                      context.l10n.walletPrincipal,
-                )
-              : null,
-          items: [
-            for (final wallet in available)
-              DropdownMenuItem(
-                value: wallet.id,
-                child: Text(
-                  walletLabel(context, wallet),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-          ],
-          onChanged: onChanged == null
-              ? null
-              : (id) {
-                  if (id != null) onChanged!(id);
-                },
-        ),
-      ),
+    return _WalletClassicDropdown(
+      label: label,
+      wallets: available,
+      value: value,
+      showPrincipalSelection: showPrincipalSelection,
+      onChanged: change,
     );
   }
 
@@ -151,7 +122,7 @@ class WalletDropdown extends StatelessWidget {
   }
 }
 
-@Preview(name: 'Wallet picker', size: Size(360, 90))
+@Preview(name: 'Wallet picker', size: Size(AppSizes.dp360, AppSizes.dp90))
 Widget walletPickerPreview() => MaterialApp(
   localizationsDelegates: AppLocalizations.localizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,

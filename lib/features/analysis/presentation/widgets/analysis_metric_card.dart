@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/details_card.dart';
@@ -33,13 +34,13 @@ class AnalysisMetricCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            radius: 18,
-            backgroundColor: color.withValues(alpha: 0.14),
+            radius: AppSizes.dp18,
+            backgroundColor: color,
             child: SvgPicture.asset(
               icon,
               width: AppDimens.iconSizeSmall,
               height: AppDimens.iconSizeSmall,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
             ),
           ),
           const SizedBox(height: AppDimens.marginMedium),
@@ -49,7 +50,7 @@ class AnalysisMetricCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSizes.dp6),
           TweenAnimationBuilder<double>(
             tween: Tween<double>(begin: 0, end: value),
             duration: const Duration(milliseconds: 450),
@@ -78,7 +79,7 @@ class AnalysisMetricCard extends StatelessWidget {
       width: width,
       child: onTap == null
           ? content
-          : InkWell(
+          : BicountPressable(
               onTap: onTap,
               customBorder: RoundedSuperellipseBorder(
                 borderRadius: BorderRadius.circular(

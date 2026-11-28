@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/utils/formated_text.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
@@ -21,18 +22,19 @@ class DetailFriendHeader extends StatelessWidget {
       children: [
         AppAvatar(
           image: friend.image.isEmpty ? null : friend.image,
-          radius: 40,
+          radius: AppSizes.dp40,
           fallbackIcon: Icons.person_outline,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSizes.dp12),
         Text(
           FormatedText().capitalizeFirstLetter(friend.username),
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        if (friend.email.isNotEmpty) const SizedBox(height: 4),
+        if (friend.email.isNotEmpty)
+          const SizedBox(height: AppDimens.spacingExtraSmall),
         if (friend.email.isNotEmpty)
           Text(friend.email, style: Theme.of(context).textTheme.titleSmall),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSizes.dp12),
         isLinkedProfile
             ? _buildChip(context)
             : CustomToolTip(
@@ -49,7 +51,7 @@ class DetailFriendHeader extends StatelessWidget {
       side: BorderSide.none,
       avatar: Icon(
         isLinkedProfile ? Icons.verified_user_outlined : Icons.link_off,
-        size: 18,
+        size: AppSizes.dp18,
       ),
       label: Text(
         isLinkedProfile

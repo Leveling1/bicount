@@ -56,9 +56,7 @@ class _HomeWidgetPromoScreenState extends State<HomeWidgetPromoScreen> {
       // staring at this screen. The short delay leaves the system dialog
       // time to appear before we move to the background.
       await Future.delayed(const Duration(milliseconds: 900));
-      await SystemChannels.platform.invokeMethod<void>(
-        'SystemNavigator.pop',
-      );
+      await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
     } catch (_) {
       if (mounted) {
         NotificationHelper.showFailureNotification(
@@ -185,11 +183,11 @@ class _BenefitRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppDimens.paddingSmallMedium),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon, size: 20, color: theme.colorScheme.primary),
+          Icon(icon, size: AppSizes.dp20, color: theme.colorScheme.primary),
           AppDimens.spacerWidthMedium,
           Expanded(child: Text(text, style: theme.textTheme.bodyMedium)),
         ],
@@ -250,13 +248,13 @@ class _StepRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppDimens.paddingSmallMedium),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 24,
-            height: 24,
+            width: AppSizes.dp24,
+            height: AppSizes.dp24,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: theme.colorScheme.primary.withValues(alpha: 0.12),
@@ -273,7 +271,7 @@ class _StepRow extends StatelessWidget {
           AppDimens.spacerWidthMedium,
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(top: 2),
+              padding: const EdgeInsets.only(top: AppSizes.dp2),
               child: Text(text, style: theme.textTheme.bodyMedium),
             ),
           ),

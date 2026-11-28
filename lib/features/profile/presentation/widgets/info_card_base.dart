@@ -43,7 +43,7 @@ class InfoCardBase extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _InfoCardHeader(icon: icon, title: title, color: color),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSizes.dp20),
                 child,
               ],
             ),
@@ -84,7 +84,7 @@ class _InfoCardHeader extends StatelessWidget {
             colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
         ),
-        SizedBox(width: compact ? AppDimens.marginSmall : 10),
+        SizedBox(width: compact ? AppDimens.marginSmall : AppSizes.dp10),
         Flexible(
           child: Text(
             title,

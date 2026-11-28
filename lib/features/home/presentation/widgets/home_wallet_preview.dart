@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/widgets/wallet/wallet_card_face.dart';
 import 'package:bicount/core/widgets/wallet/wallet_card_flight.dart';
@@ -9,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomeWalletPreview extends StatelessWidget {
   const HomeWalletPreview({super.key, required this.onOpen});
 
-  static const double width = 74;
+  static const double width = AppSizes.dp74;
 
   final VoidCallback onOpen;
 
@@ -27,7 +29,7 @@ class HomeWalletPreview extends StatelessWidget {
           type: MaterialType.transparency,
           child: Tooltip(
             message: context.l10n.walletTitle,
-            child: InkWell(
+            child: BicountPressable(
               onTap: onOpen,
               child: Stack(
                 children: [

@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
@@ -162,14 +163,17 @@ class _WalletEditorState extends State<WalletEditor> {
             ),
           ),
           if (wallet != null && !wallet.isDefault)
-            TextButton(
-              onPressed: _saving
-                  ? null
-                  : () => _save(archived: wallet.archivedAt == null),
-              child: Text(
-                wallet.archivedAt == null
-                    ? l10n.walletArchive
-                    : l10n.walletRestore,
+            BicountPressable.button(
+              builder: (statesController) => TextButton(
+                statesController: statesController,
+                onPressed: _saving
+                    ? null
+                    : () => _save(archived: wallet.archivedAt == null),
+                child: Text(
+                  wallet.archivedAt == null
+                      ? l10n.walletArchive
+                      : l10n.walletRestore,
+                ),
               ),
             ),
           const SizedBox(),

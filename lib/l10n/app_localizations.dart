@@ -4007,6 +4007,162 @@ abstract class AppLocalizations {
   /// **'All'**
   String get analysisPeriodAllLabel;
 
+  /// No description provided for @analysisPeriodCustomLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date range'**
+  String get analysisPeriodCustomLabel;
+
+  /// No description provided for @analysisContactCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact categories'**
+  String get analysisContactCategories;
+
+  /// No description provided for @analysisAddContactsToBothCharts.
+  ///
+  /// In en, this message translates to:
+  /// **'Add selected contacts to both charts'**
+  String get analysisAddContactsToBothCharts;
+
+  /// No description provided for @analysisNoContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'No contacts available.'**
+  String get analysisNoContacts;
+
+  /// No description provided for @analysisSearchContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Search contacts'**
+  String get analysisSearchContacts;
+
+  /// No description provided for @analysisContactCategoriesSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the contact categories.'**
+  String get analysisContactCategoriesSaveError;
+
+  /// No description provided for @analysisWalletDistribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet distribution'**
+  String get analysisWalletDistribution;
+
+  /// No description provided for @analysisWalletCurrentBalances.
+  ///
+  /// In en, this message translates to:
+  /// **'Current balances'**
+  String get analysisWalletCurrentBalances;
+
+  /// No description provided for @analysisWalletPositiveTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Positive balances'**
+  String get analysisWalletPositiveTotal;
+
+  /// No description provided for @analysisWalletNoPositiveBalances.
+  ///
+  /// In en, this message translates to:
+  /// **'No wallet has a positive balance.'**
+  String get analysisWalletNoPositiveBalances;
+
+  /// No description provided for @analysisWalletOutsideChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Negative or unavailable balances'**
+  String get analysisWalletOutsideChart;
+
+  /// No description provided for @analysisWalletBalanceUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get analysisWalletBalanceUnavailable;
+
+  /// No description provided for @analysisWalletBalancesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet balances are unavailable.'**
+  String get analysisWalletBalancesUnavailable;
+
+  /// No description provided for @analysisRecurringCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring calendar'**
+  String get analysisRecurringCalendar;
+
+  /// No description provided for @analysisRecurringBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring budget'**
+  String get analysisRecurringBudget;
+
+  /// No description provided for @analysisRecurringBudgetMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get analysisRecurringBudgetMonth;
+
+  /// No description provided for @analysisRecurringBudgetYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get analysisRecurringBudgetYear;
+
+  /// No description provided for @analysisRecurringBudgetEmptyMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'A recurring income and a recurring charge are needed for this month.'**
+  String get analysisRecurringBudgetEmptyMonth;
+
+  /// No description provided for @analysisPeriodCurrentMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get analysisPeriodCurrentMonth;
+
+  /// No description provided for @analysisRecurringBudgetReceivedIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Received income'**
+  String get analysisRecurringBudgetReceivedIncome;
+
+  /// No description provided for @analysisRecurringBudgetTotalIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring income'**
+  String get analysisRecurringBudgetTotalIncome;
+
+  /// No description provided for @analysisRecurringBudgetRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected remainder'**
+  String get analysisRecurringBudgetRemaining;
+
+  /// No description provided for @analysisRecurringBudgetDeficit.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected deficit'**
+  String get analysisRecurringBudgetDeficit;
+
+  /// No description provided for @analysisRecurringBudgetOtherCharges.
+  ///
+  /// In en, this message translates to:
+  /// **'Other charges'**
+  String get analysisRecurringBudgetOtherCharges;
+
+  /// No description provided for @analysisRecurringBudgetRatesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Exchange rates are unavailable for some planned payments.'**
+  String get analysisRecurringBudgetRatesUnavailable;
+
+  /// No description provided for @analysisRecurringCalendarEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring payments are scheduled for this day.'**
+  String get analysisRecurringCalendarEmpty;
+
   /// No description provided for @walletTitle.
   ///
   /// In en, this message translates to:
@@ -4216,6 +4372,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Balance'**
   String get walletBalance;
+
+  /// No description provided for @recurringPlanPauseCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause plan'**
+  String get recurringPlanPauseCta;
+
+  /// No description provided for @recurringPlanResumeCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume plan'**
+  String get recurringPlanResumeCta;
+
+  /// No description provided for @recurringPlansPauseCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause plans'**
+  String get recurringPlansPauseCta;
+
+  /// No description provided for @recurringPlansResumeCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume plans'**
+  String get recurringPlansResumeCta;
+
+  /// No description provided for @recurringPlansManagePauses.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage pauses'**
+  String get recurringPlansManagePauses;
+
+  /// No description provided for @recurringPlanPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get recurringPlanPaused;
+
+  /// No description provided for @recurringPlanPauseHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause history'**
+  String get recurringPlanPauseHistory;
+
+  /// No description provided for @recurringPlanKeepSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the usual schedule'**
+  String get recurringPlanKeepSchedule;
+
+  /// No description provided for @recurringPlanChooseResumeDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a new first due date'**
+  String get recurringPlanChooseResumeDate;
+
+  /// No description provided for @recurringPlanPauseNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled occurrences during the pause are skipped. Recorded transactions are kept.'**
+  String get recurringPlanPauseNotice;
+
+  /// No description provided for @recurringPlanResumeNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose when each plan’s future occurrences should start.'**
+  String get recurringPlanResumeNotice;
+
+  /// No description provided for @recurringPlanPauseSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause saved'**
+  String get recurringPlanPauseSaved;
+
+  /// No description provided for @recurringPlanResumeSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resumption saved'**
+  String get recurringPlanResumeSaved;
+
+  /// No description provided for @recurringPlanPauseError.
+  ///
+  /// In en, this message translates to:
+  /// **'The change couldn’t be saved. Check the plan status and date, then try again.'**
+  String get recurringPlanPauseError;
+
+  /// No description provided for @recurringPlanPausedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused {date}'**
+  String recurringPlanPausedOn(String date);
+
+  /// No description provided for @recurringPlanResumedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resumed {date}'**
+  String recurringPlanResumedOn(String date);
+
+  /// No description provided for @recurringPlanNewDueOn.
+  ///
+  /// In en, this message translates to:
+  /// **'New first due date {date}'**
+  String recurringPlanNewDueOn(String date);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

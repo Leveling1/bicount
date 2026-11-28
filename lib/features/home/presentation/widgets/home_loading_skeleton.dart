@@ -53,13 +53,13 @@ class _HomeLoadingHeader extends StatelessWidget {
     collapsed: const Padding(
       padding: EdgeInsets.symmetric(
         horizontal: AppDimens.paddingMedium,
-        vertical: 22,
+        vertical: AppSizes.dp22,
       ),
       child: Row(
         children: [
-          BicountSkeletonBox(width: 40, height: 40),
+          BicountSkeletonBox(width: AppSizes.dp40, height: AppSizes.dp40),
           SizedBox(width: AppDimens.marginMedium),
-          Expanded(child: BicountSkeletonBox(height: 20)),
+          Expanded(child: BicountSkeletonBox(height: AppSizes.dp20)),
         ],
       ),
     ),
@@ -90,7 +90,7 @@ class _SummaryCard extends StatelessWidget {
   const _SummaryCard();
   @override
   Widget build(BuildContext context) => Container(
-    height: 154,
+    height: AppSizes.dp154,
     padding: AppDimens.paddingAllExtraLarge,
     decoration: ShapeDecoration(
       color: Theme.of(context).cardColor,
@@ -102,10 +102,10 @@ class _SummaryCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BicountSkeletonCircle(size: AppDimens.iconSizeLarge),
-        SizedBox(height: 10),
-        BicountSkeletonBox(width: 94, height: 18),
-        SizedBox(height: 5),
-        BicountSkeletonBox(width: 116, height: 16),
+        SizedBox(height: AppSizes.dp10),
+        BicountSkeletonBox(width: AppSizes.dp94, height: AppSizes.dp18),
+        SizedBox(height: AppSizes.dp5),
+        BicountSkeletonBox(width: AppSizes.dp116, height: AppSizes.dp16),
       ],
     ),
   );
@@ -127,8 +127,8 @@ class _QuickAction extends StatelessWidget {
   const _QuickAction();
   @override
   Widget build(BuildContext context) => Container(
-    height: 72,
-    padding: const EdgeInsets.symmetric(horizontal: 16),
+    height: AppSizes.dp72,
+    padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
     decoration: ShapeDecoration(
       color: Theme.of(context).cardColor,
       shape: RoundedSuperellipseBorder(
@@ -138,8 +138,8 @@ class _QuickAction extends StatelessWidget {
     child: const Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        BicountSkeletonBox(width: 54, height: 18),
-        BicountSkeletonCircle(size: 38),
+        BicountSkeletonBox(width: AppSizes.dp54, height: AppSizes.dp18),
+        BicountSkeletonCircle(size: AppSizes.dp38),
       ],
     ),
   );
@@ -151,8 +151,8 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) => const Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      BicountSkeletonBox(width: 140, height: 22),
-      BicountSkeletonBox(width: 72, height: 18),
+      BicountSkeletonBox(width: AppSizes.dp140, height: AppSizes.dp22),
+      BicountSkeletonBox(width: AppSizes.dp72, height: AppSizes.dp18),
     ],
   );
 }

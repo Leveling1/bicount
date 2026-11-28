@@ -17,11 +17,15 @@ class AnalysisTimeSeriesBuilder {
   ) {
     final start = periodStart(
       period,
-      values: transactions.map(resolveTransactionDate).toList(),
+      values: period == AnalysisPeriod.all
+          ? transactions.map(resolveTransactionDate).toList()
+          : const [],
     );
+    final range = period.resolveRange(DateTime.now());
+    final end = range == null ? null : startOfDay(range.end);
     return transactions.where((transaction) {
-      final date = resolveTransactionDate(transaction);
-      return !date.isBefore(start);
+      final day = startOfDay(resolveTransactionDate(transaction));
+      return !day.isBefore(start) && (end == null || !day.isAfter(end));
     }).toList();
   }
 
@@ -33,27 +37,32 @@ class AnalysisTimeSeriesBuilder {
   }) {
     final start = periodStart(
       period,
-      values: transactions.map(resolveTransactionDate).toList(),
+      values: period == AnalysisPeriod.all
+          ? transactions.map(resolveTransactionDate).toList()
+          : const [],
     );
-    final end = startOfDay(DateTime.now());
+    final today = DateTime.now();
+    final end = period.resolveRange(today)?.end ?? startOfDay(today);
+    final transactionsByBucket = <String, List<TransactionModel>>{};
+    for (final transaction in transactions) {
+      final key = bucketKey(resolveTransactionDate(transaction), period);
+      (transactionsByBucket[key] ??= []).add(transaction);
+    }
 
     final points = <AnalysisCashflowPoint>[];
     var cursor = start;
     var runningNet = 0.0;
 
     while (!cursor.isAfter(end)) {
-      final currentKey = bucketKey(cursor, period);
+      final bucket =
+          transactionsByBucket[bucketKey(cursor, period)] ?? const [];
       final inflow = _bucketInflowForDate(
-        transactions,
-        currentKey,
-        period,
+        bucket,
         currentUserParticipantIds: currentUserParticipantIds,
         knownFriendParticipantIds: knownFriendParticipantIds,
       );
       final outflow = _bucketOutflowForDate(
-        transactions,
-        currentKey,
-        period,
+        bucket,
         currentUserParticipantIds: currentUserParticipantIds,
         knownFriendParticipantIds: knownFriendParticipantIds,
       );
@@ -68,9 +77,9 @@ class AnalysisTimeSeriesBuilder {
         ),
       );
 
-      cursor = period == AnalysisPeriod.all
+      cursor = period.usesMonthlyBuckets
           ? DateTime(cursor.year, cursor.month + 1, 1)
-          : cursor.add(const Duration(days: 1));
+          : DateTime(cursor.year, cursor.month, cursor.day + 1);
     }
 
     return points;
@@ -80,22 +89,15 @@ class AnalysisTimeSeriesBuilder {
     AnalysisPeriod period, {
     required List<DateTime> values,
   }) {
-    final today = startOfDay(DateTime.now());
-    switch (period) {
-      case AnalysisPeriod.week7:
-        return today.subtract(const Duration(days: 6));
-      case AnalysisPeriod.month30:
-        return today.subtract(const Duration(days: 29));
-      case AnalysisPeriod.quarter90:
-        return today.subtract(const Duration(days: 89));
-      case AnalysisPeriod.all:
-        if (values.isEmpty) {
-          return today.subtract(const Duration(days: 29));
-        }
-        values.sort();
-        final firstDate = values.first;
-        return DateTime(firstDate.year, firstDate.month, 1);
+    final today = DateTime.now();
+    final range = period.resolveRange(today);
+    if (range != null) return range.start;
+    if (values.isEmpty) {
+      return DateTime(today.year, today.month, today.day - 29);
     }
+    values.sort();
+    final firstDate = values.first;
+    return DateTime(firstDate.year, firstDate.month, 1);
   }
 
   DateTime resolveTransactionDate(TransactionModel transaction) {
@@ -116,48 +118,40 @@ class AnalysisTimeSeriesBuilder {
   }
 
   String bucketKey(DateTime value, AnalysisPeriod period) {
-    if (period == AnalysisPeriod.all) {
+    if (period.usesMonthlyBuckets) {
       return DateFormat('yyyy-MM').format(DateTime(value.year, value.month));
     }
     return DateFormat('yyyy-MM-dd').format(startOfDay(value));
   }
 
   double _bucketInflowForDate(
-    List<TransactionModel> transactions,
-    String bucketKeyValue,
-    AnalysisPeriod period, {
+    List<TransactionModel> transactions, {
     Set<String>? currentUserParticipantIds,
     Set<String> knownFriendParticipantIds = const {},
   }) {
     return transactions
         .where(
-          (t) =>
-              _isInflowTransaction(
-                t,
-                currentUserParticipantIds: currentUserParticipantIds,
-                knownFriendParticipantIds: knownFriendParticipantIds,
-              ) &&
-              bucketKey(resolveTransactionDate(t), period) == bucketKeyValue,
+          (t) => _isInflowTransaction(
+            t,
+            currentUserParticipantIds: currentUserParticipantIds,
+            knownFriendParticipantIds: knownFriendParticipantIds,
+          ),
         )
         .fold<double>(0, (sum, t) => sum + t.amount);
   }
 
   double _bucketOutflowForDate(
-    List<TransactionModel> transactions,
-    String bucketKeyValue,
-    AnalysisPeriod period, {
+    List<TransactionModel> transactions, {
     Set<String>? currentUserParticipantIds,
     Set<String> knownFriendParticipantIds = const {},
   }) {
     return transactions
         .where(
-          (t) =>
-              _isOutflowTransaction(
-                t,
-                currentUserParticipantIds: currentUserParticipantIds,
-                knownFriendParticipantIds: knownFriendParticipantIds,
-              ) &&
-              bucketKey(resolveTransactionDate(t), period) == bucketKeyValue,
+          (t) => _isOutflowTransaction(
+            t,
+            currentUserParticipantIds: currentUserParticipantIds,
+            knownFriendParticipantIds: knownFriendParticipantIds,
+          ),
         )
         .fold<double>(0, (sum, t) => sum + t.amount);
   }
