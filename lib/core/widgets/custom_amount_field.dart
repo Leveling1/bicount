@@ -1,3 +1,5 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
+import 'package:bicount/core/widgets/dropdown_press_surface.dart';
 import 'package:bicount/core/themes/app_corners.dart';
 import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
@@ -32,17 +34,17 @@ class CustomAmountField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 120,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      height: AppSizes.dp120,
+      padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
       decoration: appCornerDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
         legacy: WalletCorners.of(context),
       ),
       child: Stack(
         children: [
           Positioned.fill(
-            top: -25,
+            top: -AppSizes.dp25,
             child: Center(
               child: AmountNumber(
                 amount: amount,
@@ -51,8 +53,8 @@ class CustomAmountField extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 12,
-            bottom: 10,
+            left: AppSizes.dp12,
+            bottom: AppSizes.dp10,
             child: CurrencyField(controller: currency),
           ),
         ],
@@ -156,15 +158,15 @@ class _AmountNumberState extends State<AmountNumber> {
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       textAlign: TextAlign.center,
       inputFormatters: const [CurrencyAmountFormatter()],
-      style: TextStyle(fontSize: 42, fontWeight: FontWeight.w500),
-      minFontSize: 24.0,
+      style: TextStyle(fontSize: AppSizes.dp42, fontWeight: FontWeight.w500),
+      minFontSize: AppDimens.textSizeExtraLarge,
       stepGranularity: 0.5,
       maxLines: 1,
       expands: false,
       decoration: InputDecoration(
         hintText: '0,00',
         hintStyle: TextStyle(
-          fontSize: 42,
+          fontSize: AppSizes.dp42,
           fontWeight: FontWeight.w500,
           color: Theme.of(context).hintColor,
         ),
@@ -286,42 +288,53 @@ class CurrencyField extends StatelessWidget {
         _deferControllerSync(selectedCode);
 
         return _CurrencyChipShell(
-          child: DropdownMenuFormField<String>(
-            trailingIcon: chevron.icon(),
-            selectedTrailingIcon: chevron.icon(expanded: true),
+          child: DropdownFieldPress(
             enabled: isEnabled,
-            controller: controller,
-            initialSelection: currencies.any((c) => c.code == selectedCode)
-                ? selectedCode
-                : fallbackCode,
-            hintText: context.l10n.fieldSelectCurrency,
-            textStyle: TextStyle(
-              fontSize: AppDimens.textSizeSmall,
-              fontWeight: FontWeight.w600,
-            ),
-            inputDecorationTheme: InputDecorationTheme(
-              fillColor: color ?? Theme.of(context).scaffoldBackgroundColor,
-              filled: true,
-              isCollapsed: true,
-              constraints: const BoxConstraints(minHeight: 0, maxHeight: 40),
-            ),
-            dropdownMenuEntries: currencies
-                .map(
-                  (currency) => DropdownMenuEntry<String>(
-                    value: currency.code,
-                    label: currency.code,
+            fillColor: color ?? Theme.of(context).scaffoldBackgroundColor,
+            builder: (context, decorationBuilder) =>
+                DropdownMenuFormField<String>(
+                  decorationBuilder: decorationBuilder,
+                  trailingIcon: chevron.icon(),
+                  selectedTrailingIcon: chevron.icon(expanded: true),
+                  enabled: isEnabled,
+                  controller: controller,
+                  initialSelection:
+                      currencies.any((c) => c.code == selectedCode)
+                      ? selectedCode
+                      : fallbackCode,
+                  hintText: context.l10n.fieldSelectCurrency,
+                  textStyle: TextStyle(
+                    fontSize: AppDimens.textSizeSmall,
+                    fontWeight: FontWeight.w600,
                   ),
-                )
-                .toList(growable: false),
-            onSelected: (value) {
-              controller.text = value ?? fallbackCode;
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return context.l10n.fieldSelectCurrency;
-              }
-              return null;
-            },
+                  inputDecorationTheme: InputDecorationTheme(
+                    fillColor:
+                        color ?? Theme.of(context).scaffoldBackgroundColor,
+                    filled: true,
+                    isCollapsed: true,
+                    constraints: const BoxConstraints(
+                      minHeight: 0,
+                      maxHeight: AppSizes.dp40,
+                    ),
+                  ),
+                  dropdownMenuEntries: currencies
+                      .map(
+                        (currency) => DropdownMenuEntry<String>(
+                          value: currency.code,
+                          label: currency.code,
+                        ),
+                      )
+                      .toList(growable: false),
+                  onSelected: (value) {
+                    controller.text = value ?? fallbackCode;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return context.l10n.fieldSelectCurrency;
+                    }
+                    return null;
+                  },
+                ),
           ),
         );
       },
@@ -359,7 +372,10 @@ class _CurrencyChipShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(width: 95, child: Center(child: child));
+    return SizedBox(
+      width: AppSizes.dp95,
+      child: Center(child: child),
+    );
   }
 }
 
@@ -384,32 +400,34 @@ class SimpleAmountField extends StatelessWidget {
       children: [
         if (label != null)
           Text(label!, style: Theme.of(context).textTheme.titleMedium),
-        TextFormField(
-          controller: amount,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9,\. ]')),
-          ],
-          validator: enableValidator != true
-              ? null
-              : (value) {
-                  final amount = double.tryParse(
-                    (value ?? '')
-                        .trim()
-                        .replaceAll(' ', '')
-                        .replaceAll(',', '.'),
-                  );
-                  if (amount == null || amount <= 0) {
-                    return context.l10n.validationFieldRequired;
-                  }
-                  return null;
-                },
+        BicountPressable.control(
+          child: TextFormField(
+            controller: amount,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9,\. ]')),
+            ],
+            validator: enableValidator != true
+                ? null
+                : (value) {
+                    final amount = double.tryParse(
+                      (value ?? '')
+                          .trim()
+                          .replaceAll(' ', '')
+                          .replaceAll(',', '.'),
+                    );
+                    if (amount == null || amount <= 0) {
+                      return context.l10n.validationFieldRequired;
+                    }
+                    return null;
+                  },
 
-          decoration: InputDecoration(
-            hintText: hintText,
-            suffixIcon: CurrencyField(
-              controller: currency,
-              color: Theme.of(context).cardColor,
+            decoration: InputDecoration(
+              hintText: hintText,
+              suffixIcon: CurrencyField(
+                controller: currency,
+                color: Theme.of(context).cardColor,
+              ),
             ),
           ),
         ),

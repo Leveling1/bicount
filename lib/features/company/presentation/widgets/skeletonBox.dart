@@ -18,7 +18,7 @@ class SkeletonBox extends StatelessWidget {
         // Avatar circulaire
         SkeletonItem(
           child: CircleAvatar(
-            radius: 50,
+            radius: AppSizes.dp50,
             backgroundColor: Theme.of(context).cardColor.withValues(alpha: 0.3),
           ),
         ),
@@ -28,11 +28,13 @@ class SkeletonBox extends StatelessWidget {
         // Nom de l’entreprise
         SkeletonItem(
           child: Container(
-            width: 180,
-            height: 28,
+            width: AppSizes.dp180,
+            height: AppSizes.dp28,
             decoration: ShapeDecoration(
               shape: RoundedSuperellipseBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(
+                  AppDimens.borderRadiusSmall,
+                ),
               ),
               color: Theme.of(context).cardColor.withValues(alpha: 0.3),
             ),
@@ -47,33 +49,39 @@ class SkeletonBox extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: 220,
-                height: 14,
+                width: AppSizes.dp220,
+                height: AppSizes.dp14,
                 decoration: ShapeDecoration(
                   shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(
+                      AppDimens.borderRadiusSmall,
+                    ),
                   ),
                   color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSizes.dp6),
               Container(
-                width: 250,
-                height: 14,
+                width: AppSizes.dp250,
+                height: AppSizes.dp14,
                 decoration: ShapeDecoration(
                   shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(
+                      AppDimens.borderRadiusSmall,
+                    ),
                   ),
                   color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSizes.dp6),
               Container(
                 width: MediaQuery.of(context).size.width * 0.6,
-                height: 14,
+                height: AppSizes.dp14,
                 decoration: ShapeDecoration(
                   shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(
+                      AppDimens.borderRadiusSmall,
+                    ),
                   ),
                   color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
@@ -87,7 +95,7 @@ class SkeletonBox extends StatelessWidget {
         // Pie chart (cercle simulé)
         SkeletonItem(
           child: CircleAvatar(
-            radius: 100,
+            radius: AppSizes.dp100,
             backgroundColor: Theme.of(context).cardColor.withValues(alpha: 0.3),
           ),
         ),
@@ -101,10 +109,10 @@ class SkeletonBox extends StatelessWidget {
             Expanded(
               child: SkeletonItem(
                 child: Container(
-                  height: 100,
+                  height: AppSizes.dp100,
                   decoration: ShapeDecoration(
                     shape: RoundedSuperellipseBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(AppSizes.dp16),
                     ),
                     color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
@@ -115,10 +123,10 @@ class SkeletonBox extends StatelessWidget {
             Expanded(
               child: SkeletonItem(
                 child: Container(
-                  height: 100,
+                  height: AppSizes.dp100,
                   decoration: ShapeDecoration(
                     shape: RoundedSuperellipseBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(AppSizes.dp16),
                     ),
                     color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
@@ -137,10 +145,10 @@ class SkeletonBox extends StatelessWidget {
             Expanded(
               child: SkeletonItem(
                 child: Container(
-                  height: 100,
+                  height: AppSizes.dp100,
                   decoration: ShapeDecoration(
                     shape: RoundedSuperellipseBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(AppSizes.dp16),
                     ),
                     color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
@@ -151,10 +159,10 @@ class SkeletonBox extends StatelessWidget {
             Expanded(
               child: SkeletonItem(
                 child: Container(
-                  height: 100,
+                  height: AppSizes.dp100,
                   decoration: ShapeDecoration(
                     shape: RoundedSuperellipseBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(AppSizes.dp16),
                     ),
                     color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                   ),
@@ -173,12 +181,12 @@ class GroupCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = 50.0;
+    const radius = AppSizes.dp50;
 
     return SizedBox(
-      width: 120,
+      width: AppSizes.dp120,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
+        padding: const EdgeInsets.symmetric(vertical: AppSizes.dp5),
         child: Column(
           children: [
             // Cercle image
@@ -190,29 +198,29 @@ class GroupCardSkeleton extends StatelessWidget {
                 ).cardColor.withValues(alpha: 0.3),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppDimens.spacingSmall),
             // Nom du groupe
             SkeletonItem(
               child: Container(
-                width: 80,
-                height: 12,
+                width: AppSizes.dp80,
+                height: AppSizes.dp12,
                 decoration: ShapeDecoration(
                   shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(AppSizes.dp6),
                   ),
                   color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSizes.dp6),
             // Nombre de membres
             SkeletonItem(
               child: Container(
-                width: 60,
-                height: 10,
+                width: AppSizes.dp60,
+                height: AppSizes.dp10,
                 decoration: ShapeDecoration(
                   shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(AppSizes.dp6),
                   ),
                   color: Theme.of(context).cardColor.withValues(alpha: 0.3),
                 ),

@@ -279,7 +279,10 @@ class NotificationPermissionService {
     }
   }
 
-  List<String> _otherReasonsFor(AppLocalizations l10n, NotifiableAction action) {
+  List<String> _otherReasonsFor(
+    AppLocalizations l10n,
+    NotifiableAction action,
+  ) {
     return NotifiableAction.values
         .where((value) => value != action)
         .map((value) => _reasonFor(l10n, value))

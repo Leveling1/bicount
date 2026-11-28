@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/details_card.dart';
@@ -58,10 +59,13 @@ class AnalysisBreakdownCard extends StatelessWidget {
           Positioned(
             top: 0,
             right: 0,
-            child: IconButton(
-              tooltip: context.l10n.analysisContactCategories,
-              onPressed: () => showAnalysisContactCategories(context, chart),
-              icon: const Icon(Icons.add),
+            child: BicountPressable.button(
+              builder: (statesController) => IconButton(
+                statesController: statesController,
+                tooltip: context.l10n.analysisContactCategories,
+                onPressed: () => showAnalysisContactCategories(context, chart),
+                icon: const Icon(Icons.add),
+              ),
             ),
           ),
         ],

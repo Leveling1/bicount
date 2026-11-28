@@ -26,7 +26,7 @@ class _GroupScreenState extends State<GroupScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _isAtAppBar = false;
 
-  double _headerHeight = 130.0;
+  double _headerHeight = AppSizes.dp130;
 
   @override
   void initState() {
@@ -73,8 +73,8 @@ class _GroupScreenState extends State<GroupScreen> {
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: SizedBox(
-            width: 20,
-            height: 20,
+            width: AppSizes.dp20,
+            height: AppSizes.dp20,
             child: SvgPicture.asset(
               'assets/icons/back_icon.svg',
               colorFilter: ColorFilter.mode(
@@ -90,7 +90,7 @@ class _GroupScreenState extends State<GroupScreen> {
             icon: Icon(
               Icons.add,
               color: Theme.of(context).textTheme.titleSmall!.color,
-              size: 20,
+              size: AppSizes.dp20,
             ),
           ),
           IconButton(
@@ -98,7 +98,7 @@ class _GroupScreenState extends State<GroupScreen> {
             icon: Icon(
               Icons.edit,
               color: Theme.of(context).textTheme.titleSmall!.color,
-              size: 20,
+              size: AppSizes.dp20,
             ),
           ),
         ],
@@ -170,9 +170,9 @@ class _GroupScreenState extends State<GroupScreen> {
 
   // Méthode pour construire l'en-tête (identique à précédemment)
   Widget _buildHeaderContent() {
-    final width = 120.0;
-    final height = 120.0;
-    final radius = 40.0;
+    const width = AppSizes.dp120;
+    const height = AppSizes.dp120;
+    const radius = AppSizes.dp40;
 
     return Container(
       color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
@@ -199,7 +199,7 @@ class _GroupScreenState extends State<GroupScreen> {
                       fit: BoxFit.cover,
                     )
                   : Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(AppDimens.paddingSmall),
                       child: Icon(
                         Icons.people,
                         size: width,
@@ -208,7 +208,7 @@ class _GroupScreenState extends State<GroupScreen> {
                     ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSizes.dp10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,7 +226,7 @@ class _GroupScreenState extends State<GroupScreen> {
                   '${widget.groupData.number} members',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: AppSizes.dp5),
                 widget.groupData.description != null &&
                         widget.groupData.description != ""
                     ? ExpandableText(
@@ -246,7 +246,7 @@ class _GroupScreenState extends State<GroupScreen> {
                                 });
                               } else {
                                 setState(() {
-                                  _headerHeight = 130;
+                                  _headerHeight = AppSizes.dp130;
                                 });
                               }
                             }
@@ -279,8 +279,8 @@ class _GroupScreenState extends State<GroupScreen> {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 10.0,
-        mainAxisSpacing: 10.0,
+        crossAxisSpacing: AppSizes.dp10,
+        mainAxisSpacing: AppSizes.dp10,
         childAspectRatio: 3 / 3,
       ),
       itemBuilder: (context, index) {

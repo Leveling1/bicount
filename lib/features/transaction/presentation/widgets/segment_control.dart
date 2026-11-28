@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -105,13 +107,13 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
         decoration: ShapeDecoration(
           color: Theme.of(context).cardColor,
           shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
           ),
         ),
         child: ClipRSuperellipse(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
           child: Padding(
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.all(AppDimens.paddingExtraSmall),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final minWidth = constraints.hasBoundedWidth
@@ -135,7 +137,9 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
                             decoration: ShapeDecoration(
                               color: const Color(0xFF6C6C6C),
                               shape: RoundedSuperellipseBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(
+                                  AppDimens.borderRadiusSmall,
+                                ),
                               ),
                             ),
                           ),
@@ -173,13 +177,21 @@ class _SegmentedControlWidgetState extends State<SegmentedControlWidget> {
   Widget _buildSegment(String text, int index) {
     final isSelected = widget.controller.selectedIndex == index;
 
-    return GestureDetector(
+    return BicountPressable(
       key: _segmentKeys[index],
+      customBorder: const RoundedSuperellipseBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(AppDimens.borderRadiusSmall),
+        ),
+      ),
       onTap: () => widget.controller.setSelectedIndex(index),
       child: Container(
         alignment: Alignment.center,
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSizes.dp20,
+          vertical: AppSizes.dp5,
+        ),
         child: Text(
           text,
           style: isSelected

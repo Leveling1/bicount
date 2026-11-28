@@ -1730,3 +1730,25 @@ Carried forward deliberately, not oversights:
   fields, menus, sheets, cards, placeholders, previews and transitions, and
   wallet controls embedded in other features. Preserve these shapes when
   changing the global theme or shared widgets.
+
+## Press Feedback
+
+- Use a rounded background tint based on the active theme's primary color at
+  16% opacity for an active press. Match the Home Expense action and use
+  `NoSplash` for the press animation. Keep the existing control shape and
+  keep selection, focus and hover distinct from a press.
+- Apply the feedback through the shared Material theme and use the existing
+  surface shape for local tap targets. Preserve the Wallets UI feedback outside
+  dropdown selectors through its scoped theme.
+- Dropdown selectors use the shared press tint on the field and its choices,
+  including wallet selectors. Preserve the Wallets corner geometry and use
+  the same primary-color tint for both Material dropdown variants.
+
+## Layout Dimensions
+
+- Import shared Flutter layout measurements from `app_dimens.dart`. Use the
+  role-specific `AppDimens` token where it matches and the exported
+  `AppSizes` scale for fixed measurements without a shared role.
+- Match the visual edges of comparable elements within the same screen and
+  across its loading and loaded states. Keep context-specific and responsive
+  geometry, including the Wallets layout and insets supplied by a parent.

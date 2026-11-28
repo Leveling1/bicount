@@ -49,7 +49,7 @@ class SubscriptionDetailView extends StatelessWidget {
       children: [
         if (canManage)
           TransactionDetailActions(
-            iconSize: 20,
+            iconSize: AppSizes.dp20,
             isLoading: isDeleting || isUnsubscribing,
             onDeletePressed: onDeletePressed,
             onEditPressed: SubscriptionConst.isActive(normalizedStatus)
@@ -58,10 +58,10 @@ class SubscriptionDetailView extends StatelessWidget {
           ),
         CircleAvatar(
           backgroundColor: Theme.of(context).cardColor,
-          radius: 40,
+          radius: AppSizes.dp40,
           child: SizedBox(
-            width: 50,
-            height: 50,
+            width: AppSizes.dp50,
+            height: AppSizes.dp50,
             child: Icon(
               Icons.subscriptions,
               color: Theme.of(context).primaryColor,
@@ -75,17 +75,20 @@ class SubscriptionDetailView extends StatelessWidget {
         ),
         const SizedBox(height: AppDimens.paddingExtraSmall),
         Container(
-          constraints: const BoxConstraints(minWidth: 70),
+          constraints: const BoxConstraints(minWidth: AppSizes.dp70),
           decoration: ShapeDecoration(
             color: badgeColor.withValues(alpha: 0.3),
             shape: RoundedSuperellipseBorder(
               borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
             ),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimens.paddingSmall,
+            vertical: AppDimens.paddingExtraSmall,
+          ),
           child: Text(
             context.subscriptionStatusLabel(normalizedStatus),
-            style: TextStyle(color: badgeColor, fontSize: 11),
+            style: TextStyle(color: badgeColor, fontSize: AppSizes.dp11),
             textAlign: TextAlign.center,
           ),
         ),

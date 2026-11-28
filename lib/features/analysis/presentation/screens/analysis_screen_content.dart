@@ -45,23 +45,17 @@ class _AnalysisScreenContent extends StatelessWidget {
                     : const [],
                 builder: (context, plans) => Padding(
                   padding: const EdgeInsets.only(bottom: AppDimens.marginLarge),
-                  child: AnalysisRecurringCalendar(
-                    plans: plans,
-                    monthFooterBuilder: (context, month, entries) =>
-                        AnalysisRecurringBudgetCard(
-                          month: month,
-                          agenda: entries,
-                        ),
-                  ),
+                  child: AnalysisRecurringCalendar(plans: plans),
                 ),
               ),
+              const AnalysisRecurringBudgetSection(),
               if (BackendEnvironment.isLocalPreproduction)
                 const Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: AppDimens.paddingMedium,
                   ),
                   child: AnalysisWalletDistributionCard(),
-                ), 
+                ),
             ],
           ),
         ),

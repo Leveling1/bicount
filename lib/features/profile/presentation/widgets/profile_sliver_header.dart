@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
@@ -171,7 +172,7 @@ class _CollapsedProfileHeader extends StatelessWidget {
     final theme = Theme.of(context);
     return Material(
       color: Colors.transparent,
-      child: InkWell(
+      child: BicountPressable(
         onTap: onTap,
         customBorder: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
@@ -183,7 +184,7 @@ class _CollapsedProfileHeader extends StatelessWidget {
           ),
           child: Row(
             children: [
-              AppAvatar(image: image, radius: 18),
+              AppAvatar(image: image, radius: AppSizes.dp18),
               const SizedBox(width: AppDimens.marginMedium),
               Expanded(
                 child: Text(

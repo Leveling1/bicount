@@ -8,7 +8,7 @@ import 'package:bicount/features/analysis/presentation/bloc/analysis_bloc.dart';
 import 'package:bicount/features/analysis/presentation/widgets/analysis_expense_breakdown_card.dart';
 import 'package:bicount/features/analysis/presentation/widgets/analysis_income_breakdown_card.dart';
 import 'package:bicount/features/analysis/presentation/widgets/analysis_period_selector.dart';
-import 'package:bicount/features/analysis/presentation/widgets/analysis_recurring_budget_card.dart';
+import 'package:bicount/features/analysis/presentation/widgets/analysis_recurring_budget_section.dart';
 import 'package:bicount/features/analysis/presentation/widgets/analysis_recurring_calendar.dart';
 import 'package:bicount/features/analysis/presentation/widgets/analysis_recurring_summary_card.dart';
 import 'package:bicount/features/analysis/presentation/widgets/analysis_screen_skeleton.dart';

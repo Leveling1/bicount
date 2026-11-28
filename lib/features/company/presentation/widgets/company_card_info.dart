@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/number_format_utils.dart';
@@ -62,13 +63,14 @@ class CompanyCardInfo extends StatelessWidget {
               fontSize: Theme.of(context).textTheme.bodySmall!.fontSize,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSizes.dp20),
           CircleAvatar(
             backgroundColor: color,
-            radius: 20, // Using  for radius to scale consistently
+            radius: AppSizes.dp20, // Using  for radius to scale consistently
             child: Icon(
               iconPath,
-              size: 24, // Adjust size to fit within the avatar
+              size: AppDimens
+                  .iconSizeMedium, // Adjust size to fit within the avatar
               color: Colors.white,
             ),
           ),

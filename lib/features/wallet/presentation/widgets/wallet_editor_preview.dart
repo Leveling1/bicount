@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/widgets/wallet/wallet_card_face.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
@@ -105,7 +106,7 @@ class _FloatingWalletCardState extends State<_FloatingWalletCard>
                   child: RepaintBoundary(
                     child: FittedBox(
                       child: SizedBox(
-                        width: 320,
+                        width: AppSizes.dp320,
                         height: 320 / WalletCardFace.aspectRatio,
                         child: WalletCardFace(
                           wallet: widget.wallet,

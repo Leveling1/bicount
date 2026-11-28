@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
@@ -37,7 +38,7 @@ class _WalletScreenState extends State<WalletScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: false,
-        titleSpacing: 28,
+        titleSpacing: AppSizes.dp28,
         backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -50,32 +51,40 @@ class _WalletScreenState extends State<WalletScreen> {
                   .where((wallet) => wallet.archivedAt == null)
                   .toList();
               if (active.length < 2) return const SizedBox.shrink();
-              return IconButton(
-                tooltip: l10n.walletTransfer,
-                icon: const Icon(Icons.swap_horiz, size: 20),
-                onPressed: () => showCustomBottomSheet<void>(
-                  context: context,
-                  minHeight: 0.95,
-                  child: WalletTransferForm(
-                    wallets: active,
-                    repository: context.read<WalletBloc>().repository,
+              return BicountPressable.button(
+                builder: (statesController) => IconButton(
+                  statesController: statesController,
+                  tooltip: l10n.walletTransfer,
+                  icon: const Icon(Icons.swap_horiz, size: AppSizes.dp20),
+                  onPressed: () => showCustomBottomSheet<void>(
+                    context: context,
+                    minHeight: 0.95,
+                    child: WalletTransferForm(
+                      wallets: active,
+                      repository: context.read<WalletBloc>().repository,
+                    ),
                   ),
                 ),
               );
             },
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: theme.colorScheme.onSurface,
-              foregroundColor: theme.colorScheme.surface,
-              minimumSize: const Size(0, 36),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              textStyle: theme.textTheme.labelMedium,
+          BicountPressable.button(
+            builder: (statesController) => FilledButton(
+              statesController: statesController,
+              style: FilledButton.styleFrom(
+                backgroundColor: theme.colorScheme.onSurface,
+                foregroundColor: theme.colorScheme.surface,
+                minimumSize: const Size(0, AppSizes.dp36),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimens.paddingSmallMedium,
+                ),
+                textStyle: theme.textTheme.labelMedium,
+              ),
+              onPressed: _showEditor,
+              child: Text(l10n.walletNew),
             ),
-            onPressed: _showEditor,
-            child: Text(l10n.walletNew),
           ),
-          const SizedBox(width: 24),
+          const SizedBox(width: AppDimens.spacingLarge),
         ],
       ),
       body: BlocBuilder<WalletBloc, WalletState>(
@@ -94,7 +103,9 @@ class _WalletScreenState extends State<WalletScreen> {
               ])
                 Padding(
                   key: ValueKey(wallet.id),
-                  padding: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.only(
+                    bottom: AppDimens.paddingMedium,
+                  ),
                   child: WalletOverviewCard(
                     wallet: wallet,
                     balances: balances

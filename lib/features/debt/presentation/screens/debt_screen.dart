@@ -205,7 +205,10 @@ class _DebtLoadingState extends StatelessWidget {
           3,
           (_) => const Padding(
             padding: EdgeInsets.only(bottom: AppDimens.spacingMedium),
-            child: DetailsCard(isMargin: false, child: SizedBox(height: 96)),
+            child: DetailsCard(
+              isMargin: false,
+              child: SizedBox(height: AppSizes.dp96),
+            ),
           ),
         ),
       ),

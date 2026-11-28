@@ -88,7 +88,7 @@ class _CompanyScreenState extends State<CompanyScreen> {
                       return CompanyLargeCard(company: company, role: role);
                     }
                   }),
-                  SizedBox(height: 50),
+                  SizedBox(height: AppSizes.dp50),
                 ],
               ),
             ),

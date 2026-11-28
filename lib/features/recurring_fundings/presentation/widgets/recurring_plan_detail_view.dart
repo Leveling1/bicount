@@ -45,7 +45,7 @@ class RecurringPlanDetailView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TransactionDetailActions(
-          iconSize: 20,
+          iconSize: AppSizes.dp20,
           isLoading: isLoading,
           onDeletePressed: onDeletePressed,
           onEditPressed: onEditPressed,

@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/corner_skeleton_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
@@ -10,37 +11,52 @@ class CompanyCardSkeleton extends StatelessWidget {
     return SkeletonItem(
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        margin: const EdgeInsets.only(bottom: 20),
+        padding: const EdgeInsets.symmetric(
+          vertical: AppDimens.paddingSmallMedium,
+          horizontal: AppDimens.paddingSmallMedium,
+        ),
+        margin: const EdgeInsets.only(bottom: AppSizes.dp20),
         decoration: ShapeDecoration(
           color: Theme.of(context).cardColor,
           shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppSizes.dp16),
           ),
         ),
         child: Row(
           children: [
             // Avatar
-            CornerSkeletonBox(width: 60, height: 60, radius: 50),
-            const SizedBox(width: 12),
+            CornerSkeletonBox(
+              width: AppSizes.dp60,
+              height: AppSizes.dp60,
+              radius: AppSizes.dp50,
+            ),
+            const SizedBox(width: AppSizes.dp12),
             // Texte
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CornerSkeletonBox(
-                    height: 16,
+                    height: AppSizes.dp16,
                     width: double.infinity,
-                    radius: 8,
+                    radius: AppSizes.dp8,
                   ),
-                  const SizedBox(height: 8),
-                  CornerSkeletonBox(height: 12, width: 150, radius: 8),
+                  const SizedBox(height: AppDimens.spacingSmall),
+                  CornerSkeletonBox(
+                    height: AppSizes.dp12,
+                    width: AppSizes.dp150,
+                    radius: AppSizes.dp8,
+                  ),
                 ],
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSizes.dp12),
             // Profit
-            CornerSkeletonBox(height: 16, width: 50, radius: 8),
+            CornerSkeletonBox(
+              height: AppSizes.dp16,
+              width: AppSizes.dp50,
+              radius: AppSizes.dp8,
+            ),
           ],
         ),
       ),

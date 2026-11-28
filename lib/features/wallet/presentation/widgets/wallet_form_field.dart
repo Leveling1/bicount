@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_form_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,10 @@ class WalletFormField extends StatelessWidget {
           ),
           if (state.hasError)
             Padding(
-              padding: const EdgeInsetsDirectional.only(start: 12, top: 8),
+              padding: const EdgeInsetsDirectional.only(
+                start: AppDimens.paddingSmallMedium,
+                top: AppDimens.paddingSmall,
+              ),
               child: Text(
                 state.errorText!,
                 style:

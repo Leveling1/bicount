@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 
 class SalaryStatusBadge extends StatelessWidget {
@@ -13,11 +14,14 @@ class SalaryStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSizes.dp10,
+        vertical: AppSizes.dp6,
+      ),
       decoration: ShapeDecoration(
         color: color.withValues(alpha: 0.15),
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(AppSizes.dp999),
         ),
       ),
       child: Text(

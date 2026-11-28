@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -70,31 +71,36 @@ class _CustomTextFieldState extends State<CustomTextField> {
       spacing: AppDimens.spacingSmall,
       children: [
         Text(widget.title, style: Theme.of(context).textTheme.titleSmall),
-        TextFormField(
-          controller: widget.textController,
-          obscureText: _obscure,
-          focusNode: widget.node,
-          validator: _validator,
-          keyboardType: widget.type == CustomTextFieldType.email
-              ? TextInputType.emailAddress
-              : TextInputType.text,
-          textInputAction: widget.textInputAction,
-          onFieldSubmitted: widget.onFieldSubmitted,
-          decoration: InputDecoration(
-            hintText: widget.label,
-            suffixIcon: widget.type == CustomTextFieldType.password
-                ? IconButton(
-                    icon: Icon(
-                      _obscure ? Icons.visibility_off : Icons.visibility,
-                      color: AppColors.inactiveColorDark,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscure = !_obscure;
-                      });
-                    },
-                  )
-                : null,
+        BicountPressable.control(
+          child: TextFormField(
+            controller: widget.textController,
+            obscureText: _obscure,
+            focusNode: widget.node,
+            validator: _validator,
+            keyboardType: widget.type == CustomTextFieldType.email
+                ? TextInputType.emailAddress
+                : TextInputType.text,
+            textInputAction: widget.textInputAction,
+            onFieldSubmitted: widget.onFieldSubmitted,
+            decoration: InputDecoration(
+              hintText: widget.label,
+              suffixIcon: widget.type == CustomTextFieldType.password
+                  ? BicountPressable.button(
+                      builder: (statesController) => IconButton(
+                        statesController: statesController,
+                        icon: Icon(
+                          _obscure ? Icons.visibility_off : Icons.visibility,
+                          color: AppColors.inactiveColorDark,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscure = !_obscure;
+                          });
+                        },
+                      ),
+                    )
+                  : null,
+            ),
           ),
         ),
       ],

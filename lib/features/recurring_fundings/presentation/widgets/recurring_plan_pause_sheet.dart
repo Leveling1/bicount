@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/notification_helper.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -97,7 +98,7 @@ class _RecurringPlanPauseSheetState extends State<_RecurringPlanPauseSheet> {
         AppDimens.spacerMedium,
         if (_selected.isEmpty)
           SizedBox(
-            height: 50,
+            height: AppSizes.dp50,
             child: ElevatedButton(onPressed: null, child: Text(title)),
           )
         else
@@ -117,47 +118,56 @@ class _RecurringPlanPauseSheetState extends State<_RecurringPlanPauseSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.bulk)
-          CheckboxListTile(
-            contentPadding: EdgeInsets.zero,
-            value: selected,
-            title: Text(plan.title),
-            onChanged: _saving
-                ? null
-                : (value) {
-                    setState(() {
-                      if (value == true) {
-                        _selected[id] = null;
-                      } else {
-                        _selected.remove(id);
-                      }
-                    });
-                  },
+          BicountPressable.control(
+            enabled: !(_saving),
+            child: CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              value: selected,
+              title: Text(plan.title),
+              onChanged: _saving
+                  ? null
+                  : (value) {
+                      setState(() {
+                        if (value == true) {
+                          _selected[id] = null;
+                        } else {
+                          _selected.remove(id);
+                        }
+                      });
+                    },
+            ),
           )
         else
           Text(plan.title, style: Theme.of(context).textTheme.titleMedium),
         if (_resuming && selected) ...[
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(
-              override == null ? Icons.check_circle : Icons.circle_outlined,
-            ),
-            title: Text(l10n.recurringPlanKeepSchedule),
+          BicountPressable(
             onTap: _saving ? null : () => setState(() => _selected[id] = null),
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(
-              override == null ? Icons.event_outlined : Icons.check_circle,
+            customBorder: Theme.of(context).listTileTheme.shape,
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(
+                override == null ? Icons.check_circle : Icons.circle_outlined,
+              ),
+              title: Text(l10n.recurringPlanKeepSchedule),
             ),
-            title: Text(l10n.recurringPlanChooseResumeDate),
-            subtitle: override == null
-                ? null
-                : Text(
-                    DateFormat.yMMMd(
-                      Localizations.localeOf(context).toLanguageTag(),
-                    ).format(override),
-                  ),
+          ),
+          BicountPressable(
             onTap: _saving ? null : () => _pickDate(id, plan.endDate),
+            customBorder: Theme.of(context).listTileTheme.shape,
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(
+                override == null ? Icons.event_outlined : Icons.check_circle,
+              ),
+              title: Text(l10n.recurringPlanChooseResumeDate),
+              subtitle: override == null
+                  ? null
+                  : Text(
+                      DateFormat.yMMMd(
+                        Localizations.localeOf(context).toLanguageTag(),
+                      ).format(override),
+                    ),
+            ),
           ),
         ],
       ],

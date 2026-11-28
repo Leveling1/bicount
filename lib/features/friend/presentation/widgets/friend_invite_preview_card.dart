@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
@@ -37,7 +38,13 @@ class FriendInvitePreviewCard extends StatelessWidget {
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
-              IconButton(onPressed: onClose, icon: const Icon(Icons.close)),
+              BicountPressable.button(
+                builder: (statesController) => IconButton(
+                  statesController: statesController,
+                  onPressed: onClose,
+                  icon: const Icon(Icons.close),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: AppDimens.marginMedium),
@@ -45,10 +52,10 @@ class FriendInvitePreviewCard extends StatelessWidget {
             children: [
               AppAvatar(
                 image: invite.senderImage.isEmpty ? null : invite.senderImage,
-                radius: 22,
+                radius: AppSizes.dp22,
                 fallbackIcon: Icons.person_outline,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSizes.dp12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +66,7 @@ class FriendInvitePreviewCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSizes.dp2),
                     Text(
                       invite.senderEmail,
                       style: Theme.of(context).textTheme.bodySmall,
@@ -78,7 +85,7 @@ class FriendInvitePreviewCard extends StatelessWidget {
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             if ((invite.sourceFriendEmail ?? '').isNotEmpty)
-              const SizedBox(height: 4),
+              const SizedBox(height: AppDimens.spacingExtraSmall),
             if ((invite.sourceFriendEmail ?? '').isNotEmpty)
               Text(
                 invite.sourceFriendEmail!,
@@ -99,13 +106,23 @@ class FriendInvitePreviewCard extends StatelessWidget {
             spacing: AppDimens.spacingMedium,
             runSpacing: AppDimens.spacingMedium,
             children: [
-              ElevatedButton(
-                onPressed: invite.isPending && !isSubmitting ? onAccept : null,
-                child: Text(context.l10n.commonAccept),
+              BicountPressable.button(
+                builder: (statesController) => ElevatedButton(
+                  statesController: statesController,
+                  onPressed: invite.isPending && !isSubmitting
+                      ? onAccept
+                      : null,
+                  child: Text(context.l10n.commonAccept),
+                ),
               ),
-              OutlinedButton(
-                onPressed: invite.isPending && !isSubmitting ? onReject : null,
-                child: Text(context.l10n.commonReject),
+              BicountPressable.button(
+                builder: (statesController) => OutlinedButton(
+                  statesController: statesController,
+                  onPressed: invite.isPending && !isSubmitting
+                      ? onReject
+                      : null,
+                  child: Text(context.l10n.commonReject),
+                ),
               ),
             ],
           ),

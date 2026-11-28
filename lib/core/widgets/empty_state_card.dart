@@ -22,7 +22,7 @@ class EmptyStateCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(AppDimens.paddingMedium),
       margin: EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
       decoration: ShapeDecoration(
         color: Colors.transparent, //Theme.of(context).cardColor,
@@ -33,7 +33,11 @@ class EmptyStateCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 48.0, color: Theme.of(context).iconTheme.color),
+          Icon(
+            icon,
+            size: AppSizes.dp48,
+            color: Theme.of(context).iconTheme.color,
+          ),
           AppDimens.spacerMedium,
           Text(
             title,
@@ -51,7 +55,7 @@ class EmptyStateCard extends StatelessWidget {
           AppDimens.spacerMedium,
           if (onPressed != null) ...[
             SizedBox(
-              height: 40,
+              height: AppSizes.dp40,
               child: CustomButtonWithIcon(
                 onPressed: onPressed!,
                 text: buttonText,

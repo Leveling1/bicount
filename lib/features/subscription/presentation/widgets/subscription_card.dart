@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -34,84 +35,76 @@ class SubscriptionCard extends StatelessWidget {
     );
     final scheduleDate = item.isActive ? item.nextBilling : item.endDate;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
-      decoration: ShapeDecoration(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
+      child: BicountPressable(
         color: Theme.of(context).cardColor,
-        shape: RoundedSuperellipseBorder(
+        onTap: onTap,
+        customBorder: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
         ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          customBorder: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppDimens.paddingMedium),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        FormatedText().capitalizeFirstLetter(
-                          item.subscription.title,
-                        ),
-                        maxLines: AppDimens.maxLinesShort,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium,
+        child: Padding(
+          padding: const EdgeInsets.all(AppDimens.paddingMedium),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      FormatedText().capitalizeFirstLetter(
+                        item.subscription.title,
                       ),
+                      maxLines: AppDimens.maxLinesShort,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    const SizedBox(width: AppDimens.spacingSmall),
-                    SubscriptionBadge(
-                      label: context.subscriptionStatusLabel(
-                        item.subscription.status ?? SubscriptionConst.active,
-                      ),
-                      color: statusColor,
+                  ),
+                  const SizedBox(width: AppDimens.spacingSmall),
+                  SubscriptionBadge(
+                    label: context.subscriptionStatusLabel(
+                      item.subscription.status ?? SubscriptionConst.active,
                     ),
-                  ],
-                ),
-                const SizedBox(height: AppDimens.spacingExtraSmall),
-                Text(
-                  context.frequencyLabel(item.subscription.frequency),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: AppDimens.spacingSmall),
-                Wrap(
-                  spacing: AppDimens.spacingSmall,
-                  runSpacing: AppDimens.spacingSmall,
-                  children: [
-                    MetaPill(
-                      icon: Icons.event_outlined,
-                      label: item.isActive
-                          ? context.l10n.subscriptionNextBilling
-                          : context.l10n.subscriptionBillingStop,
-                      value: scheduleDate == null
-                          ? '-'
-                          : formatDateWithoutYear(scheduleDate),
-                    ),
-                    MetaPill(
-                      icon: Icons.insights_outlined,
-                      label: context.l10n.analysisMonthlyLoad,
-                      value: monthlyLoad,
-                      color: accentColor,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppDimens.spacingMedium),
-                Text(
-                  amount,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w700),
-                ),
-              ],
-            ),
+                    color: statusColor,
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppDimens.spacingExtraSmall),
+              Text(
+                context.frequencyLabel(item.subscription.frequency),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: AppDimens.spacingSmall),
+              Wrap(
+                spacing: AppDimens.spacingSmall,
+                runSpacing: AppDimens.spacingSmall,
+                children: [
+                  MetaPill(
+                    icon: Icons.event_outlined,
+                    label: item.isActive
+                        ? context.l10n.subscriptionNextBilling
+                        : context.l10n.subscriptionBillingStop,
+                    value: scheduleDate == null
+                        ? '-'
+                        : formatDateWithoutYear(scheduleDate),
+                  ),
+                  MetaPill(
+                    icon: Icons.insights_outlined,
+                    label: context.l10n.analysisMonthlyLoad,
+                    value: monthlyLoad,
+                    color: accentColor,
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppDimens.spacingMedium),
+              Text(
+                amount,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ],
           ),
         ),
       ),

@@ -43,15 +43,15 @@ class _WalletMarkings extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  letterSpacing: 1.35,
+                  letterSpacing: AppSizes.dp1Point35,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
             SvgPicture.asset(
               walletKindIcon(kind ?? WalletKind.other),
-              width: 22,
-              height: 22,
+              width: AppSizes.dp22,
+              height: AppSizes.dp22,
               colorFilter: iconColor == null
                   ? null
                   : ColorFilter.mode(iconColor, BlendMode.srcIn),
@@ -68,7 +68,7 @@ class _WalletMarkings extends StatelessWidget {
                 alignment: AlignmentDirectional.centerStart,
                 child: DefaultTextStyle.merge(
                   style: const TextStyle(
-                    fontSize: 26,
+                    fontSize: AppSizes.dp26,
                     fontWeight: FontWeight.w600,
                   ),
                   child: balance!,
@@ -87,19 +87,19 @@ class _WalletMarkings extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
-                  letterSpacing: .45,
+                  letterSpacing: AppSizes.dp0Point45,
                 ),
               ),
             ),
             if (logo != null) ...[
-              const SizedBox(width: 8),
+              const SizedBox(width: AppDimens.spacingSmall),
               Expanded(
                 child: Align(
                   alignment: AlignmentDirectional.centerEnd,
                   child: SvgPicture.asset(
                     logo,
-                    width: 62,
-                    height: 24,
+                    width: AppSizes.dp62,
+                    height: AppSizes.dp24,
                     semanticsLabel: logoLabel,
                   ),
                 ),

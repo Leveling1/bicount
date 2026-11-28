@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/analysis/presentation/widgets/analysis_month_grid.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +89,7 @@ class _CalendarDay extends StatelessWidget {
   final bool inRange;
   final VoidCallback? onTap;
 
-  static const double _markerRadius = 19;
+  static const double _markerRadius = AppSizes.dp19;
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +111,7 @@ class _CalendarDay extends StatelessWidget {
       onTap: onTap,
       excludeSemantics: true,
       child: SizedBox(
-        height: 44,
+        height: AppSizes.dp44,
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -142,12 +143,11 @@ class _CalendarDay extends StatelessWidget {
               ),
             Material(
               type: MaterialType.transparency,
-              child: InkResponse(
+              child: BicountPressable(
                 onTap: onTap,
-                containedInkWell: true,
+
                 customBorder: const CircleBorder(),
-                radius: _markerRadius,
-                splashFactory: NoSplash.splashFactory,
+
                 child: Center(
                   child: Text(
                     material.formatDecimal(date.day),

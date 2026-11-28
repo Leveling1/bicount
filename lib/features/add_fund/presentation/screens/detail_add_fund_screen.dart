@@ -67,24 +67,24 @@ class _DetailAddFundScreenState extends State<DetailAddFundScreen> {
           children: [
             if (canManage)
               TransactionDetailActions(
-                iconSize: 20,
+                iconSize: AppSizes.dp20,
                 isLoading: state is AddFundSaving,
                 onDeletePressed: () => _confirmDelete(context),
                 onEditPressed: () => setState(() => _isEditing = true),
               ),
             CircleAvatar(
               backgroundColor: Theme.of(context).cardColor,
-              radius: 40,
+              radius: AppSizes.dp40,
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: AppSizes.dp50,
+                height: AppSizes.dp50,
                 child: Icon(
                   Icons.savings_outlined,
                   color: Theme.of(context).primaryColor,
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSizes.dp12),
             Text(
               funding.source,
               style: Theme.of(context).textTheme.headlineLarge,
@@ -108,7 +108,7 @@ class _DetailAddFundScreenState extends State<DetailAddFundScreen> {
                     title: context.l10n.commonDate,
                     content: formatedDate(fundingDate),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppDimens.spacingSmall),
                   TransactionDetailRow(
                     title: context.l10n.commonTime,
                     content: formatedTime(fundingDate),
@@ -123,7 +123,7 @@ class _DetailAddFundScreenState extends State<DetailAddFundScreen> {
                     title: context.l10n.commonSource,
                     content: funding.source,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppDimens.spacingSmall),
                   TransactionDetailRow(
                     title: context.l10n.accountFundingTypeTitle,
                     content: context.accountFundingTypeLabel(
@@ -131,7 +131,7 @@ class _DetailAddFundScreenState extends State<DetailAddFundScreen> {
                     ),
                   ),
                   if (funding.note?.isNotEmpty ?? false) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppDimens.spacingSmall),
                     TransactionDetailRow(
                       title: context.l10n.commonNote,
                       content: funding.note!,

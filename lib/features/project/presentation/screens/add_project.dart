@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,7 +54,7 @@ class _AddProjectState extends State<AddProject> {
                 'Add Project',
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -77,7 +78,7 @@ class _AddProjectState extends State<AddProject> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppDimens.spacingMedium),
                   Flexible(
                     flex: 4,
                     child: CustomFormField(
@@ -89,14 +90,14 @@ class _AddProjectState extends State<AddProject> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               CustomFormField(
                 controller: _initiator,
                 label: "Initiate by",
                 hint: 'Enter the name of the sponsor',
                 message: 'Please enter the name of the sponsor',
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               CustomFormField(
                 label: "Start date",
                 hint: 'DD MMMM YYYY',
@@ -110,20 +111,20 @@ class _AddProjectState extends State<AddProject> {
                 controller: _endDate,
                 isDate: true,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               CustomFormField(
                 controller: _description,
                 label: "Description",
                 hint: 'Enter project description',
                 inputType: TextInputType.multiline,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppDimens.spacingExtraLarge),
               CustomButton(
                 text: 'Add',
                 loading: state is ProjectLoading,
                 onPressed: _submit,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
             ],
           ),
         );

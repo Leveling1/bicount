@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/constants/dropdown_menu_entry.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
@@ -107,13 +109,13 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                     : context.l10n.subscriptionIntro,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               CustomFormField(
                 controller: _name,
                 label: context.l10n.subscriptionName,
                 hint: context.l10n.subscriptionNameHint,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -124,7 +126,7 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                   CustomAmountField(amount: _amount, currency: _currency),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               CustomDropdownMenu(
                 title: context.l10n.commonFrequency,
                 hintText: context.l10n.subscriptionFrequencyHint,
@@ -135,7 +137,7 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                   context,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               CustomFormField(
                 controller: _startDate,
                 label: context.l10n.subscriptionStartDate,
@@ -143,16 +145,18 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                 isDate: true,
                 inputType: TextInputType.datetime,
               ),
-              CheckboxListTile(
-                value: isDifferentDate,
-                onChanged: (checked) =>
-                    setState(() => isDifferentDate = checked ?? false),
-                title: Text(
-                  context.l10n.subscriptionNextPaymentDifferent,
-                  style: Theme.of(context).textTheme.bodySmall,
+              BicountPressable.control(
+                child: CheckboxListTile(
+                  value: isDifferentDate,
+                  onChanged: (checked) =>
+                      setState(() => isDifferentDate = checked ?? false),
+                  title: Text(
+                    context.l10n.subscriptionNextPaymentDifferent,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  controlAffinity: ListTileControlAffinity.leading,
+                  contentPadding: EdgeInsets.zero,
                 ),
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
               ),
               SmoothInsert(
                 visible: isDifferentDate,
@@ -165,7 +169,7 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                       isDate: true,
                       inputType: TextInputType.datetime,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppDimens.spacingMedium),
                   ],
                 ),
               ),
@@ -175,13 +179,13 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                 hint: context.l10n.commonPlaceholderNote,
                 enableValidator: false,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppDimens.spacingExtraLarge),
               CustomButton(
                 text: context.l10n.commonSave,
                 loading: state is SubscriptionSaving,
                 onPressed: _submit,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppDimens.spacingExtraLarge),
             ],
           ),
         );

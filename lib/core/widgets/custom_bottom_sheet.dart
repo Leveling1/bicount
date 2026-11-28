@@ -8,7 +8,7 @@ Future<T?> showCustomBottomSheet<T>({
   required Widget child,
   Color? color,
   bool scrollEnabled = true,
-  double horizontalPadding = 25,
+  double horizontalPadding = AppDimens.sheetHorizontalPadding,
   required double minHeight, // kept for compatibility, not used
 }) {
   final bgColor = color ?? Theme.of(context).scaffoldBackgroundColor;
@@ -28,21 +28,21 @@ Future<T?> showCustomBottomSheet<T>({
     ),
     constraints: BoxConstraints(
       minWidth: screenWidth,
-      maxHeight: screenHeight * 0.95,
+      maxHeight: screenHeight * AppDimens.sheetHeightFraction,
     ),
     builder: (BuildContext ctx) {
       return SafeArea(
         child: Padding(
           padding: EdgeInsets.only(
-            top: 15,
+            top: AppSizes.dp15,
             left: horizontalPadding,
             right: horizontalPadding,
             bottom: MediaQuery.of(ctx).viewInsets.bottom,
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final handleHeight = 5.0;
-              const spacing = 25.0;
+              const handleHeight = AppDimens.sheetHandleHeight;
+              const spacing = AppDimens.sheetHandleGap;
               final scrollMaxHeight =
                   (constraints.maxHeight - handleHeight - spacing).clamp(
                     0.0,
@@ -57,7 +57,7 @@ Future<T?> showCustomBottomSheet<T>({
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    width: 50,
+                    width: AppSizes.dp50,
                     height: handleHeight,
                     decoration: appCornerDecoration(
                       color: Theme.of(context).cardColor,

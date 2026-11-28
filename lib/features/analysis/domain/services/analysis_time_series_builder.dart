@@ -21,7 +21,7 @@ class AnalysisTimeSeriesBuilder {
           ? transactions.map(resolveTransactionDate).toList()
           : const [],
     );
-    final range = period.dateRange;
+    final range = period.resolveRange(DateTime.now());
     final end = range == null ? null : startOfDay(range.end);
     return transactions.where((transaction) {
       final day = startOfDay(resolveTransactionDate(transaction));
@@ -41,7 +41,8 @@ class AnalysisTimeSeriesBuilder {
           ? transactions.map(resolveTransactionDate).toList()
           : const [],
     );
-    final end = startOfDay(period.dateRange?.end ?? DateTime.now());
+    final today = DateTime.now();
+    final end = period.resolveRange(today)?.end ?? startOfDay(today);
     final transactionsByBucket = <String, List<TransactionModel>>{};
     for (final transaction in transactions) {
       final key = bucketKey(resolveTransactionDate(transaction), period);
@@ -88,13 +89,11 @@ class AnalysisTimeSeriesBuilder {
     AnalysisPeriod period, {
     required List<DateTime> values,
   }) {
-    final range = period.dateRange;
-    if (range != null) return startOfDay(range.start);
-
     final today = DateTime.now();
-    final days = period.days;
-    if (days != null || values.isEmpty) {
-      return DateTime(today.year, today.month, today.day - (days ?? 30) + 1);
+    final range = period.resolveRange(today);
+    if (range != null) return range.start;
+    if (values.isEmpty) {
+      return DateTime(today.year, today.month, today.day - 29);
     }
     values.sort();
     final firstDate = values.first;

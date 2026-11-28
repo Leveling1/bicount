@@ -21,8 +21,8 @@ class AuthBrandMark extends StatelessWidget {
       children: [
         SvgPicture.asset(
           isDark ? IconLinks.appIconDark : IconLinks.appIconLight,
-          width: 40,
-          height: 40,
+          width: AppSizes.dp40,
+          height: AppSizes.dp40,
         ),
         AppDimens.spacerWidthSmall,
         Text(

@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/open_transaction_sheet.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -27,48 +28,41 @@ class QuickActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Material(
-      color: theme.cardColor, // theme.cardColor,
-      shape: RoundedSuperellipseBorder(
+    return BicountPressable(
+      color: theme.cardColor,
+      onTap: onTap,
+      customBorder: RoundedSuperellipseBorder(
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
       ),
-      child: InkWell(
-        onTap: onTap,
-        customBorder: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+      hoverColor: theme.colorScheme.surfaceContainer,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimens.paddingMedium,
+          vertical: AppDimens.paddingMedium,
         ),
-        hoverColor: theme.colorScheme.surfaceContainer,
-        splashColor: Colors.transparent,
-        highlightColor: theme.primaryColor.withValues(alpha: 0.16),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppDimens.paddingMedium,
-            vertical: AppDimens.paddingMedium,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (isLeft) ...[
-                _buildText(context),
-                const SizedBox(width: AppDimens.spacingSmall),
-              ],
-              Container(
-                width: AppDimens.iconSizeLarge,
-                height: AppDimens.iconSizeLarge,
-                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                child: Icon(
-                  icon,
-                  color: Colors.white,
-                  size: AppDimens.iconSizeSmall,
-                ),
-              ),
-              if (!isLeft) ...[
-                const SizedBox(width: AppDimens.spacingSmall),
-                _buildText(context),
-              ],
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (isLeft) ...[
+              _buildText(context),
+              const SizedBox(width: AppDimens.spacingSmall),
             ],
-          ),
+            Container(
+              width: AppDimens.iconSizeLarge,
+              height: AppDimens.iconSizeLarge,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: AppDimens.iconSizeSmall,
+              ),
+            ),
+            if (!isLeft) ...[
+              const SizedBox(width: AppDimens.spacingSmall),
+              _buildText(context),
+            ],
+          ],
         ),
       ),
     );

@@ -13,11 +13,11 @@ class GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = 120.0;
-    final height = 120.0;
-    final radius = 50.0;
+    const width = AppSizes.dp120;
+    const height = AppSizes.dp120;
+    const radius = AppSizes.dp50;
     return SizedBox(
-      width: 120,
+      width: AppSizes.dp120,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -25,8 +25,6 @@ class GroupCard extends StatelessWidget {
           customBorder: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
           ),
-          splashColor: Colors.transparent,
-          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: onTap,
           child: Padding(
             padding: EdgeInsetsGeometry.only(top: 5, bottom: 5),
@@ -52,7 +50,9 @@ class GroupCard extends StatelessWidget {
                             fit: BoxFit.cover,
                           )
                         : Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(
+                              AppDimens.paddingSmall,
+                            ),
                             child: Icon(
                               Icons.people,
                               size: width,
@@ -61,7 +61,7 @@ class GroupCard extends StatelessWidget {
                           ),
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: AppSizes.dp5),
                 Text(
                   group.name,
                   style: Theme.of(context).textTheme.titleSmall,

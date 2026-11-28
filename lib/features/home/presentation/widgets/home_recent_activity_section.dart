@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/open_transaction_sheet.dart';
@@ -62,12 +63,15 @@ class HomeRecentActivitySection extends StatelessWidget {
                 context.l10n.homeTransactions,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              TextButton(
-                onPressed: onShowMore,
-                style: Theme.of(context).textButtonTheme.style,
-                child: Text(
-                  context.l10n.homeShowMore,
-                  style: Theme.of(context).textTheme.bodyMedium,
+              BicountPressable.button(
+                builder: (statesController) => TextButton(
+                  statesController: statesController,
+                  onPressed: onShowMore,
+                  style: Theme.of(context).textButtonTheme.style,
+                  child: Text(
+                    context.l10n.homeShowMore,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ),
               ),
             ],

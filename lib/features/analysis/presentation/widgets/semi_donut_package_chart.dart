@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class SemiDonutChart extends StatefulWidget {
     required this.sections,
     required this.centerText,
     this.centerSubtitle,
-    this.height = 220,
+    this.height = AppSizes.dp220,
   });
 
   final List<SemiDonutChartData> sections;
@@ -57,15 +58,10 @@ class _SemiDonutChartState extends State<SemiDonutChart>
       animation: controller,
       builder: (_, __) {
         return CustomPaint(
-          size: Size(
-            double.infinity,
-            widget.height,
-          ),
+          size: Size(double.infinity, widget.height),
           painter: _SemiDonutPainter(
             sections: widget.sections,
-            progress: Curves.easeOutCubic.transform(
-              controller.value,
-            ),
+            progress: Curves.easeOutCubic.transform(controller.value),
             centerText: widget.centerText,
             centerSubtitle: widget.centerSubtitle,
           ),
@@ -90,10 +86,7 @@ class _SemiDonutPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final total = sections.fold<double>(
-      0,
-      (p, e) => p + e.value,
-    );
+    final total = sections.fold<double>(0, (p, e) => p + e.value);
 
     if (total == 0) return;
 
@@ -101,35 +94,22 @@ class _SemiDonutPainter extends CustomPainter {
 
     final strokeWidth = size.height * .16;
 
-    final radius = min(
-          size.width / 2,
-          size.height,
-        ) -
-        strokeWidth;
+    final radius = min(size.width / 2, size.height) - strokeWidth;
 
-    final center = Offset(
-      size.width / 2,
-      size.height,
-    );
+    final center = Offset(size.width / 2, size.height);
 
-    final rect = Rect.fromCircle(
-      center: center,
-      radius: radius,
-    );
+    final rect = Rect.fromCircle(center: center, radius: radius);
 
     final gap = gapDegree * pi / 180;
 
-    final availableAngle =
-        pi - (sections.length - 1) * gap;
+    final availableAngle = pi - (sections.length - 1) * gap;
 
     double startAngle = pi;
 
     for (final section in sections) {
-      final sweep =
-          (section.value / total) * availableAngle;
+      final sweep = (section.value / total) * availableAngle;
 
-      final animatedSweep =
-          sweep * progress;
+      final animatedSweep = sweep * progress;
 
       final paint = Paint()
         ..color = section.color
@@ -137,27 +117,15 @@ class _SemiDonutPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round;
 
-      canvas.drawArc(
-        rect,
-        startAngle,
-        animatedSweep,
-        false,
-        paint,
-      );
+      canvas.drawArc(rect, startAngle, animatedSweep, false, paint);
 
       startAngle += sweep + gap;
     }
 
-    _drawCenterText(
-      canvas,
-      size,
-    );
+    _drawCenterText(canvas, size);
   }
 
-  void _drawCenterText(
-    Canvas canvas,
-    Size size,
-  ) {
+  void _drawCenterText(Canvas canvas, Size size) {
     final textPainter = TextPainter(
       text: TextSpan(
         text: centerText,
@@ -172,14 +140,10 @@ class _SemiDonutPainter extends CustomPainter {
 
     final textOffset = Offset(
       (size.width - textPainter.width) / 2,
-      size.height * .55 -
-          textPainter.height / 2,
+      size.height * .55 - textPainter.height / 2,
     );
 
-    textPainter.paint(
-      canvas,
-      textOffset,
-    );
+    textPainter.paint(canvas, textOffset);
 
     if (centerSubtitle != null) {
       final subtitlePainter = TextPainter(
@@ -196,22 +160,15 @@ class _SemiDonutPainter extends CustomPainter {
       subtitlePainter.paint(
         canvas,
         Offset(
-          (size.width -
-                  subtitlePainter.width) /
-              2,
-          textOffset.dy +
-              textPainter.height +
-              6,
+          (size.width - subtitlePainter.width) / 2,
+          textOffset.dy + textPainter.height + 6,
         ),
       );
     }
   }
 
   @override
-  bool shouldRepaint(
-    covariant _SemiDonutPainter oldDelegate,
-  ) {
-    return oldDelegate.progress != progress ||
-        oldDelegate.sections != sections;
+  bool shouldRepaint(covariant _SemiDonutPainter oldDelegate) {
+    return oldDelegate.progress != progress || oldDelegate.sections != sections;
   }
 }

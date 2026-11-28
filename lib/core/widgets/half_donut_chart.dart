@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -45,7 +46,7 @@ class HalfDonutChart extends StatefulWidget {
     required this.segments,
     this.centerSubLabel,
     this.size = 260,
-    this.strokeWidth = 46,
+    this.strokeWidth = AppSizes.dp46,
     this.gapDegrees = 5,
     this.minSegmentFraction = 0.02,
     this.animationDuration = const Duration(milliseconds: 600),
@@ -185,9 +186,9 @@ class _HalfDonutChartState extends State<HalfDonutChart>
             // Below the chart rather than inside it. Centred, the total was
             // bounded by the space between the two sides of the arc and ran
             // into it as soon as the amount grew; here it has the full width.
-            const SizedBox(height: 16),
+            const SizedBox(height: AppDimens.spacingMedium),
             _buildTotalText(context, displayTotal),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSizes.dp20),
             // ── Legend ──
             _buildLegend(context, animatedValues, animatedTotal),
           ],
@@ -215,21 +216,21 @@ class _HalfDonutChartState extends State<HalfDonutChart>
                 widget.centerLabelStyle ??
                 TextStyle(
                   color: Theme.of(context).textTheme.bodyLarge?.color,
-                  fontSize: 36,
+                  fontSize: AppSizes.dp36,
                   fontWeight: FontWeight.w700,
-                  height: 1,
+                  height: AppSizes.dp1,
                 ),
           ),
         ),
         if (widget.centerSubLabel != null) ...[
-          const SizedBox(height: 4),
+          const SizedBox(height: AppDimens.spacingExtraSmall),
           Text(
             widget.centerSubLabel!,
             style:
                 widget.centerSubLabelStyle ??
                 TextStyle(
                   color: Theme.of(context).textTheme.bodySmall?.color,
-                  fontSize: 13,
+                  fontSize: AppSizes.dp13,
                   fontWeight: FontWeight.w400,
                 ),
           ),
@@ -258,19 +259,19 @@ class _HalfDonutChartState extends State<HalfDonutChart>
 
         return Padding(
           padding: EdgeInsets.only(
-            bottom: i < widget.segments.length - 1 ? 14 : 0,
+            bottom: i < widget.segments.length - 1 ? AppSizes.dp14 : 0,
           ),
           child: Row(
             children: [
               Container(
-                width: 10,
-                height: 10,
+                width: AppSizes.dp10,
+                height: AppSizes.dp10,
                 decoration: BoxDecoration(
                   color: segment.color,
                   shape: BoxShape.circle,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppDimens.spacingSmall),
               Expanded(
                 child: Text(
                   segment.label,
@@ -278,7 +279,7 @@ class _HalfDonutChartState extends State<HalfDonutChart>
                       widget.legendLabelStyle ??
                       TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color,
-                        fontSize: 13,
+                        fontSize: AppSizes.dp13,
                       ),
                 ),
               ),
@@ -288,7 +289,7 @@ class _HalfDonutChartState extends State<HalfDonutChart>
                     widget.legendValueStyle ??
                     TextStyle(
                       color: Theme.of(context).textTheme.bodyMedium?.color,
-                      fontSize: 13,
+                      fontSize: AppSizes.dp13,
                       fontWeight: FontWeight.w600,
                     ),
               ),

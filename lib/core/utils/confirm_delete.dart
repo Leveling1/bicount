@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
@@ -22,19 +23,25 @@ Future<void> confirmDelete(
         Row(
           children: [
             Expanded(
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(dialogContext).pop(false),
-                child: Text(cancel ?? context.l10n.commonReject),
+              child: BicountPressable.button(
+                builder: (statesController) => ElevatedButton(
+                  statesController: statesController,
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(cancel ?? context.l10n.commonReject),
+                ),
               ),
             ),
             AppDimens.spacerWidthMedium,
             Expanded(
-              child: OutlinedButton(
-                onPressed: () {
-                  Navigator.of(dialogContext).pop(true);
-                  onConfirm();
-                },
-                child: Text(cta ?? context.l10n.transactionDeleteConfirmCta),
+              child: BicountPressable.button(
+                builder: (statesController) => OutlinedButton(
+                  statesController: statesController,
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop(true);
+                    onConfirm();
+                  },
+                  child: Text(cta ?? context.l10n.transactionDeleteConfirmCta),
+                ),
               ),
             ),
           ],

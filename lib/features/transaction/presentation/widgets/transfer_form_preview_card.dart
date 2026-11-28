@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/widgets/details_card.dart';
@@ -36,10 +37,10 @@ class TransferFormPreviewCard extends StatelessWidget {
                     context,
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSizes.dp10),
                 ...preview.resolvedSplits.map((split) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.only(bottom: AppSizes.dp10),
                     child: Row(
                       children: [
                         Expanded(
@@ -51,7 +52,9 @@ class TransferFormPreviewCard extends StatelessWidget {
                         if (split.percentage != null &&
                             splitMode != TransactionSplitMode.customAmount)
                           Padding(
-                            padding: const EdgeInsets.only(right: 10),
+                            padding: const EdgeInsets.only(
+                              right: AppSizes.dp10,
+                            ),
                             child: Text(
                               '${split.percentage!.toStringAsFixed(2)}%',
                               style: Theme.of(context).textTheme.bodySmall,

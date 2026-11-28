@@ -116,7 +116,7 @@ class _AnalysisDateRangeSheetState extends State<AnalysisDateRangeSheet> {
         Flexible(
           child: _showCalendar
               ? ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 520),
+                  constraints: const BoxConstraints(maxHeight: AppSizes.dp520),
                   child: AnalysisRangeCalendar(
                     firstDate: _firstDate,
                     lastDate: _lastDate,

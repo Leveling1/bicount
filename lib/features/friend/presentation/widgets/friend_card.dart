@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/constants/friend_const.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/other_theme.dart';
@@ -28,13 +29,11 @@ class FriendCard extends StatelessWidget {
       decoration: const BoxDecoration(color: Colors.transparent),
       child: Material(
         color: Colors.transparent,
-        child: InkWell(
+        child: BicountPressable(
           hoverColor: Theme.of(context).colorScheme.surfaceContainer,
           customBorder: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
           ),
-          splashColor: Colors.transparent,
-          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: onTap,
           child: Padding(
             padding: AppDimens.paddingSmallCard,
@@ -44,12 +43,12 @@ class FriendCard extends StatelessWidget {
                   image: friend.relationType == FriendConst.subscription
                       ? null
                       : friend.image,
-                  radius: 20,
+                  radius: AppSizes.dp20,
                   fallbackIcon: friend.relationType == FriendConst.subscription
                       ? Icons.subscriptions
                       : Icons.person_outline,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSizes.dp12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +61,7 @@ class FriendCard extends StatelessWidget {
                         FormatedText().capitalizeFirstLetter(friend.username),
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppDimens.spacingExtraSmall),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -76,7 +75,7 @@ class FriendCard extends StatelessWidget {
                                         color: Theme.of(
                                           context,
                                         ).textTheme.bodySmall!.color,
-                                        fontSize: 13,
+                                        fontSize: AppSizes.dp13,
                                       ),
                                     ),
                                     Text(
@@ -89,7 +88,7 @@ class FriendCard extends StatelessWidget {
                                             : Theme.of(context)
                                                   .extension<OtherTheme>()!
                                                   .expense!,
-                                        fontSize: 13,
+                                        fontSize: AppSizes.dp13,
                                       ),
                                     ),
                                   ],
@@ -104,7 +103,7 @@ class FriendCard extends StatelessWidget {
                                   color: Theme.of(
                                     context,
                                   ).textTheme.bodySmall!.color,
-                                  fontSize: 13,
+                                  fontSize: AppSizes.dp13,
                                 ),
                               ),
                               Text(
@@ -117,7 +116,7 @@ class FriendCard extends StatelessWidget {
                                       : Theme.of(
                                           context,
                                         ).extension<OtherTheme>()!.income!,
-                                  fontSize: 13,
+                                  fontSize: AppSizes.dp13,
                                 ),
                               ),
                             ],

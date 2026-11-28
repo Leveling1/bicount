@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/routes/friend_invite_route.dart';
@@ -41,7 +42,9 @@ class AuthEmailCodeScreen extends StatelessWidget {
                     ),
                     child: Center(
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 420),
+                        constraints: const BoxConstraints(
+                          maxWidth: AppSizes.dp420,
+                        ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -93,21 +96,24 @@ class AuthEmailCodeScreen extends StatelessWidget {
                             AppDimens.spacerMedium,
                             BicountReveal(
                               delay: const Duration(milliseconds: 120),
-                              child: TextButton(
-                                onPressed: () {
-                                  final target = Uri(
-                                    path: '/auth',
-                                    queryParameters: {
-                                      'email': email,
-                                      if (inviteCode != null &&
-                                          inviteCode!.trim().isNotEmpty)
-                                        'inviteCode': inviteCode,
-                                    },
-                                  ).toString();
-                                  context.go(target);
-                                },
-                                child: Text(
-                                  context.l10n.authChangeEmailAddress,
+                              child: BicountPressable.button(
+                                builder: (statesController) => TextButton(
+                                  statesController: statesController,
+                                  onPressed: () {
+                                    final target = Uri(
+                                      path: '/auth',
+                                      queryParameters: {
+                                        'email': email,
+                                        if (inviteCode != null &&
+                                            inviteCode!.trim().isNotEmpty)
+                                          'inviteCode': inviteCode,
+                                      },
+                                    ).toString();
+                                    context.go(target);
+                                  },
+                                  child: Text(
+                                    context.l10n.authChangeEmailAddress,
+                                  ),
                                 ),
                               ),
                             ),

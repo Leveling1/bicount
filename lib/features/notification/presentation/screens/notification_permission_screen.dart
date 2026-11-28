@@ -137,7 +137,9 @@ class _NotificationPermissionScreenState
                         AppDimens.spacerMediumSmall,
                         ...widget.otherReasons.map(
                           (reason) => Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.only(
+                              bottom: AppDimens.paddingSmallMedium,
+                            ),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

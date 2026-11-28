@@ -17,9 +17,17 @@ class AnalysisRecurringAgenda {
   Map<DateTime, List<AnalysisRecurringEntry>> forMonth(
     DateTime month,
     Iterable<RecurringTransfertModel> plans,
+  ) => forRange(
+    DateTime(month.year, month.month),
+    DateTime(month.year, month.month + 1, 0),
+    plans,
+  );
+
+  Map<DateTime, List<AnalysisRecurringEntry>> forRange(
+    DateTime first,
+    DateTime last,
+    Iterable<RecurringTransfertModel> plans,
   ) {
-    final first = DateTime(month.year, month.month);
-    final last = DateTime(month.year, month.month + 1, 0);
     final days = <DateTime, List<AnalysisRecurringEntry>>{};
 
     for (final plan in plans) {

@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/widgets/user_card.dart';
 
@@ -14,8 +15,8 @@ class MembersSkeleton extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, // Nombre de colonnes
-        crossAxisSpacing: 10.0,
-        mainAxisSpacing: 10.0,
+        crossAxisSpacing: AppSizes.dp10,
+        mainAxisSpacing: AppSizes.dp10,
         childAspectRatio: 3 / 3,
       ),
       itemBuilder: (context, index) {

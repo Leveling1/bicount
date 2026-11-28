@@ -17,31 +17,52 @@ class RecurringPlanDetailSkeleton extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: const [
-                BicountSkeletonCircle(size: 32),
+                BicountSkeletonCircle(size: AppSizes.dp32),
                 SizedBox(width: AppDimens.spacingSmall),
-                BicountSkeletonCircle(size: 32),
+                BicountSkeletonCircle(size: AppSizes.dp32),
               ],
             ),
           ),
           const SizedBox(height: AppDimens.spacingSmall),
-          const BicountSkeletonBox(height: 30, width: 220),
+          const BicountSkeletonBox(
+            height: AppSizes.dp30,
+            width: AppSizes.dp220,
+          ),
           const SizedBox(height: AppDimens.spacingSmall),
-          const BicountSkeletonBox(height: 26, width: 90, radius: 999),
+          const BicountSkeletonBox(
+            height: AppSizes.dp26,
+            width: AppSizes.dp90,
+            radius: AppSizes.dp999,
+          ),
           const SizedBox(height: AppDimens.spacingMedium),
           _SkeletonCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                BicountSkeletonBox(height: 24, width: 130),
+                BicountSkeletonBox(
+                  height: AppSizes.dp24,
+                  width: AppSizes.dp130,
+                ),
                 SizedBox(height: AppDimens.spacingSmall),
-                BicountSkeletonBox(height: 14, width: 120),
+                BicountSkeletonBox(
+                  height: AppSizes.dp14,
+                  width: AppSizes.dp120,
+                ),
                 SizedBox(height: AppDimens.spacingSmall),
                 Wrap(
                   spacing: AppDimens.spacingSmall,
                   runSpacing: AppDimens.spacingSmall,
                   children: [
-                    BicountSkeletonBox(height: 34, width: 140, radius: 999),
-                    BicountSkeletonBox(height: 34, width: 150, radius: 999),
+                    BicountSkeletonBox(
+                      height: AppSizes.dp34,
+                      width: AppSizes.dp140,
+                      radius: AppSizes.dp999,
+                    ),
+                    BicountSkeletonBox(
+                      height: AppSizes.dp34,
+                      width: AppSizes.dp150,
+                      radius: AppSizes.dp999,
+                    ),
                   ],
                 ),
               ],
@@ -52,17 +73,26 @@ class RecurringPlanDetailSkeleton extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                BicountSkeletonBox(height: 14, width: 190),
+                BicountSkeletonBox(
+                  height: AppSizes.dp14,
+                  width: AppSizes.dp190,
+                ),
                 SizedBox(height: AppDimens.spacingSmall),
-                BicountSkeletonBox(height: 14, width: 210),
+                BicountSkeletonBox(
+                  height: AppSizes.dp14,
+                  width: AppSizes.dp210,
+                ),
                 SizedBox(height: AppDimens.spacingSmall),
-                BicountSkeletonBox(height: 14, width: 150),
+                BicountSkeletonBox(
+                  height: AppSizes.dp14,
+                  width: AppSizes.dp150,
+                ),
               ],
             ),
           ),
           const SizedBox(height: AppDimens.spacingMedium),
           const BicountSkeletonBox(
-            height: 48,
+            height: AppSizes.dp48,
             radius: AppDimens.borderRadiusUltraLarge,
           ),
           AppDimens.spacerMedium,

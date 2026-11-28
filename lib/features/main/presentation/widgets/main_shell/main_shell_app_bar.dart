@@ -44,7 +44,9 @@ class MainShellAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
-      leadingWidth: connectionState == Constants.disconnected ? 110.0 : null,
+      leadingWidth: connectionState == Constants.disconnected
+          ? AppSizes.dp110
+          : null,
       leading: connectionState == Constants.disconnected
           ? const _OfflineBadge()
           : null,

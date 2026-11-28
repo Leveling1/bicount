@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class AppAvatar extends StatelessWidget {
   const AppAvatar({
     super.key,
     required this.image,
-    this.radius = 20,
+    this.radius = AppSizes.dp20,
     this.fallbackIcon = Icons.person_rounded,
   });
 

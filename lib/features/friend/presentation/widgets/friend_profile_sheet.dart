@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/notification_helper.dart';
@@ -70,13 +71,15 @@ class _FriendProfileSheetState extends State<FriendProfileSheet> {
             style: Theme.of(context).textTheme.titleSmall,
           ),
           AppDimens.spacerSmall,
-          TextFormField(
-            controller: _nameController,
-            validator: (value) => (value == null || value.trim().length < 2)
-                ? context.l10n.validationTooShort
-                : null,
-            decoration: InputDecoration(
-              hintText: context.l10n.settingsProfileNameHint,
+          BicountPressable.control(
+            child: TextFormField(
+              controller: _nameController,
+              validator: (value) => (value == null || value.trim().length < 2)
+                  ? context.l10n.validationTooShort
+                  : null,
+              decoration: InputDecoration(
+                hintText: context.l10n.settingsProfileNameHint,
+              ),
             ),
           ),
           AppDimens.spacerMedium,

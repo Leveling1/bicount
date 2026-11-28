@@ -1,3 +1,4 @@
+import 'package:bicount/core/widgets/dropdown_press_surface.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/dropdown_chevron_theme.dart';
 import 'package:flutter/material.dart';
@@ -38,19 +39,22 @@ class _CustomDropdownMenuState extends State<CustomDropdownMenu> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(widget.title, style: Theme.of(context).textTheme.titleMedium),
-        DropdownMenuFormField<int>(
-          width: double.infinity,
-          hintText: widget.hintText,
-          trailingIcon: chevron.icon(),
-          selectedTrailingIcon: chevron.icon(expanded: true),
-          dropdownMenuEntries: widget.menuEntries,
-          initialSelection: _selectedValue,
-          onSelected: (int? newValue) {
-            setState(() => _selectedValue = newValue);
-            widget.onChanged?.call(newValue);
-          },
-          validator: (value) =>
-              value == null ? context.l10n.validationFieldRequired : null,
+        DropdownFieldPress(
+          builder: (context, decorationBuilder) => DropdownMenuFormField<int>(
+            decorationBuilder: decorationBuilder,
+            width: double.infinity,
+            hintText: widget.hintText,
+            trailingIcon: chevron.icon(),
+            selectedTrailingIcon: chevron.icon(expanded: true),
+            dropdownMenuEntries: widget.menuEntries,
+            initialSelection: _selectedValue,
+            onSelected: (int? newValue) {
+              setState(() => _selectedValue = newValue);
+              widget.onChanged?.call(newValue);
+            },
+            validator: (value) =>
+                value == null ? context.l10n.validationFieldRequired : null,
+          ),
         ),
       ],
     );

@@ -32,112 +32,98 @@ class AnalysisRecurringSummaryCard extends StatelessWidget {
         ? Column(
             children: [
               const SizedBox(height: AppDimens.marginMedium),
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: onTap,
-                  customBorder: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(
-                      AppDimens.borderRadiusLarge,
-                    ),
-                  ),
-                  child: DetailsCard(
-                    isMargin: false,
-                    child: Column(
+              DetailsCard(
+                onTap: onTap,
+                isMargin: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    title,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium,
-                                  ),
-                                  const SizedBox(
-                                    height: AppDimens.spacingExtraSmall,
-                                  ),
-                                  Text(
-                                    description,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: AppDimens.spacingSmall),
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              color: color,
-                              size: 18,
-                            ),
-                          ],
-                        ),
-                        AppDimens.spacerMedium,
-                        IntrinsicHeight(
-                          child: Row(
+                        Expanded(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (summary.nextExpectedDate != null) ...[
-                                Expanded(
-                                  child: _MetricChip(
-                                    label: upcomingLabel,
-                                    value: formatDateWithoutYear(
-                                      summary.nextExpectedDate!,
-                                    ),
-                                    color: color,
-                                  ),
-                                ),
-                                const SizedBox(width: AppDimens.spacingMedium),
-                              ],
-                              Expanded(
-                                child: _MetricChip(
-                                  label: context.l10n.analysisMonthlyLoad,
-                                  value: NumberFormatUtils.compactCurrency(
-                                    summary.monthlyReferenceAmount,
-                                    currencyCode: currencyCode,
-                                    compactThreshold: 10000000,
-                                  ),
-                                  color: color,
-                                ),
+                              Text(
+                                title,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(
+                                height: AppDimens.spacingExtraSmall,
+                              ),
+                              Text(
+                                description,
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
                           ),
                         ),
-                        AppDimens.spacerMedium,
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              '${context.l10n.analysisActive} :',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                            AppDimens.spacerWidthSmall,
-                            Text(
-                              '${summary.activeCount}',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: Theme.of(
-                                      context,
-                                    ).textTheme.titleLarge?.color,
-                                  ),
-                            ),
-                          ],
+                        const SizedBox(width: AppDimens.spacingSmall),
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: color,
+                          size: AppSizes.dp18,
                         ),
                       ],
                     ),
-                  ),
+                    AppDimens.spacerMedium,
+                    IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (summary.nextExpectedDate != null) ...[
+                            Expanded(
+                              child: _MetricChip(
+                                label: upcomingLabel,
+                                value: formatDateWithoutYear(
+                                  summary.nextExpectedDate!,
+                                ),
+                                color: color,
+                              ),
+                            ),
+                            const SizedBox(width: AppDimens.spacingMedium),
+                          ],
+                          Expanded(
+                            child: _MetricChip(
+                              label: context.l10n.analysisMonthlyLoad,
+                              value: NumberFormatUtils.compactCurrency(
+                                summary.monthlyReferenceAmount,
+                                currencyCode: currencyCode,
+                                compactThreshold: 10000000,
+                              ),
+                              color: color,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    AppDimens.spacerMedium,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${context.l10n.analysisActive} :',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        AppDimens.spacerWidthSmall,
+                        Text(
+                          '${summary.activeCount}',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.titleLarge?.color,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],

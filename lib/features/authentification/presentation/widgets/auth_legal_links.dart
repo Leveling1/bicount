@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/constants/app_config.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/open_url.dart';
@@ -17,7 +19,7 @@ class AuthLegalLinks extends StatelessWidget {
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 4,
+      spacing: AppDimens.spacingExtraSmall,
       runSpacing: 0,
       children: [
         Text(context.l10n.authLegalByContinuing, style: style),
@@ -56,15 +58,18 @@ class _InlineLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () => open(url),
-      style: TextButton.styleFrom(
-        minimumSize: Size.zero,
-        padding: const EdgeInsets.symmetric(horizontal: 2),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        visualDensity: VisualDensity.compact,
+    return BicountPressable.button(
+      builder: (statesController) => TextButton(
+        statesController: statesController,
+        onPressed: () => open(url),
+        style: TextButton.styleFrom(
+          minimumSize: Size.zero,
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.dp2),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          visualDensity: VisualDensity.compact,
+        ),
+        child: Text(label, style: style),
       ),
-      child: Text(label, style: style),
     );
   }
 }

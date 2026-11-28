@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -38,10 +39,7 @@ class _SettingsOptionSheetState<T> extends State<SettingsOptionSheet<T>> {
         Text(widget.description, style: Theme.of(context).textTheme.bodySmall),
         AppDimens.spacerMedium,
         ...widget.options.map(
-          (option) => ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(widget.labelBuilder(option)),
-            trailing: _buildTrailing(option),
+          (option) => BicountPressable(
             onTap: _loadingValue != null
                 ? null
                 : () async {
@@ -50,7 +48,7 @@ class _SettingsOptionSheetState<T> extends State<SettingsOptionSheet<T>> {
                     });
                     try {
                       await widget.onSelected(option);
-                      if (mounted) {
+                      if (context.mounted) {
                         Navigator.of(context).pop();
                       }
                     } finally {
@@ -61,6 +59,12 @@ class _SettingsOptionSheetState<T> extends State<SettingsOptionSheet<T>> {
                       }
                     }
                   },
+            customBorder: Theme.of(context).listTileTheme.shape,
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(widget.labelBuilder(option)),
+              trailing: _buildTrailing(option),
+            ),
           ),
         ),
         AppDimens.spacerMedium,
@@ -72,11 +76,11 @@ class _SettingsOptionSheetState<T> extends State<SettingsOptionSheet<T>> {
     // Si cette option est en cours de chargement
     if (option == _loadingValue) {
       return SizedBox(
-        width: 24,
-        height: 24,
+        width: AppSizes.dp24,
+        height: AppSizes.dp24,
         child: LoadingAnimationWidget.hexagonDots(
           color: Theme.of(context).primaryColor,
-          size: 20,
+          size: AppSizes.dp20,
         ),
       );
     }

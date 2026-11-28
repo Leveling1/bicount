@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -31,7 +33,8 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
 
   bool _isLocalSuccess = false;
   bool _showCheckMark = false;
-  bool _ignoreErrorVisually = false; // 🎯 Permet d'annuler visuellement l'erreur en local
+  bool _ignoreErrorVisually =
+      false; // 🎯 Permet d'annuler visuellement l'erreur en local
   List<String> _displayDigits = [];
 
   late AnimationController _checkmarkAnimationController;
@@ -69,7 +72,7 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
   @override
   void didUpdateWidget(covariant OtpField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     if (widget.loading && !_loadingRotationController.isAnimating) {
       _loadingRotationController.repeat();
     } else if (!widget.loading && _loadingRotationController.isAnimating) {
@@ -117,10 +120,10 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
     setState(() {
       _isLocalSuccess = true;
     });
-    _focusNode.unfocus(); 
+    _focusNode.unfocus();
 
     await Future.delayed(const Duration(milliseconds: 550));
-    
+
     if (!mounted) return;
     setState(() {
       _showCheckMark = true;
@@ -131,10 +134,8 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final Color borderColorNormal = Theme.of(context)
-            .elevatedButtonTheme
-            .style
-            ?.backgroundColor
+    final Color borderColorNormal =
+        Theme.of(context).elevatedButtonTheme.style?.backgroundColor
             ?.resolve({})
             ?.withValues(alpha: 0.7) ??
         Colors.grey;
@@ -146,152 +147,173 @@ class _OtpFieldState extends State<OtpField> with TickerProviderStateMixin {
     final showAnError = widget.isError && !_ignoreErrorVisually;
 
     return Center(
-      child: GestureDetector(
-        onTap: () {
-          if (!_isLocalSuccess && !widget.loading) _focusNode.requestFocus();
-        },
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Opacity(
-              opacity: 0.0,
-              child: SizedBox(
-                width: totalWidth,
-                height: 50,
-                child: TextField(
-                  controller: widget.controller,
-                  focusNode: _focusNode,
-                  keyboardType: TextInputType.number,
-                  maxLength: _length,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(counterText: ""),
-                  enabled: !widget.loading && !_isLocalSuccess,
+      child: BicountPressable.control(
+        enabled: !_isLocalSuccess && !widget.loading,
+        child: GestureDetector(
+          onTap: () {
+            if (!_isLocalSuccess && !widget.loading) _focusNode.requestFocus();
+          },
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Opacity(
+                opacity: 0.0,
+                child: SizedBox(
+                  width: totalWidth,
+                  height: AppSizes.dp50,
+                  child: TextField(
+                    controller: widget.controller,
+                    focusNode: _focusNode,
+                    keyboardType: TextInputType.number,
+                    maxLength: _length,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: const InputDecoration(counterText: ""),
+                    enabled: !widget.loading && !_isLocalSuccess,
+                  ),
                 ),
               ),
-            ),
 
-            SizedBox(
-              height: 50,
-              width: totalWidth,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  ...List.generate(_length, (index) {
-                    double xAlignment = _isLocalSuccess
-                        ? 0.0
-                        : -1.0 + (index * (2.0 / (_length - 1)));
+              SizedBox(
+                height: AppSizes.dp50,
+                width: totalWidth,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ...List.generate(_length, (index) {
+                      double xAlignment = _isLocalSuccess
+                          ? 0.0
+                          : -1.0 + (index * (2.0 / (_length - 1)));
 
-                    final currentLength = widget.controller.text.length;
-                    
-                    bool isCurrentBoxFocused = _focusNode.hasFocus && 
-                        (currentLength == index || (currentLength == _length && index == _length - 1));
+                      final currentLength = widget.controller.text.length;
 
-                    return AnimatedAlign(
-                      duration: const Duration(milliseconds: 600),
-                      curve: Curves.easeInOutCubic,
-                      alignment: Alignment(xAlignment, 0.0),
-                      child: Stack(
-                        children: [
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            width: 50,
-                            height: 50,
-                            decoration: ShapeDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              shape: RoundedSuperellipseBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: BorderSide(
-                                  color: _isLocalSuccess
-                                      ? Colors.green
-                                      : (showAnError
-                                            ? errorColor
-                                            : (isCurrentBoxFocused
-                                                  ? borderColorNormal
-                                                  : borderColorNormal
-                                                        .withValues(
-                                                          alpha: 0.4,
-                                                        ))),
-                                  width: isCurrentBoxFocused ? 1.8 : 1.2,
+                      bool isCurrentBoxFocused =
+                          _focusNode.hasFocus &&
+                          (currentLength == index ||
+                              (currentLength == _length &&
+                                  index == _length - 1));
+
+                      return AnimatedAlign(
+                        duration: const Duration(milliseconds: 600),
+                        curve: Curves.easeInOutCubic,
+                        alignment: Alignment(xAlignment, 0.0),
+                        child: Stack(
+                          children: [
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              width: AppSizes.dp50,
+                              height: AppSizes.dp50,
+                              decoration: ShapeDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).scaffoldBackgroundColor,
+                                shape: RoundedSuperellipseBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    AppDimens.borderRadiusMedium,
+                                  ),
+                                  side: BorderSide(
+                                    color: _isLocalSuccess
+                                        ? Colors.green
+                                        : (showAnError
+                                              ? errorColor
+                                              : (isCurrentBoxFocused
+                                                    ? borderColorNormal
+                                                    : borderColorNormal
+                                                          .withValues(
+                                                            alpha: 0.4,
+                                                          ))),
+                                    width: isCurrentBoxFocused
+                                        ? AppSizes.dp1Point8
+                                        : AppSizes.dp1Point2,
+                                  ),
                                 ),
                               ),
-                            ),
-                            child: Center(
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  AnimatedScale(
-                                    duration: const Duration(milliseconds: 250),
-                                    scale: _isLocalSuccess ? 0.0 : 1.0,
-                                    child: AnimatedOpacity(
-                                      duration: const Duration(milliseconds: 150),
-                                      opacity: _isLocalSuccess 
-                                          ? 0.0 
-                                          : (widget.loading ? 0.4 : 1.0),
-                                      child: Text(
-                                        _displayDigits[index],
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: showAnError
-                                              ? errorColor
-                                              : Theme.of(context).textTheme.bodyLarge?.color,
+                              child: Center(
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    AnimatedScale(
+                                      duration: const Duration(
+                                        milliseconds: 250,
+                                      ),
+                                      scale: _isLocalSuccess ? 0.0 : 1.0,
+                                      child: AnimatedOpacity(
+                                        duration: const Duration(
+                                          milliseconds: 150,
+                                        ),
+                                        opacity: _isLocalSuccess
+                                            ? 0.0
+                                            : (widget.loading ? 0.4 : 1.0),
+                                        child: Text(
+                                          _displayDigits[index],
+                                          style: TextStyle(
+                                            fontSize: AppSizes.dp20,
+                                            fontWeight: FontWeight.bold,
+                                            color: showAnError
+                                                ? errorColor
+                                                : Theme.of(
+                                                    context,
+                                                  ).textTheme.bodyLarge?.color,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  // 🎯 Le curseur prend la couleur rouge (errorColor) s'il y a une erreur
-                                  if (isCurrentBoxFocused && !widget.loading)
-                                    _BlinkingCursor(
-                                      color: showAnError ? errorColor : borderColorNormal, 
-                                      isOnTheRight: currentLength == _length,
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          if (widget.loading && !_isLocalSuccess)
-                            IgnorePointer(
-                              child: AnimatedBuilder(
-                                animation: _loadingRotationController,
-                                builder: (context, child) {
-                                  return SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: CustomPaint(
-                                      painter: LoadingBorderPainter(
-                                        animationValue: _loadingRotationController.value,
-                                        color: borderColorNormal,
+                                    // 🎯 Le curseur prend la couleur rouge (errorColor) s'il y a une erreur
+                                    if (isCurrentBoxFocused && !widget.loading)
+                                      _BlinkingCursor(
+                                        color: showAnError
+                                            ? errorColor
+                                            : borderColorNormal,
+                                        isOnTheRight: currentLength == _length,
                                       ),
-                                    ),
-                                  );
-                                },
+                                  ],
+                                ),
                               ),
                             ),
-                        ],
-                      ),
-                    );
-                  }),
 
-                  if (_showCheckMark)
-                    AnimatedBuilder(
-                      animation: _checkmarkAnimationController,
-                      builder: (context, child) {
-                        return SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: CustomPaint(
-                            painter: AnimatedCheckmarkPainter(
-                              _checkmarkAnimationController.value,
+                            if (widget.loading && !_isLocalSuccess)
+                              IgnorePointer(
+                                child: AnimatedBuilder(
+                                  animation: _loadingRotationController,
+                                  builder: (context, child) {
+                                    return SizedBox(
+                                      width: AppSizes.dp50,
+                                      height: AppSizes.dp50,
+                                      child: CustomPaint(
+                                        painter: LoadingBorderPainter(
+                                          animationValue:
+                                              _loadingRotationController.value,
+                                          color: borderColorNormal,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    }),
+
+                    if (_showCheckMark)
+                      AnimatedBuilder(
+                        animation: _checkmarkAnimationController,
+                        builder: (context, child) {
+                          return SizedBox(
+                            width: AppSizes.dp50,
+                            height: AppSizes.dp50,
+                            child: CustomPaint(
+                              painter: AnimatedCheckmarkPainter(
+                                _checkmarkAnimationController.value,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                ],
+                          );
+                        },
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -308,7 +330,9 @@ class LoadingBorderPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
     final path = const RoundedSuperellipseBorder(
-      borderRadius: BorderRadius.all(Radius.circular(12)),
+      borderRadius: BorderRadius.all(
+        Radius.circular(AppDimens.borderRadiusMedium),
+      ),
     ).getOuterPath(rect);
 
     final paint = Paint()
@@ -318,9 +342,9 @@ class LoadingBorderPainter extends CustomPainter {
 
     paint.shader = SweepGradient(
       colors: [
-        color.withValues(alpha: 0.0), 
-        color,                       
-        color.withValues(alpha: 0.0), 
+        color.withValues(alpha: 0.0),
+        color,
+        color.withValues(alpha: 0.0),
       ],
       stops: const [0.0, 0.5, 1.0],
       transform: GradientRotation(animationValue * 2 * 3.141592653589793),
@@ -384,7 +408,8 @@ class _BlinkingCursor extends StatefulWidget {
   State<_BlinkingCursor> createState() => _BlinkingCursorState();
 }
 
-class _BlinkingCursorState extends State<_BlinkingCursor> with SingleTickerProviderStateMixin {
+class _BlinkingCursorState extends State<_BlinkingCursor>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
@@ -405,12 +430,14 @@ class _BlinkingCursorState extends State<_BlinkingCursor> with SingleTickerProvi
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: widget.isOnTheRight ? const Alignment(0.6, 0.0) : Alignment.center,
+      alignment: widget.isOnTheRight
+          ? const Alignment(0.6, 0.0)
+          : Alignment.center,
       child: FadeTransition(
         opacity: _animationController,
         child: Container(
-          width: 2.2,
-          height: 20,
+          width: AppSizes.dp2Point2,
+          height: AppSizes.dp20,
           color: widget.color,
         ),
       ),

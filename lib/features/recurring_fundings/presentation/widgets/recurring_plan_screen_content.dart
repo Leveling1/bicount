@@ -114,7 +114,7 @@ class RecurringPlanLoadingView extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppDimens.paddingMedium),
       children: [
-        const BicountSkeletonBox(height: 56),
+        const BicountSkeletonBox(height: AppSizes.dp56),
         const SizedBox(height: AppDimens.spacingMedium),
         Wrap(
           spacing: AppDimens.spacingMedium,
@@ -122,8 +122,8 @@ class RecurringPlanLoadingView extends StatelessWidget {
           children: List.generate(
             3,
             (_) => const SizedBox(
-              width: 150,
-              child: BicountSkeletonBox(height: 92),
+              width: AppSizes.dp150,
+              child: BicountSkeletonBox(height: AppSizes.dp92),
             ),
           ),
         ),
@@ -131,7 +131,7 @@ class RecurringPlanLoadingView extends StatelessWidget {
         ...List.generate(
           4,
           (_) => const BicountSkeletonBox(
-            height: 116,
+            height: AppSizes.dp116,
             margin: EdgeInsets.only(bottom: AppDimens.spacingMedium),
             radius: AppDimens.borderRadiusLarge,
           ),

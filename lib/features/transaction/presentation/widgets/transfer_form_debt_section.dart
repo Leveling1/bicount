@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
@@ -14,7 +15,7 @@ class TransferFormDebtSection extends StatelessWidget {
     required this.expectedAmountController,
     required this.expectedCurrencyController,
     required this.onDebtChanged,
-    required this.amount
+    required this.amount,
   });
 
   final bool isDebt;
@@ -31,18 +32,21 @@ class TransferFormDebtSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SwitchListTile.adaptive(
-          value: isDebt,
-          onChanged: enabled ? onDebtChanged : null,
-          title: Text(
-            context.l10n.transactionDebtToggleTitle,
-            style: Theme.of(context).textTheme.bodyMedium,
+        BicountPressable.control(
+          enabled: enabled,
+          child: SwitchListTile.adaptive(
+            value: isDebt,
+            onChanged: enabled ? onDebtChanged : null,
+            title: Text(
+              context.l10n.transactionDebtToggleTitle,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            subtitle: Text(
+              subtitle,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            contentPadding: EdgeInsets.zero,
           ),
-          subtitle: Text(
-            subtitle,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          contentPadding: EdgeInsets.zero,
         ),
         AnimatedSize(
           duration: const Duration(milliseconds: 250),

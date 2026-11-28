@@ -4,29 +4,56 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 final class AnalysisPeriod extends Equatable {
-  const AnalysisPeriod._(this.days) : dateRange = null;
+  const AnalysisPeriod._(this.days, {this.isCurrentMonth = false})
+    : dateRange = null;
   const AnalysisPeriod.custom(DateTimeRange range)
     : days = null,
+      isCurrentMonth = false,
       dateRange = range;
 
   static const week7 = AnalysisPeriod._(7);
   static const month30 = AnalysisPeriod._(30);
   static const quarter90 = AnalysisPeriod._(90);
+  static const currentMonth = AnalysisPeriod._(null, isCurrentMonth: true);
   static const all = AnalysisPeriod._(null);
-  static const presets = [week7, month30, quarter90];
+  static const presets = [week7, month30, quarter90, currentMonth];
 
   final int? days;
   final DateTimeRange? dateRange;
+  final bool isCurrentMonth;
+
+  DateTimeRange? resolveRange(DateTime now) {
+    final custom = dateRange;
+    if (custom != null) {
+      return DateTimeRange(
+        start: DateUtils.dateOnly(custom.start),
+        end: DateUtils.dateOnly(custom.end),
+      );
+    }
+    if (isCurrentMonth) {
+      return DateTimeRange(
+        start: DateTime(now.year, now.month),
+        end: DateTime(now.year, now.month + 1, 0),
+      );
+    }
+    final length = days;
+    if (length == null) return null;
+    return DateTimeRange(
+      start: DateTime(now.year, now.month, now.day - length + 1),
+      end: DateUtils.dateOnly(now),
+    );
+  }
 
   bool get usesMonthlyBuckets =>
       this == all || (dateRange?.duration.inDays ?? 0) >= 90;
 
   @override
-  List<Object?> get props => [days, dateRange];
+  List<Object?> get props => [days, dateRange, isCurrentMonth];
 }
 
 extension AnalysisPeriodX on AnalysisPeriod {
   String label(BuildContext context) {
+    if (isCurrentMonth) return context.l10n.analysisPeriodCurrentMonth;
     final range = dateRange;
     if (range != null) {
       final locale = Localizations.localeOf(context).toString();
@@ -47,7 +74,7 @@ extension AnalysisPeriodX on AnalysisPeriod {
   }
 
   String description(BuildContext context) {
-    if (dateRange != null) return label(context);
+    if (isCurrentMonth || dateRange != null) return label(context);
     return switch (days) {
       7 => context.l10n.analysisPeriod7DDescription,
       30 => context.l10n.analysisPeriod30DDescription,

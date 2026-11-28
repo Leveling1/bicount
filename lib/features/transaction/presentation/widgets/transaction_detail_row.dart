@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/utils/formated_text.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +47,7 @@ class TransactionDetailRow extends StatelessWidget {
                         textAlign: TextAlign.end,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppDimens.spacingSmall),
                     trailing!,
                   ],
                 ),

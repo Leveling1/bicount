@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/widgets/bicount_skeleton.dart';
 import 'package:bicount/core/constants/backend_environment.dart';
 import 'package:bicount/features/home/presentation/widgets/home_header_sliver_layout.dart';
 import 'package:bicount/features/home/presentation/widgets/home_loading_skeleton.dart';
@@ -38,6 +40,15 @@ void main() {
         actions.top - viewport.top - header.geometry!.scrollExtent,
         closeTo(16, .01),
       );
+      final rows = find.byKey(const ValueKey('home-loading-transactions'));
+      final avatar = find
+          .descendant(of: rows, matching: find.byType(BicountSkeletonCircle))
+          .first;
+      expect(
+        tester.getRect(avatar).left - viewport.left,
+        AppDimens.paddingMedium + AppDimens.paddingSmallCard.left,
+      );
+      expect(tester.getSize(avatar).width, AppDimens.transactionAvatarSize);
       if (BackendEnvironment.isLocalPreproduction) {
         final preview = tester.getRect(
           find.byKey(const ValueKey('home-wallet-skeleton')),

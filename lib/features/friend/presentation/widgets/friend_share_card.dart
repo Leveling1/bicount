@@ -19,7 +19,7 @@ class FriendShareCard extends StatelessWidget {
     required this.onScan,
   });
 
-  static const _qrSize = 180.0;
+  static const _qrSize = AppSizes.dp180;
 
   final String title;
   final String description;
@@ -48,7 +48,7 @@ class FriendShareCard extends StatelessWidget {
               context,
             ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSizes.dp6),
           Text(description, style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: AppDimens.marginLarge),
           if (share == null)
@@ -158,14 +158,16 @@ class FriendShareCard extends StatelessWidget {
           children: [
             if (isPreparing)
               const SizedBox(
-                width: 26,
-                height: 26,
-                child: CircularProgressIndicator(strokeWidth: 2.4),
+                width: AppSizes.dp26,
+                height: AppSizes.dp26,
+                child: CircularProgressIndicator(
+                  strokeWidth: AppSizes.dp2Point4,
+                ),
               )
             else
               Icon(
                 Icons.qr_code_2_outlined,
-                size: 28,
+                size: AppSizes.dp28,
                 color: Theme.of(context).textTheme.bodySmall?.color,
               ),
             const SizedBox(height: AppDimens.marginMedium),
@@ -200,8 +202,8 @@ class FriendShareCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.wifi_off_outlined, size: 18, color: color),
-          const SizedBox(width: 10),
+          Icon(Icons.wifi_off_outlined, size: AppSizes.dp18, color: color),
+          const SizedBox(width: AppSizes.dp10),
           Expanded(
             child: Text(
               context.l10n.friendShareOfflineNotice,

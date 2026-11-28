@@ -63,8 +63,18 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.getRect(firstChip).left, lessThan(0));
 
-    await tester.ensureVisible(find.text('Période'));
+    final scrollable = find.descendant(
+      of: row,
+      matching: find.byType(Scrollable),
+    );
+    final position = tester.state<ScrollableState>(scrollable).position;
+    position.jumpTo(position.maxScrollExtent);
     await tester.pumpAndSettle();
+    final endChip = find.widgetWithText(ChoiceChip, 'Période');
+    expect(
+      tester.getRect(row).right - tester.getRect(endChip).right,
+      AppDimens.paddingMedium,
+    );
     await tester.tap(find.text('Période'));
     await tester.pumpAndSettle();
     expect(find.byType(BottomSheet), findsOneWidget);
@@ -148,12 +158,10 @@ void main() {
       );
     }
     final dayBetween = day(DateTime(2026, 11, 12));
-    final dayFeedback = tester.widget<InkResponse>(
-      find.descendant(of: dayBetween, matching: find.byType(InkResponse)),
+    final dayFeedback = tester.widget<InkWell>(
+      find.descendant(of: dayBetween, matching: find.byType(InkWell)),
     );
-    expect(dayFeedback.highlightShape, BoxShape.circle);
     expect(dayFeedback.customBorder, const CircleBorder());
-    expect(dayFeedback.radius, 19);
     final dayBackground = find.descendant(
       of: dayBetween,
       matching: find.byWidgetPredicate(

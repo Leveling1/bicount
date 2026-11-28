@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/constants/dropdown_menu_entry.dart';
 import 'package:bicount/core/constants/account_funding_const.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
@@ -45,15 +46,17 @@ class AccountFundingSelectorsSection extends StatelessWidget {
     return Column(
       children: [
         if (allowRecurring)
-          CheckboxListTile(
-            value: isRecurring,
-            onChanged: (value) => onRecurringChanged(value ?? false),
-            title: Text(
-              context.l10n.accountFundingRepeatLabel,
-              style: Theme.of(context).textTheme.bodySmall,
+          BicountPressable.control(
+            child: CheckboxListTile(
+              value: isRecurring,
+              onChanged: (value) => onRecurringChanged(value ?? false),
+              title: Text(
+                context.l10n.accountFundingRepeatLabel,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              controlAffinity: ListTileControlAffinity.leading,
+              contentPadding: EdgeInsets.zero,
             ),
-            controlAffinity: ListTileControlAffinity.leading,
-            contentPadding: EdgeInsets.zero,
           ),
         if (isRecurring) ...[
           AppDimens.spacerSmall,
@@ -66,36 +69,40 @@ class AccountFundingSelectorsSection extends StatelessWidget {
           ),
           if (showSalaryControls) ...[
             AppDimens.spacerMedium,
-            SwitchListTile.adaptive(
-              value: requiresConfirmation,
-              onChanged: (value) => onSalaryProcessingModeChanged(
-                value
-                    ? SalaryProcessingMode.confirmationRequired
-                    : SalaryProcessingMode.automatic,
-              ),
-              title: Text(
-                context.l10n.salaryConfirmBeforeCountingTitle,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              subtitle: Text(
-                context.l10n.salaryConfirmBeforeCountingHelper,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              contentPadding: EdgeInsets.zero,
-            ),
-            if (requiresConfirmation)
-              SwitchListTile.adaptive(
-                value: salaryReminderEnabled,
-                onChanged: onSalaryReminderChanged,
+            BicountPressable.control(
+              child: SwitchListTile.adaptive(
+                value: requiresConfirmation,
+                onChanged: (value) => onSalaryProcessingModeChanged(
+                  value
+                      ? SalaryProcessingMode.confirmationRequired
+                      : SalaryProcessingMode.automatic,
+                ),
                 title: Text(
-                  context.l10n.salaryReminderToggleTitle,
+                  context.l10n.salaryConfirmBeforeCountingTitle,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 subtitle: Text(
-                  context.l10n.salaryReminderToggleHelper,
+                  context.l10n.salaryConfirmBeforeCountingHelper,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 contentPadding: EdgeInsets.zero,
+              ),
+            ),
+            if (requiresConfirmation)
+              BicountPressable.control(
+                child: SwitchListTile.adaptive(
+                  value: salaryReminderEnabled,
+                  onChanged: onSalaryReminderChanged,
+                  title: Text(
+                    context.l10n.salaryReminderToggleTitle,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  subtitle: Text(
+                    context.l10n.salaryReminderToggleHelper,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  contentPadding: EdgeInsets.zero,
+                ),
               ),
           ],
         ],

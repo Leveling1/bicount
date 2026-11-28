@@ -1,9 +1,14 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/constants/constants.dart';
 import 'package:bicount/core/widgets/app_avatar.dart';
 import 'package:flutter/material.dart';
 
 class SettingsAvatar extends StatelessWidget {
-  const SettingsAvatar({super.key, required this.image, this.radius = 26});
+  const SettingsAvatar({
+    super.key,
+    required this.image,
+    this.radius = AppSizes.dp26,
+  });
 
   final String image;
   final double radius;

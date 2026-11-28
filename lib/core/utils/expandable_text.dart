@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:flutter/material.dart';
 
 class ExpandableText extends StatefulWidget {
@@ -75,7 +77,7 @@ class _ExpandableTextState extends State<ExpandableText>
             child: textWidget,
           ),
           if (_showMoreButton)
-            GestureDetector(
+            BicountPressable(
               onTap: () {
                 setState(() {
                   _expanded = !_expanded;
@@ -92,7 +94,9 @@ class _ExpandableTextState extends State<ExpandableText>
                 });
               },
               child: Padding(
-                padding: const EdgeInsets.only(top: 4),
+                padding: const EdgeInsets.only(
+                  top: AppDimens.paddingExtraSmall,
+                ),
                 child: Text(
                   _expanded
                       ? "Show less"

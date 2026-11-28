@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/constants/icon_links.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/other_theme.dart';
@@ -59,7 +60,7 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         ),
-        
+
         SliverPadding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppDimens.paddingMedium,
@@ -100,18 +101,21 @@ class ProfileScreen extends StatelessWidget {
                     context.l10n.profileFriends,
                     style: theme.textTheme.titleMedium,
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const FriendsDirectoryScreen(),
-                        ),
-                      );
-                    },
-                    style: theme.textButtonTheme.style,
-                    child: Text(
-                      context.l10n.profileSeeAll,
-                      style: theme.textTheme.bodyMedium,
+                  BicountPressable.button(
+                    builder: (statesController) => TextButton(
+                      statesController: statesController,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const FriendsDirectoryScreen(),
+                          ),
+                        );
+                      },
+                      style: theme.textButtonTheme.style,
+                      child: Text(
+                        context.l10n.profileSeeAll,
+                        style: theme.textTheme.bodyMedium,
+                      ),
                     ),
                   ),
                 ],

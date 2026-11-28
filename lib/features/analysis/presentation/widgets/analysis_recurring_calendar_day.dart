@@ -40,15 +40,15 @@ class _AgendaDay extends StatelessWidget {
       selected: selected,
       onTap: onTap,
       excludeSemantics: true,
-      child: InkWell(
+      child: BicountPressable(
         customBorder: const CircleBorder(),
         onTap: onTap,
         child: SizedBox(
-          height: 44,
+          height: AppSizes.dp44,
           child: Center(
-            child: Container(
-              width: 36,
-              height: 36,
+            child: Ink(
+              width: AppSizes.dp36,
+              height: AppSizes.dp36,
               decoration: BoxDecoration(
                 color: selected ? primary.withValues(alpha: .16) : null,
                 border: selected ? Border.all(color: primary) : null,
@@ -68,7 +68,7 @@ class _AgendaDay extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 6,
+                    height: AppSizes.dp6,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       spacing: AppDimens.spacingExtraSmall,
@@ -98,7 +98,7 @@ class _AgendaMarker extends StatelessWidget {
       shape: BoxShape.circle,
       color: scope.agendaColor(context),
     ),
-    child: const SizedBox.square(dimension: 6),
+    child: const SizedBox.square(dimension: AppSizes.dp6),
   );
 }
 
@@ -114,7 +114,7 @@ class _AgendaEntry extends StatelessWidget {
     final theme = Theme.of(context);
     return Material(
       type: MaterialType.transparency,
-      child: InkWell(
+      child: BicountPressable(
         customBorder: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
         ),

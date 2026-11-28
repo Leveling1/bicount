@@ -13,7 +13,9 @@ class WalletEditorLayout extends StatelessWidget {
   final Widget preview;
   final Widget child;
 
-  static const horizontalInset = EdgeInsets.symmetric(horizontal: 25);
+  static const horizontalInset = EdgeInsets.symmetric(
+    horizontal: AppSizes.dp25,
+  );
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -40,13 +41,15 @@ class _CustomFormTextFieldState extends State<CustomFormTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: _controller,
-      textAlign: TextAlign.start,
-      keyboardType: widget.inputType,
-      textInputAction: TextInputAction.next,
-      validator: widget.validator,
-      decoration: InputDecoration(hintText: widget.hintText),
+    return BicountPressable.control(
+      child: TextFormField(
+        controller: _controller,
+        textAlign: TextAlign.start,
+        keyboardType: widget.inputType,
+        textInputAction: TextInputAction.next,
+        validator: widget.validator,
+        decoration: InputDecoration(hintText: widget.hintText),
+      ),
     );
   }
 

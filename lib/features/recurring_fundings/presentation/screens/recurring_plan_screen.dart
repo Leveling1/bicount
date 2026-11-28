@@ -1,3 +1,5 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
+import 'package:bicount/core/widgets/app_popup_menu_item.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/widgets/custom_app_bar.dart';
 import 'package:bicount/core/widgets/custom_tool_tip.dart';
@@ -93,27 +95,29 @@ class RecurringPlanScreen extends StatelessWidget {
     final paused = plans.where((plan) => plan.canResume).toList();
     return [
       if (active.isNotEmpty || paused.isNotEmpty)
-        PopupMenuButton<RecurringPlanPauseAction>(
-          tooltip: context.l10n.recurringPlansManagePauses,
-          icon: const Icon(Icons.checklist_rounded),
-          onSelected: (action) => showRecurringPlanPauseSheet(
-            context,
-            action: action,
-            plans: action == RecurringPlanPauseAction.pause ? active : paused,
-            bulk: true,
+        BicountPressable.control(
+          child: PopupMenuButton<RecurringPlanPauseAction>(
+            tooltip: context.l10n.recurringPlansManagePauses,
+            icon: const Icon(Icons.checklist_rounded),
+            onSelected: (action) => showRecurringPlanPauseSheet(
+              context,
+              action: action,
+              plans: action == RecurringPlanPauseAction.pause ? active : paused,
+              bulk: true,
+            ),
+            itemBuilder: (context) => [
+              if (active.isNotEmpty)
+                AppPopupMenuItem(
+                  value: RecurringPlanPauseAction.pause,
+                  child: Text(context.l10n.recurringPlansPauseCta),
+                ),
+              if (paused.isNotEmpty)
+                AppPopupMenuItem(
+                  value: RecurringPlanPauseAction.resume,
+                  child: Text(context.l10n.recurringPlansResumeCta),
+                ),
+            ],
           ),
-          itemBuilder: (context) => [
-            if (active.isNotEmpty)
-              PopupMenuItem(
-                value: RecurringPlanPauseAction.pause,
-                child: Text(context.l10n.recurringPlansPauseCta),
-              ),
-            if (paused.isNotEmpty)
-              PopupMenuItem(
-                value: RecurringPlanPauseAction.resume,
-                child: Text(context.l10n.recurringPlansResumeCta),
-              ),
-          ],
         ),
       CustomToolTip(
         text: scope == RecurringPlanScope.charge
@@ -133,9 +137,12 @@ class _RecurringPlanErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: FilledButton(
-        onPressed: onRetry,
-        child: Text(context.l10n.commonRetry),
+      child: BicountPressable.button(
+        builder: (statesController) => FilledButton(
+          statesController: statesController,
+          onPressed: onRetry,
+          child: Text(context.l10n.commonRetry),
+        ),
       ),
     );
   }

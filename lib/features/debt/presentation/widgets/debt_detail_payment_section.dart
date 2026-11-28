@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_amount_field.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
@@ -35,26 +36,28 @@ class DebtDetailPaymentSection extends StatelessWidget {
       children: [
         Text(amountFieldLabel, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: AppDimens.spacingSmall),
-        TextFormField(
-          controller: amountController,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9,\. ]')),
-          ],
-          validator: (value) {
-            final amount = double.tryParse(
-              (value ?? '').trim().replaceAll(' ', '').replaceAll(',', '.'),
-            );
-            if (amount == null || amount <= 0) {
-              return invalidAmountMessage;
-            }
-            return null;
-          },
-          decoration: InputDecoration(
-            hintText: hintText,
-            suffixIcon: CurrencyField(
-              controller: currencyController,
-              color: Theme.of(context).cardColor,
+        BicountPressable.control(
+          child: TextFormField(
+            controller: amountController,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9,\. ]')),
+            ],
+            validator: (value) {
+              final amount = double.tryParse(
+                (value ?? '').trim().replaceAll(' ', '').replaceAll(',', '.'),
+              );
+              if (amount == null || amount <= 0) {
+                return invalidAmountMessage;
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              hintText: hintText,
+              suffixIcon: CurrencyField(
+                controller: currencyController,
+                color: Theme.of(context).cardColor,
+              ),
             ),
           ),
         ),

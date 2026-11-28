@@ -18,39 +18,34 @@ class SettingsHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return DetailsCard(
       onTap: onTap,
-      child: DetailsCard(
-        isMargin: false,
-        child: Row(
-          children: [
-            SettingsAvatar(image: user.image, radius: 28),
-            AppDimens.spacerWidthMedium,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    user.username,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  //AppDimens.spacerMini,
-                  Text(
-                    user.email,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  /*AppDimens.spacerSmall,
+      isMargin: false,
+      child: Row(
+        children: [
+          SettingsAvatar(image: user.image, radius: AppSizes.dp28),
+          AppDimens.spacerWidthMedium,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  user.username,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                //AppDimens.spacerMini,
+                Text(user.email, style: Theme.of(context).textTheme.bodySmall),
+                /*AppDimens.spacerSmall,
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).primaryColor,
                     ),
                   ),*/
-                ],
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

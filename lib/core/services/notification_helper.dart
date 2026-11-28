@@ -33,8 +33,8 @@ class NotificationHelper {
     final shadows = [
       BoxShadow(
         color: theme.shadowColor.withValues(alpha: 0.2),
-        blurRadius: 8,
-        offset: const Offset(0, 4),
+        blurRadius: AppSizes.dp8,
+        offset: const Offset(0, AppSizes.dp4),
       ),
     ];
     final shape = RoundedSuperellipseBorder(borderRadius: radius, side: border);

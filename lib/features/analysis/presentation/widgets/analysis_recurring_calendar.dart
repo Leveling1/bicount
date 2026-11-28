@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
@@ -13,19 +14,9 @@ import 'package:flutter/material.dart';
 part 'analysis_recurring_calendar_day.dart';
 
 class AnalysisRecurringCalendar extends StatefulWidget {
-  const AnalysisRecurringCalendar({
-    super.key,
-    required this.plans,
-    this.monthFooterBuilder,
-  });
+  const AnalysisRecurringCalendar({super.key, required this.plans});
 
   final List<RecurringTransfertModel> plans;
-  final Widget Function(
-    BuildContext,
-    DateTime,
-    Map<DateTime, List<AnalysisRecurringEntry>>,
-  )?
-  monthFooterBuilder;
 
   @override
   State<AnalysisRecurringCalendar> createState() =>
@@ -63,7 +54,7 @@ class _AnalysisRecurringCalendarState extends State<AnalysisRecurringCalendar> {
     final material = MaterialLocalizations.of(context);
     final selectedEntries = _entries[_selectedDay] ?? const [];
 
-    final calendar = Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: AppDimens.spacingSmall,
       children: [
@@ -78,10 +69,13 @@ class _AnalysisRecurringCalendarState extends State<AnalysisRecurringCalendar> {
         ),
         Row(
           children: [
-            IconButton(
-              onPressed: () => _moveMonth(-1),
-              tooltip: material.previousMonthTooltip,
-              icon: const Icon(Icons.chevron_left),
+            BicountPressable.button(
+              builder: (statesController) => IconButton(
+                statesController: statesController,
+                onPressed: () => _moveMonth(-1),
+                tooltip: material.previousMonthTooltip,
+                icon: const Icon(Icons.chevron_left),
+              ),
             ),
             Expanded(
               child: Text(
@@ -90,10 +84,13 @@ class _AnalysisRecurringCalendarState extends State<AnalysisRecurringCalendar> {
                 textAlign: TextAlign.center,
               ),
             ),
-            IconButton(
-              onPressed: () => _moveMonth(1),
-              tooltip: material.nextMonthTooltip,
-              icon: const Icon(Icons.chevron_right),
+            BicountPressable.button(
+              builder: (statesController) => IconButton(
+                statesController: statesController,
+                onPressed: () => _moveMonth(1),
+                tooltip: material.nextMonthTooltip,
+                icon: const Icon(Icons.chevron_right),
+              ),
             ),
           ],
         ),
@@ -153,12 +150,6 @@ class _AnalysisRecurringCalendarState extends State<AnalysisRecurringCalendar> {
             ),
           ),
       ],
-    );
-    final footerBuilder = widget.monthFooterBuilder;
-    if (footerBuilder == null || _entries.isEmpty) return calendar;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [calendar, footerBuilder(context, _month, _entries)],
     );
   }
 }

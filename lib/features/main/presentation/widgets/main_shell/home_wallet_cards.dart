@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/wallet/wallet_card_face.dart';
 import 'package:bicount/features/wallet/data/models/wallet_model.dart';
 import 'package:bicount/features/wallet/presentation/widgets/wallet_overview_card.dart';
@@ -70,8 +71,8 @@ class HomeWalletCards extends StatelessWidget {
           ),
           if (actions > 0)
             PositionedDirectional(
-              start: 8,
-              bottom: -20,
+              start: AppSizes.dp8,
+              bottom: -AppSizes.dp20,
               child: Opacity(
                 opacity: actions,
                 child: WalletOverviewActions(

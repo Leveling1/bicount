@@ -1,5 +1,6 @@
 import 'package:bicount/core/themes/app_corners.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/themes/app_press_theme.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ import 'app_gradient.dart';
 import 'dropdown_chevron_theme.dart';
 
 class AppTheme {
-  // PopupMenuButton and showMenu are currently used by Wallets only.
+  // Preserve the established popup surface, including in Wallets.
   static const _popupMenuTheme = PopupMenuThemeData(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.all(
@@ -18,8 +19,8 @@ class AppTheme {
   );
 
   ///================== Light Theme ==================///
-  static ThemeData get lightTheme => _lightTheme();
-  static ThemeData get darkTheme => _darkTheme();
+  static ThemeData get lightTheme => withAppPressFeedback(_lightTheme());
+  static ThemeData get darkTheme => withAppPressFeedback(_darkTheme());
 
   static final _lightWalletTheme = _lightTheme(legacyCorners: true);
   static final _darkWalletTheme = _darkTheme(legacyCorners: true);
@@ -30,7 +31,23 @@ class AppTheme {
         ? _darkWalletTheme
         : _lightWalletTheme;
     return theme.copyWith(
-      extensions: [...theme.extensions.values, const WalletCorners()],
+      extensions: [
+        ...theme.extensions.values.where(
+          (extension) => extension is! AppPressFeedback,
+        ),
+        const WalletCorners(),
+      ],
+      splashFactory: wallet.splashFactory,
+      splashColor: wallet.splashColor,
+      highlightColor: wallet.highlightColor,
+      checkboxTheme: wallet.checkboxTheme,
+      filledButtonTheme: wallet.filledButtonTheme,
+      floatingActionButtonTheme: wallet.floatingActionButtonTheme,
+      iconButtonTheme: wallet.iconButtonTheme,
+      listTileTheme: wallet.listTileTheme,
+      menuButtonTheme: wallet.menuButtonTheme,
+      switchTheme: wallet.switchTheme,
+      textButtonTheme: wallet.textButtonTheme,
       chipTheme: wallet.chipTheme,
       datePickerTheme: wallet.datePickerTheme,
       dialogTheme: wallet.dialogTheme,
@@ -52,7 +69,7 @@ class AppTheme {
       selectedItemColor: AppColors.surfaceColorDark,
       selectedIconTheme: IconThemeData(
         color: AppColors.surfaceColorDark,
-        size: 24,
+        size: AppDimens.iconSizeMedium,
       ),
     ),
 
@@ -154,7 +171,10 @@ class AppTheme {
           appCornerShape(
             borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
             legacy: legacyCorners,
-            side: BorderSide(color: AppColors.surfaceColorLight, width: 2),
+            side: BorderSide(
+              color: AppColors.surfaceColorLight,
+              width: AppSizes.dp2,
+            ),
           ),
         ),
         foregroundColor: WidgetStateProperty.all<Color>(
@@ -224,13 +244,13 @@ class AppTheme {
       headerHeadlineStyle: const TextStyle(
         fontWeight: FontWeight.bold,
         color: AppColors.textColorLight,
-        fontSize: 28,
-        height: 1.2,
+        fontSize: AppSizes.dp28,
+        height: AppDimens.calendarHeaderLineHeight,
       ),
       headerHelpStyle: const TextStyle(
         fontWeight: FontWeight.bold,
         color: AppColors.textColorLight,
-        fontSize: 18,
+        fontSize: AppDimens.textSizeLarge,
       ),
 
       // Dividers/sÃ©parateurs
@@ -251,7 +271,7 @@ class AppTheme {
       }),
       todayBorder: const BorderSide(
         color: AppColors.primaryColorLight,
-        width: 1,
+        width: AppDimens.thicknessThin,
       ),
 
       // Style du jour sÃ©lectionnÃ©
@@ -296,7 +316,7 @@ class AppTheme {
 
       // Style des en-tÃªtes des jours
       weekdayStyle: TextStyle(
-        fontSize: 12,
+        fontSize: AppDimens.textSizeSmall,
         fontWeight: FontWeight.w500,
         color: AppColors.textColorLight.withValues(alpha: 0.7),
       ),
@@ -342,11 +362,14 @@ class AppTheme {
           const TextStyle(fontWeight: FontWeight.w500),
         ),
         padding: WidgetStateProperty.all(
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          const EdgeInsets.symmetric(
+            horizontal: AppDimens.paddingMedium,
+            vertical: AppDimens.paddingSmall,
+          ),
         ),
         shape: WidgetStateProperty.all(
           appCornerShape(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusSmall),
             legacy: legacyCorners,
           ),
         ),
@@ -358,14 +381,17 @@ class AppTheme {
           const TextStyle(fontWeight: FontWeight.w500),
         ),
         padding: WidgetStateProperty.all(
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          const EdgeInsets.symmetric(
+            horizontal: AppDimens.paddingMedium,
+            vertical: AppDimens.paddingSmall,
+          ),
         ),
         overlayColor: WidgetStateProperty.all(
           AppColors.primaryColorLight.withValues(alpha: 0.1),
         ),
         shape: WidgetStateProperty.all(
           appCornerShape(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusSmall),
             legacy: legacyCorners,
           ),
         ),
@@ -378,18 +404,18 @@ class AppTheme {
         filled: true,
         fillColor: AppColors.cardColorLight,
         border: appInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusSmall),
           legacy: legacyCorners,
           borderSide: BorderSide(
             color: AppColors.primaryColorLight.withValues(alpha: 0.3),
           ),
         ),
         focusedBorder: appInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusSmall),
           legacy: legacyCorners,
           borderSide: const BorderSide(
             color: AppColors.primaryColorLight,
-            width: 2,
+            width: AppSizes.dp2,
           ),
         ),
         labelStyle: const TextStyle(color: AppColors.textColorLight),
@@ -485,7 +511,7 @@ class AppTheme {
       contentTextStyle: TextStyle(
         color: AppColors.secondaryTextColorLight,
         fontSize: AppDimens.textSizeMedium,
-        height: 1.45,
+        height: AppDimens.dialogBodyLineHeight,
       ),
     ),
 
@@ -526,7 +552,10 @@ class AppTheme {
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusMediumLarge),
         legacy: legacyCorners,
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDimens.paddingMedium,
+        vertical: AppDimens.paddingSmall,
+      ),
     ),
 
     /// Extensions light
@@ -573,7 +602,7 @@ class AppTheme {
       selectedItemColor: AppColors.surfaceColorDark,
       selectedIconTheme: IconThemeData(
         color: AppColors.surfaceColorDark,
-        size: 24,
+        size: AppDimens.iconSizeMedium,
       ),
     ),
 
@@ -637,7 +666,7 @@ class AppTheme {
       contentTextStyle: TextStyle(
         color: AppColors.secondaryTextColorDark,
         fontSize: AppDimens.textSizeMedium,
-        height: 1.45,
+        height: AppDimens.dialogBodyLineHeight,
       ),
     ),
 
@@ -700,7 +729,10 @@ class AppTheme {
           appCornerShape(
             borderRadius: BorderRadius.circular(AppDimens.radiusMedium),
             legacy: legacyCorners,
-            side: BorderSide(color: AppColors.surfaceColorDark, width: 2),
+            side: BorderSide(
+              color: AppColors.surfaceColorDark,
+              width: AppSizes.dp2,
+            ),
           ),
         ),
         foregroundColor: WidgetStateProperty.all<Color>(
@@ -771,13 +803,14 @@ class AppTheme {
       headerHeadlineStyle: const TextStyle(
         fontWeight: FontWeight.bold,
         color: AppColors.textColorDark,
-        fontSize: 28, // Taille plus grande pour une meilleure visibilitÃ©
-        height: 1.2, // Espacement des lignes
+        fontSize:
+            AppSizes.dp28, // Taille plus grande pour une meilleure visibilitÃ©
+        height: AppDimens.calendarHeaderLineHeight, // Espacement des lignes
       ),
       headerHelpStyle: const TextStyle(
         fontWeight: FontWeight.bold,
         color: AppColors.textColorDark,
-        fontSize: 18, // AugmentÃ© aussi
+        fontSize: AppDimens.textSizeLarge, // AugmentÃ© aussi
       ),
 
       // Dividers/sÃ©parateurs
@@ -798,7 +831,7 @@ class AppTheme {
       }),
       todayBorder: const BorderSide(
         color: AppColors.primaryColorDark,
-        width: 1,
+        width: AppDimens.thicknessThin,
       ),
 
       // Style du jour sÃ©lectionnÃ©
@@ -843,7 +876,7 @@ class AppTheme {
 
       // Style des en-tÃªtes des jours de la semaine (L M M J V S D)
       weekdayStyle: TextStyle(
-        fontSize: 12,
+        fontSize: AppDimens.textSizeSmall,
         fontWeight: FontWeight.w500,
         color: AppColors.textColorDark.withValues(alpha: 0.7),
       ),
@@ -889,11 +922,14 @@ class AppTheme {
           const TextStyle(fontWeight: FontWeight.w500),
         ),
         padding: WidgetStateProperty.all(
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          const EdgeInsets.symmetric(
+            horizontal: AppDimens.paddingMedium,
+            vertical: AppDimens.paddingSmall,
+          ),
         ),
         shape: WidgetStateProperty.all(
           appCornerShape(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusSmall),
             legacy: legacyCorners,
           ),
         ),
@@ -905,14 +941,17 @@ class AppTheme {
           const TextStyle(fontWeight: FontWeight.w500),
         ),
         padding: WidgetStateProperty.all(
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          const EdgeInsets.symmetric(
+            horizontal: AppDimens.paddingMedium,
+            vertical: AppDimens.paddingSmall,
+          ),
         ),
         overlayColor: WidgetStateProperty.all(
           AppColors.primaryColorDark.withValues(alpha: 0.1),
         ),
         shape: WidgetStateProperty.all(
           appCornerShape(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppDimens.borderRadiusSmall),
             legacy: legacyCorners,
           ),
         ),
@@ -925,18 +964,18 @@ class AppTheme {
         filled: true,
         fillColor: AppColors.cardColorDark,
         border: appInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusSmall),
           legacy: legacyCorners,
           borderSide: BorderSide(
             color: AppColors.primaryColorDark.withValues(alpha: 0.3),
           ),
         ),
         focusedBorder: appInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusSmall),
           legacy: legacyCorners,
           borderSide: const BorderSide(
             color: AppColors.primaryColorDark,
-            width: 2,
+            width: AppSizes.dp2,
           ),
         ),
         labelStyle: const TextStyle(color: AppColors.textColorDark),
@@ -1043,7 +1082,10 @@ class AppTheme {
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusMediumLarge),
         legacy: legacyCorners,
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDimens.paddingMedium,
+        vertical: AppDimens.paddingSmall,
+      ),
     ),
 
     /// Extensions dark

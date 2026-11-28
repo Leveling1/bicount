@@ -3,6 +3,8 @@ part of 'analysis_recurring_budget_card.dart';
 class _BudgetWaterfall extends StatelessWidget {
   const _BudgetWaterfall({
     required this.income,
+    required this.receivedIncome,
+    required this.plannedIncome,
     required this.charges,
     required this.totalCharges,
     required this.remaining,
@@ -10,6 +12,8 @@ class _BudgetWaterfall extends StatelessWidget {
   });
 
   final double income;
+  final double? receivedIncome;
+  final double? plannedIncome;
   final List<RecurringBudgetCharge> charges;
   final double totalCharges;
   final double remaining;
@@ -19,6 +23,8 @@ class _BudgetWaterfall extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<OtherTheme>()!;
     final l10n = context.l10n;
+    final received = receivedIncome;
+    final planned = plannedIncome;
     final visible = charges.take(3);
     final other = charges.skip(3).toList(growable: false);
     final balanceColor = remaining < 0
@@ -81,13 +87,32 @@ class _BudgetWaterfall extends StatelessWidget {
         ),
         const SizedBox(height: AppDimens.spacingExtraSmall),
         row(
-          l10n.analysisRecurringIncomesTitle,
+          received == null
+              ? l10n.analysisRecurringIncomesTitle
+              : planned == null
+              ? l10n.analysisRecurringBudgetReceivedIncome
+              : l10n.analysisRecurringBudgetTotalIncome,
           0,
           income,
           income,
           colors.income!,
           sign: '+ ',
         ),
+        if (received != null && planned != null)
+          Wrap(
+            spacing: AppDimens.spacingMedium,
+            runSpacing: AppDimens.spacingExtraSmall,
+            children: [
+              Text(
+                '${l10n.analysisRecurringBudgetReceivedIncome} · ${_budgetAmount(context, received, currency)}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              Text(
+                '${l10n.analysisRecurringIncomesTitle} · ${_budgetAmount(context, planned, currency)}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
         for (final charge in visible)
           chargeRow(
             charge.title,
@@ -109,116 +134,5 @@ class _BudgetWaterfall extends StatelessWidget {
         row(balanceLabel, 0, remaining, remaining, balanceColor),
       ],
     );
-  }
-}
-
-class _BudgetBarRow extends StatelessWidget {
-  const _BudgetBarRow({
-    required this.label,
-    required this.amount,
-    required this.from,
-    required this.to,
-    required this.zero,
-    required this.color,
-    this.onTap,
-  });
-
-  final String label;
-  final String amount;
-  final double from;
-  final double to;
-  final double zero;
-  final Color color;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final content = Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppDimens.spacingExtraSmall,
-      ),
-      child: Column(
-        spacing: AppDimens.spacingExtraSmall,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: AppDimens.spacingSmall,
-            children: [
-              Expanded(child: Text(label, style: theme.textTheme.bodyMedium)),
-              Flexible(
-                child: Text(
-                  amount,
-                  style: theme.textTheme.bodyMedium,
-                  textAlign: TextAlign.end,
-                ),
-              ),
-              if (onTap != null)
-                Icon(
-                  Icons.chevron_right,
-                  size: 18,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-            ],
-          ),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final width = constraints.maxWidth;
-              return SizedBox(
-                height: 9,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: 0.07,
-                        ),
-                      ),
-                    ),
-                    if (to > from)
-                      PositionedDirectional(
-                        start: from * width,
-                        width: (to - from) * width,
-                        top: 0,
-                        bottom: 0,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: color,
-                          ),
-                        ),
-                      ),
-                    if (zero > 0 && zero < 1)
-                      PositionedDirectional(
-                        start: zero * width,
-                        top: 0,
-                        bottom: 0,
-                        width: 1,
-                        child: ColoredBox(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-    return onTap == null
-        ? content
-        : Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 48),
-                child: content,
-              ),
-            ),
-          );
   }
 }

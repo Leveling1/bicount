@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
@@ -131,8 +132,7 @@ class _RecurringSalaryScreenState extends State<RecurringSalaryScreen> {
             ...dashboard.attentionOccurrences.map(
               (occurrence) => SalaryConfirmationCard(
                 occurrence: occurrence,
-                onTap: () =>
-                    openOccurrenceSheet(context, occurrence),
+                onTap: () => openOccurrenceSheet(context, occurrence),
               ),
             ),
           ],
@@ -241,9 +241,12 @@ class _ErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: FilledButton(
-        onPressed: onRetry,
-        child: Text(context.l10n.commonRetry),
+      child: BicountPressable.button(
+        builder: (statesController) => FilledButton(
+          statesController: statesController,
+          onPressed: onRetry,
+          child: Text(context.l10n.commonRetry),
+        ),
       ),
     );
   }

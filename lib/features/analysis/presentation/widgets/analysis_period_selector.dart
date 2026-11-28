@@ -68,25 +68,20 @@ class _AnalysisPeriodSelectorState extends State<AnalysisPeriodSelector> {
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingMedium),
       child: Row(
+        spacing: AppDimens.spacingSmall,
         children: [
           for (final period in AnalysisPeriod.presets)
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: CustomChoiceChip(
-                label: period.label(context),
-                selected: period == selectedPeriod,
-                onSelected: (_) => widget.onSelected(period),
-              ),
+            CustomChoiceChip(
+              label: period.label(context),
+              selected: period == selectedPeriod,
+              onSelected: (_) => widget.onSelected(period),
             ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: CustomChoiceChip(
-              label: isCustom
-                  ? selectedPeriod.label(context)
-                  : context.l10n.analysisPeriodCustomLabel,
-              selected: isCustom,
-              onSelected: (_) => _pickPeriod(),
-            ),
+          CustomChoiceChip(
+            label: isCustom
+                ? selectedPeriod.label(context)
+                : context.l10n.analysisPeriodCustomLabel,
+            selected: isCustom,
+            onSelected: (_) => _pickPeriod(),
           ),
         ],
       ),

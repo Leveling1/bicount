@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 
@@ -19,8 +20,24 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final route = ModalRoute.of(context);
+    final canDismiss = route?.impliesAppBarDismissal ?? false;
+    final modal = route is PageRoute<dynamic> && route.fullscreenDialog;
+    final leadingControl =
+        leading ??
+        (automaticallyImplyLeading
+            ? (Scaffold.maybeOf(context)?.hasDrawer ?? false)
+                  ? const DrawerButton()
+                  : canDismiss
+                  ? modal
+                        ? const CloseButton()
+                        : const BackButton()
+                  : null
+            : null);
     return AppBar(
-      leading: leading,
+      leading: leadingControl == null
+          ? null
+          : BicountPressable.control(child: leadingControl),
       automaticallyImplyLeading: automaticallyImplyLeading,
       centerTitle: true,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

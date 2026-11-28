@@ -25,11 +25,9 @@ class UserCard extends StatelessWidget {
           customBorder: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
           ),
-          splashColor: Colors.transparent,
-          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: () {},
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppDimens.paddingMedium),
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize
@@ -38,18 +36,21 @@ class UserCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Avatar
-                  AppAvatar(image: user.image, radius: 30),
-                  const SizedBox(height: 12),
+                  AppAvatar(image: user.image, radius: AppSizes.dp30),
+                  const SizedBox(height: AppSizes.dp12),
 
                   // Name and date
                   Text(
                     user.name,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppDimens.spacingExtraSmall),
                   Text(
                     user.role,
-                    style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+                    style: TextStyle(
+                      color: Colors.grey.shade500,
+                      fontSize: AppSizes.dp13,
+                    ),
                   ),
                 ],
               ),

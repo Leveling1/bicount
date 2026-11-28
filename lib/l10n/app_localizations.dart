@@ -4097,6 +4097,42 @@ abstract class AppLocalizations {
   /// **'Recurring budget'**
   String get analysisRecurringBudget;
 
+  /// No description provided for @analysisRecurringBudgetMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get analysisRecurringBudgetMonth;
+
+  /// No description provided for @analysisRecurringBudgetYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get analysisRecurringBudgetYear;
+
+  /// No description provided for @analysisRecurringBudgetEmptyMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'A recurring income and a recurring charge are needed for this month.'**
+  String get analysisRecurringBudgetEmptyMonth;
+
+  /// No description provided for @analysisPeriodCurrentMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get analysisPeriodCurrentMonth;
+
+  /// No description provided for @analysisRecurringBudgetReceivedIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Received income'**
+  String get analysisRecurringBudgetReceivedIncome;
+
+  /// No description provided for @analysisRecurringBudgetTotalIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring income'**
+  String get analysisRecurringBudgetTotalIncome;
+
   /// No description provided for @analysisRecurringBudgetRemaining.
   ///
   /// In en, this message translates to:

@@ -29,8 +29,8 @@ class FriendConsequenceRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: color),
-          const SizedBox(width: 12),
+          Icon(icon, size: AppSizes.dp20, color: color),
+          const SizedBox(width: AppSizes.dp12),
           Expanded(
             child: Text(
               text,

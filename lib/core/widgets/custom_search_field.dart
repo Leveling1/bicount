@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -40,25 +42,33 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 50,
-      child: TextFormField(
-        controller: widget.controller,
-        autofocus: widget.autofocus,
-        textAlign: TextAlign.start,
-        keyboardType: TextInputType.text,
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          hintText: widget.hintText ?? "Search",
-          hintStyle: Theme.of(
-            context,
-          ).textTheme.titleSmall!.copyWith(color: AppColors.inactiveColorDark),
-          prefixIcon: Icon(
-            Icons.search,
-            color: Theme.of(context).iconTheme.color,
+      height: AppSizes.dp50,
+      child: BicountPressable.control(
+        child: TextFormField(
+          controller: widget.controller,
+          autofocus: widget.autofocus,
+          textAlign: TextAlign.start,
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.next,
+          decoration: InputDecoration(
+            hintText: widget.hintText ?? "Search",
+            hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
+              color: AppColors.inactiveColorDark,
+            ),
+            prefixIcon: Icon(
+              Icons.search,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            suffixIcon: widget.controller!.text.isNotEmpty
+                ? BicountPressable.button(
+                    builder: (statesController) => IconButton(
+                      statesController: statesController,
+                      icon: const Icon(Icons.clear),
+                      onPressed: _clearText,
+                    ),
+                  )
+                : null,
           ),
-          suffixIcon: widget.controller!.text.isNotEmpty
-              ? IconButton(icon: const Icon(Icons.clear), onPressed: _clearText)
-              : null,
         ),
       ),
     );

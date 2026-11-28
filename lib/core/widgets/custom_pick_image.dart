@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,44 +36,33 @@ class _CustomPickImageState extends State<CustomPickImage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 55,
-      width: double.infinity,
-      decoration: ShapeDecoration(
-        color: Theme.of(context).cardColor,
-        shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+    const shape = RoundedSuperellipseBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(AppDimens.borderRadiusMedium),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          hoverColor: Theme.of(context).colorScheme.surfaceContainer,
-          customBorder: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          splashColor: Colors.transparent,
-          highlightColor: Theme.of(
-            context,
-          ).textTheme.titleMedium?.color?.withValues(alpha: 0.2),
-          onTap: pickImage,
-          child: Center(
-            child: selectedImage == null
-                ? Icon(
-                    Icons.image,
-                    size: 25,
-                    color: Theme.of(context).textTheme.titleMedium?.color,
-                  )
-                : ClipRSuperellipse(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(
-                      selectedImage!,
-                      height: 55,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-          ),
+    );
+    return SizedBox(
+      height: AppSizes.dp55,
+      width: double.infinity,
+      child: BicountPressable(
+        color: Theme.of(context).cardColor,
+        clipBehavior: Clip.antiAlias,
+        hoverColor: Theme.of(context).colorScheme.surfaceContainer,
+        customBorder: shape,
+        onTap: pickImage,
+        child: Center(
+          child: selectedImage == null
+              ? Icon(
+                  Icons.image,
+                  size: AppSizes.dp25,
+                  color: Theme.of(context).textTheme.titleMedium?.color,
+                )
+              : Ink.image(
+                  image: FileImage(selectedImage!),
+                  height: AppSizes.dp55,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
         ),
       ),
     );

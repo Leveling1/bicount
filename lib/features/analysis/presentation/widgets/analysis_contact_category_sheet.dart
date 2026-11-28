@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
@@ -127,16 +128,19 @@ class _AnalysisContactCategorySheetState
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      l10n.analysisAddContactsToBothCharts,
-                      style: theme.textTheme.bodySmall,
+                  child: BicountPressable.control(
+                    enabled: !(_saving),
+                    child: SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        l10n.analysisAddContactsToBothCharts,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      value: _bothCharts,
+                      onChanged: _saving
+                          ? null
+                          : (value) => setState(() => _bothCharts = value),
                     ),
-                    value: _bothCharts,
-                    onChanged: _saving
-                        ? null
-                        : (value) => setState(() => _bothCharts = value),
                   ),
                 ),
                 if (matches.isEmpty)
@@ -150,25 +154,28 @@ class _AnalysisContactCategorySheetState
                   itemCount: matches.length,
                   itemBuilder: (context, index) {
                     final friend = matches[index];
-                    return CheckboxListTile(
-                      key: ValueKey(friend.sid),
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(friend.username),
-                      subtitle: friend.email.isEmpty
-                          ? null
-                          : Text(friend.email),
-                      value: _selected.contains(friend.sid),
-                      onChanged: _saving
-                          ? null
-                          : (checked) {
-                              setState(() {
-                                if (checked == true) {
-                                  _selected.add(friend.sid);
-                                } else {
-                                  _selected.remove(friend.sid);
-                                }
-                              });
-                            },
+                    return BicountPressable.control(
+                      enabled: !(_saving),
+                      child: CheckboxListTile(
+                        key: ValueKey(friend.sid),
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(friend.username),
+                        subtitle: friend.email.isEmpty
+                            ? null
+                            : Text(friend.email),
+                        value: _selected.contains(friend.sid),
+                        onChanged: _saving
+                            ? null
+                            : (checked) {
+                                setState(() {
+                                  if (checked == true) {
+                                    _selected.add(friend.sid);
+                                  } else {
+                                    _selected.remove(friend.sid);
+                                  }
+                                });
+                              },
+                      ),
                     );
                   },
                 ),

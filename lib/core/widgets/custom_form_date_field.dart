@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -93,23 +94,28 @@ class _CustomFormDateFieldState extends State<CustomFormDateField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: _controller,
-      keyboardType: TextInputType.number,
-      textInputAction: TextInputAction.next,
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(8),
-        _DateSlashInputFormatter(),
-      ],
-      validator: (value) => widget.validator?.call(_selectedDate),
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-        suffixIcon: IconButton(
-          onPressed: _pickDate,
-          icon: const Icon(
-            Icons.calendar_today,
-            color: AppColors.inactiveColorDark,
+    return BicountPressable.control(
+      child: TextFormField(
+        controller: _controller,
+        keyboardType: TextInputType.number,
+        textInputAction: TextInputAction.next,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(8),
+          _DateSlashInputFormatter(),
+        ],
+        validator: (value) => widget.validator?.call(_selectedDate),
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          suffixIcon: BicountPressable.button(
+            builder: (statesController) => IconButton(
+              statesController: statesController,
+              onPressed: _pickDate,
+              icon: const Icon(
+                Icons.calendar_today,
+                color: AppColors.inactiveColorDark,
+              ),
+            ),
           ),
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/constants/subscription_const.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
@@ -44,18 +45,21 @@ class TransferFormRecurringSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SwitchListTile.adaptive(
-          value: isRecurring,
-          onChanged: enabled ? (v) => onRecurringChanged(v) : null,
-          title: Text(
-            context.l10n.recurringToggleTitle,
-            style: Theme.of(context).textTheme.bodyMedium,
+        BicountPressable.control(
+          enabled: enabled,
+          child: SwitchListTile.adaptive(
+            value: isRecurring,
+            onChanged: enabled ? (v) => onRecurringChanged(v) : null,
+            title: Text(
+              context.l10n.recurringToggleTitle,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            subtitle: Text(
+              subtitle,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            contentPadding: EdgeInsets.zero,
           ),
-          subtitle: Text(
-            subtitle,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          contentPadding: EdgeInsets.zero,
         ),
         AnimatedSize(
           duration: const Duration(milliseconds: 250),
@@ -161,32 +165,36 @@ class _SalaryExecutionSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SwitchListTile.adaptive(
-          value: requiresConfirmation,
-          onChanged: onRequiresConfirmationChanged,
-          title: Text(
-            context.l10n.salaryConfirmBeforeCountingTitle,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          subtitle: Text(
-            context.l10n.salaryConfirmBeforeCountingHelper,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          contentPadding: EdgeInsets.zero,
-        ),
-        if (requiresConfirmation)
-          SwitchListTile.adaptive(
-            value: reminderEnabled,
-            onChanged: onReminderChanged,
+        BicountPressable.control(
+          child: SwitchListTile.adaptive(
+            value: requiresConfirmation,
+            onChanged: onRequiresConfirmationChanged,
             title: Text(
-              context.l10n.salaryReminderToggleTitle,
+              context.l10n.salaryConfirmBeforeCountingTitle,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             subtitle: Text(
-              context.l10n.salaryReminderToggleHelper,
+              context.l10n.salaryConfirmBeforeCountingHelper,
               style: Theme.of(context).textTheme.bodySmall,
             ),
             contentPadding: EdgeInsets.zero,
+          ),
+        ),
+        if (requiresConfirmation)
+          BicountPressable.control(
+            child: SwitchListTile.adaptive(
+              value: reminderEnabled,
+              onChanged: onReminderChanged,
+              title: Text(
+                context.l10n.salaryReminderToggleTitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              subtitle: Text(
+                context.l10n.salaryReminderToggleHelper,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              contentPadding: EdgeInsets.zero,
+            ),
           ),
       ],
     );

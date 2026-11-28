@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -44,27 +46,28 @@ class _AuthEmailRequestFormState extends State<AuthEmailRequestForm> {
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: _emailController,
             builder: (context, value, _) {
-              final hasValidEmail =
-                  _hasValidEmail(value.text);
+              final hasValidEmail = _hasValidEmail(value.text);
 
-              return TextFormField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                validator: _validateEmail,
-                decoration: InputDecoration(
-                  hintText: context.l10n.authEmailPlaceholder,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
+              return BicountPressable.control(
+                child: TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: _validateEmail,
+                  decoration: InputDecoration(
+                    hintText: context.l10n.authEmailPlaceholder,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSizes.dp20,
+                      vertical: AppDimens.paddingSmallMedium,
+                    ),
+                    suffixIcon: hasValidEmail
+                        ? CustomAuthIconButton(
+                            loading: widget.loading,
+                            onPressed: _submit,
+                          )
+                        : null,
                   ),
-                  suffixIcon: hasValidEmail
-                      ? CustomAuthIconButton(
-                          loading: widget.loading,
-                          onPressed: _submit,
-                        )
-                      : null,
+                  onFieldSubmitted: (_) => _submit(),
                 ),
-                onFieldSubmitted: (_) => _submit(),
               );
             },
           ),

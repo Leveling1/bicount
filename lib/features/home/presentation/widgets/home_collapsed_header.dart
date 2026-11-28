@@ -27,9 +27,9 @@ class _CollapsedHomeHeader extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 40,
-              height: 40,
-              padding: const EdgeInsets.all(8.0),
+              width: AppSizes.dp40,
+              height: AppSizes.dp40,
+              padding: const EdgeInsets.all(AppDimens.paddingSmall),
               margin: const EdgeInsets.only(left: AppDimens.marginMedium),
               decoration: ShapeDecoration(
                 color: theme.cardColor,

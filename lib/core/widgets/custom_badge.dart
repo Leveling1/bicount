@@ -6,8 +6,8 @@ class CustomBadge extends StatelessWidget {
     super.key,
     required this.text,
     required this.color,
-    this.height = 24,
-    this.fontSize = 11,
+    this.height = AppSizes.dp24,
+    this.fontSize = AppSizes.dp11,
   });
   final String text;
   final Color color;
@@ -17,7 +17,11 @@ class CustomBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 15, bottom: 15),
+      padding: const EdgeInsets.only(
+        left: AppDimens.paddingMedium,
+        top: AppSizes.dp15,
+        bottom: AppSizes.dp15,
+      ),
       child: Container(
         height: height,
         decoration: ShapeDecoration(
@@ -26,7 +30,10 @@ class CustomBadge extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
           ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimens.paddingExtraSmall,
+          vertical: AppDimens.paddingExtraSmall,
+        ),
         child: Text(
           text,
           style: TextStyle(color: color, fontSize: fontSize),

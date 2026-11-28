@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/localization/runtime_message_localizer.dart';
 import 'package:bicount/core/services/notification_helper.dart';
@@ -105,7 +107,9 @@ class _RecurringPlanDetailSheetState extends State<RecurringPlanDetailSheet> {
               );
               if (summary == null) {
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.only(
+                    bottom: AppDimens.paddingMedium,
+                  ),
                   child: Text(
                     widget.scope == RecurringPlanScope.income
                         ? context.l10n.recurringIncomesEmpty
@@ -141,11 +145,14 @@ class _RecurringPlanDetailSheetState extends State<RecurringPlanDetailSheet> {
 
             if (mainState is MainError) {
               return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: FilledButton(
-                  onPressed: () =>
-                      context.read<MainBloc>().add(GetAllStartData()),
-                  child: Text(context.l10n.commonRetry),
+                padding: const EdgeInsets.only(bottom: AppDimens.paddingMedium),
+                child: BicountPressable.button(
+                  builder: (statesController) => FilledButton(
+                    statesController: statesController,
+                    onPressed: () =>
+                        context.read<MainBloc>().add(GetAllStartData()),
+                    child: Text(context.l10n.commonRetry),
+                  ),
                 ),
               );
             }

@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/constants/transaction_types.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
@@ -118,21 +119,22 @@ class TransactionOptionButton extends StatelessWidget {
           ),
           AppDimens.spacerMedium,
           ...options.map(
-            (option) => ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: CircleAvatar(
-                radius: 18,
-                backgroundColor: option.color.withValues(alpha: 0.14),
-                child: Icon(option.icon, color: option.color),
-              ),
-              title: Text(option.label),
-              trailing: Icon(
-                Icons.chevron_right,
-              ),
+            (option) => BicountPressable(
               onTap: () {
                 Navigator.of(context).pop();
                 context.push(option.route);
               },
+              customBorder: Theme.of(context).listTileTheme.shape,
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: CircleAvatar(
+                  radius: AppSizes.dp18,
+                  backgroundColor: option.color.withValues(alpha: 0.14),
+                  child: Icon(option.icon, color: option.color),
+                ),
+                title: Text(option.label),
+                trailing: Icon(Icons.chevron_right),
+              ),
             ),
           ),
           AppDimens.spacerLarge,

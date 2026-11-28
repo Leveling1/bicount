@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/widgets/bicount_skeleton.dart';
 import 'package:bicount/features/settings/domain/entities/settings_memoji_entity.dart';
@@ -45,26 +46,22 @@ class SettingsMemojiGrid extends StatelessWidget {
 
           final item = items[index];
           final selected = item.url == selectedImage;
-          return GestureDetector(
-            onTap: () => onSelected(item.url),
-            child: AnimatedScale(
-              duration: const Duration(milliseconds: 180),
-              scale: selected ? 1.04 : 1,
-              child: Container(
-                padding: const EdgeInsets.all(AppDimens.paddingExtraSmall),
-                decoration: ShapeDecoration(
-                  shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(
-                      AppDimens.borderRadiusFull,
-                    ),
-                    side: BorderSide(
-                      color: selected
-                          ? Theme.of(context).primaryColor
-                          : Colors.transparent,
-                      width: 2,
-                    ),
-                  ),
+          return AnimatedScale(
+            duration: const Duration(milliseconds: 180),
+            scale: selected ? 1.04 : 1,
+            child: BicountPressable(
+              onTap: () => onSelected(item.url),
+              customBorder: RoundedSuperellipseBorder(
+                borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
+                side: BorderSide(
+                  color: selected
+                      ? Theme.of(context).primaryColor
+                      : Colors.transparent,
+                  width: AppSizes.dp2,
                 ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(AppDimens.paddingExtraSmall + 2),
                 child: SettingsAvatar(
                   image: item.url,
                   radius: AppDimens.settingsAvatarTileRadius,

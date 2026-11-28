@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/services/transaction_direction_service.dart';
 import 'package:bicount/core/themes/app_colors.dart';
@@ -61,80 +62,72 @@ class TransactionCard extends StatelessWidget {
       currencyCode: transaction.currency,
     );
 
-    return Container(
-      decoration: BoxDecoration(color: Colors.transparent),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          hoverColor: Theme.of(context).colorScheme.surfaceContainer,
-          customBorder: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
-          ),
-          splashColor: Colors.transparent,
-          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-          onTap: onTap,
-          child: Padding(
-            padding: AppDimens.paddingSmallCard,
-            child: Row(
+    return BicountPressable(
+      hoverColor: Theme.of(context).colorScheme.surfaceContainer,
+      customBorder: RoundedSuperellipseBorder(
+        borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
+      ),
+      onTap: onTap,
+      child: Padding(
+        padding: AppDimens.paddingSmallCard,
+        child: Row(
+          children: [
+            // Avatar
+            CircleAvatar(
+              backgroundColor: Theme.of(context).cardColor,
+              radius: AppDimens.transactionAvatarRadius,
+              child: SizedBox(
+                width: AppSizes.dp30,
+                height: AppSizes.dp30,
+                child: Icon(
+                  transactionIcon,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
+              ),
+            ),
+            AppDimens.spacerWidthMediumSmall,
+
+            // Name and date
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    FormatedText().capitalizeFirstLetter(
+                      displayTitle ?? transaction.name,
+                    ),
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Text(
+                    time,
+                    style: TextStyle(
+                      color: Colors.grey.shade500,
+                      fontSize: AppSizes.dp13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Amount
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // Avatar
-                CircleAvatar(
-                  backgroundColor: Theme.of(context).cardColor,
-                  radius: 20,
-                  child: SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: Icon(
-                      transactionIcon,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                    ),
+                Text(
+                  '$sign $amount',
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                    fontSize: AppSizes.dp16,
                   ),
                 ),
-                AppDimens.spacerWidthMediumSmall,
-
-                // Name and date
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        FormatedText().capitalizeFirstLetter(
-                          displayTitle ?? transaction.name,
-                        ),
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      Text(
-                        time,
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Amount
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '$sign $amount',
-                      style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      context.transactionTypeLabel(transaction.type),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
+                Text(
+                  context.transactionTypeLabel(transaction.type),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );

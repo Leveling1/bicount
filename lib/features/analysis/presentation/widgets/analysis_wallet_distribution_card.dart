@@ -171,7 +171,7 @@ class _WalletBalanceRow extends StatelessWidget {
         if (color != null)
           DecoratedBox(
             decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-            child: const SizedBox.square(dimension: 10),
+            child: const SizedBox.square(dimension: AppSizes.dp10),
           ),
         Expanded(child: Text(name, style: theme.textTheme.titleSmall)),
         Expanded(

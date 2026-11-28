@@ -27,20 +27,20 @@ extension on TransactionDetailContent {
       ),
     CircleAvatar(
       backgroundColor: Theme.of(context).cardColor,
-      radius: 40,
+      radius: AppSizes.dp40,
       child: SizedBox(
-        width: 50,
-        height: 50,
+        width: AppSizes.dp50,
+        height: AppSizes.dp50,
         child: data.type == TransactionTypes.subscriptionCode
             ? Icon(Icons.subscriptions, color: Theme.of(context).primaryColor)
             : data.image?.isNotEmpty == true
-            ? AppAvatar(image: data.image!, radius: 40)
+            ? AppAvatar(image: data.image!, radius: AppSizes.dp40)
             : Icon(
                 Icons.payments_outlined,
                 color: Theme.of(context).primaryColor,
               ),
       ),
     ),
-    const SizedBox(height: 12),
+    const SizedBox(height: AppSizes.dp12),
   ];
 }

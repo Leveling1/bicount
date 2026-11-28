@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 
@@ -17,37 +18,42 @@ class HeaderButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final buttonColor = color ?? Theme.of(context).colorScheme.primary;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(right: AppDimens.marginMedium),
-        constraints: const BoxConstraints(minWidth: 70),
-        decoration: ShapeDecoration(
-          color: buttonColor.withValues(alpha: 0.3),
-          shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(AppDimens.borderRadiusFull),
+    return Padding(
+      padding: const EdgeInsets.only(right: AppDimens.marginMedium),
+      child: BicountPressable(
+        onTap: onTap,
+        color: buttonColor.withValues(alpha: 0.3),
+        customBorder: const RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(AppDimens.borderRadiusFull),
           ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 14, color: buttonColor),
-            const SizedBox(width: 6),
-            Flexible(
-              child: Text(
-                text,
-                style: TextStyle(
-                  color: buttonColor,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
+        child: Container(
+          constraints: const BoxConstraints(minWidth: AppSizes.dp70),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimens.paddingSmall,
+            vertical: AppDimens.paddingExtraSmall,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: AppSizes.dp14, color: buttonColor),
+              const SizedBox(width: AppSizes.dp6),
+              Flexible(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    color: buttonColor,
+                    fontSize: AppSizes.dp11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

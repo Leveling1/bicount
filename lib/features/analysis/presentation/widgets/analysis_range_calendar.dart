@@ -75,8 +75,8 @@ class _AnalysisRangeCalendarState extends State<AnalysisRangeCalendar> {
                 ? TextButton(onPressed: null, child: Text(saveLabel))
                 : ConstrainedBox(
                     constraints: const BoxConstraints(
-                      maxWidth: 144,
-                      maxHeight: 44,
+                      maxWidth: AppSizes.dp144,
+                      maxHeight: AppSizes.dp44,
                     ),
                     child: CustomButton(
                       text: saveLabel,

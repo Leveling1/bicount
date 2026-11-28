@@ -109,7 +109,7 @@ class _AccountFundingFormState extends State<AccountFundingForm> {
                 label: context.l10n.commonSource,
                 hint: context.l10n.accountFundingEnterSource,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

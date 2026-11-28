@@ -1,3 +1,5 @@
+import 'package:bicount/core/themes/app_dimens.dart';
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -179,10 +181,12 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
             return Align(
               alignment: Alignment.topLeft,
               child: Card(
-                elevation: 4.0,
+                elevation: AppSizes.dp4,
                 color: Theme.of(context).cardColor,
                 shape: RoundedSuperellipseBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(
+                    AppDimens.borderRadiusMedium,
+                  ),
                 ),
                 child: ListView.builder(
                   padding: EdgeInsets.zero,
@@ -190,12 +194,15 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     final option = options.elementAt(index);
-                    return ListTile(
-                      title: Text(
-                        option,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
+                    return BicountPressable(
                       onTap: () => onSelected(option),
+                      customBorder: Theme.of(context).listTileTheme.shape,
+                      child: ListTile(
+                        title: Text(
+                          option,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -210,27 +217,32 @@ class _CustomSuggestionTextFieldState extends State<CustomSuggestionTextField> {
             VoidCallback onFieldSubmitted,
           ) {
             _attachAutocompleteController(textEditingController);
-            return TextFormField(
-              controller: textEditingController,
-              focusNode: focusNode,
-              onFieldSubmitted: (String value) => onFieldSubmitted(),
-              textAlign: TextAlign.start,
-              keyboardType: widget.inputType,
-              textInputAction: TextInputAction.next,
-              validator: widget.enableValidator!
-                  ? (widget.validator ?? _validator)
-                  : null,
-              decoration: InputDecoration(
-                hintText: widget.hintText,
-                suffixIcon: widget.isVisible
-                    ? IconButton(
-                        icon: Icon(
-                          Icons.add,
-                          color: AppColors.inactiveColorDark,
-                        ),
-                        onPressed: widget.onAdd,
-                      )
-                    : const SizedBox.shrink(),
+            return BicountPressable.control(
+              child: TextFormField(
+                controller: textEditingController,
+                focusNode: focusNode,
+                onFieldSubmitted: (String value) => onFieldSubmitted(),
+                textAlign: TextAlign.start,
+                keyboardType: widget.inputType,
+                textInputAction: TextInputAction.next,
+                validator: widget.enableValidator!
+                    ? (widget.validator ?? _validator)
+                    : null,
+                decoration: InputDecoration(
+                  hintText: widget.hintText,
+                  suffixIcon: widget.isVisible
+                      ? BicountPressable.button(
+                          builder: (statesController) => IconButton(
+                            statesController: statesController,
+                            icon: Icon(
+                              Icons.add,
+                              color: AppColors.inactiveColorDark,
+                            ),
+                            onPressed: widget.onAdd,
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
               ),
             );
           },

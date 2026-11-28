@@ -2084,6 +2084,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get analysisRecurringBudget => 'Budget récurrent';
 
   @override
+  String get analysisRecurringBudgetMonth => 'Mois';
+
+  @override
+  String get analysisRecurringBudgetYear => 'Année';
+
+  @override
+  String get analysisRecurringBudgetEmptyMonth => 'Ce mois doit comporter un revenu et une charge récurrents.';
+
+  @override
+  String get analysisPeriodCurrentMonth => 'Ce mois';
+
+  @override
+  String get analysisRecurringBudgetReceivedIncome => 'Revenus reçus';
+
+  @override
+  String get analysisRecurringBudgetTotalIncome => 'Revenus récurrents';
+
+  @override
   String get analysisRecurringBudgetRemaining => 'Reste prévu';
 
   @override

@@ -71,7 +71,7 @@ class TransactionDetailContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double iconSize = 20;
+    const double iconSize = AppSizes.dp20;
     final data = transaction.transactionDetail;
     final name = displayTitle ?? data.name;
     final uid = Supabase.instance.client.auth.currentUser!.id;

@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:flutter/material.dart';
 
 class TitleIconButtomRow extends StatelessWidget {
@@ -21,7 +22,7 @@ class TitleIconButtomRow extends StatelessWidget {
           decoration: ShapeDecoration(
             color: Theme.of(context).cardColor,
             shape: RoundedSuperellipseBorder(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(AppDimens.radiusSmall),
             ),
           ),
           child: Material(
@@ -29,19 +30,17 @@ class TitleIconButtomRow extends StatelessWidget {
             child: InkWell(
               hoverColor: Theme.of(context).colorScheme.surfaceContainer,
               customBorder: RoundedSuperellipseBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(AppDimens.radiusSmall),
               ),
-              splashColor: Colors.transparent,
-              highlightColor: Theme.of(
-                context,
-              ).primaryColor.withValues(alpha: 0.2),
               onTap: onPressed,
               child: Padding(
-                padding: const EdgeInsets.all(8.0), // 👈 espace cliquable
+                padding: const EdgeInsets.all(
+                  AppDimens.paddingSmall,
+                ), // 👈 espace cliquable
                 child: Icon(
                   icon,
                   color: Theme.of(context).textTheme.titleSmall!.color,
-                  size: 20,
+                  size: AppSizes.dp20,
                 ),
               ),
             ),

@@ -27,73 +27,68 @@ class DebtSummaryCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppDimens.spacingMedium),
-      child: InkWell(
+      child: DetailsCard(
         onTap: onTap,
-        customBorder: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
-        ),
-        child: DetailsCard(
-          isMargin: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      summary.debt.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+        isMargin: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    summary.debt.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimens.paddingSmall,
-                      vertical: AppDimens.paddingExtraSmall,
-                    ),
-                    decoration: ShapeDecoration(
-                      color: color.withValues(alpha: 0.14),
-                      shape: RoundedSuperellipseBorder(
-                        borderRadius: BorderRadius.circular(
-                          AppDimens.borderRadiusFull,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      summary.isOverdue ? overdueLabel : openLabel,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: color,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppDimens.spacingExtraSmall),
-              Text(
-                summary.counterpartyName,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              const SizedBox(height: AppDimens.spacingSmall),
-              Text(
-                NumberFormatUtils.formatCurrency(
-                  summary.debt.remainingAmount,
-                  currencyCode: summary.debt.currency,
                 ),
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimens.paddingSmall,
+                    vertical: AppDimens.paddingExtraSmall,
+                  ),
+                  decoration: ShapeDecoration(
+                    color: color.withValues(alpha: 0.14),
+                    shape: RoundedSuperellipseBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppDimens.borderRadiusFull,
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    summary.isOverdue ? overdueLabel : openLabel,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppDimens.spacingExtraSmall),
+            Text(
+              summary.counterpartyName,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: AppDimens.spacingSmall),
+            Text(
+              NumberFormatUtils.formatCurrency(
+                summary.debt.remainingAmount,
+                currencyCode: summary.debt.currency,
               ),
-              const SizedBox(height: AppDimens.spacingExtraSmall),
-              Text(
-                summary.dueDate == null
-                    ? '-'
-                    : formatDateWithoutYear(summary.dueDate!),
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-          ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: AppDimens.spacingExtraSmall),
+            Text(
+              summary.dueDate == null
+                  ? '-'
+                  : formatDateWithoutYear(summary.dueDate!),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
         ),
       ),
     );

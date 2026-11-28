@@ -20,9 +20,9 @@ class TransactionFeedList extends StatelessWidget {
     return SliverPadding(
       padding: const EdgeInsets.fromLTRB(
         AppDimens.paddingMedium,
-        15,
+        AppSizes.dp15,
         AppDimens.paddingMedium,
-        50,
+        AppSizes.dp50,
       ),
       sliver: SliverList.builder(
         itemCount: entries.length,

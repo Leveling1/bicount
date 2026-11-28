@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/features/company/presentation/bloc/company_bloc.dart';
 import '../../../../core/services/notification_helper.dart';
 import '../../../../core/widgets/custom_button.dart';
@@ -49,7 +50,7 @@ class _AddCompanyState extends State<AddCompany> {
                 'Add company',
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -73,7 +74,7 @@ class _AddCompanyState extends State<AddCompany> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppDimens.spacingMedium),
                   Flexible(
                     flex: 4,
                     child: CustomFormField(
@@ -85,20 +86,20 @@ class _AddCompanyState extends State<AddCompany> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
               CustomFormField(
                 controller: _description,
                 label: "Description",
                 hint: 'Enter company description',
                 inputType: TextInputType.multiline,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppDimens.spacingExtraLarge),
               CustomButton(
                 text: 'Save',
                 loading: state is CompanyLoading,
                 onPressed: _submit,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.spacingMedium),
             ],
           ),
         );

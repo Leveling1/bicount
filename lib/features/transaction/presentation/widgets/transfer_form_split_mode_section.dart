@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/widgets/custom_choice_chip.dart';
 import 'package:bicount/features/transaction/domain/entities/create_transaction_request_entity.dart';
@@ -22,10 +23,10 @@ class TransferFormSplitModeSection extends StatelessWidget {
           context.l10n.transactionSplitMethod,
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppDimens.spacingSmall),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: AppDimens.spacingSmall,
+          runSpacing: AppDimens.spacingSmall,
           children: TransactionSplitMode.values.map((mode) {
             return CustomChoiceChip(
               label: context.splitModeLabel(mode),

@@ -1,3 +1,5 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
+import 'package:bicount/core/themes/app_press_theme.dart';
 import 'dart:math' as math;
 
 import 'package:bicount/core/localization/l10n_extensions.dart';
@@ -5,76 +7,41 @@ import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
 import 'package:bicount/core/utils/number_format_utils.dart';
 import 'package:bicount/core/widgets/custom_bottom_sheet.dart';
-import 'package:bicount/core/widgets/details_card.dart';
-import 'package:bicount/features/analysis/domain/services/analysis_recurring_agenda.dart';
 import 'package:bicount/features/analysis/domain/services/analysis_recurring_budget.dart';
-import 'package:bicount/features/currency/presentation/bloc/currency_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'analysis_recurring_budget_waterfall.dart';
+part 'analysis_recurring_budget_bar_row.dart';
 
 class AnalysisRecurringBudgetCard extends StatelessWidget {
   const AnalysisRecurringBudgetCard({
     super.key,
-    required this.month,
-    required this.agenda,
+    required this.budget,
+    required this.currency,
+    required this.precision,
   });
 
-  final DateTime month;
-  final Map<DateTime, List<AnalysisRecurringEntry>> agenda;
+  final AnalysisRecurringBudget budget;
+  final String currency;
+  final int precision;
 
   @override
   Widget build(BuildContext context) {
-    final config = context.watch<CurrencyCubit>().state.config;
-    final budget = AnalysisRecurringBudget.fromAgenda(
-      agenda.values.expand((day) => day),
-      config,
-    );
-    if (budget == null) return const SizedBox.shrink();
-
-    final title = context.l10n.analysisRecurringBudget;
-    final monthLabel = MaterialLocalizations.of(context).formatMonthYear(month);
     final income = budget.income;
-    final currency = config.referenceCurrencyCode;
-    final difference = (income ?? 0) - budget.totalCharges;
-    final precision = config.currencyFor(currency).decimals.clamp(0, 4);
-    final roundTo = math.pow(10, precision);
+    if (income == null) {
+      return Text(context.l10n.analysisRecurringBudgetRatesUnavailable);
+    }
+    final difference = income - budget.totalCharges;
+    final roundTo = math.pow(10, precision.clamp(0, 4));
     final remaining = (difference * roundTo).abs() < 0.5 ? 0.0 : difference;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppDimens.paddingMedium,
-        0,
-        AppDimens.paddingMedium,
-        0,
-      ),
-      child: DetailsCard(
-        isMargin: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: AppDimens.spacingMedium,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: AppDimens.spacingExtraSmall,
-              children: [
-                Text(title, style: Theme.of(context).textTheme.titleMedium),
-                Text(monthLabel, style: Theme.of(context).textTheme.bodySmall),
-              ],
-            ),
-            if (income == null)
-              Text(context.l10n.analysisRecurringBudgetRatesUnavailable)
-            else
-              _BudgetWaterfall(
-                income: income,
-                charges: budget.charges,
-                totalCharges: budget.totalCharges,
-                remaining: remaining,
-                currency: currency,
-              ),
-          ],
-        ),
-      ),
+    return _BudgetWaterfall(
+      income: income,
+      receivedIncome: budget.receivedIncome,
+      plannedIncome: budget.plannedIncome,
+      charges: budget.charges,
+      totalCharges: budget.totalCharges,
+      remaining: remaining,
+      currency: currency,
     );
   }
 }

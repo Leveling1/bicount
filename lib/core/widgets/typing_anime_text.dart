@@ -1,3 +1,4 @@
+import 'package:bicount/core/themes/app_dimens.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 
@@ -74,7 +75,7 @@ class _TypingAnimeTextState extends State<TypingAnimeText> {
   @override
   Widget build(BuildContext context) {
     final TextStyle defaultStyle = TextStyle(
-      fontSize: 20.0,
+      fontSize: AppSizes.dp20,
       fontWeight: FontWeight.w600,
       color: Theme.of(context).primaryColor,
     );
@@ -83,7 +84,7 @@ class _TypingAnimeTextState extends State<TypingAnimeText> {
 
     return SizedBox(
       // Augmenté à 64.0 pour laisser l'espace vertical nécessaire aux 2 lignes
-      height: 64.0,
+      height: AppSizes.dp64,
       child: Center(
         child: ValueListenableBuilder<String>(
           valueListenable: _currentText,
@@ -141,14 +142,14 @@ class _BlinkingCursorState extends State<_BlinkingCursor>
     return FadeTransition(
       opacity: _controller,
       child: Container(
-        width: 24.0,
+        width: AppSizes.dp24,
         // Réduit légèrement pour être plus harmonieux à la fin d'un mot
-        height: 24.0,
+        height: AppSizes.dp24,
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
           shape: BoxShape.circle,
         ),
-        margin: const EdgeInsets.only(left: 4.0),
+        margin: const EdgeInsets.only(left: AppDimens.paddingExtraSmall),
       ),
     );
   }

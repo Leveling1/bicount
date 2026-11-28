@@ -54,20 +54,20 @@ class _WalletIconChoices<T> extends StatelessWidget {
     return Semantics(
       button: true,
       selected: isSelected,
-      child: InkWell(
+      child: BicountPressable(
         borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
         onTap: () => onChanged(option.value),
         child: SizedBox(
-          width: 80,
+          width: AppSizes.dp80,
           child: Padding(
             padding: const EdgeInsets.all(AppDimens.paddingExtraSmall),
             child: Column(
               spacing: AppDimens.spacingSmall,
               children: [
                 Container(
-                  width: 54,
-                  height: 54,
-                  padding: const EdgeInsets.all(9),
+                  width: AppSizes.dp54,
+                  height: AppSizes.dp54,
+                  padding: const EdgeInsets.all(AppSizes.dp9),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: isSelected
@@ -78,7 +78,11 @@ class _WalletIconChoices<T> extends StatelessWidget {
                           ),
                   ),
                   child: option.svg == null
-                      ? Icon(Icons.remove, size: 22, color: iconColor)
+                      ? Icon(
+                          Icons.remove,
+                          size: AppSizes.dp22,
+                          color: iconColor,
+                        )
                       : SvgPicture.asset(
                           option.svg!,
                           colorFilter: ColorFilter.mode(
@@ -140,14 +144,14 @@ class _WalletColorChoices extends StatelessWidget {
                 child: Tooltip(
                   message: name,
                   excludeFromSemantics: true,
-                  child: InkWell(
+                  child: BicountPressable(
                     borderRadius: BorderRadius.circular(
                       AppDimens.borderRadiusMedium,
                     ),
                     onTap: () => onChanged(index),
                     child: Container(
-                      width: 46,
-                      height: 46,
+                      width: AppSizes.dp46,
+                      height: AppSizes.dp46,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
                           AppDimens.borderRadiusMedium,
@@ -156,7 +160,9 @@ class _WalletColorChoices extends StatelessWidget {
                           color: index == selected
                               ? colors.primary
                               : colors.outlineVariant,
-                          width: index == selected ? 2 : 1,
+                          width: index == selected
+                              ? AppSizes.dp2
+                              : AppDimens.thicknessThin,
                         ),
                         gradient: walletFinishGradient(
                           walletFinishColor(index),

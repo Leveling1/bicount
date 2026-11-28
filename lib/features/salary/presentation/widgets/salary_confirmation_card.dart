@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:bicount/core/themes/app_dimens.dart';
 import 'package:bicount/core/themes/other_theme.dart';
@@ -29,13 +30,11 @@ class SalaryConfirmationCard extends StatelessWidget {
       decoration: BoxDecoration(color: Colors.transparent),
       child: Material(
         color: Colors.transparent,
-        child: InkWell(
+        child: BicountPressable(
           hoverColor: Theme.of(context).colorScheme.surfaceContainer,
           customBorder: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(AppDimens.borderRadiusLarge),
           ),
-          splashColor: Colors.transparent,
-          highlightColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           onTap: onTap,
           child: Padding(
             padding: AppDimens.paddingSmallCard,
@@ -47,10 +46,10 @@ class SalaryConfirmationCard extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       backgroundColor: Theme.of(context).cardColor,
-                      radius: 20,
+                      radius: AppSizes.dp20,
                       child: SizedBox(
-                        width: 30,
-                        height: 30,
+                        width: AppSizes.dp30,
+                        height: AppSizes.dp30,
                         child: Icon(
                           Icons.arrow_downward,
                           color: Theme.of(context).textTheme.bodyLarge?.color,
@@ -98,7 +97,7 @@ class SalaryConfirmationCard extends StatelessWidget {
                           amount,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: AppSizes.dp16,
                           ),
                         ),
                         Text(

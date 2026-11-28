@@ -1,3 +1,4 @@
+import 'package:bicount/core/animations/bicount_pressable.dart';
 import 'package:bicount/core/themes/app_corners.dart';
 import 'package:bicount/core/localization/l10n_extensions.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import '../themes/app_colors.dart';
 import '../themes/app_dimens.dart';
 
 class CustomButton extends StatelessWidget {
-  CustomButton({
+  const CustomButton({
     super.key,
     required this.text,
     required this.onPressed,
@@ -17,7 +18,6 @@ class CustomButton extends StatelessWidget {
   });
 
   final VoidCallback onPressed;
-  final WidgetStatesController statesController = WidgetStatesController();
   final String text;
   final bool loading;
 
@@ -25,30 +25,33 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: loading ? null : onPressed,
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 180),
-          switchInCurve: Curves.easeOutCubic,
-          switchOutCurve: Curves.easeOutCubic,
-          transitionBuilder: (child, animation) {
-            final scale = Tween(begin: 0.98, end: 1.0).animate(animation);
-            return FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(scale: scale, child: child),
-            );
-          },
-          child: loading
-              ? SizedBox(
-                  key: const ValueKey('button_loading'),
-                  height: 32,
-                  child: LoadingAnimationWidget.horizontalRotatingDots(
-                    color: Theme.of(context).cardColor,
-                    size: 38,
-                  ),
-                )
-              : Text(text, key: ValueKey(text)),
+      height: AppSizes.dp50,
+      child: BicountPressable.button(
+        builder: (statesController) => ElevatedButton(
+          statesController: statesController,
+          onPressed: loading ? null : onPressed,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 180),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeOutCubic,
+            transitionBuilder: (child, animation) {
+              final scale = Tween(begin: 0.98, end: 1.0).animate(animation);
+              return FadeTransition(
+                opacity: animation,
+                child: ScaleTransition(scale: scale, child: child),
+              );
+            },
+            child: loading
+                ? SizedBox(
+                    key: const ValueKey('button_loading'),
+                    height: AppSizes.dp32,
+                    child: LoadingAnimationWidget.horizontalRotatingDots(
+                      color: Theme.of(context).cardColor,
+                      size: AppSizes.dp38,
+                    ),
+                  )
+                : Text(text, key: ValueKey(text)),
+          ),
         ),
       ),
     );
@@ -56,7 +59,7 @@ class CustomButton extends StatelessWidget {
 }
 
 class CustomOutlinedButton extends StatelessWidget {
-  CustomOutlinedButton({
+  const CustomOutlinedButton({
     super.key,
     required this.onPressed,
     required this.text,
@@ -64,7 +67,6 @@ class CustomOutlinedButton extends StatelessWidget {
   });
 
   final VoidCallback onPressed;
-  final WidgetStatesController statesController = WidgetStatesController();
   final String text;
   final bool loading;
 
@@ -72,30 +74,33 @@ class CustomOutlinedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 180),
-          switchInCurve: Curves.easeOutCubic,
-          switchOutCurve: Curves.easeOutCubic,
-          transitionBuilder: (child, animation) {
-            final scale = Tween(begin: 0.98, end: 1.0).animate(animation);
-            return FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(scale: scale, child: child),
-            );
-          },
-          child: loading
-              ? SizedBox(
-                  key: const ValueKey('button_loading'),
-                  height: 32,
-                  child: LoadingAnimationWidget.horizontalRotatingDots(
-                    color: Theme.of(context).cardColor,
-                    size: 38,
-                  ),
-                )
-              : Text(text, key: ValueKey(text), textAlign: TextAlign.center),
+      height: AppSizes.dp50,
+      child: BicountPressable.button(
+        builder: (statesController) => OutlinedButton(
+          statesController: statesController,
+          onPressed: loading ? null : onPressed,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 180),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeOutCubic,
+            transitionBuilder: (child, animation) {
+              final scale = Tween(begin: 0.98, end: 1.0).animate(animation);
+              return FadeTransition(
+                opacity: animation,
+                child: ScaleTransition(scale: scale, child: child),
+              );
+            },
+            child: loading
+                ? SizedBox(
+                    key: const ValueKey('button_loading'),
+                    height: AppSizes.dp32,
+                    child: LoadingAnimationWidget.horizontalRotatingDots(
+                      color: Theme.of(context).cardColor,
+                      size: AppSizes.dp38,
+                    ),
+                  )
+                : Text(text, key: ValueKey(text), textAlign: TextAlign.center),
+          ),
         ),
       ),
     );
@@ -124,51 +129,59 @@ class _ProviderButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 180),
-          switchInCurve: Curves.easeOutCubic,
-          switchOutCurve: Curves.easeOutCubic,
-          transitionBuilder: (child, animation) {
-            final scale = Tween(begin: 0.98, end: 1.0).animate(animation);
-            return FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(scale: scale, child: child),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
-            child: isLoading
-                ? SizedBox(
-                    key: const ValueKey('provider_loading'),
-                    height: 32,
-                    child: LoadingAnimationWidget.horizontalRotatingDots(
-                      color: Theme.of(context).cardColor,
-                      size: 38,
-                    ),
-                  )
-                : Row(
-                    key: const ValueKey('provider_content'),
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 36,
-                        height: 36,
-                        decoration: appCornerDecoration(
-                          color: AppColors.surfaceColorDark,
-                          borderRadius: BorderRadius.circular(
-                            AppDimens.borderRadiusMedium,
-                          ),
-                          legacy: WalletCorners.of(context),
-                        ),
-                        padding: const EdgeInsets.all(8),
-                        child: SvgPicture.asset(icon),
+      child: BicountPressable.button(
+        builder: (statesController) => ElevatedButton(
+          statesController: statesController,
+          onPressed: isLoading ? null : onPressed,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 180),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeOutCubic,
+            transitionBuilder: (child, animation) {
+              final scale = Tween(begin: 0.98, end: 1.0).animate(animation);
+              return FadeTransition(
+                opacity: animation,
+                child: ScaleTransition(scale: scale, child: child),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.dp20,
+                vertical: AppSizes.dp11,
+              ),
+              child: isLoading
+                  ? SizedBox(
+                      key: const ValueKey('provider_loading'),
+                      height: AppSizes.dp32,
+                      child: LoadingAnimationWidget.horizontalRotatingDots(
+                        color: Theme.of(context).cardColor,
+                        size: AppSizes.dp38,
                       ),
-                      AppDimens.spacerWidthMedium,
-                      Flexible(child: Text(label, textAlign: TextAlign.center)),
-                    ],
-                  ),
+                    )
+                  : Row(
+                      key: const ValueKey('provider_content'),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: AppSizes.dp36,
+                          height: AppSizes.dp36,
+                          decoration: appCornerDecoration(
+                            color: AppColors.surfaceColorDark,
+                            borderRadius: BorderRadius.circular(
+                              AppDimens.borderRadiusMedium,
+                            ),
+                            legacy: WalletCorners.of(context),
+                          ),
+                          padding: const EdgeInsets.all(AppDimens.paddingSmall),
+                          child: SvgPicture.asset(icon),
+                        ),
+                        AppDimens.spacerWidthMedium,
+                        Flexible(
+                          child: Text(label, textAlign: TextAlign.center),
+                        ),
+                      ],
+                    ),
+            ),
           ),
         ),
       ),
@@ -232,44 +245,35 @@ class CustomAuthIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final background = Theme.of(
+      context,
+    ).elevatedButtonTheme.style?.backgroundColor?.resolve({});
     return Container(
-      width: 36,
-      height: 36,
-      decoration: appCornerDecoration(
-        color: Theme.of(
-          context,
-        ).elevatedButtonTheme.style?.backgroundColor?.resolve({}),
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
-        legacy: WalletCorners.of(context),
-      ),
+      width: AppSizes.dp36,
+      height: AppSizes.dp36,
       margin: EdgeInsets.only(
         right: AppDimens.marginExtraSmall,
         top: AppDimens.marginExtraSmall,
         bottom: AppDimens.marginExtraSmall,
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          hoverColor: Theme.of(context)
-              .elevatedButtonTheme
-              .style
-              ?.backgroundColor
-              ?.resolve({})
-              ?.withValues(alpha: 0.4),
-          customBorder: appCornerShape(
-            borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
-            legacy: WalletCorners.of(context),
-          ),
-          onTap: onPressed,
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: loading
-                ? LoadingAnimationWidget.hexagonDots(
-                    color: Theme.of(context).cardColor,
-                    size: 15,
-                  )
-                : Icon(Icons.arrow_forward, color: Theme.of(context).cardColor),
-          ),
+      child: BicountPressable(
+        color: background ?? Colors.transparent,
+        hoverColor: Theme.of(context).elevatedButtonTheme.style?.backgroundColor
+            ?.resolve({})
+            ?.withValues(alpha: 0.4),
+        customBorder: appCornerShape(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+          legacy: WalletCorners.of(context),
+        ),
+        onTap: loading ? null : onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(AppDimens.paddingSmall),
+          child: loading
+              ? LoadingAnimationWidget.hexagonDots(
+                  color: Theme.of(context).cardColor,
+                  size: AppSizes.dp15,
+                )
+              : Icon(Icons.arrow_forward, color: Theme.of(context).cardColor),
         ),
       ),
     );
@@ -294,41 +298,44 @@ class CustomButtonWithIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: loading ? null : onPressed,
-        /*style: ElevatedButton.styleFrom(
+      height: AppSizes.dp50,
+      child: BicountPressable.button(
+        builder: (statesController) => ElevatedButton(
+          statesController: statesController,
+          onPressed: loading ? null : onPressed,
+          /*style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
         ),*/
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 180),
-          switchInCurve: Curves.easeOutCubic,
-          switchOutCurve: Curves.easeOutCubic,
-          transitionBuilder: (child, animation) {
-            final scale = Tween(begin: 0.98, end: 1.0).animate(animation);
-            return FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(scale: scale, child: child),
-            );
-          },
-          child: loading
-              ? SizedBox(
-                  key: const ValueKey('button_loading'),
-                  height: 32,
-                  child: LoadingAnimationWidget.horizontalRotatingDots(
-                    color: Theme.of(context).cardColor,
-                    size: 38,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 180),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeOutCubic,
+            transitionBuilder: (child, animation) {
+              final scale = Tween(begin: 0.98, end: 1.0).animate(animation);
+              return FadeTransition(
+                opacity: animation,
+                child: ScaleTransition(scale: scale, child: child),
+              );
+            },
+            child: loading
+                ? SizedBox(
+                    key: const ValueKey('button_loading'),
+                    height: AppSizes.dp32,
+                    child: LoadingAnimationWidget.horizontalRotatingDots(
+                      color: Theme.of(context).cardColor,
+                      size: AppSizes.dp38,
+                    ),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      icon,
+                      AppDimens.spacerWidthMedium,
+                      Text(text, key: ValueKey(text)),
+                    ],
                   ),
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    icon,
-                    AppDimens.spacerWidthMedium,
-                    Text(text, key: ValueKey(text)),
-                  ],
-                ),
+          ),
         ),
       ),
     );
@@ -352,50 +359,41 @@ class CustomIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 36,
-      height: 36,
-      decoration: appCornerDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
-        legacy: WalletCorners.of(context),
-      ),
+      width: AppSizes.dp36,
+      height: AppSizes.dp36,
       margin: EdgeInsets.only(
         right: AppDimens.marginExtraSmall,
         top: AppDimens.marginExtraSmall,
         bottom: AppDimens.marginExtraSmall,
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          hoverColor: Theme.of(context).cardColor.withValues(alpha: 0.4),
-          customBorder: appCornerShape(
-            borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
-            legacy: WalletCorners.of(context),
-          ),
-          onTap: onPressed,
-          child: Center(
-            child: loading
-                ? LoadingAnimationWidget.hexagonDots(
-                    color:
-                        color ??
-                        Theme.of(context)
-                            .elevatedButtonTheme
-                            .style!
-                            .backgroundColor!
-                            .resolve({})!,
-                    size: 15,
-                  )
-                : Icon(
-                    icon,
-                    color:
-                        color ??
-                        Theme.of(context)
-                            .elevatedButtonTheme
-                            .style
-                            ?.backgroundColor
-                            ?.resolve({}),
-                  ),
-          ),
+      child: BicountPressable(
+        color: Theme.of(context).cardColor,
+        hoverColor: Theme.of(context).cardColor.withValues(alpha: 0.4),
+        customBorder: appCornerShape(
+          borderRadius: BorderRadius.circular(AppDimens.borderRadiusMedium),
+          legacy: WalletCorners.of(context),
+        ),
+        onTap: loading ? null : onPressed,
+        child: Center(
+          child: loading
+              ? LoadingAnimationWidget.hexagonDots(
+                  color:
+                      color ??
+                      Theme.of(context)
+                          .elevatedButtonTheme
+                          .style!
+                          .backgroundColor!
+                          .resolve({})!,
+                  size: AppSizes.dp15,
+                )
+              : Icon(
+                  icon,
+                  color:
+                      color ??
+                      Theme.of(
+                        context,
+                      ).elevatedButtonTheme.style?.backgroundColor?.resolve({}),
+                ),
         ),
       ),
     );
